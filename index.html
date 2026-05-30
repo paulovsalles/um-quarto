@@ -74,6 +74,9 @@ img{display:block}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
 .inp{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:14px;font-size:14px;color:var(--text);background:#fcfffe;transition:border-color .15s}
+input[type="date"].inp{color-scheme:light;padding:10px 14px}
+.date-field{position:relative}.date-lbl{display:block;font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:8px 14px 0;position:absolute;top:0;left:0;pointer-events:none;z-index:1}
+.date-field input[type="date"].inp{padding-top:22px;padding-bottom:6px}
 .inp:focus{border-color:var(--green)}
 .textarea{min-height:80px;resize:vertical}
 .sel{width:100%;padding:11px 14px;border:2px solid var(--line);border-radius:14px;font-size:14px;color:var(--text);background:#fcfffe}
@@ -300,7 +303,10 @@ img{display:block}
 <!-- ========== LANDING ========== -->
 <section id="landing-screen" class="screen active">
   <div class="land-top">
-    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 60" height="32" style="display:block">
+  <text y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#1cba9f">um</text>
+  <text x="118" y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#2d4653">quarto</text>
+</svg>
     <div style="display:none;align-items:center;gap:8px;font-weight:900;font-size:20px;color:var(--dark)">Um <span style="color:var(--green)">Quarto</span></div>
     <div style="display:flex;gap:8px">
       <button class="btn btn-light btn-sm" onclick="showScreen('login')">Entrar</button>
@@ -328,7 +334,14 @@ img{display:block}
 <!-- ========== LOGIN ========== -->
 <section id="login-screen" class="screen">
   <div class="auth-card">
-    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 60" height="32" style="display:block">
+  <text y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#1cba9f">um</text>
+  <text x="118" y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#2d4653">quarto</text>
+</svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 48" height="34" style="display:block;flex-shrink:0">
+  <text y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#1cba9f">um</text>
+  <text x="97" y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#2d4653">quarto</text>
+</svg>
     <h2>Entrar</h2><div class="sub">Acesse sua conta.</div>
     <div id="login-msg" class="msg"></div>
     <button class="btn btn-google" onclick="loginGoogle()">
@@ -347,7 +360,14 @@ img{display:block}
 <!-- ========== CADASTRO ========== -->
 <section id="register-screen" class="screen">
   <div class="auth-card">
-    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 60" height="32" style="display:block">
+  <text y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#1cba9f">um</text>
+  <text x="118" y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#2d4653">quarto</text>
+</svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 48" height="34" style="display:block;flex-shrink:0">
+  <text y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#1cba9f">um</text>
+  <text x="97" y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#2d4653">quarto</text>
+</svg>
     <h2>Criar conta</h2><div class="sub">Escolha seu perfil.</div>
     <div id="register-msg" class="msg"></div>
     <button class="btn btn-google" onclick="loginGoogle()">
@@ -380,7 +400,14 @@ img{display:block}
 <!-- ========== ESCOLHA MODO PROFESSOR ========== -->
 <section id="role-screen" class="screen">
   <div class="auth-card">
-    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none'">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 60" height="32" style="display:block">
+  <text y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#1cba9f">um</text>
+  <text x="118" y="50" font-family="Nunito,sans-serif" font-weight="900" font-size="56" fill="#2d4653">quarto</text>
+</svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 48" height="34" style="display:block;flex-shrink:0">
+  <text y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#1cba9f">um</text>
+  <text x="97" y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#2d4653">quarto</text>
+</svg>
     <h2>Como entrar?</h2>
     <div class="sub">Seu perfil de professor tem dois modos.</div>
     <div class="role-grid" style="margin-top:20px">
@@ -405,7 +432,10 @@ img{display:block}
   <!-- DESKTOP SIDEBAR -->
   <div class="desktop-side" id="desktop-side">
     <div class="desktop-side-head">
-      <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img-sm" onerror="this.style.display='none'">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 48" height="26" style="display:block;flex-shrink:0">
+  <text y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#1cba9f">um</text>
+  <text x="97" y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#2d4653">quarto</text>
+</svg>
     </div>
     <div class="dside-user">
       <div class="avatar" id="avatar-desktop">U</div>
@@ -424,7 +454,10 @@ img{display:block}
       <button class="topbar-menu-btn" id="menu-btn" onclick="toggleDrawer()">
         <span></span><span></span><span></span>
       </button>
-      <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" style="height:26px;object-fit:contain" onerror="this.style.display='none'">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 48" height="20" style="display:block;flex-shrink:0">
+  <text y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#1cba9f">um</text>
+  <text x="97" y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#2d4653">quarto</text>
+</svg>
     </div>
     <div style="display:flex;align-items:center;gap:10px">
       <div id="page-title-mobile" style="font-size:15px;font-weight:800;color:#fff"></div>
@@ -438,7 +471,10 @@ img{display:block}
   <!-- DRAWER -->
   <div class="drawer" id="drawer">
     <div class="drawer-head">
-      <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img-sm" onerror="this.style.display='none'">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 48" height="26" style="display:block;flex-shrink:0">
+  <text y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#1cba9f">um</text>
+  <text x="97" y="42" font-family="Nunito,sans-serif" font-weight="900" font-size="46" fill="#2d4653">quarto</text>
+</svg>
       <div class="drawer-user">
         <div class="avatar" id="avatar-drawer">U</div>
         <div><div class="drawer-user-name" id="drawer-name">—</div><div class="drawer-user-email" id="drawer-email">—</div></div>
@@ -515,7 +551,7 @@ img{display:block}
         <div class="field"><input id="task-title" class="inp" placeholder="O que fazer?"></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
           <input id="task-subject" class="inp" placeholder="Matéria">
-          <input id="task-date" type="date" class="inp">
+          <div class="date-field"><label class="date-lbl">Data</label><input id="task-date" type="date" class="inp"></div>
         </div>
         <button class="btn btn-primary btn-full btn-sm" onclick="addTask()">Adicionar tarefa</button>
       </div>
@@ -523,12 +559,12 @@ img{display:block}
     </div>
 
     <!-- AULAS -->
-    <div id="tab-classes" class="tab">
+    <div id="tab-classes" class="tab" style="padding-bottom:0">
       <div class="card">
         <div class="card-title">Registrar aula</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
           <input id="class-subject" class="inp" placeholder="Matéria">
-          <input id="class-date" type="date" class="inp">
+          <div class="date-field"><label class="date-lbl">Data</label><input id="class-date" type="date" class="inp"></div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
           <input id="class-min" type="number" class="inp" placeholder="Duração (min)">
