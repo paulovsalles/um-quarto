@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -9,17 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
 
   <!-- ============================================================
-       FIREBASE SDK (compat v9 — funciona sem build tools)
+       FIREBASE SDK — Realtime Database (sem necessidade de billing)
        ============================================================ -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
 
   <style>
     :root{
       --dark:#2d4653;--green:#1cba9f;--green-2:#16a98f;--mint:#e6faf6;
       --bg:#f5faf9;--paper:#ffffff;--text:#263f4b;--muted:#728692;
-      --line:#dbe9e8;--yellow:#ffc842;--danger:#d94c4c;
+      --line:#dbe9e8;--danger:#d94c4c;
       --shadow:0 18px 46px rgba(45,70,83,.10);--r:24px;
       --font:Nunito,system-ui,-apple-system,Segoe UI,sans-serif;
     }
@@ -50,7 +51,6 @@
     .btn-dark{background:var(--dark);color:#fff}
     .btn-danger{background:#feecec;color:var(--danger)}
     .btn-small{min-height:36px;padding:8px 12px;font-size:13px}
-    /* Google btn */
     .btn-google{background:#fff;color:#3c4043;border:1px solid var(--line);gap:10px;width:100%;
       margin-bottom:14px;font-size:14px}
     .btn-google svg{width:18px;height:18px;flex:0 0 auto}
@@ -69,7 +69,7 @@
       border-radius:34px;padding:24px;backdrop-filter:blur(14px);position:relative;overflow:hidden}
     .hero-card:before{content:"";position:absolute;right:-60px;top:-60px;width:190px;height:190px;
       border-radius:60px;background:var(--green);opacity:.12;transform:rotate(20deg)}
-    .mini-phone{border:1px solid var(--line);border-radius:30px;background:#fbfffe;overflow:hidden;position:relative}
+    .mini-phone{border:1px solid var(--line);border-radius:30px;background:#fbfffe;overflow:hidden}
     .mini-head{background:var(--dark);color:#fff;padding:22px}
     .mini-head small{display:block;color:rgba(255,255,255,.56);margin-top:4px;font-weight:700}
     .mini-body{display:grid;gap:12px;padding:16px}
@@ -104,10 +104,12 @@
     .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
     .role-card{border:2px solid var(--line);border-radius:22px;padding:16px;background:#fcfffe;text-align:left}
     .role-card.active{border-color:var(--green);background:var(--mint)}
-    /* spinner */
-    .spinner{display:none;text-align:center;padding:28px;color:var(--muted);font-weight:700}
-    .spinner.active{display:block}
-    /* app layout */
+    .verify-banner{background:#fff8e1;border:1px solid #ffe082;color:#7a5c00;border-radius:16px;
+      padding:12px 16px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;
+      justify-content:space-between;gap:12px}
+    .verify-banner button{background:#f59e0b;color:#fff;border-radius:999px;padding:6px 14px;
+      font-size:12px;font-weight:700;white-space:nowrap}
+    /* APP */
     .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
     .side{position:sticky;top:0;height:100vh;background:var(--dark);color:#fff;
       padding:22px 16px;display:flex;flex-direction:column;gap:18px}
@@ -137,7 +139,8 @@
     .section-title{font-size:20px;color:var(--dark);font-weight:1000;margin-bottom:12px}
     .stat{min-height:118px}
     .stat .num{font-size:34px;font-weight:1000;color:var(--green);line-height:1;margin-bottom:8px}
-    .stat .label{color:var(--dark);font-weight:1000}.stat .hint{color:var(--muted);font-size:13px;margin-top:4px}
+    .stat .label{color:var(--dark);font-weight:1000}
+    .stat .hint{color:var(--muted);font-size:13px;margin-top:4px}
     .quote{background:linear-gradient(135deg,var(--dark),#3b5a68);color:#fff}
     .quote p{color:rgba(255,255,255,.76);line-height:1.55;margin-top:8px}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -150,7 +153,8 @@
     .item-actions{display:flex;gap:6px;flex-wrap:wrap}
     .check{width:23px;height:23px;border-radius:8px;border:2px solid var(--green);background:#fff;
       color:#fff;font-weight:1000;display:inline-grid;place-items:center;flex:0 0 auto;margin-top:1px}
-    .item.done .check{background:var(--green)}.item.done .item-title{text-decoration:line-through;color:var(--muted)}
+    .item.done .check{background:var(--green)}
+    .item.done .item-title{text-decoration:line-through;color:var(--muted)}
     .tag{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;
       font-size:11px;font-weight:1000;background:var(--mint);color:var(--green-2);margin-top:6px}
     .empty{text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:20px;
@@ -158,13 +162,14 @@
     .empty strong{color:var(--dark);display:block;margin-bottom:4px}
     .timer-box{text-align:center;padding:28px}
     .modes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
-    .mode{background:#eff7f6;color:var(--muted);border-radius:999px;padding:9px 12px;font-weight:1000;font-size:13px}
+    .mode{background:#eff7f6;color:var(--muted);border-radius:999px;padding:9px 12px;
+      font-weight:1000;font-size:13px}
     .mode.active{background:var(--green);color:#fff}
     .timer{width:230px;height:230px;border-radius:50%;margin:0 auto 22px;
       background:conic-gradient(var(--green) var(--deg,360deg),#e8f1f2 0);
       display:grid;place-items:center;box-shadow:inset 0 0 0 14px rgba(255,255,255,.82)}
-    .timer-inner{width:172px;height:172px;border-radius:50%;background:#fff;display:grid;place-items:center;
-      box-shadow:0 12px 30px rgba(45,70,83,.08)}
+    .timer-inner{width:172px;height:172px;border-radius:50%;background:#fff;display:grid;
+      place-items:center;box-shadow:0 12px 30px rgba(45,70,83,.08)}
     .time{font-size:46px;font-weight:1000;color:var(--dark);letter-spacing:-2px}
     .timer-label{color:var(--muted);font-size:12px;font-weight:1000;letter-spacing:1.6px;
       text-transform:uppercase;margin-top:-8px}
@@ -177,23 +182,55 @@
     .flash-card{min-height:260px;border-radius:26px;background:linear-gradient(135deg,#fff,#effbf8);
       border:1px solid var(--line);display:grid;place-items:center;text-align:center;padding:28px;
       cursor:pointer;box-shadow:0 14px 35px rgba(45,70,83,.07)}
-    .flash-card .small{color:var(--green-2);font-weight:1000;text-transform:uppercase;font-size:12px;
-      letter-spacing:1.5px;margin-bottom:12px}
+    .flash-card .small{color:var(--green-2);font-weight:1000;text-transform:uppercase;
+      font-size:12px;letter-spacing:1.5px;margin-bottom:12px}
     .flash-card h3{font-size:26px;color:var(--dark);line-height:1.2}
     .flash-card p{color:var(--muted);line-height:1.55;margin-top:10px;white-space:pre-line}
-    .student-picker{max-height:190px;overflow:auto;border:1px solid var(--line);border-radius:16px;
-      padding:8px;background:#fcfffe;display:grid;gap:4px}
-    .student-picker label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;
-      color:var(--dark);font-weight:900}
+    .student-picker{max-height:190px;overflow:auto;border:1px solid var(--line);
+      border-radius:16px;padding:8px;background:#fcfffe;display:grid;gap:4px}
+    .student-picker label{display:flex;align-items:center;gap:8px;padding:8px;
+      border-radius:10px;color:var(--dark);font-weight:900}
     .student-picker label:hover{background:var(--mint)}
     .notice{background:var(--mint);border:1px solid rgba(28,186,159,.20);color:var(--dark);
       border-radius:18px;padding:14px;font-size:14px;line-height:1.45}
-    /* verificação de email */
-    .verify-banner{background:#fff8e1;border:1px solid #ffe082;color:#7a5c00;border-radius:16px;
-      padding:12px 16px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;
-      justify-content:space-between;gap:12px}
-    .verify-banner button{background:#f59e0b;color:#fff;border-radius:999px;padding:6px 14px;
-      font-size:12px;font-weight:700;white-space:nowrap}
+    /* CALENDÁRIO */
+    .cal-grid-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
+    .cal-day-label{text-align:center;font-size:11px;font-weight:1000;color:var(--muted);
+      padding:6px 0;text-transform:uppercase;letter-spacing:.5px}
+    .cal-day{min-height:70px;border-radius:10px;padding:6px;cursor:pointer;
+      border:1px solid transparent;transition:all .12s;position:relative}
+    .cal-day:hover{border-color:var(--green);background:var(--mint)}
+    .cal-day.other-month .cal-day-num{color:#ccc}
+    .cal-day.today{border-color:var(--green);background:var(--mint)}
+    .cal-day.today .cal-day-num{background:var(--green);color:#fff;border-radius:50%;
+      width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+    .cal-day.selected{border-color:var(--dark);background:#f0f4f6}
+    .cal-day-num{font-size:13px;font-weight:1000;color:var(--dark);margin-bottom:3px;
+      width:22px;height:22px;display:flex;align-items:center;justify-content:center}
+    .cal-evt{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;
+      margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
+    .cal-evt.prova{background:#feecec;color:var(--danger)}
+    .cal-evt.compromisso{background:#e8f4fd;color:#1565c0}
+    .cal-evt.aula{background:var(--mint);color:var(--green-2)}
+    .cal-evt.pessoal{background:#fff8e1;color:#e65100}
+    .cal-evt.lembrete{background:#f3e5f5;color:#7b1fa2}
+    .cal-more{font-size:10px;color:var(--muted);padding-left:2px}
+    .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .cal-nav h3{font-size:20px;color:var(--dark);font-weight:1000;flex:1;text-align:center}
+    .cal-nav button{min-height:36px;padding:6px 14px}
+    .cal-side{background:#fbfffe;border:1px solid var(--line);border-radius:18px;padding:18px}
+    .cal-side h4{font-size:15px;color:var(--dark);font-weight:1000;margin-bottom:12px}
+    .cal-evt-item{display:flex;align-items:center;gap:10px;padding:10px;
+      border-radius:12px;border:1px solid var(--line);margin-bottom:8px;background:#fff}
+    .cal-evt-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+    .cal-evt-dot.prova{background:var(--danger)}
+    .cal-evt-dot.compromisso{background:#1565c0}
+    .cal-evt-dot.aula{background:var(--green)}
+    .cal-evt-dot.pessoal{background:#e65100}
+    .cal-evt-dot.lembrete{background:#7b1fa2}
+    .cal-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .cal-leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+    .cal-leg-dot{width:8px;height:8px;border-radius:50%}
     @media(max-width:980px){
       .hero{grid-template-columns:1fr;text-align:center}
       .hero p{margin-left:auto;margin-right:auto}
@@ -204,10 +241,10 @@
       .side{position:fixed;top:auto;left:0;right:0;bottom:0;height:auto;z-index:50;
         border-radius:24px 24px 0 0;padding:8px}
       .side .brand,.side-bottom{display:none}
-      .nav{grid-template-columns:repeat(6,1fr);gap:4px}
-      .nav button{min-height:58px;padding:6px 2px;flex-direction:column;justify-content:center;
-        text-align:center;font-size:10px;gap:3px}
-      .main{padding:18px 14px 98px}
+      .nav{grid-template-columns:repeat(7,1fr);gap:2px}
+      .nav button{min-height:58px;padding:4px 2px;flex-direction:column;
+        justify-content:center;text-align:center;font-size:9px;gap:2px}
+      .main{padding:18px 14px 100px}
     }
     @media(max-width:660px){
       .wrap{width:min(100% - 24px,1180px)}
@@ -223,15 +260,13 @@
       .app-head h2{font-size:24px}
       .timer{width:200px;height:200px}.timer-inner{width:150px;height:150px}.time{font-size:40px}
       .item{display:block}.item-actions{margin-top:10px}
-      .nav{grid-template-columns:repeat(3,1fr)}
+      .nav{grid-template-columns:repeat(4,1fr)}
     }
   </style>
 </head>
 <body>
 
-<!-- ============================================================
-     LANDING
-     ============================================================ -->
+<!-- LANDING -->
 <section id="landing-screen" class="screen active">
   <div class="wrap">
     <header class="topbar">
@@ -245,7 +280,7 @@
       <div>
         <div class="eyebrow">✦ Reforço dedicado e monitorado</div>
         <h1>Aprenda com foco, <span>acompanhamento</span> e rotina.</h1>
-        <p>Um Quarto conecta estudante e professor em uma jornada simples: tempo de estudo, aulas, tarefas, provas, flashcards e progresso.</p>
+        <p>Um Quarto conecta estudante e professor: tempo de estudo, aulas, tarefas, provas, flashcards, calendário e progresso.</p>
         <div class="hero-actions">
           <button class="btn btn-primary" onclick="showScreen('register')">Começar agora</button>
           <button class="btn btn-light" onclick="showScreen('login')">Já tenho conta</button>
@@ -257,38 +292,33 @@
           <div class="mini-body">
             <div class="mini-row"><div class="mini-ico">⏱️</div><div><strong>Foco livre</strong><span>15, 25, 50 ou personalizado.</span></div></div>
             <div class="mini-row"><div class="mini-ico">👨‍🏫</div><div><strong>Gestão do professor</strong><span>Aulas, tarefas e provas vinculadas.</span></div></div>
-            <div class="mini-row"><div class="mini-ico">🃏</div><div><strong>Flashcards</strong><span>Revisão ativa feita pelo aluno.</span></div></div>
+            <div class="mini-row"><div class="mini-ico">📅</div><div><strong>Calendário</strong><span>Provas, compromissos e lembretes.</span></div></div>
             <div class="mini-row"><div class="mini-ico">📊</div><div><strong>Progresso</strong><span>Estudo monitorado com clareza.</span></div></div>
           </div>
         </div>
       </div>
     </main>
     <section class="features">
-      <div class="feature"><div class="ico">⏱️</div><h3>Tempo livre</h3><p>Crie ciclos de estudo com foco e pausa personalizados.</p></div>
+      <div class="feature"><div class="ico">⏱️</div><h3>Timer</h3><p>Ciclos de foco e pausa personalizados para manter o ritmo.</p></div>
+      <div class="feature"><div class="ico">📅</div><h3>Calendário</h3><p>Organize provas, aulas e compromissos num calendário visual.</p></div>
+      <div class="feature"><div class="ico">🃏</div><h3>Flashcards</h3><p>Cartões de pergunta e resposta para revisão ativa e eficiente.</p></div>
       <div class="feature"><div class="ico">👨‍🏫</div><h3>Professor</h3><p>Perfil verificado para gestão de alunos, aulas, tarefas e provas.</p></div>
-      <div class="feature"><div class="ico">🃏</div><h3>Flashcards</h3><p>Cartões de pergunta e resposta para revisão ativa.</p></div>
-      <div class="feature"><div class="ico">📚</div><h3>Acompanhamento</h3><p>Aulas dadas e atividades vinculadas a contas de alunos.</p></div>
     </section>
   </div>
 </section>
 
-<!-- ============================================================
-     LOGIN
-     ============================================================ -->
+<!-- LOGIN -->
 <section id="login-screen" class="screen">
   <div class="auth">
     <div class="auth-card">
       <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
       <h2>Entrar</h2><p>Acesse como estudante ou professor.</p>
       <div id="login-msg" class="msg"></div>
-
-      <!-- Login com Google -->
       <button class="btn btn-google" onclick="loginGoogle()">
         <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
         Entrar com Google
       </button>
       <div class="divider">ou</div>
-
       <div class="field"><label>Email</label><input id="login-email" class="input" type="email" placeholder="seu@email.com"></div>
       <div class="field"><label>Senha</label><input id="login-pass" class="input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')loginEmail()"></div>
       <button class="btn btn-primary" style="width:100%" onclick="loginEmail()">Entrar</button>
@@ -298,23 +328,18 @@
   </div>
 </section>
 
-<!-- ============================================================
-     CADASTRO
-     ============================================================ -->
+<!-- CADASTRO -->
 <section id="register-screen" class="screen">
   <div class="auth">
     <div class="auth-card">
       <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
       <h2>Criar conta</h2><p>Escolha o tipo de perfil.</p>
       <div id="register-msg" class="msg"></div>
-
-      <!-- Google -->
       <button class="btn btn-google" onclick="loginGoogle()">
         <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
         Criar conta com Google
       </button>
       <div class="divider">ou preencha os dados</div>
-
       <div class="role-grid">
         <button id="role-student" class="role-card active" onclick="setRegisterRole('student')"><strong>🎒 Estudante</strong><br><span>Organizar estudos</span></button>
         <button id="role-teacher" class="role-card" onclick="setRegisterRole('teacher')"><strong>👨‍🏫 Professor</strong><br><span>Gestão verificada</span></button>
@@ -330,7 +355,6 @@
       <div id="teacher-code-box" class="field" style="display:none">
         <label>Código de verificação do professor</label>
         <input id="reg-teacher-code" class="input" placeholder="Ex.: UMQ-PROF-2026">
-        <small style="color:var(--muted);display:block;margin-top:6px">Peça ao administrador o código de professor.</small>
       </div>
       <button class="btn btn-primary" style="width:100%" onclick="registerEmail()">Criar conta</button>
       <div class="auth-switch">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
@@ -339,26 +363,23 @@
   </div>
 </section>
 
-<!-- ============================================================
-     ESCOLHA DE MODO (professor)
-     ============================================================ -->
+<!-- ESCOLHA DE MODO (professor) -->
 <section id="role-screen" class="screen">
   <div class="auth">
     <div class="auth-card">
       <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
-      <h2>Como deseja entrar?</h2><p>Seu perfil de professor permite usar a plataforma como aluno ou acessar a gestão.</p>
+      <h2>Como deseja entrar?</h2>
+      <p>Seu perfil de professor permite usar como aluno ou acessar a gestão.</p>
       <div class="role-grid">
         <button class="role-card" onclick="enterApp('student')"><strong>🎒 Modo aluno</strong><br><span>Timer, tarefas, aulas e flashcards.</span></button>
         <button class="role-card" onclick="enterApp('teacher')"><strong>👨‍🏫 Gestão</strong><br><span>Alunos, aulas, tarefas e provas.</span></button>
       </div>
-      <button class="btn btn-light" style="width:100%" onclick="logout()">Sair</button>
+      <button class="btn btn-light" style="width:100%;margin-top:8px" onclick="logout()">Sair</button>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     LOADING
-     ============================================================ -->
+<!-- LOADING -->
 <section id="loading-screen" class="screen">
   <div class="auth"><div class="auth-card" style="text-align:center;padding:50px 28px">
     <div class="logo-mark" style="margin:0 auto 20px"></div>
@@ -366,9 +387,7 @@
   </div></div>
 </section>
 
-<!-- ============================================================
-     APP
-     ============================================================ -->
+<!-- APP -->
 <section id="app-screen" class="screen">
   <div class="app">
     <aside class="side">
@@ -384,8 +403,6 @@
         <div><h2 id="page-title">Painel</h2><p id="page-subtitle">Comece pequeno. Continue constante.</p></div>
         <div class="avatar" id="avatar">U</div>
       </header>
-
-      <!-- Banner verificação de email -->
       <div id="verify-banner" class="verify-banner" style="display:none">
         📧 Confirme seu e-mail para liberar todos os recursos.
         <button onclick="resendVerification()">Reenviar e-mail</button>
@@ -429,11 +446,11 @@
               <div class="field"><label>Foco livre (min)</label><input id="custom-focus" class="input" type="number" value="40" min="1"></div>
               <div class="field"><label>Descanso (min)</label><input id="custom-rest" class="input" type="number" value="10" min="1"></div>
             </div>
-            <div class="field" style="text-align:left"><label>Tarefa opcional do foco</label><input id="focus-task" class="input" placeholder="Ex.: revisar equações"></div>
+            <div class="field" style="text-align:left"><label>Tarefa do foco</label><input id="focus-task" class="input" placeholder="Ex.: revisar equações"></div>
           </div>
           <div class="card">
             <div class="section-title">Tarefas rápidas do timer</div>
-            <div class="form-row"><input id="quick-task" class="input" placeholder="Adicionar tarefa rápida"><button class="btn btn-primary" onclick="addQuickTask()">Adicionar</button></div>
+            <div class="form-row"><input id="quick-task" class="input" placeholder="Adicionar tarefa rápida"><button class="btn btn-primary" onclick="addQuickTask()">+</button></div>
             <div id="quick-list" class="list" style="margin-top:14px"></div>
           </div>
         </div>
@@ -461,6 +478,50 @@
         <div class="card"><div class="section-title">Aulas e registros</div><div id="class-list" class="list"></div></div>
       </section>
 
+      <!-- CALENDÁRIO -->
+      <section id="tab-calendar" class="tab">
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="cal-nav">
+              <button class="btn btn-light btn-small" onclick="calChangeMonth(-1)">‹</button>
+              <h3 id="cal-month-label"></h3>
+              <button class="btn btn-light btn-small" onclick="calChangeMonth(1)">›</button>
+              <button class="btn btn-primary btn-small" onclick="calGoToday()">Hoje</button>
+            </div>
+            <div class="cal-grid-wrap" id="cal-grid"></div>
+            <div class="cal-legend">
+              <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--danger)"></div>Prova</div>
+              <div class="cal-leg"><div class="cal-leg-dot" style="background:#1565c0"></div>Compromisso</div>
+              <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--green)"></div>Aula</div>
+              <div class="cal-leg"><div class="cal-leg-dot" style="background:#e65100"></div>Pessoal</div>
+              <div class="cal-leg"><div class="cal-leg-dot" style="background:#7b1fa2"></div>Lembrete</div>
+            </div>
+          </div>
+          <div class="cal-side">
+            <h4 id="cal-selected-label">Selecione um dia</h4>
+            <div id="cal-evt-list"></div>
+            <div id="cal-add-form" style="display:none">
+              <div class="section-title" style="font-size:15px;margin-bottom:10px">Novo evento</div>
+              <div class="field"><input id="cal-evt-title" class="input" placeholder="Título do evento..." onkeydown="if(event.key==='Enter')addCalEvent()"></div>
+              <div class="form-row">
+                <div class="field">
+                  <label>Tipo</label>
+                  <select id="cal-evt-type" class="select" style="padding:10px 12px">
+                    <option value="prova">📝 Prova</option>
+                    <option value="compromisso">📌 Compromisso</option>
+                    <option value="aula">📚 Aula</option>
+                    <option value="pessoal" selected>🌟 Pessoal</option>
+                    <option value="lembrete">🔔 Lembrete</option>
+                  </select>
+                </div>
+                <div class="field"><label>Horário</label><input type="time" id="cal-evt-time" class="input" value="08:00"></div>
+              </div>
+              <button class="btn btn-primary" style="width:100%" onclick="addCalEvent()">Adicionar evento</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- FLASHCARDS -->
       <section id="tab-flashcards" class="tab">
         <div class="grid grid-2">
@@ -468,7 +529,7 @@
             <div class="card" style="margin-bottom:16px">
               <div class="section-title">Criar flashcard</div>
               <div class="field"><label>Categoria</label><input id="fc-cat" class="input" placeholder="Ex.: Matemática"></div>
-              <div class="field"><label>Pergunta</label><textarea id="fc-q" class="textarea" placeholder="Ex.: O que é uma equação do 1º grau?"></textarea></div>
+              <div class="field"><label>Pergunta</label><textarea id="fc-q" class="textarea" placeholder="O que é uma equação do 1º grau?"></textarea></div>
               <div class="field"><label>Resposta</label><textarea id="fc-a" class="textarea" placeholder="Explique com suas palavras"></textarea></div>
               <button class="btn btn-primary" onclick="addFlashcard()">Criar cartão</button>
             </div>
@@ -489,7 +550,7 @@
       <section id="tab-habits" class="tab">
         <div class="card" style="margin-bottom:16px">
           <div class="section-title">Novo hábito</div>
-          <div class="form-row"><input id="habit-name" class="input" placeholder="Ex.: ler 10 minutos"><button class="btn btn-primary" onclick="addHabit()">Adicionar hábito</button></div>
+          <div class="form-row"><input id="habit-name" class="input" placeholder="Ex.: ler 10 minutos"><button class="btn btn-primary" onclick="addHabit()">Adicionar</button></div>
         </div>
         <div class="card"><div class="section-title">Minha semana</div><div id="habit-list" class="list"></div></div>
       </section>
@@ -514,13 +575,11 @@
           <div class="card stat"><div class="num" id="t-tasks">0</div><div class="label">tarefas</div><div class="hint">enviadas</div></div>
           <div class="card stat"><div class="num" id="t-tests">0</div><div class="label">provas</div><div class="hint">enviadas</div></div>
         </div>
-        <div class="notice" style="margin-bottom:16px">
-          ✅ <strong>Firebase ativo:</strong> alunos podem vincular de qualquer dispositivo. Código do estudante: <b id="student-code-display">umquarto2026</b>
-        </div>
+        <div class="notice" style="margin-bottom:16px">✅ <strong>Firebase ativo.</strong> Código do estudante: <b>umquarto2026</b> · Código do professor: <b>UMQ-PROF-2026</b></div>
         <div class="grid grid-2">
           <div class="card">
             <div class="section-title">Vincular aluno</div>
-            <div class="field"><label>Email do aluno cadastrado</label><input id="link-student-email" class="input" placeholder="aluno@email.com"></div>
+            <div class="field"><label>Email do aluno</label><input id="link-student-email" class="input" placeholder="aluno@email.com"></div>
             <button class="btn btn-primary" onclick="linkStudent()">Vincular aluno</button>
             <div class="section-title" style="margin-top:18px">Alunos vinculados</div>
             <div id="linked-list" class="list"></div>
@@ -559,9 +618,6 @@
   </div>
 </section>
 
-<!-- ============================================================
-     JAVASCRIPT — FIREBASE + LÓGICA
-     ============================================================ -->
 <script>
 // ================================================================
 // 1. CONFIGURAÇÃO DO FIREBASE
@@ -570,6 +626,7 @@
 const firebaseConfig = {
   apiKey:            "COLE_AQUI_SUA_API_KEY",
   authDomain:        "COLE_AQUI.firebaseapp.com",
+  databaseURL:       "https://COLE_AQUI-default-rtdb.firebaseio.com",
   projectId:         "COLE_AQUI_SEU_PROJECT_ID",
   storageBucket:     "COLE_AQUI.appspot.com",
   messagingSenderId: "COLE_AQUI",
@@ -578,290 +635,285 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.firestore();
+const db   = firebase.database();   // ← Realtime Database
 
 // ================================================================
-// 2. CONSTANTES
+// 2. CONSTANTES E ESTADO
 // ================================================================
-const TEACHER_CODE  = "UMQ-PROF-2026";   // código p/ criar conta professor
-const STUDENT_CODE  = "umquarto2026";    // código padrão de turma
-let registerRole    = "student";
-let flashIndex      = 0;
-let flashShowingAnswer = false;
+const TEACHER_CODE = "UMQ-PROF-2026";
+const STUDENT_CODE = "umquarto2026";
+let registerRole   = "student";
+let flashIndex     = 0, flashShowingAnswer = false;
 let timer = {focusMin:15,restMin:5,total:900,left:900,running:false,isBreak:false,int:null};
 
-// estado em memória (sincronizado com Firestore)
 let state = {
   current:null, activeMode:"student",
   tasks:[], classes:[], habits:[], quickTasks:[], flashcards:[],
   managedLessons:[], managedTasks:[], tests:[], links:[], users:[],
-  studyMinutes:0
+  studyMinutes:0, calEvents:{}
 };
 
-let unsubscribeSnapshot = null;  // para cancelar listener do Firestore
+// Calendário
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+                'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const now = new Date();
+let calYear  = now.getFullYear();
+let calMonth = now.getMonth();
+let calSelectedDate = null;
+
+let dbListener = null;  // referência para cancelar listener
 
 // ================================================================
 // 3. AUTENTICAÇÃO
 // ================================================================
-
-// Observa mudança de estado de login
 auth.onAuthStateChanged(async user => {
   if (user) {
-    // busca perfil no Firestore
-    const doc = await db.collection("users").doc(user.uid).get();
-    if (!doc.exists) {
-      // conta Google sem perfil criado → precisa escolher papel
-      showScreen("register");
+    // lê perfil do Realtime Database
+    const snap = await db.ref('users/' + user.uid).get();
+    if (!snap.exists()) {
+      // Google sem perfil → pede para completar cadastro
+      showScreen('register');
       return;
     }
-    const profile = doc.data();
+    const profile = snap.val();
     state.current = {
       id: user.uid,
-      name: profile.name || user.displayName || "Usuário",
+      name: profile.name || user.displayName || 'Usuário',
       email: user.email,
-      role: profile.role || "student",
+      role: profile.role || 'student',
       emailVerified: user.emailVerified
     };
     subscribeToState();
-    if (profile.role === "teacher") showScreen("role");
-    else enterApp("student");
+    if (profile.role === 'teacher') showScreen('role');
+    else enterApp('student');
   } else {
-    if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+    if (dbListener) { dbListener.off(); dbListener = null; }
     state.current = null;
-    showScreen("landing");
+    showScreen('landing');
   }
 });
 
-// Login com Google
 async function loginGoogle() {
-  clearMsg("login-msg"); clearMsg("register-msg");
+  clearMsg('login-msg'); clearMsg('register-msg');
   const provider = new firebase.auth.GoogleAuthProvider();
   try {
     const result = await auth.signInWithPopup(provider);
     const user   = result.user;
-    const doc    = await db.collection("users").doc(user.uid).get();
-    if (!doc.exists) {
-      // primeiro acesso Google → define como estudante por padrão
-      await db.collection("users").doc(user.uid).set({
-        name: user.displayName || "Usuário",
+    const snap   = await db.ref('users/' + user.uid).get();
+    if (!snap.exists()) {
+      // primeiro acesso → cria perfil como estudante
+      await db.ref('users/' + user.uid).set({
+        name: user.displayName || 'Usuário',
         email: user.email,
-        role: "student",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        role: 'student'
       });
     }
     // onAuthStateChanged cuida do restante
-  } catch(e) { showAuthError(e); }
+  } catch(e) { showAuthError(e, 'login-msg'); }
 }
 
-// Login com email/senha
 async function loginEmail() {
-  clearMsg("login-msg");
-  const email = v("login-email"), pass = v("login-pass");
-  if (!email || !pass) { msg("login-msg","Preencha email e senha.","error"); return; }
+  clearMsg('login-msg');
+  const email = v('login-email'), pass = v('login-pass');
+  if (!email || !pass) { msg('login-msg','Preencha email e senha.','error'); return; }
   try {
     await auth.signInWithEmailAndPassword(email, pass);
-  } catch(e) { showAuthError(e,"login-msg"); }
+  } catch(e) { showAuthError(e, 'login-msg'); }
 }
 
-// Cadastro com email/senha
 async function registerEmail() {
-  clearMsg("register-msg");
-  const name  = v("reg-name");
-  const email = v("reg-email");
-  const pass  = v("reg-pass");
-  const tCode = v("reg-teacher-code");
-  const sCode = v("reg-student-code").toLowerCase();
-
-  if (!name || !email || !pass) { msg("register-msg","Preencha nome, email e senha.","error"); return; }
-  if (pass.length < 6)          { msg("register-msg","Senha mínima: 6 caracteres.","error"); return; }
-  if (registerRole === "student" && sCode !== STUDENT_CODE) {
-    msg("register-msg","Código do professor inválido.","error"); return;
-  }
-  if (registerRole === "teacher" && tCode !== TEACHER_CODE) {
-    msg("register-msg","Código de professor inválido.","error"); return;
-  }
+  clearMsg('register-msg');
+  const name  = v('reg-name');
+  const email = v('reg-email');
+  const pass  = v('reg-pass');
+  const tCode = v('reg-teacher-code');
+  const sCode = v('reg-student-code').toLowerCase();
+  if (!name || !email || !pass) { msg('register-msg','Preencha nome, email e senha.','error'); return; }
+  if (pass.length < 6)          { msg('register-msg','Senha mínima: 6 caracteres.','error'); return; }
+  if (registerRole === 'student' && sCode !== STUDENT_CODE) {
+    msg('register-msg','Código do professor inválido.','error'); return; }
+  if (registerRole === 'teacher' && tCode !== TEACHER_CODE) {
+    msg('register-msg','Código de professor inválido.','error'); return; }
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, pass);
-    // envia verificação de email
     await cred.user.sendEmailVerification();
-    // salva perfil no Firestore
-    await db.collection("users").doc(cred.user.uid).set({
-      name, email, role: registerRole,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    // onAuthStateChanged cuida do resto
-  } catch(e) { showAuthError(e,"register-msg"); }
+    // salva perfil no Realtime Database
+    await db.ref('users/' + cred.user.uid).set({ name, email, role: registerRole });
+  } catch(e) { showAuthError(e, 'register-msg'); }
 }
 
-// Reenviar verificação
 async function resendVerification() {
   if (auth.currentUser) {
     await auth.currentUser.sendEmailVerification();
-    alert("E-mail de verificação reenviado!");
+    alert('E-mail de verificação reenviado!');
   }
 }
 
-// Logout
 function logout() {
-  if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot=null; }
+  if (dbListener) { dbListener.off(); dbListener = null; }
   auth.signOut();
 }
 
-// Traduz erros do Firebase
-function showAuthError(e, target="login-msg") {
+function showAuthError(e, target='login-msg') {
   const map = {
-    "auth/user-not-found":"Usuário não encontrado.",
-    "auth/wrong-password":"Senha incorreta.",
-    "auth/email-already-in-use":"Este e-mail já está cadastrado.",
-    "auth/invalid-email":"E-mail inválido.",
-    "auth/weak-password":"Senha muito fraca (mínimo 6 caracteres).",
-    "auth/popup-closed-by-user":"Login cancelado.",
-    "auth/network-request-failed":"Sem conexão. Verifique a internet."
+    'auth/user-not-found':'Usuário não encontrado.',
+    'auth/wrong-password':'Senha incorreta.',
+    'auth/invalid-credential':'Email ou senha incorretos.',
+    'auth/email-already-in-use':'Este e-mail já está cadastrado.',
+    'auth/invalid-email':'E-mail inválido.',
+    'auth/weak-password':'Senha muito fraca (mínimo 6 caracteres).',
+    'auth/popup-closed-by-user':'Login cancelado.',
+    'auth/network-request-failed':'Sem conexão. Verifique a internet.'
   };
-  msg(target, map[e.code] || e.message, "error");
+  msg(target, map[e.code] || e.message, 'error');
 }
 
 // ================================================================
-// 4. FIRESTORE — sincronização em tempo real
+// 4. REALTIME DATABASE — listener em tempo real
 // ================================================================
 function subscribeToState() {
-  if (unsubscribeSnapshot) unsubscribeSnapshot();
+  if (dbListener) dbListener.off();
   const uid = state.current.id;
+  dbListener = db.ref('state/' + uid);
 
-  unsubscribeSnapshot = db.collection("state").doc(uid)
-    .onSnapshot(snap => {
-      if (snap.exists) {
-        const d = snap.data();
-        state.tasks           = d.tasks           || [];
-        state.classes         = d.classes         || [];
-        state.habits          = d.habits          || [];
-        state.quickTasks      = d.quickTasks      || [];
-        state.flashcards      = d.flashcards      || [];
-        state.managedLessons  = d.managedLessons  || [];
-        state.managedTasks    = d.managedTasks    || [];
-        state.tests           = d.tests           || [];
-        state.links           = d.links           || [];
-        state.users           = d.users           || [];
-        state.studyMinutes    = d.studyMinutes    || 0;
-      }
-      renderAll();
-    });
+  // .on('value') dispara toda vez que os dados mudam no servidor
+  dbListener.on('value', snap => {
+    const d = snap.val() || {};
+    state.tasks          = d.tasks          || [];
+    state.classes        = d.classes        || [];
+    state.habits         = d.habits         || [];
+    state.quickTasks     = d.quickTasks     || [];
+    state.flashcards     = d.flashcards     || [];
+    state.managedLessons = d.managedLessons || [];
+    state.managedTasks   = d.managedTasks   || [];
+    state.tests          = d.tests          || [];
+    state.links          = d.links          || [];
+    state.users          = d.users          || [];
+    state.studyMinutes   = d.studyMinutes   || 0;
+    state.calEvents      = d.calEvents      || {};
+    renderAll();
+  });
 }
 
 function save() {
   if (!state.current) return;
-  db.collection("state").doc(state.current.id).set({
-    tasks: state.tasks, classes: state.classes, habits: state.habits,
-    quickTasks: state.quickTasks, flashcards: state.flashcards,
-    managedLessons: state.managedLessons, managedTasks: state.managedTasks,
-    tests: state.tests, links: state.links, users: state.users,
-    studyMinutes: state.studyMinutes,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  }, {merge: true});
+  // .set() substitui o nó inteiro (equivalente ao set com merge no Firestore)
+  db.ref('state/' + state.current.id).set({
+    tasks:          state.tasks,
+    classes:        state.classes,
+    habits:         state.habits,
+    quickTasks:     state.quickTasks,
+    flashcards:     state.flashcards,
+    managedLessons: state.managedLessons,
+    managedTasks:   state.managedTasks,
+    tests:          state.tests,
+    links:          state.links,
+    users:          state.users,
+    studyMinutes:   state.studyMinutes,
+    calEvents:      state.calEvents
+  });
 }
 
 // ================================================================
 // 5. NAVEGAÇÃO
 // ================================================================
 function showScreen(n) {
-  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-  document.getElementById(n+"-screen").classList.add("active");
-  scrollTo(0,0);
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(n + '-screen').classList.add('active');
+  scrollTo(0, 0);
 }
 
 function msg(id, text, type) {
-  const e = document.getElementById(id);
-  if (!e) return;
-  e.className = "msg " + type;
-  e.textContent = text;
+  const e = document.getElementById(id); if (!e) return;
+  e.className = 'msg ' + type; e.textContent = text;
 }
-
 function clearMsg(id) {
-  const e = document.getElementById(id);
-  if (!e) return;
-  e.className = "msg";
-  e.textContent = "";
+  const e = document.getElementById(id); if (!e) return;
+  e.className = 'msg'; e.textContent = '';
 }
 
 function setRegisterRole(r) {
   registerRole = r;
-  document.getElementById("role-student").classList.toggle("active", r==="student");
-  document.getElementById("role-teacher").classList.toggle("active", r==="teacher");
-  document.getElementById("student-code-box").style.display = r==="student" ? "block":"none";
-  document.getElementById("teacher-code-box").style.display = r==="teacher" ? "block":"none";
+  document.getElementById('role-student').classList.toggle('active', r==='student');
+  document.getElementById('role-teacher').classList.toggle('active', r==='teacher');
+  document.getElementById('student-code-box').style.display = r==='student'?'block':'none';
+  document.getElementById('teacher-code-box').style.display = r==='teacher'?'block':'none';
 }
 
 function enterApp(mode) {
   state.activeMode = mode;
-  buildNav();
-  showScreen("app");
-  openTab(mode==="teacher" ? "teacher" : "dashboard");
-  document.getElementById("switch-role-btn").style.display =
-    state.current?.role === "teacher" ? "inline-flex":"none";
-  document.getElementById("avatar").textContent =
-    (state.current?.name || "U")[0].toUpperCase();
-
-  // banner verificação de e-mail
-  const vb = document.getElementById("verify-banner");
+  buildNav(); showScreen('app');
+  openTab(mode==='teacher' ? 'teacher' : 'dashboard');
+  document.getElementById('switch-role-btn').style.display =
+    state.current?.role === 'teacher' ? 'inline-flex' : 'none';
+  document.getElementById('avatar').textContent =
+    (state.current?.name || 'U')[0].toUpperCase();
+  const vb = document.getElementById('verify-banner');
   if (auth.currentUser && !auth.currentUser.emailVerified &&
-      auth.currentUser.providerData[0]?.providerId === "password") {
-    vb.style.display = "flex";
-  } else {
-    vb.style.display = "none";
-  }
+      auth.currentUser.providerData[0]?.providerId === 'password') {
+    vb.style.display = 'flex';
+  } else { vb.style.display = 'none'; }
 }
 
 function buildNav() {
-  const nav = document.getElementById("nav");
-  if (state.activeMode === "teacher") {
+  const nav = document.getElementById('nav');
+  if (state.activeMode === 'teacher') {
     nav.innerHTML = `<button data-tab="teacher" onclick="openTab('teacher')">👨‍🏫 <span>Gestão</span></button>
       <button data-tab="dashboard" onclick="enterApp('student')">🎒 <span>Modo aluno</span></button>`;
   } else {
     nav.innerHTML = [
-      ["dashboard","🏠","Painel"],["timer","⏱️","Timer"],
-      ["tasks","✅","Tarefas"],["classes","📚","Aulas"],
-      ["flashcards","🃏","Cards"],["progress","📊","Progresso"]
-    ].map(x=>`<button data-tab="${x[0]}" onclick="openTab('${x[0]}')">${x[1]} <span>${x[2]}</span></button>`).join("");
+      ['dashboard','🏠','Painel'],['timer','⏱️','Timer'],
+      ['tasks','✅','Tarefas'],['classes','📚','Aulas'],
+      ['calendar','📅','Agenda'],['flashcards','🃏','Cards'],
+      ['progress','📊','Progresso']
+    ].map(x=>`<button data-tab="${x[0]}" onclick="openTab('${x[0]}')">${x[1]} <span>${x[2]}</span></button>`).join('');
   }
 }
 
 function openTab(tab) {
   const titles = {
-    dashboard:["Painel","Comece pequeno. Continue constante."],
-    timer:["Timer","Escolha foco, pausa e tarefa livre."],
-    tasks:["Tarefas","Pessoais e enviadas pelo professor."],
-    classes:["Aulas","Registre estudos e acompanhe aulas dadas."],
-    flashcards:["Flashcards","Crie cartões e revise ativamente."],
-    habits:["Hábitos","Rotina pessoal."],
-    progress:["Progresso","Veja sua evolução."],
-    teacher:["Gestão","Vincule alunos e lance aulas, tarefas e provas."]
+    dashboard:  ['Painel','Comece pequeno. Continue constante.'],
+    timer:      ['Timer','Escolha foco, pausa e tarefa livre.'],
+    tasks:      ['Tarefas','Pessoais e enviadas pelo professor.'],
+    classes:    ['Aulas','Registre estudos e acompanhe aulas dadas.'],
+    calendar:   ['Agenda','Provas, compromissos e lembretes.'],
+    flashcards: ['Flashcards','Crie cartões e revise ativamente.'],
+    habits:     ['Hábitos','Rotina pessoal.'],
+    progress:   ['Progresso','Veja sua evolução.'],
+    teacher:    ['Gestão','Vincule alunos e lance aulas, tarefas e provas.']
   };
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
-  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
-  document.getElementById("page-title").textContent = titles[tab][0];
-  document.getElementById("page-subtitle").textContent = titles[tab][1];
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b =>
+    b.classList.toggle('active', b.dataset.tab === tab));
+  document.getElementById('page-title').textContent    = titles[tab][0];
+  document.getElementById('page-subtitle').textContent = titles[tab][1];
+  if (tab === 'calendar') renderCalendar();
   renderAll();
 }
 
 // ================================================================
 // 6. HELPERS
 // ================================================================
-const id  = ()=> state.current?.id;
-const byUser     = arr => arr.filter(x => x.userId === id());
-const linkedIds  = ()=> state.links.filter(l=>l.teacherId===id()).map(l=>l.studentId);
-const assignedToMe = arr => arr.filter(x=>(x.studentIds||[]).includes(id()));
-const v = _id => document.getElementById(_id)?.value.trim() || "";
-const escapeHtml = s => String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-const userName = uid => state.users.find(u=>u.id===uid)?.name || "—";
+const id           = () => state.current?.id;
+const byUser       = arr => arr.filter(x => x.userId === id());
+const linkedIds    = () => state.links.filter(l => l.teacherId === id()).map(l => l.studentId);
+const assignedToMe = arr => arr.filter(x => (x.studentIds||[]).includes(id()));
+const v            = _id => document.getElementById(_id)?.value.trim() || '';
+const escapeHtml   = s => String(s||'').replace(/[&<>"']/g, m =>
+  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const userName     = uid => state.users.find(u => u.id === uid)?.name || '—';
 
 function renderAll() {
   renderDashboard(); renderQuick(); renderTasks(); renderClasses();
   renderHabits(); renderFlash(); renderProgress(); renderTeacher(); updateTimer();
+  if (document.getElementById('tab-calendar').classList.contains('active')) {
+    renderCalendar();
+  }
 }
 
 // ================================================================
-// 7. RENDERIZAÇÕES (igual ao original, sem mudança de lógica)
+// 7. PAINEL
 // ================================================================
 function renderDashboard() {
   const pending = [
@@ -869,111 +921,240 @@ function renderDashboard() {
     ...assignedToMe(state.managedTasks).filter(t=>!t.done?.[id()]),
     ...assignedToMe(state.tests).filter(t=>!t.done?.[id()])
   ];
-  document.getElementById("dash-min").textContent     = state.studyMinutes||0;
-  document.getElementById("dash-pending").textContent = pending.length;
-  document.getElementById("dash-classes").textContent =
+  document.getElementById('dash-min').textContent     = state.studyMinutes||0;
+  document.getElementById('dash-pending').textContent = pending.length;
+  document.getElementById('dash-classes').textContent =
     byUser(state.classes).length + assignedToMe(state.managedLessons).length;
-  document.getElementById("dash-cards").textContent   = byUser(state.flashcards).length;
-  const n = document.getElementById("next-step");
+  document.getElementById('dash-cards').textContent   = byUser(state.flashcards).length;
+  const n = document.getElementById('next-step');
   n.innerHTML = pending.length
     ? `<div class="item"><div><div class="item-title">${escapeHtml(pending[0].title||pending[0].topic)}</div>
-       <div class="item-sub">${escapeHtml(pending[0].desc||pending[0].subject||"Pendência")}</div></div></div>`
+       <div class="item-sub">${escapeHtml(pending[0].desc||pending[0].subject||'Pendência')}</div></div></div>`
     : `<div class="empty"><strong>Nenhuma pendência.</strong>Cadastre uma tarefa ou revise seus flashcards.</div>`;
 }
 
-function setMode(f,r){
-  timer.focusMin=f;timer.restMin=r;timer.isBreak=false;
-  timer.total=f*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);
-  document.querySelectorAll(".mode").forEach(m=>m.classList.toggle("active",m.dataset.mode==f));
-  document.getElementById("timer-btn").textContent="Iniciar";updateTimer();
-}
-function applyCustomMode(){setMode(Math.max(1,Number(v("custom-focus"))||40),Math.max(1,Number(v("custom-rest"))||10));document.querySelectorAll(".mode").forEach(m=>m.classList.toggle("active",m.dataset.mode==="custom"))}
-function startBreak(){timer.isBreak=true;timer.total=timer.restMin*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.getElementById("timer-btn").textContent="Iniciar";updateTimer()}
+// ================================================================
+// 8. TIMER
+// ================================================================
+function setMode(f,r){timer.focusMin=f;timer.restMin=r;timer.isBreak=false;timer.total=f*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.querySelectorAll('.mode').forEach(m=>m.classList.toggle('active',m.dataset.mode==f));document.getElementById('timer-btn').textContent='Iniciar';updateTimer()}
+function applyCustomMode(){setMode(Math.max(1,Number(v('custom-focus'))||40),Math.max(1,Number(v('custom-rest'))||10));document.querySelectorAll('.mode').forEach(m=>m.classList.toggle('active',m.dataset.mode==='custom'))}
+function startBreak(){timer.isBreak=true;timer.total=timer.restMin*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.getElementById('timer-btn').textContent='Iniciar';updateTimer()}
 function toggleTimer(){
-  if(timer.running){timer.running=false;clearInterval(timer.int);document.getElementById("timer-btn").textContent="Continuar";return}
-  timer.running=true;document.getElementById("timer-btn").textContent="Pausar";
+  if(timer.running){timer.running=false;clearInterval(timer.int);document.getElementById('timer-btn').textContent='Continuar';return}
+  timer.running=true;document.getElementById('timer-btn').textContent='Pausar';
   timer.int=setInterval(()=>{
     timer.left--;
-    if(timer.left<=0){
-      clearInterval(timer.int);timer.running=false;
-      if(!timer.isBreak){state.studyMinutes=(state.studyMinutes||0)+timer.focusMin;save();alert("Foco concluído! +"+timer.focusMin+" minutos.");startBreak()}
-      else{alert("Descanso concluído.");setMode(timer.focusMin,timer.restMin)}
-      renderAll();
-    }
-    updateTimer();
-  },1000);
-}
-function resetTimer(){timer.running=false;clearInterval(timer.int);timer.left=timer.total;document.getElementById("timer-btn").textContent="Iniciar";updateTimer()}
-function updateTimer(){const m=String(Math.floor(timer.left/60)).padStart(2,"0"),s=String(timer.left%60).padStart(2,"0");document.getElementById("time").textContent=m+":"+s;document.getElementById("timer-label").textContent=timer.isBreak?"Descanso":"Foco";document.getElementById("timer-ring").style.setProperty("--deg",(timer.left/timer.total*360)+"deg")}
-function addQuickTask(){const text=v("quick-task");if(!text)return;state.quickTasks.push({id:String(Date.now()),userId:id(),text,done:false});document.getElementById("quick-task").value="";save();renderQuick()}
+    if(timer.left<=0){clearInterval(timer.int);timer.running=false;
+      if(!timer.isBreak){state.studyMinutes=(state.studyMinutes||0)+timer.focusMin;save();alert('Foco concluído! +'+timer.focusMin+' minutos.');startBreak()}
+      else{alert('Descanso concluído.');setMode(timer.focusMin,timer.restMin)}
+      renderAll();}
+    updateTimer();},1000)}
+function resetTimer(){timer.running=false;clearInterval(timer.int);timer.left=timer.total;document.getElementById('timer-btn').textContent='Iniciar';updateTimer()}
+function updateTimer(){const m=String(Math.floor(timer.left/60)).padStart(2,'0'),s=String(timer.left%60).padStart(2,'0');document.getElementById('time').textContent=m+':'+s;document.getElementById('timer-label').textContent=timer.isBreak?'Descanso':'Foco';document.getElementById('timer-ring').style.setProperty('--deg',(timer.left/timer.total*360)+'deg')}
+
+// ================================================================
+// 9. TAREFAS RÁPIDAS
+// ================================================================
+function addQuickTask(){const text=v('quick-task');if(!text)return;state.quickTasks.push({id:String(Date.now()),userId:id(),text,done:false});document.getElementById('quick-task').value='';save();renderQuick()}
 function toggleQuick(i){const t=state.quickTasks.find(x=>x.id===i);if(t)t.done=!t.done;save();renderQuick()}
 function delQuick(i){state.quickTasks=state.quickTasks.filter(x=>x.id!==i);save();renderQuick()}
-function renderQuick(){const l=document.getElementById("quick-list");if(!l)return;const qs=byUser(state.quickTasks);l.innerHTML=qs.length?qs.map(t=>item(t.text,t.done,`toggleQuick('${t.id}')`,`delQuick('${t.id}')`,t.done?"Concluída":"Pendente")).join(""):`<div class="empty"><strong>Nenhuma tarefa rápida.</strong>Adicione algo pequeno para este foco.</div>`}
-function addTask(){const title=v("task-title"),subject=v("task-subject"),date=v("task-date");if(!title){alert("Digite a tarefa.");return}state.tasks.push({id:String(Date.now()),userId:id(),title,subject,date,done:false});["task-title","task-subject","task-date"].forEach(x=>document.getElementById(x).value="");save();renderAll()}
+function renderQuick(){const l=document.getElementById('quick-list');if(!l)return;const qs=byUser(state.quickTasks);l.innerHTML=qs.length?qs.map(t=>item(t.text,t.done,`toggleQuick('${t.id}')`,`delQuick('${t.id}')`,t.done?'Concluída':'Pendente')).join(''):`<div class="empty"><strong>Nenhuma tarefa rápida.</strong></div>`}
+
+// ================================================================
+// 10. TAREFAS
+// ================================================================
+function addTask(){const title=v('task-title'),subject=v('task-subject'),date=v('task-date');if(!title){alert('Digite a tarefa.');return}state.tasks.push({id:String(Date.now()),userId:id(),title,subject,date,done:false});['task-title','task-subject','task-date'].forEach(x=>document.getElementById(x).value='');save();renderAll()}
 function toggleTask(i){const t=state.tasks.find(x=>x.id===i);if(t)t.done=!t.done;save();renderAll()}
 function delTask(i){state.tasks=state.tasks.filter(x=>x.id!==i);save();renderAll()}
-function toggleManaged(kind,i){const arr=kind==="task"?state.managedTasks:state.tests;const t=arr.find(x=>x.id===i);if(!t)return;t.done=t.done||{};t.done[id()]=!t.done[id()];save();renderAll()}
+function toggleManaged(kind,i){const arr=kind==='task'?state.managedTasks:state.tests;const t=arr.find(x=>x.id===i);if(!t)return;t.done=t.done||{};t.done[id()]=!t.done[id()];save();renderAll()}
 function renderTasks(){
-  const mine=byUser(state.tasks);
-  const sentTasks=assignedToMe(state.managedTasks);
-  const tests=assignedToMe(state.tests);
+  const mine=byUser(state.tasks),sentTasks=assignedToMe(state.managedTasks),tests=assignedToMe(state.tests);
   const all=[
-    ...mine.map(t=>({html:item(t.title,t.done,`toggleTask('${t.id}')`,`delTask('${t.id}')`,`${t.subject||"Pessoal"} · ${t.date||"Sem prazo"}`)})),
-    ...sentTasks.map(t=>({html:item("📌 "+t.title,!!t.done?.[id()],`toggleManaged('task','${t.id}')`,"",`${t.desc||""} · Prazo: ${t.date||"sem prazo"}`)})),
-    ...tests.map(t=>({html:item("📝 "+t.title,!!t.done?.[id()],`toggleManaged('test','${t.id}')`,"",`${t.desc||""} · Data: ${t.date||"sem data"}`)}))
+    ...mine.map(t=>({html:item(t.title,t.done,`toggleTask('${t.id}')`,`delTask('${t.id}')`,`${t.subject||'Pessoal'} · ${t.date||'Sem prazo'}`)})),
+    ...sentTasks.map(t=>({html:item('📌 '+t.title,!!t.done?.[id()],`toggleManaged('task','${t.id}')`,'',`${t.desc||''} · Prazo: ${t.date||'sem prazo'}`)})),
+    ...tests.map(t=>({html:item('📝 '+t.title,!!t.done?.[id()],`toggleManaged('test','${t.id}')`,'',`${t.desc||''} · Data: ${t.date||'sem data'}`)}))
   ];
-  document.getElementById("task-list").innerHTML=all.length?all.map(x=>x.html).join(""):`<div class="empty"><strong>Nenhuma tarefa.</strong>Crie uma tarefa ou aguarde o professor enviar.</div>`;
-}
-function addClass(){const subject=v("class-subject"),date=v("class-date"),minutes=Number(v("class-min")),topic=v("class-topic"),notes=v("class-notes");if(!subject||!date||!minutes||!topic){alert("Preencha matéria, data, duração e conteúdo.");return}state.classes.push({id:String(Date.now()),userId:id(),subject,date,minutes,topic,notes});state.studyMinutes=(state.studyMinutes||0)+minutes;["class-subject","class-date","class-min","class-topic","class-notes"].forEach(x=>document.getElementById(x).value="");save();renderAll()}
+  document.getElementById('task-list').innerHTML=all.length?all.map(x=>x.html).join(''):`<div class="empty"><strong>Nenhuma tarefa.</strong>Crie uma ou aguarde o professor enviar.</div>`}
+
+// ================================================================
+// 11. AULAS
+// ================================================================
+function addClass(){const subject=v('class-subject'),date=v('class-date'),minutes=Number(v('class-min')),topic=v('class-topic'),notes=v('class-notes');if(!subject||!date||!minutes||!topic){alert('Preencha matéria, data, duração e conteúdo.');return}state.classes.push({id:String(Date.now()),userId:id(),subject,date,minutes,topic,notes});state.studyMinutes=(state.studyMinutes||0)+minutes;['class-subject','class-date','class-min','class-topic','class-notes'].forEach(x=>document.getElementById(x).value='');save();renderAll()}
 function delClass(i){const c=state.classes.find(x=>x.id===i);if(c)state.studyMinutes=Math.max(0,(state.studyMinutes||0)-Number(c.minutes||0));state.classes=state.classes.filter(x=>x.id!==i);save();renderAll()}
 function renderClasses(){
-  const personal=byUser(state.classes).map(c=>`<div class="item"><div><div class="item-title">${escapeHtml(c.topic)}</div><div class="item-sub">${escapeHtml(c.subject)} · ${c.date} · ${c.minutes} min${c.notes?"<br>"+escapeHtml(c.notes):""}</div></div><div class="item-actions"><button class="btn btn-danger btn-small" onclick="delClass('${c.id}')">Excluir</button></div></div>`);
+  const personal=byUser(state.classes).map(c=>`<div class="item"><div><div class="item-title">${escapeHtml(c.topic)}</div><div class="item-sub">${escapeHtml(c.subject)} · ${c.date} · ${c.minutes} min${c.notes?'<br>'+escapeHtml(c.notes):''}</div></div><div class="item-actions"><button class="btn btn-danger btn-small" onclick="delClass('${c.id}')">Excluir</button></div></div>`);
   const managed=assignedToMe(state.managedLessons).map(c=>`<div class="item"><div><div class="item-title">👨‍🏫 ${escapeHtml(c.topic)}</div><div class="item-sub">${escapeHtml(c.subject)} · ${c.date}<br>Professor: ${escapeHtml(userName(c.teacherId))}</div><span class="tag">Aula lançada</span></div></div>`);
-  document.getElementById("class-list").innerHTML=(managed.concat(personal)).length?managed.concat(personal).join(""):`<div class="empty"><strong>Nenhuma aula registrada.</strong>Registre uma aula ou aguarde o professor lançar.</div>`;
+  document.getElementById('class-list').innerHTML=(managed.concat(personal)).length?managed.concat(personal).join(''):`<div class="empty"><strong>Nenhuma aula registrada.</strong></div>`}
+
+// ================================================================
+// 12. CALENDÁRIO
+// ================================================================
+function calDateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
+
+function calChangeMonth(dir){
+  calMonth+=dir;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
 }
-function addHabit(){const name=v("habit-name");if(!name)return;state.habits.push({id:String(Date.now()),userId:id(),name,days:{}});document.getElementById("habit-name").value="";save();renderHabits()}
+
+function calGoToday(){
+  calYear=now.getFullYear();calMonth=now.getMonth();
+  calSelectedDate=calDateKey(now.getFullYear(),now.getMonth(),now.getDate());
+  renderCalendar();renderCalSide();
+}
+
+function renderCalendar(){
+  document.getElementById('cal-month-label').textContent=`${MONTHS[calMonth]} ${calYear}`;
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  // cabeçalho dos dias
+  ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d=>{
+    const el=document.createElement('div');
+    el.className='cal-day-label';el.textContent=d;grid.appendChild(el);
+  });
+  const first=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+  // dias do mês anterior
+  for(let i=0;i<first;i++){
+    const d=daysInPrev-first+1+i;
+    let adjY=calYear,adjM=calMonth-1;
+    if(adjM<0){adjM=11;adjY--;}
+    grid.appendChild(makeCalDay(adjY,adjM,d,true));
+  }
+  // dias do mês atual
+  for(let d=1;d<=daysInMonth;d++) grid.appendChild(makeCalDay(calYear,calMonth,d,false));
+  // dias do próximo mês
+  const total=first+daysInMonth;
+  const remaining=total%7===0?0:7-(total%7);
+  for(let d=1;d<=remaining;d++){
+    let adjY=calYear,adjM=calMonth+1;
+    if(adjM>11){adjM=0;adjY++;}
+    grid.appendChild(makeCalDay(adjY,adjM,d,true));
+  }
+}
+
+function makeCalDay(y,m,d,other){
+  const key=calDateKey(y,m,d);
+  const isToday=y===now.getFullYear()&&m===now.getMonth()&&d===now.getDate();
+  const isSel=key===calSelectedDate;
+  const cell=document.createElement('div');
+  cell.className='cal-day'+(other?' other-month':'')+(isToday?' today':'')+(isSel?' selected':'');
+  cell.onclick=()=>{calSelectedDate=key;renderCalendar();renderCalSide();};
+  const numDiv=document.createElement('div');
+  numDiv.className='cal-day-num';numDiv.textContent=d;cell.appendChild(numDiv);
+  const evts=(state.calEvents[key]||[]);
+  evts.slice(0,2).forEach(e=>{
+    const dot=document.createElement('div');
+    dot.className=`cal-evt ${e.type}`;
+    dot.textContent=(e.time?e.time+' ':'')+e.title;
+    cell.appendChild(dot);
+  });
+  if(evts.length>2){
+    const more=document.createElement('div');
+    more.className='cal-more';more.textContent=`+${evts.length-2} mais`;
+    cell.appendChild(more);
+  }
+  return cell;
+}
+
+function renderCalSide(){
+  const label=document.getElementById('cal-selected-label');
+  const list=document.getElementById('cal-evt-list');
+  const form=document.getElementById('cal-add-form');
+  if(!calSelectedDate){label.textContent='Selecione um dia';list.innerHTML='';form.style.display='none';return;}
+  const [y,m,d]=calSelectedDate.split('-').map(Number);
+  const dateObj=new Date(y,m-1,d);
+  const dias=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+  label.textContent=`${dias[dateObj.getDay()]}, ${d} de ${MONTHS[m-1]}`;
+  const evts=state.calEvents[calSelectedDate]||[];
+  if(!evts.length){
+    list.innerHTML=`<div class="empty" style="margin-bottom:14px"><strong>Nenhum evento.</strong>Adicione um evento abaixo.</div>`;
+  } else {
+    list.innerHTML=evts.map((e,i)=>`
+      <div class="cal-evt-item">
+        <div class="cal-evt-dot ${e.type}"></div>
+        <div style="flex:1">
+          <div style="font-weight:1000;color:var(--dark);font-size:14px">${escapeHtml(e.title)}</div>
+          ${e.time?`<div style="font-size:12px;color:var(--muted)">${e.time}</div>`:''}
+        </div>
+        <button onclick="delCalEvent('${calSelectedDate}',${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0 4px" title="Remover">×</button>
+      </div>`).join('');
+  }
+  form.style.display='block';
+}
+
+function addCalEvent(){
+  const title=v('cal-evt-title');
+  if(!title){alert('Digite o título do evento.');return;}
+  const type=document.getElementById('cal-evt-type').value;
+  const time=document.getElementById('cal-evt-time').value;
+  if(!state.calEvents[calSelectedDate]) state.calEvents[calSelectedDate]=[];
+  state.calEvents[calSelectedDate].push({title,type,time});
+  state.calEvents[calSelectedDate].sort((a,b)=>a.time.localeCompare(b.time));
+  document.getElementById('cal-evt-title').value='';
+  save();renderCalendar();renderCalSide();
+}
+
+function delCalEvent(key,idx){
+  state.calEvents[key].splice(idx,1);
+  if(!state.calEvents[key].length) delete state.calEvents[key];
+  save();renderCalendar();renderCalSide();
+}
+
+// ================================================================
+// 13. HÁBITOS
+// ================================================================
+function addHabit(){const name=v('habit-name');if(!name)return;state.habits.push({id:String(Date.now()),userId:id(),name,days:{}});document.getElementById('habit-name').value='';save();renderHabits()}
 function toggleHabitDay(i,d){const h=state.habits.find(x=>x.id===i);if(h)h.days[d]=!h.days[d];save();renderHabits()}
 function delHabit(i){state.habits=state.habits.filter(x=>x.id!==i);save();renderHabits()}
-function renderHabits(){const e=document.getElementById("habit-list");if(!e)return;const days=["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"],hs=byUser(state.habits);e.innerHTML=hs.length?hs.map(h=>`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between"><div><div class="item-title">${escapeHtml(h.name)}</div><div class="item-sub">Marque os dias feitos.</div></div><button class="btn btn-danger btn-small" onclick="delHabit('${h.id}')">Excluir</button></div><div class="days">${days.map(d=>`<button class="day ${h.days[d]?"done":""}" onclick="toggleHabitDay('${h.id}','${d}')">${d}</button>`).join("")}</div></div>`).join(""):`<div class="empty"><strong>Nenhum hábito.</strong>Crie um hábito pequeno.</div>`}
-function addFlashcard(){const cat=v("fc-cat")||"Geral",q=v("fc-q"),a=v("fc-a");if(!q||!a){alert("Preencha pergunta e resposta.");return}state.flashcards.push({id:String(Date.now()),userId:id(),cat,q,a});["fc-q","fc-a"].forEach(x=>document.getElementById(x).value="");save();flashIndex=byUser(state.flashcards).length-1;flashShowingAnswer=false;renderFlash()}
+function renderHabits(){const e=document.getElementById('habit-list');if(!e)return;const days=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],hs=byUser(state.habits);e.innerHTML=hs.length?hs.map(h=>`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between"><div><div class="item-title">${escapeHtml(h.name)}</div><div class="item-sub">Marque os dias feitos.</div></div><button class="btn btn-danger btn-small" onclick="delHabit('${h.id}')">Excluir</button></div><div class="days">${days.map(d=>`<button class="day ${h.days[d]?'done':''}" onclick="toggleHabitDay('${h.id}','${d}')">${d}</button>`).join('')}</div></div>`).join(''):`<div class="empty"><strong>Nenhum hábito.</strong>Crie um hábito pequeno.</div>`}
+
+// ================================================================
+// 14. FLASHCARDS
+// ================================================================
+function addFlashcard(){const cat=v('fc-cat')||'Geral',q=v('fc-q'),a=v('fc-a');if(!q||!a){alert('Preencha pergunta e resposta.');return}state.flashcards.push({id:String(Date.now()),userId:id(),cat,q,a});['fc-q','fc-a'].forEach(x=>document.getElementById(x).value='');save();flashIndex=byUser(state.flashcards).length-1;flashShowingAnswer=false;renderFlash()}
 function delFlash(i){state.flashcards=state.flashcards.filter(x=>x.id!==i);flashIndex=0;save();renderFlash()}
 function nextFlash(){const f=byUser(state.flashcards);if(!f.length)return;flashIndex=(flashIndex+1)%f.length;flashShowingAnswer=false;renderFlash()}
 function prevFlash(){const f=byUser(state.flashcards);if(!f.length)return;flashIndex=(flashIndex-1+f.length)%f.length;flashShowingAnswer=false;renderFlash()}
 function flipFlash(){flashShowingAnswer=!flashShowingAnswer;renderFlash()}
-function renderFlash(){const list=document.getElementById("flash-list"),viewer=document.getElementById("flash-viewer");if(!list)return;const fs=byUser(state.flashcards);list.innerHTML=fs.length?fs.map(f=>`<div class="item"><div><div class="item-title">${escapeHtml(f.q)}</div><div class="item-sub">${escapeHtml(f.cat)}</div></div><button class="btn btn-danger btn-small" onclick="delFlash('${f.id}')">Excluir</button></div>`).join(""):`<div class="empty"><strong>Nenhum flashcard.</strong>Crie o primeiro cartão.</div>`;if(!fs.length){viewer.innerHTML=`<div class="empty"><strong>Sem cartões para revisar.</strong>Crie flashcards ao lado.</div>`;return}if(flashIndex>=fs.length)flashIndex=0;const f=fs[flashIndex];viewer.innerHTML=`<div class="flash-card" onclick="flipFlash()"><div><div class="small">${escapeHtml(f.cat)} · ${flashIndex+1}/${fs.length}</div><h3>${escapeHtml(flashShowingAnswer?f.a:f.q)}</h3><p>${flashShowingAnswer?"Clique para voltar à pergunta":"Clique para ver a resposta"}</p></div></div>`}
+function renderFlash(){const list=document.getElementById('flash-list'),viewer=document.getElementById('flash-viewer');if(!list)return;const fs=byUser(state.flashcards);list.innerHTML=fs.length?fs.map(f=>`<div class="item"><div><div class="item-title">${escapeHtml(f.q)}</div><div class="item-sub">${escapeHtml(f.cat)}</div></div><button class="btn btn-danger btn-small" onclick="delFlash('${f.id}')">Excluir</button></div>`).join(''):`<div class="empty"><strong>Nenhum flashcard.</strong>Crie o primeiro cartão.</div>`;if(!fs.length){viewer.innerHTML=`<div class="empty"><strong>Sem cartões para revisar.</strong></div>`;return}if(flashIndex>=fs.length)flashIndex=0;const f=fs[flashIndex];viewer.innerHTML=`<div class="flash-card" onclick="flipFlash()"><div><div class="small">${escapeHtml(f.cat)} · ${flashIndex+1}/${fs.length}</div><h3>${escapeHtml(flashShowingAnswer?f.a:f.q)}</h3><p>${flashShowingAnswer?'Clique para voltar à pergunta':'Clique para ver a resposta'}</p></div></div>`}
+
+// ================================================================
+// 15. PROGRESSO
+// ================================================================
 function line(label,value,pct){return `<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-weight:1000;color:var(--dark);gap:10px"><span>${label}</span><span style="color:var(--green-2)">${value}</span></div><div class="bar"><div style="width:${Math.max(0,Math.min(100,pct))}%"></div></div></div>`}
-function renderProgress(){const tasks=byUser(state.tasks),done=tasks.filter(t=>t.done).length,classes=byUser(state.classes).length+assignedToMe(state.managedLessons).length,cards=byUser(state.flashcards).length,min=state.studyMinutes||0,pct=Math.min(100,Math.round(min/150*100));document.getElementById("progress-summary").innerHTML=line("Tempo estudado",min+" min",min/3)+line("Tarefas concluídas",done+"/"+tasks.length,tasks.length?done/tasks.length*100:0)+line("Aulas registradas",classes+" aulas",classes*20)+line("Flashcards criados",cards+" cards",cards*10);document.getElementById("weekly-bar").style.width=pct+"%";document.getElementById("weekly-text").textContent=`${min}/150 minutos · ${pct}% da meta`}
-function item(title,done,toggle,del,sub){return `<div class="item ${done?"done":""}"><div style="display:flex;gap:10px"><button class="check" onclick="${toggle}">${done?"✓":""}</button><div><div class="item-title">${escapeHtml(title)}</div><div class="item-sub">${escapeHtml(sub||"")}</div></div></div><div class="item-actions">${del?`<button class="btn btn-danger btn-small" onclick="${del}">Excluir</button>`:""}</div></div>`}
+function renderProgress(){const tasks=byUser(state.tasks),done=tasks.filter(t=>t.done).length,classes=byUser(state.classes).length+assignedToMe(state.managedLessons).length,cards=byUser(state.flashcards).length,min=state.studyMinutes||0,pct=Math.min(100,Math.round(min/150*100));document.getElementById('progress-summary').innerHTML=line('Tempo estudado',min+' min',min/3)+line('Tarefas concluídas',done+'/'+tasks.length,tasks.length?done/tasks.length*100:0)+line('Aulas registradas',classes+' aulas',classes*20)+line('Flashcards criados',cards+' cards',cards*10);document.getElementById('weekly-bar').style.width=pct+'%';document.getElementById('weekly-text').textContent=`${min}/150 minutos · ${pct}% da meta`}
+function item(title,done,toggle,del,sub){return `<div class="item ${done?'done':''}"><div style="display:flex;gap:10px"><button class="check" onclick="${toggle}">${done?'✓':''}</button><div><div class="item-title">${escapeHtml(title)}</div><div class="item-sub">${escapeHtml(sub||'')}</div></div></div><div class="item-actions">${del?`<button class="btn btn-danger btn-small" onclick="${del}">Excluir</button>`:''}</div></div>`}
 
 // ================================================================
-// 8. PROFESSOR — vincular alunos e enviar atividades
+// 16. PROFESSOR
 // ================================================================
-async function linkStudent() {
-  const email = v("link-student-email").toLowerCase();
-  if (!email) { alert("Digite o e-mail do aluno."); return; }
-  // busca usuário pelo e-mail no Firestore
-  const snap = await db.collection("users").where("email","==",email).where("role","==","student").get();
-  if (snap.empty) { alert("Aluno não encontrado. Ele precisa ter conta de estudante."); return; }
-  const studentDoc = snap.docs[0];
-  const studentId = studentDoc.id;
-  if (state.links.some(l=>l.teacherId===id()&&l.studentId===studentId)) {
-    alert("Aluno já vinculado."); return;
+async function linkStudent(){
+  const email=v('link-student-email').toLowerCase();
+  if(!email){alert('Digite o e-mail do aluno.');return;}
+  // busca usuário pelo email no Realtime Database
+  const snap=await db.ref('users').orderByChild('email').equalTo(email).get();
+  if(!snap.exists()){alert('Aluno não encontrado. Ele precisa ter conta de estudante.');return;}
+  let studentId=null, studentData=null;
+  snap.forEach(child=>{
+    if(child.val().role==='student'){studentId=child.key;studentData=child.val();}
+  });
+  if(!studentId){alert('Este email não pertence a uma conta de estudante.');return;}
+  if(state.links.some(l=>l.teacherId===id()&&l.studentId===studentId)){alert('Aluno já vinculado.');return;}
+  if(!state.users.find(u=>u.id===studentId)){
+    state.users.push({id:studentId,name:studentData.name,email:studentData.email});
   }
-  // adiciona nas users locais
-  const sData = studentDoc.data();
-  if (!state.users.find(u=>u.id===studentId)) {
-    state.users.push({id:studentId, name:sData.name, email:sData.email});
-  }
-  state.links.push({teacherId:id(), studentId});
-  document.getElementById("link-student-email").value = "";
-  save(); renderTeacher();
+  state.links.push({teacherId:id(),studentId});
+  document.getElementById('link-student-email').value='';
+  save();renderTeacher();
 }
-
-function selectedStudents(){return [...document.querySelectorAll(".pick-student:checked")].map(x=>x.value)}
-function teacherCreateLesson(){const ids=selectedStudents(),subject=v("mg-lesson-subject"),date=v("mg-lesson-date"),topic=v("mg-lesson-topic");if(!ids.length||!subject||!date||!topic){alert("Selecione aluno(s) e preencha a aula.");return}state.managedLessons.push({id:String(Date.now()),teacherId:id(),studentIds:ids,subject,date,topic});["mg-lesson-subject","mg-lesson-date","mg-lesson-topic"].forEach(x=>document.getElementById(x).value="");save();renderTeacher();alert("Aula enviada.")}
-function teacherCreateTask(){const ids=selectedStudents(),title=v("mg-task-title"),date=v("mg-task-date"),desc=v("mg-task-desc");if(!ids.length||!title){alert("Selecione aluno(s) e informe a tarefa.");return}state.managedTasks.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});["mg-task-title","mg-task-date","mg-task-desc"].forEach(x=>document.getElementById(x).value="");save();renderTeacher();alert("Tarefa enviada.")}
-function teacherCreateTest(){const ids=selectedStudents(),title=v("mg-test-title"),date=v("mg-test-date"),desc=v("mg-test-desc");if(!ids.length||!title){alert("Selecione aluno(s) e informe a prova.");return}state.tests.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});["mg-test-title","mg-test-date","mg-test-desc"].forEach(x=>document.getElementById(x).value="");save();renderTeacher();alert("Prova enviada.")}
-function renderTeacher(){if(!document.getElementById("linked-list"))return;const ids=linkedIds(),users=ids.map(sid=>state.users.find(u=>u.id===sid)).filter(Boolean);document.getElementById("t-students").textContent=users.length;document.getElementById("t-lessons").textContent=state.managedLessons.filter(x=>x.teacherId===id()).length;document.getElementById("t-tasks").textContent=state.managedTasks.filter(x=>x.teacherId===id()).length;document.getElementById("t-tests").textContent=state.tests.filter(x=>x.teacherId===id()).length;document.getElementById("linked-list").innerHTML=users.length?users.map(u=>`<div class="item"><div><div class="item-title">${escapeHtml(u.name)}</div><div class="item-sub">${escapeHtml(u.email)}</div></div></div>`).join(""):`<div class="empty"><strong>Nenhum aluno vinculado.</strong>Digite o email de uma conta de estudante.</div>`;document.getElementById("student-picker").innerHTML=users.length?users.map(u=>`<label><input class="pick-student" type="checkbox" value="${u.id}"> ${escapeHtml(u.name)} <small style="color:var(--muted)">(${escapeHtml(u.email)})</small></label>`).join(""):`<div class="empty"><strong>Sem alunos.</strong>Vincule alunos primeiro.</div>`}
+function selectedStudents(){return[...document.querySelectorAll('.pick-student:checked')].map(x=>x.value)}
+function teacherCreateLesson(){const ids=selectedStudents(),subject=v('mg-lesson-subject'),date=v('mg-lesson-date'),topic=v('mg-lesson-topic');if(!ids.length||!subject||!date||!topic){alert('Selecione aluno(s) e preencha a aula.');return}state.managedLessons.push({id:String(Date.now()),teacherId:id(),studentIds:ids,subject,date,topic});['mg-lesson-subject','mg-lesson-date','mg-lesson-topic'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Aula enviada.')}
+function teacherCreateTask(){const ids=selectedStudents(),title=v('mg-task-title'),date=v('mg-task-date'),desc=v('mg-task-desc');if(!ids.length||!title){alert('Selecione aluno(s) e informe a tarefa.');return}state.managedTasks.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});['mg-task-title','mg-task-date','mg-task-desc'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Tarefa enviada.')}
+function teacherCreateTest(){const ids=selectedStudents(),title=v('mg-test-title'),date=v('mg-test-date'),desc=v('mg-test-desc');if(!ids.length||!title){alert('Selecione aluno(s) e informe a prova.');return}state.tests.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});['mg-test-title','mg-test-date','mg-test-desc'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Prova enviada.')}
+function renderTeacher(){if(!document.getElementById('linked-list'))return;const ids=linkedIds(),users=ids.map(sid=>state.users.find(u=>u.id===sid)).filter(Boolean);document.getElementById('t-students').textContent=users.length;document.getElementById('t-lessons').textContent=state.managedLessons.filter(x=>x.teacherId===id()).length;document.getElementById('t-tasks').textContent=state.managedTasks.filter(x=>x.teacherId===id()).length;document.getElementById('t-tests').textContent=state.tests.filter(x=>x.teacherId===id()).length;document.getElementById('linked-list').innerHTML=users.length?users.map(u=>`<div class="item"><div><div class="item-title">${escapeHtml(u.name)}</div><div class="item-sub">${escapeHtml(u.email)}</div></div></div>`).join(''):`<div class="empty"><strong>Nenhum aluno vinculado.</strong></div>`;document.getElementById('student-picker').innerHTML=users.length?users.map(u=>`<label><input class="pick-student" type="checkbox" value="${u.id}"> ${escapeHtml(u.name)} <small style="color:var(--muted)">(${escapeHtml(u.email)})</small></label>`).join(''):`<div class="empty"><strong>Sem alunos.</strong>Vincule alunos primeiro.</div>`}
 </script>
 </body>
 </html>
