@@ -7,60 +7,42 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
+
+  <!-- ============================================================
+       FIREBASE SDK (compat v9 — funciona sem build tools)
+       ============================================================ -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
   <style>
     :root{
-      --dark:#2d4653;
-      --green:#1cba9f;
-      --green-2:#16a98f;
-      --mint:#e6faf6;
-      --bg:#f5faf9;
-      --paper:#ffffff;
-      --text:#263f4b;
-      --muted:#728692;
-      --line:#dbe9e8;
-      --yellow:#ffc842;
-      --danger:#d94c4c;
-      --shadow:0 18px 46px rgba(45,70,83,.10);
-      --r:24px;
-      --font:Agrandir, Nunito, system-ui, -apple-system, Segoe UI, sans-serif;
+      --dark:#2d4653;--green:#1cba9f;--green-2:#16a98f;--mint:#e6faf6;
+      --bg:#f5faf9;--paper:#ffffff;--text:#263f4b;--muted:#728692;
+      --line:#dbe9e8;--yellow:#ffc842;--danger:#d94c4c;
+      --shadow:0 18px 46px rgba(45,70,83,.10);--r:24px;
+      --font:Nunito,system-ui,-apple-system,Segoe UI,sans-serif;
     }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      min-height:100vh;
-      font-family:var(--font);
-      color:var(--text);
-      background:
-        radial-gradient(circle at 5% 8%, rgba(28,186,159,.13), transparent 28%),
-        radial-gradient(circle at 95% 2%, rgba(45,70,83,.09), transparent 24%),
-        var(--bg);
-    }
+    body{min-height:100vh;font-family:var(--font);color:var(--text);
+      background:radial-gradient(circle at 5% 8%,rgba(28,186,159,.13),transparent 28%),
+        radial-gradient(circle at 95% 2%,rgba(45,70,83,.09),transparent 24%),var(--bg)}
     button,input,textarea,select{font:inherit}
     button{border:0;cursor:pointer}
-    .screen{display:none;min-height:100vh}
-    .screen.active{display:block}
+    .screen{display:none;min-height:100vh}.screen.active{display:block}
     .wrap{width:min(1180px,calc(100% - 32px));margin:auto}
     .brand{display:flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:-1px;color:var(--dark)}
     .brand b{color:var(--green)}
-    .logo-mark{width:38px;height:38px;border-radius:13px;background:var(--green);position:relative;box-shadow:0 12px 28px rgba(28,186,159,.24)}
-    .logo-mark:before{content:"";position:absolute;left:10px;top:8px;width:13px;height:22px;border-left:7px solid #fff;border-top:7px solid #fff}
+    .logo-mark{width:38px;height:38px;border-radius:13px;background:var(--green);position:relative;
+      box-shadow:0 12px 28px rgba(28,186,159,.24)}
+    .logo-mark:before{content:"";position:absolute;left:10px;top:8px;width:13px;height:22px;
+      border-left:7px solid #fff;border-top:7px solid #fff}
     .logo-mark:after{content:"✦";position:absolute;right:5px;top:7px;color:#fff;font-size:10px}
-
-    .brand-img{height:44px;width:auto;display:block;object-fit:contain}
-    .side .brand-img{height:34px;filter:brightness(0) invert(1)}
-    .auth-card .brand-img{height:38px}
-    .brand-icon-img{width:38px;height:38px;object-fit:contain;display:block}
-    .mini-ico .brand-icon-img{width:24px;height:24px}
-    @media(max-width:660px){.brand-img{height:34px}.auth-card .brand-img{height:34px}}
-
-    .spark{position:absolute;pointer-events:none;opacity:.12}
-    .spark:before{
-      content:"";display:block;width:220px;height:220px;background:var(--green);
-      clip-path:polygon(50% 0%,62% 30%,95% 15%,76% 47%,100% 50%,76% 53%,95% 85%,62% 70%,50% 100%,38% 70%,5% 85%,24% 53%,0 50%,24% 47%,5% 15%,38% 30%);
-    }
     .topbar{height:76px;display:flex;align-items:center;justify-content:space-between}
     .topbar .brand{font-size:30px}
     .actions{display:flex;gap:10px;align-items:center}
-    .btn{min-height:46px;padding:12px 20px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:1000;transition:.16s;white-space:nowrap}
+    .btn{min-height:46px;padding:12px 20px;border-radius:999px;display:inline-flex;align-items:center;
+      justify-content:center;gap:8px;font-weight:1000;transition:.16s;white-space:nowrap}
     .btn:hover{transform:translateY(-1px)}
     .btn-primary{background:var(--green);color:#fff;box-shadow:0 14px 26px rgba(28,186,159,.26)}
     .btn-primary:hover{background:var(--green-2)}
@@ -68,34 +50,50 @@
     .btn-dark{background:var(--dark);color:#fff}
     .btn-danger{background:#feecec;color:var(--danger)}
     .btn-small{min-height:36px;padding:8px 12px;font-size:13px}
-    .hero{position:relative;min-height:calc(100vh - 76px);display:grid;grid-template-columns:1.05fr .95fr;gap:38px;align-items:center;padding:42px 0 70px}
+    /* Google btn */
+    .btn-google{background:#fff;color:#3c4043;border:1px solid var(--line);gap:10px;width:100%;
+      margin-bottom:14px;font-size:14px}
+    .btn-google svg{width:18px;height:18px;flex:0 0 auto}
+    .divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin-bottom:14px}
+    .divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}
+    .hero{position:relative;min-height:calc(100vh - 76px);display:grid;
+      grid-template-columns:1.05fr .95fr;gap:38px;align-items:center;padding:42px 0 70px}
     .hero h1{font-size:clamp(44px,7vw,78px);line-height:.96;letter-spacing:-3px;color:var(--dark);margin:18px 0}
     .hero h1 span{color:var(--green)}
     .hero p{font-size:20px;line-height:1.65;color:var(--muted);max-width:620px;margin-bottom:28px}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid rgba(28,186,159,.22);color:var(--green-2);border-radius:999px;padding:9px 15px;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:2px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;background:#fff;
+      border:1px solid rgba(28,186,159,.22);color:var(--green-2);border-radius:999px;
+      padding:9px 15px;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:2px}
     .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
-    .hero-card{background:rgba(255,255,255,.82);border:1px solid rgba(45,70,83,.09);box-shadow:var(--shadow);border-radius:34px;padding:24px;backdrop-filter:blur(14px);position:relative;overflow:hidden}
-    .hero-card:before{content:"";position:absolute;right:-60px;top:-60px;width:190px;height:190px;border-radius:60px;background:var(--green);opacity:.12;transform:rotate(20deg)}
+    .hero-card{background:rgba(255,255,255,.82);border:1px solid rgba(45,70,83,.09);box-shadow:var(--shadow);
+      border-radius:34px;padding:24px;backdrop-filter:blur(14px);position:relative;overflow:hidden}
+    .hero-card:before{content:"";position:absolute;right:-60px;top:-60px;width:190px;height:190px;
+      border-radius:60px;background:var(--green);opacity:.12;transform:rotate(20deg)}
     .mini-phone{border:1px solid var(--line);border-radius:30px;background:#fbfffe;overflow:hidden;position:relative}
     .mini-head{background:var(--dark);color:#fff;padding:22px}
     .mini-head small{display:block;color:rgba(255,255,255,.56);margin-top:4px;font-weight:700}
     .mini-body{display:grid;gap:12px;padding:16px}
-    .mini-row{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px}
-    .mini-ico{width:42px;height:42px;border-radius:15px;background:var(--mint);display:grid;place-items:center;color:var(--green);font-size:21px;flex:0 0 auto}
+    .mini-row{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);
+      border-radius:18px;padding:14px}
+    .mini-ico{width:42px;height:42px;border-radius:15px;background:var(--mint);display:grid;
+      place-items:center;color:var(--green);font-size:21px;flex:0 0 auto}
     .mini-row strong{display:block;color:var(--dark);font-size:14px}
     .mini-row span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
     .features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:54px}
-    .feature{background:#fff;border:1px solid rgba(45,70,83,.08);box-shadow:0 12px 30px rgba(45,70,83,.06);border-radius:24px;padding:20px}
+    .feature{background:#fff;border:1px solid rgba(45,70,83,.08);box-shadow:0 12px 30px rgba(45,70,83,.06);
+      border-radius:24px;padding:20px}
     .feature .ico{font-size:28px;margin-bottom:10px}
     .feature h3{color:var(--dark);margin-bottom:6px}
     .feature p{color:var(--muted);font-size:13px;line-height:1.45}
     .auth{min-height:100vh;display:grid;place-items:center;padding:28px 16px}
-    .auth-card{width:min(460px,100%);background:#fff;border:1px solid rgba(45,70,83,.08);box-shadow:var(--shadow);border-radius:32px;padding:28px}
+    .auth-card{width:min(460px,100%);background:#fff;border:1px solid rgba(45,70,83,.08);
+      box-shadow:var(--shadow);border-radius:32px;padding:28px}
     .auth-card h2{font-size:34px;color:var(--dark);letter-spacing:-1px;margin:20px 0 4px}
     .auth-card p{color:var(--muted);margin-bottom:20px}
     .field{margin-bottom:13px}
     .field label{display:block;color:var(--muted);font-size:13px;font-weight:1000;margin-bottom:6px}
-    .input,.select,.textarea{width:100%;border:2px solid var(--line);background:#fcfffe;border-radius:16px;padding:13px 14px;outline:0;color:var(--text);transition:.15s}
+    .input,.select,.textarea{width:100%;border:2px solid var(--line);background:#fcfffe;border-radius:16px;
+      padding:13px 14px;outline:0;color:var(--text);transition:.15s}
     .input:focus,.select:focus,.textarea:focus{border-color:var(--green);box-shadow:0 0 0 5px rgba(28,186,159,.10)}
     .textarea{min-height:98px;resize:vertical}
     .msg{display:none;border-radius:16px;padding:12px 14px;margin-bottom:12px;font-weight:900;font-size:14px}
@@ -106,403 +104,805 @@
     .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
     .role-card{border:2px solid var(--line);border-radius:22px;padding:16px;background:#fcfffe;text-align:left}
     .role-card.active{border-color:var(--green);background:var(--mint)}
+    /* spinner */
+    .spinner{display:none;text-align:center;padding:28px;color:var(--muted);font-weight:700}
+    .spinner.active{display:block}
+    /* app layout */
     .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-    .side{position:sticky;top:0;height:100vh;background:var(--dark);color:#fff;padding:22px 16px;display:flex;flex-direction:column;gap:18px}
+    .side{position:sticky;top:0;height:100vh;background:var(--dark);color:#fff;
+      padding:22px 16px;display:flex;flex-direction:column;gap:18px}
     .side .brand{font-size:23px;color:#fff;padding:4px 8px 14px}
     .side .logo-mark{width:32px;height:32px}
     .nav{display:grid;gap:6px}
-    .nav button{min-height:44px;border-radius:15px;background:transparent;color:rgba(255,255,255,.72);font-weight:1000;text-align:left;padding:10px 12px;display:flex;gap:10px;align-items:center}
+    .nav button{min-height:44px;border-radius:15px;background:transparent;color:rgba(255,255,255,.72);
+      font-weight:1000;text-align:left;padding:10px 12px;display:flex;gap:10px;align-items:center}
     .nav button:hover,.nav button.active{background:var(--green);color:#fff}
     .side-bottom{margin-top:auto;display:grid;gap:8px}
     .main{padding:26px}
     .app-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}
     .app-head h2{font-size:31px;color:var(--dark);letter-spacing:-1px}
     .app-head p{color:var(--muted);margin-top:3px}
-    .avatar{width:50px;height:50px;border-radius:18px;background:var(--green);color:#fff;display:grid;place-items:center;font-weight:1000;box-shadow:0 10px 24px rgba(28,186,159,.22)}
+    .avatar{width:50px;height:50px;border-radius:18px;background:var(--green);color:#fff;
+      display:grid;place-items:center;font-weight:1000;box-shadow:0 10px 24px rgba(28,186,159,.22)}
     .tab{display:none}.tab.active{display:block}
-    .grid{display:grid;gap:16px}.grid-4{grid-template-columns:repeat(4,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}.grid-2{grid-template-columns:1.15fr .85fr;align-items:start}
-    .card{background:#fff;border:1px solid rgba(45,70,83,.08);border-radius:var(--r);box-shadow:0 12px 34px rgba(45,70,83,.06);padding:20px;position:relative;overflow:hidden}
-    .card.pattern:after{content:"";position:absolute;right:-50px;bottom:-68px;width:160px;height:160px;border:3px solid var(--green);opacity:.13;clip-path:polygon(50% 0%,62% 30%,95% 15%,76% 47%,100% 50%,76% 53%,95% 85%,62% 70%,50% 100%,38% 70%,5% 85%,24% 53%,0 50%,24% 47%,5% 15%,38% 30%)}
+    .grid{display:grid;gap:16px}
+    .grid-4{grid-template-columns:repeat(4,1fr)}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+    .grid-2{grid-template-columns:1.15fr .85fr;align-items:start}
+    .card{background:#fff;border:1px solid rgba(45,70,83,.08);border-radius:var(--r);
+      box-shadow:0 12px 34px rgba(45,70,83,.06);padding:20px;position:relative;overflow:hidden}
+    .card.pattern:after{content:"";position:absolute;right:-50px;bottom:-68px;width:160px;height:160px;
+      border:3px solid var(--green);opacity:.13;
+      clip-path:polygon(50% 0%,62% 30%,95% 15%,76% 47%,100% 50%,76% 53%,95% 85%,62% 70%,50% 100%,38% 70%,5% 85%,24% 53%,0 50%,24% 47%,5% 15%,38% 30%)}
     .section-title{font-size:20px;color:var(--dark);font-weight:1000;margin-bottom:12px}
-    .stat{min-height:118px}.stat .num{font-size:34px;font-weight:1000;color:var(--green);line-height:1;margin-bottom:8px}.stat .label{color:var(--dark);font-weight:1000}.stat .hint{color:var(--muted);font-size:13px;margin-top:4px}
-    .quote{background:linear-gradient(135deg,var(--dark),#3b5a68);color:#fff}.quote p{color:rgba(255,255,255,.76);line-height:1.55;margin-top:8px}
+    .stat{min-height:118px}
+    .stat .num{font-size:34px;font-weight:1000;color:var(--green);line-height:1;margin-bottom:8px}
+    .stat .label{color:var(--dark);font-weight:1000}.stat .hint{color:var(--muted);font-size:13px;margin-top:4px}
+    .quote{background:linear-gradient(135deg,var(--dark),#3b5a68);color:#fff}
+    .quote p{color:rgba(255,255,255,.76);line-height:1.55;margin-top:8px}
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
     .list{display:grid;gap:10px}
-    .item{background:#fbfffe;border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-    .item-title{color:var(--dark);font-weight:1000;margin-bottom:4px}.item-sub{color:var(--muted);font-size:13px;line-height:1.4}.item-actions{display:flex;gap:6px;flex-wrap:wrap}
-    .check{width:23px;height:23px;border-radius:8px;border:2px solid var(--green);background:#fff;color:#fff;font-weight:1000;display:inline-grid;place-items:center;flex:0 0 auto;margin-top:1px}
+    .item{background:#fbfffe;border:1px solid var(--line);border-radius:18px;padding:14px;
+      display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+    .item-title{color:var(--dark);font-weight:1000;margin-bottom:4px}
+    .item-sub{color:var(--muted);font-size:13px;line-height:1.4}
+    .item-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .check{width:23px;height:23px;border-radius:8px;border:2px solid var(--green);background:#fff;
+      color:#fff;font-weight:1000;display:inline-grid;place-items:center;flex:0 0 auto;margin-top:1px}
     .item.done .check{background:var(--green)}.item.done .item-title{text-decoration:line-through;color:var(--muted)}
-    .tag{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:1000;background:var(--mint);color:var(--green-2);margin-top:6px}
-    .empty{text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:20px;padding:26px 16px;background:#fcfffe}.empty strong{color:var(--dark);display:block;margin-bottom:4px}
+    .tag{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;
+      font-size:11px;font-weight:1000;background:var(--mint);color:var(--green-2);margin-top:6px}
+    .empty{text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:20px;
+      padding:26px 16px;background:#fcfffe}
+    .empty strong{color:var(--dark);display:block;margin-bottom:4px}
     .timer-box{text-align:center;padding:28px}
     .modes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
-    .mode{background:#eff7f6;color:var(--muted);border-radius:999px;padding:9px 12px;font-weight:1000;font-size:13px}.mode.active{background:var(--green);color:#fff}
-    .timer{width:230px;height:230px;border-radius:50%;margin:0 auto 22px;background:conic-gradient(var(--green) var(--deg,360deg),#e8f1f2 0);display:grid;place-items:center;box-shadow:inset 0 0 0 14px rgba(255,255,255,.82)}
-    .timer-inner{width:172px;height:172px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 12px 30px rgba(45,70,83,.08)}
-    .time{font-size:46px;font-weight:1000;color:var(--dark);letter-spacing:-2px}.timer-label{color:var(--muted);font-size:12px;font-weight:1000;letter-spacing:1.6px;text-transform:uppercase;margin-top:-8px}
+    .mode{background:#eff7f6;color:var(--muted);border-radius:999px;padding:9px 12px;font-weight:1000;font-size:13px}
+    .mode.active{background:var(--green);color:#fff}
+    .timer{width:230px;height:230px;border-radius:50%;margin:0 auto 22px;
+      background:conic-gradient(var(--green) var(--deg,360deg),#e8f1f2 0);
+      display:grid;place-items:center;box-shadow:inset 0 0 0 14px rgba(255,255,255,.82)}
+    .timer-inner{width:172px;height:172px;border-radius:50%;background:#fff;display:grid;place-items:center;
+      box-shadow:0 12px 30px rgba(45,70,83,.08)}
+    .time{font-size:46px;font-weight:1000;color:var(--dark);letter-spacing:-2px}
+    .timer-label{color:var(--muted);font-size:12px;font-weight:1000;letter-spacing:1.6px;
+      text-transform:uppercase;margin-top:-8px}
     .timer-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-    .bar{height:10px;border-radius:999px;background:#e6f0f0;overflow:hidden;margin-top:10px}.bar>div{height:100%;background:var(--green);border-radius:999px;transition:.25s}
-    .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}.day{min-height:38px;border-radius:12px;background:#eef7f6;color:var(--muted);font-size:12px;font-weight:1000}.day.done{background:var(--green);color:#fff}
-    .flash-card{min-height:260px;border-radius:26px;background:linear-gradient(135deg,#fff,#effbf8);border:1px solid var(--line);display:grid;place-items:center;text-align:center;padding:28px;cursor:pointer;box-shadow:0 14px 35px rgba(45,70,83,.07)}
-    .flash-card .small{color:var(--green-2);font-weight:1000;text-transform:uppercase;font-size:12px;letter-spacing:1.5px;margin-bottom:12px}.flash-card h3{font-size:26px;color:var(--dark);line-height:1.2}.flash-card p{color:var(--muted);line-height:1.55;margin-top:10px;white-space:pre-line}
-    .student-picker{max-height:190px;overflow:auto;border:1px solid var(--line);border-radius:16px;padding:8px;background:#fcfffe;display:grid;gap:4px}
-    .student-picker label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;color:var(--dark);font-weight:900}
+    .bar{height:10px;border-radius:999px;background:#e6f0f0;overflow:hidden;margin-top:10px}
+    .bar>div{height:100%;background:var(--green);border-radius:999px;transition:.25s}
+    .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
+    .day{min-height:38px;border-radius:12px;background:#eef7f6;color:var(--muted);font-size:12px;font-weight:1000}
+    .day.done{background:var(--green);color:#fff}
+    .flash-card{min-height:260px;border-radius:26px;background:linear-gradient(135deg,#fff,#effbf8);
+      border:1px solid var(--line);display:grid;place-items:center;text-align:center;padding:28px;
+      cursor:pointer;box-shadow:0 14px 35px rgba(45,70,83,.07)}
+    .flash-card .small{color:var(--green-2);font-weight:1000;text-transform:uppercase;font-size:12px;
+      letter-spacing:1.5px;margin-bottom:12px}
+    .flash-card h3{font-size:26px;color:var(--dark);line-height:1.2}
+    .flash-card p{color:var(--muted);line-height:1.55;margin-top:10px;white-space:pre-line}
+    .student-picker{max-height:190px;overflow:auto;border:1px solid var(--line);border-radius:16px;
+      padding:8px;background:#fcfffe;display:grid;gap:4px}
+    .student-picker label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:10px;
+      color:var(--dark);font-weight:900}
     .student-picker label:hover{background:var(--mint)}
-    .notice{background:var(--mint);border:1px solid rgba(28,186,159,.20);color:var(--dark);border-radius:18px;padding:14px;font-size:14px;line-height:1.45}
-    @media(max-width:980px){.hero{grid-template-columns:1fr;text-align:center}.hero p{margin-left:auto;margin-right:auto}.hero-actions{justify-content:center}.features,.grid-4{grid-template-columns:repeat(2,1fr)}.grid-2{grid-template-columns:1fr}.app{grid-template-columns:1fr}.side{position:fixed;top:auto;left:0;right:0;bottom:0;height:auto;z-index:50;border-radius:24px 24px 0 0;padding:8px}.side .brand,.side-bottom{display:none}.nav{grid-template-columns:repeat(6,1fr);gap:4px}.nav button{min-height:58px;padding:6px 2px;flex-direction:column;justify-content:center;text-align:center;font-size:10px;gap:3px}.main{padding:18px 14px 98px}}
-    @media(max-width:660px){.wrap{width:min(100% - 24px,1180px)}.topbar{height:68px}.topbar .brand{font-size:22px}.actions .btn-light{display:none}.hero{padding-top:32px}.hero h1{font-size:42px;letter-spacing:-1.5px}.hero p{font-size:16px}.hero-actions{display:grid}.hero-actions .btn{width:100%}.hero-card{display:none}.features,.grid-4,.grid-3,.form-row,.form-row-3,.role-grid{grid-template-columns:1fr}.auth-card{padding:22px}.app-head h2{font-size:24px}.timer{width:200px;height:200px}.timer-inner{width:150px;height:150px}.time{font-size:40px}.item{display:block}.item-actions{margin-top:10px}.nav{grid-template-columns:repeat(3,1fr)}}
+    .notice{background:var(--mint);border:1px solid rgba(28,186,159,.20);color:var(--dark);
+      border-radius:18px;padding:14px;font-size:14px;line-height:1.45}
+    /* verificação de email */
+    .verify-banner{background:#fff8e1;border:1px solid #ffe082;color:#7a5c00;border-radius:16px;
+      padding:12px 16px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;
+      justify-content:space-between;gap:12px}
+    .verify-banner button{background:#f59e0b;color:#fff;border-radius:999px;padding:6px 14px;
+      font-size:12px;font-weight:700;white-space:nowrap}
+    @media(max-width:980px){
+      .hero{grid-template-columns:1fr;text-align:center}
+      .hero p{margin-left:auto;margin-right:auto}
+      .hero-actions{justify-content:center}
+      .features,.grid-4{grid-template-columns:repeat(2,1fr)}
+      .grid-2{grid-template-columns:1fr}
+      .app{grid-template-columns:1fr}
+      .side{position:fixed;top:auto;left:0;right:0;bottom:0;height:auto;z-index:50;
+        border-radius:24px 24px 0 0;padding:8px}
+      .side .brand,.side-bottom{display:none}
+      .nav{grid-template-columns:repeat(6,1fr);gap:4px}
+      .nav button{min-height:58px;padding:6px 2px;flex-direction:column;justify-content:center;
+        text-align:center;font-size:10px;gap:3px}
+      .main{padding:18px 14px 98px}
+    }
+    @media(max-width:660px){
+      .wrap{width:min(100% - 24px,1180px)}
+      .topbar{height:68px}.topbar .brand{font-size:22px}
+      .actions .btn-light{display:none}
+      .hero{padding-top:32px}
+      .hero h1{font-size:42px;letter-spacing:-1.5px}
+      .hero p{font-size:16px}
+      .hero-actions{display:grid}.hero-actions .btn{width:100%}
+      .hero-card{display:none}
+      .features,.grid-4,.grid-3,.form-row,.form-row-3,.role-grid{grid-template-columns:1fr}
+      .auth-card{padding:22px}
+      .app-head h2{font-size:24px}
+      .timer{width:200px;height:200px}.timer-inner{width:150px;height:150px}.time{font-size:40px}
+      .item{display:block}.item-actions{margin-top:10px}
+      .nav{grid-template-columns:repeat(3,1fr)}
+    }
   </style>
 </head>
 <body>
-  <section id="landing-screen" class="screen active">
-    <div class="wrap">
-      <header class="topbar">
-        <div class="brand"><img class="brand-img" src="data:image/png;base64,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" alt="Um Quarto"></div>
-        <div class="actions">
-          <button class="btn btn-light" onclick="showScreen('login')">Entrar</button>
-          <button class="btn btn-primary" onclick="showScreen('register')">Criar conta</button>
+
+<!-- ============================================================
+     LANDING
+     ============================================================ -->
+<section id="landing-screen" class="screen active">
+  <div class="wrap">
+    <header class="topbar">
+      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
+      <div class="actions">
+        <button class="btn btn-light" onclick="showScreen('login')">Entrar</button>
+        <button class="btn btn-primary" onclick="showScreen('register')">Criar conta</button>
+      </div>
+    </header>
+    <main class="hero">
+      <div>
+        <div class="eyebrow">✦ Reforço dedicado e monitorado</div>
+        <h1>Aprenda com foco, <span>acompanhamento</span> e rotina.</h1>
+        <p>Um Quarto conecta estudante e professor em uma jornada simples: tempo de estudo, aulas, tarefas, provas, flashcards e progresso.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="showScreen('register')">Começar agora</button>
+          <button class="btn btn-light" onclick="showScreen('login')">Já tenho conta</button>
         </div>
+      </div>
+      <div class="hero-card">
+        <div class="mini-phone">
+          <div class="mini-head"><strong>Boa noite, estudante 👋</strong><small>Seu plano monitorado</small></div>
+          <div class="mini-body">
+            <div class="mini-row"><div class="mini-ico">⏱️</div><div><strong>Foco livre</strong><span>15, 25, 50 ou personalizado.</span></div></div>
+            <div class="mini-row"><div class="mini-ico">👨‍🏫</div><div><strong>Gestão do professor</strong><span>Aulas, tarefas e provas vinculadas.</span></div></div>
+            <div class="mini-row"><div class="mini-ico">🃏</div><div><strong>Flashcards</strong><span>Revisão ativa feita pelo aluno.</span></div></div>
+            <div class="mini-row"><div class="mini-ico">📊</div><div><strong>Progresso</strong><span>Estudo monitorado com clareza.</span></div></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <section class="features">
+      <div class="feature"><div class="ico">⏱️</div><h3>Tempo livre</h3><p>Crie ciclos de estudo com foco e pausa personalizados.</p></div>
+      <div class="feature"><div class="ico">👨‍🏫</div><h3>Professor</h3><p>Perfil verificado para gestão de alunos, aulas, tarefas e provas.</p></div>
+      <div class="feature"><div class="ico">🃏</div><h3>Flashcards</h3><p>Cartões de pergunta e resposta para revisão ativa.</p></div>
+      <div class="feature"><div class="ico">📚</div><h3>Acompanhamento</h3><p>Aulas dadas e atividades vinculadas a contas de alunos.</p></div>
+    </section>
+  </div>
+</section>
+
+<!-- ============================================================
+     LOGIN
+     ============================================================ -->
+<section id="login-screen" class="screen">
+  <div class="auth">
+    <div class="auth-card">
+      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
+      <h2>Entrar</h2><p>Acesse como estudante ou professor.</p>
+      <div id="login-msg" class="msg"></div>
+
+      <!-- Login com Google -->
+      <button class="btn btn-google" onclick="loginGoogle()">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Entrar com Google
+      </button>
+      <div class="divider">ou</div>
+
+      <div class="field"><label>Email</label><input id="login-email" class="input" type="email" placeholder="seu@email.com"></div>
+      <div class="field"><label>Senha</label><input id="login-pass" class="input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')loginEmail()"></div>
+      <button class="btn btn-primary" style="width:100%" onclick="loginEmail()">Entrar</button>
+      <div class="auth-switch">Não tem conta? <a onclick="showScreen('register')">Criar conta</a></div>
+      <div class="auth-switch"><a onclick="showScreen('landing')">← Voltar</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CADASTRO
+     ============================================================ -->
+<section id="register-screen" class="screen">
+  <div class="auth">
+    <div class="auth-card">
+      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
+      <h2>Criar conta</h2><p>Escolha o tipo de perfil.</p>
+      <div id="register-msg" class="msg"></div>
+
+      <!-- Google -->
+      <button class="btn btn-google" onclick="loginGoogle()">
+        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Criar conta com Google
+      </button>
+      <div class="divider">ou preencha os dados</div>
+
+      <div class="role-grid">
+        <button id="role-student" class="role-card active" onclick="setRegisterRole('student')"><strong>🎒 Estudante</strong><br><span>Organizar estudos</span></button>
+        <button id="role-teacher" class="role-card" onclick="setRegisterRole('teacher')"><strong>👨‍🏫 Professor</strong><br><span>Gestão verificada</span></button>
+      </div>
+      <div class="field"><label>Nome</label><input id="reg-name" class="input" placeholder="Seu nome"></div>
+      <div class="field"><label>Email</label><input id="reg-email" class="input" type="email" placeholder="seu@email.com"></div>
+      <div class="field"><label>Senha</label><input id="reg-pass" class="input" type="password" placeholder="Mínimo 6 caracteres"></div>
+      <div id="student-code-box" class="field">
+        <label>Código do professor</label>
+        <input id="reg-student-code" class="input" placeholder="Ex.: umquarto2026">
+        <small style="color:var(--muted);display:block;margin-top:6px">Todo estudante precisa do código da turma para criar conta.</small>
+      </div>
+      <div id="teacher-code-box" class="field" style="display:none">
+        <label>Código de verificação do professor</label>
+        <input id="reg-teacher-code" class="input" placeholder="Ex.: UMQ-PROF-2026">
+        <small style="color:var(--muted);display:block;margin-top:6px">Peça ao administrador o código de professor.</small>
+      </div>
+      <button class="btn btn-primary" style="width:100%" onclick="registerEmail()">Criar conta</button>
+      <div class="auth-switch">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
+      <div class="auth-switch"><a onclick="showScreen('landing')">← Voltar</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ESCOLHA DE MODO (professor)
+     ============================================================ -->
+<section id="role-screen" class="screen">
+  <div class="auth">
+    <div class="auth-card">
+      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
+      <h2>Como deseja entrar?</h2><p>Seu perfil de professor permite usar a plataforma como aluno ou acessar a gestão.</p>
+      <div class="role-grid">
+        <button class="role-card" onclick="enterApp('student')"><strong>🎒 Modo aluno</strong><br><span>Timer, tarefas, aulas e flashcards.</span></button>
+        <button class="role-card" onclick="enterApp('teacher')"><strong>👨‍🏫 Gestão</strong><br><span>Alunos, aulas, tarefas e provas.</span></button>
+      </div>
+      <button class="btn btn-light" style="width:100%" onclick="logout()">Sair</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LOADING
+     ============================================================ -->
+<section id="loading-screen" class="screen">
+  <div class="auth"><div class="auth-card" style="text-align:center;padding:50px 28px">
+    <div class="logo-mark" style="margin:0 auto 20px"></div>
+    <p style="color:var(--muted);font-weight:700;font-size:15px">Carregando...</p>
+  </div></div>
+</section>
+
+<!-- ============================================================
+     APP
+     ============================================================ -->
+<section id="app-screen" class="screen">
+  <div class="app">
+    <aside class="side">
+      <div class="brand"><div class="logo-mark"></div> Um <b style="color:var(--green)">Quarto</b></div>
+      <nav class="nav" id="nav"></nav>
+      <div class="side-bottom">
+        <button id="switch-role-btn" class="btn btn-light btn-small" style="display:none" onclick="showScreen('role')">Trocar modo</button>
+        <button class="btn btn-light btn-small" onclick="logout()">Sair</button>
+      </div>
+    </aside>
+    <main class="main">
+      <header class="app-head">
+        <div><h2 id="page-title">Painel</h2><p id="page-subtitle">Comece pequeno. Continue constante.</p></div>
+        <div class="avatar" id="avatar">U</div>
       </header>
-      <main class="hero">
-        <div class="spark" style="left:-100px;top:110px"></div>
-        <div>
-          <div class="eyebrow">✦ Reforço dedicado e monitorado</div>
-          <h1>Aprenda com foco, <span>acompanhamento</span> e rotina.</h1>
-          <p>Um Quarto conecta estudante e professor em uma jornada simples: tempo de estudo, aulas, tarefas, provas, flashcards e progresso.</p>
-          <div class="hero-actions">
-            <button class="btn btn-primary" onclick="showScreen('register')">Começar agora</button>
-            <button class="btn btn-light" onclick="showScreen('login')">Já tenho conta</button>
-          </div>
+
+      <!-- Banner verificação de email -->
+      <div id="verify-banner" class="verify-banner" style="display:none">
+        📧 Confirme seu e-mail para liberar todos os recursos.
+        <button onclick="resendVerification()">Reenviar e-mail</button>
+      </div>
+
+      <!-- PAINEL -->
+      <section id="tab-dashboard" class="tab active">
+        <div class="grid grid-4" style="margin-bottom:16px">
+          <div class="card stat pattern"><div class="num" id="dash-min">0</div><div class="label">min estudados</div><div class="hint">Total acumulado</div></div>
+          <div class="card stat"><div class="num" id="dash-pending">0</div><div class="label">pendências</div><div class="hint">Tarefas e provas</div></div>
+          <div class="card stat"><div class="num" id="dash-classes">0</div><div class="label">aulas</div><div class="hint">Registradas</div></div>
+          <div class="card stat"><div class="num" id="dash-cards">0</div><div class="label">flashcards</div><div class="hint">Criados por você</div></div>
         </div>
-        <div class="hero-card">
-          <div class="mini-phone">
-            <div class="mini-head"><strong>Boa noite, estudante 👋</strong><small>Seu plano monitorado</small></div>
-            <div class="mini-body">
-              <div class="mini-row"><div class="mini-ico">⏱️</div><div><strong>Foco livre</strong><span>15, 25, 50 ou personalizado.</span></div></div>
-              <div class="mini-row"><div class="mini-ico">👨‍🏫</div><div><strong>Gestão do professor</strong><span>Aulas, tarefas e provas vinculadas.</span></div></div>
-              <div class="mini-row"><div class="mini-ico">🃏</div><div><strong>Flashcards</strong><span>Revisão ativa feita pelo aluno.</span></div></div>
-              <div class="mini-row"><div class="mini-ico">📊</div><div><strong>Progresso</strong><span>Estudo monitorado com clareza.</span></div></div>
-            </div>
-          </div>
+        <div class="grid grid-2">
+          <div class="card quote"><h3>Mensagem do dia</h3><p>Um quarto de hora bem feito vale mais que uma hora cheia de distrações.</p></div>
+          <div class="card"><div class="section-title">Próximo passo</div><div id="next-step"></div></div>
         </div>
-      </main>
-      <section class="features">
-        <div class="feature"><div class="ico">⏱️</div><h3>Tempo livre</h3><p>Crie ciclos de estudo com foco e pausa personalizados.</p></div>
-        <div class="feature"><div class="ico">👨‍🏫</div><h3>Professor</h3><p>Perfil verificado para gestão de alunos, aulas, tarefas e provas.</p></div>
-        <div class="feature"><div class="ico">🃏</div><h3>Flashcards</h3><p>Cartões de pergunta e resposta para revisão ativa.</p></div>
-        <div class="feature"><div class="ico">📚</div><h3>Acompanhamento</h3><p>Aulas dadas e atividades vinculadas a contas de alunos.</p></div>
       </section>
-    </div>
-  </section>
 
-  <section id="login-screen" class="screen">
-    <div class="auth">
-      <div class="auth-card">
-        <div class="brand"><img class="brand-img" src="data:image/png;base64,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" alt="Um Quarto"></div>
-        <h2>Entrar</h2><p>Acesse como estudante ou professor.</p>
-        <div id="login-msg" class="msg"></div>
-        <div class="field"><label>Email</label><input id="login-email" class="input" type="email" placeholder="seu@email.com"></div>
-        <div class="field"><label>Senha</label><input id="login-pass" class="input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')login()"></div>
-        <button class="btn btn-primary" style="width:100%" onclick="login()">Entrar</button>
-        <div class="auth-switch">Não tem conta? <a onclick="showScreen('register')">Criar conta</a></div>
-        <div class="auth-switch"><a onclick="showScreen('landing')">← Voltar</a></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="register-screen" class="screen">
-    <div class="auth">
-      <div class="auth-card">
-        <div class="brand"><img class="brand-img" src="data:image/png;base64,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" alt="Um Quarto"></div>
-        <h2>Criar conta</h2><p>Escolha o tipo de perfil.</p>
-        <div id="register-msg" class="msg"></div>
-        <div class="role-grid">
-          <button id="role-student" class="role-card active" onclick="setRegisterRole('student')"><strong>🎒 Estudante</strong><br><span>Organizar estudos</span></button>
-          <button id="role-teacher" class="role-card" onclick="setRegisterRole('teacher')"><strong>👨‍🏫 Professor</strong><br><span>Gestão verificada</span></button>
+      <!-- TIMER -->
+      <section id="tab-timer" class="tab">
+        <div class="grid grid-2">
+          <div class="card timer-box">
+            <div class="modes">
+              <button class="mode active" data-mode="15" onclick="setMode(15,5)">15/5</button>
+              <button class="mode" data-mode="25" onclick="setMode(25,5)">25/5</button>
+              <button class="mode" data-mode="50" onclick="setMode(50,10)">50/10</button>
+              <button class="mode" data-mode="90" onclick="setMode(90,15)">90/15</button>
+              <button class="mode" data-mode="custom" onclick="applyCustomMode()">Livre</button>
+            </div>
+            <div class="timer" id="timer-ring"><div class="timer-inner"><div>
+              <div class="time" id="time">15:00</div>
+              <div class="timer-label" id="timer-label">Foco</div>
+            </div></div></div>
+            <div class="timer-actions">
+              <button class="btn btn-light" onclick="resetTimer()">Reset</button>
+              <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()">Iniciar</button>
+              <button class="btn btn-dark" onclick="startBreak()">Descanso</button>
+            </div>
+            <div class="form-row">
+              <div class="field"><label>Foco livre (min)</label><input id="custom-focus" class="input" type="number" value="40" min="1"></div>
+              <div class="field"><label>Descanso (min)</label><input id="custom-rest" class="input" type="number" value="10" min="1"></div>
+            </div>
+            <div class="field" style="text-align:left"><label>Tarefa opcional do foco</label><input id="focus-task" class="input" placeholder="Ex.: revisar equações"></div>
+          </div>
+          <div class="card">
+            <div class="section-title">Tarefas rápidas do timer</div>
+            <div class="form-row"><input id="quick-task" class="input" placeholder="Adicionar tarefa rápida"><button class="btn btn-primary" onclick="addQuickTask()">Adicionar</button></div>
+            <div id="quick-list" class="list" style="margin-top:14px"></div>
+          </div>
         </div>
-        <div class="field"><label>Nome</label><input id="reg-name" class="input" placeholder="Seu nome"></div>
-        <div class="field"><label>Email</label><input id="reg-email" class="input" type="email" placeholder="seu@email.com"></div>
-        <div class="field"><label>Senha</label><input id="reg-pass" class="input" type="password" placeholder="Mínimo 4 caracteres"></div>
+      </section>
 
-        <div id="student-code-box" class="field">
-          <label>Código do professor</label>
-          <input id="reg-student-code" class="input" placeholder="Ex.: umquarto2026">
-          <small style="color:var(--muted);display:block;margin-top:6px">Todo estudante precisa do código da turma/professor para criar conta.</small>
+      <!-- TAREFAS -->
+      <section id="tab-tasks" class="tab">
+        <div class="card" style="margin-bottom:16px">
+          <div class="section-title">Nova tarefa pessoal</div>
+          <div class="form-row"><input id="task-title" class="input" placeholder="Tarefa"><input id="task-subject" class="input" placeholder="Matéria"></div>
+          <div class="form-row" style="margin-top:12px"><input id="task-date" type="date" class="input"><button class="btn btn-primary" onclick="addTask()">Adicionar</button></div>
         </div>
-        <div id="teacher-code-box" class="field" style="display:none"><label>Código de verificação do professor</label><input id="reg-teacher-code" class="input" placeholder="Ex.: UMQ-PROF-2026"><small style="color:var(--muted);display:block;margin-top:6px">Protótipo local: use UMQ-PROF-2026.</small></div>
-        <button class="btn btn-primary" style="width:100%" onclick="register()">Criar conta</button>
-        <div class="auth-switch">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
-        <div class="auth-switch"><a onclick="showScreen('landing')">← Voltar</a></div>
-      </div>
-    </div>
-  </section>
+        <div class="card"><div class="section-title">Minhas tarefas</div><div id="task-list" class="list"></div></div>
+      </section>
 
-  <section id="role-screen" class="screen">
-    <div class="auth">
-      <div class="auth-card">
-        <div class="brand"><img class="brand-img" src="data:image/png;base64,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" alt="Um Quarto"></div>
-        <h2>Como deseja entrar?</h2><p>Seu perfil de professor permite usar a plataforma como aluno ou acessar a gestão.</p>
-        <div class="role-grid">
-          <button class="role-card" onclick="enterApp('student')"><strong>🎒 Modo aluno</strong><br><span>Timer, tarefas, aulas e flashcards.</span></button>
-          <button class="role-card" onclick="enterApp('teacher')"><strong>👨‍🏫 Gestão</strong><br><span>Alunos, aulas, tarefas e provas.</span></button>
+      <!-- AULAS -->
+      <section id="tab-classes" class="tab">
+        <div class="card" style="margin-bottom:16px">
+          <div class="section-title">Registrar aula pessoal</div>
+          <div class="form-row"><input id="class-subject" class="input" placeholder="Matéria"><input id="class-date" type="date" class="input"></div>
+          <div class="form-row" style="margin-top:12px"><input id="class-min" type="number" class="input" placeholder="Duração em minutos"><input id="class-topic" class="input" placeholder="Conteúdo estudado"></div>
+          <div class="field" style="margin-top:12px"><textarea id="class-notes" class="textarea" placeholder="Observações e dúvidas"></textarea></div>
+          <button class="btn btn-primary" onclick="addClass()">Registrar aula</button>
         </div>
-        <button class="btn btn-light" style="width:100%" onclick="logout()">Sair</button>
-      </div>
-    </div>
-  </section>
+        <div class="card"><div class="section-title">Aulas e registros</div><div id="class-list" class="list"></div></div>
+      </section>
 
-  <section id="app-screen" class="screen">
-    <div class="app">
-      <aside class="side">
-        <div class="brand"><img class="brand-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAApYAAAB+CAYAAACeelHMAAAACXBIWXMAAAsSAAALEgHS3X78AAAX60lEQVR4nO3d3XXazNrG8St75dwpYGuZDuwOzHPAcbwriFJBeCoIqeAhFWRcwXZOtw4iKoip4MWLBkwFeQ/mlj1gMF8jjQT/31qsEEKkMbZHl+bz3Z8/fwQAANCUrHC5pF7kw5bzQV5GPib29D51AQAAwNnJJd3UcNyyhmNiD/9KXQAAAACcBoIlAAAAoiBYAgAAIAqCJQAAAKIgWAIAACAKgiUAAACiIFgCAAAgCoIlAAAAoiBYAgAAIAqCJQAAAKIgWAIAACAKgiUAAGjaU+oCoB4ESwAA0LSH1AVAPQiWAACgabRYniiCJQAAaBotlieKYAkAABo1H+Rl6jKgHgRLAACQwjR1ARAfwRIAAKTgIh+vH/l4OADBEgAApHAf+XjXkY+HAxAsAQBA4+aDfCbpLuIhL7LCES4TI1gCAIBURpIWEY+XRzwWDkCwBAAASVir5TDiIfOscL2Ix8Oe3v358yd1GZBQVri+/IDnnj1CZfDnzCqAVrLuj2v5r+Fa0oc1b3uQX5R3Zo+H+SBnkV4ASCwrnJP0KdLhpvNBTpd4IgTLM5MV7oOkW3t83PO/L+RD5r2kMmXQtCB5Kx+Kb4441FQ+cN7PB3nsgeQAgB1lhRtK+ifS4SaSbmk8aN67f//vR181T9GfD/JRncffxprF85pPMw5/gLPC5XrdAhhLue/isvYZjOTD2EWkcvyU5JoMZPa5DiVd1XD4hXxoHs8HObtCADWzeqmnl16GsLehJ+lyh8Ms9LKLy1PwvJT0xO/yetbI0NcOM6mbvIbbz8RY+zd8rLOwY40JmM159+///Sh1XIvPVvNB/q7O42+TFW4k6WvNp/krDHtZ4epuCv5rl3BplcdYb3cxVK12s5XXq0p+28/HVNKwzp0ULFCO9PaF5lH+a9hUjurC1dtyHMnf7Q65KAFxrASZvmq+7qyo6rhSiXtbUjvk5jzFNdwCZtW71tNuNxlv+amXn4FWD+3quvepC4CD9bU5QEmSssLdyi9Au66F8qd869z9Lndy1vXcDx7hMa8k/coK91NSHvPO0CoXp/UXoUctd83vdd5gfOmtXleyN5J+Z4X7LmlU191uVrhSzV5gu2AyH+T9Xd5Y0+e38/mbUNfPSBNhIQgHuerpZdjVlT0+SVJWuEf5esM1cfNYU0PDt31aEne8Od9LQ402sXy0x1dJygq3y/958zOm/l5rshosqxafY31Q2krkLWG3ybF2/YGaRDrftXboxn6jlbLqFnD73q1Z5fsgaRyM0xxpuZL6KGmWFe42RuvlG8F4It+1cVQXvJWxlDQKhksMV873RVI/K1xO6yWwGwsxudp70b2U/93+YiHT6US7S7fcnAPRrQZLF2MshbUE/Tr2ODV5iNUasetdaMTzldpSOVjoK/U62N/Jd+0eXXHaMZwkt+Yu+EK+9fLzfJC7Q89hx/2x8vKjfItoeehxN7GgPZIPmSMtB8wrSWVWuD7hEljP6p6hXt+ctd2lfCvW16xwd/I9FLO0RYrDeppKdev7gY5jHcsTsiFULuTHY0btoq5YeLzW690TfmSFGx9yzA2h8vt8kPfqHMdZsZurnvxwgcqFfNd4v+7zA11jv7Mz+YDW5RDzSdL/ZYUbWX3aWfY9+a1ufz/QQQTLE7EhVE4l1R7G5oP8aT7Ic0mftbyDwher3Ha2JlQuJP1nPshjLqC7lX1Nt5K+rfzTPVuGAV5WuOuscA/yv7OnFGC+Snro6o2kDSNavTkHGkGwPAEbQuXdfJBfNzlmyFov+1oOlz+sktvKKvHVUNlPub6ktV5+Dl66kA+XnW7NAI5lN4Gl2jue/liX8sN6RqkLsg+78XWpy4HzRbA8DWO9DpV5ioLYGMS+lsOl27bFlgW1MEBWoTL5mEYLzH8HL13Kf+bAWbJhLqfWSrnJ16xwrgs3k0E9eg7fF7QUwbLjbKeCcPb3JFWorFgYDMtwoe130E7LlWGr1pCcD/KxlsdcfupqNxlwDNt670vqcjTsk/wEvraHy5EiLicEHIJg2WHBbjqVR/llgJKz7utwfOKNheBXLKCFuyzcHTOjvEa5lltiR2mKAaSx5kb2nFypxV3MVo+eW+BHCxEsu22s5Va+Vu2LauMTp8FLm2ZauuD5o/xyJa1jn21YthtaLXEu7Gc91j7OXfXx0NUuGtDWcuHMECy7q6/lVr5vbeo6DuTB8wuthEabABB23URZa7Mu1pL6GLzUyhAMxGQ3hC51OVriS9tuKK0ePdVJVOgYgmV3hQulP6qld6sWdsM1LocrrZaj4Pkk5QzwPYyC5x+3TUwCTsBQjN0LtW0yzyh1AYAKwfI01LaXdSSj4Plzq6UtQ3S54X1tdq/lsZatGNcK1MFunLqyH3RTLtWS3gprPSX0ozUIlt332NKJLs9se7SlVsuVPyVp2sSuOjFYiA9bVvuJigI0oRUBqoWGLemtyFMXAAit7hWO7hmlLsCOxnqZTXphs0tvVv69S0q9fD0f33gf0HV5w+ebSHqwx0zS07rx49YVXe2C1bNH315rYh3HC/nPZtTAudayz+BcZ+mjpQiW3bbYtbXSdmMIxwStrazrMh/kD1nhpnoZYD4K/nnr12EtAz29bh18kl2EGh4OUIZ/yQrX70qLK7ArG67SREibyE8Out/199jeV677N6vvhvLDVOos/1Bpb+4ZhoPWIVh228aJLnZBuJW/e187WzArnOSXA3qQr9Drnjjj9LJcSVjZrz2vXRxy+a9j6xgiC673kpx1v9dmPshnWeEeg3Jda8NFDuiwuoPLT/mVIGYxD1pt0mAtekPVN0b0IitcnnA4Uj/ReYGNCJbdthTIgko01+6Dua/s8cmC0rDGgFlueH3167iW7xq/Wf/2jaqv5WtWuDvVv3TRTC+fc+oZolP51tuUPoglT05Nv6bjLiTldd/M2u//KCvcvXw9U8ckl1ulW4qpn+i8lZl8a/Mh6hiy8ChfplhiHutsECy7axFWytZCOdZxFeelpP9mhfspX+lHDSrWHb7QSmWy8nWM9HbrwrpKbF0A/STpNivcbY1d1GVw7n5N59jVMHVXvM1O/ZWyDIjHblTrCGJT+c0cZjUcey2re6pehdg3P6nGWO/z/QlvPB8U6SbUWmrdIf83K1yp/RsPtnG2MUenzAf5u9RliFl/Eyy7q6ye2E4Q67byqrqGS60Zg2g/SFV3c1jZfpTfF7dfQ4vfg5Yrk4mVpVqAebWSftRL9/bGMaH2teRaHlN1IelXVrjPNXVVpW4hBOp0vf0te3uUVEe9stV8kD/ZDfiDIreUJRpj/db3Zypfn5Yt3TgDJ4xg2V2lJGWFc3o9K3Aiv7Zl+dYB7N9LSWMLZk4vd8BXqidcrgbL0kJlqeVwu5A03vXus/pa7FjhDHRJ+pEVTjWEy7DCruMiDKRUx8909J6QfdjY6KGkH5EP3VfzY6zXfX92qvuBOrGOZbc4+YpjIh+inJYD1ELSf+aDfO+7Z3v/tfxg+sqV4s94nK38vZQPgmGonMq3aux97vkgf5oP8lzS55V/GltXWF2amDkLNCn2uOG7NgSeNduyxpDixnK1zvl2SN0PxEaw7JD5IHdWcfTlu3zDUDmV1DtmMLyFslstj2P8EjmQhbvWTOUr5NWvo39s941dPMJweSH2OgZSatN2rbHLkrrH4lsXxxbiNBEsO8i6rcMJLlUYi9XFdKvlLQuj7bxhA/avJX2z8/wT/HPUr8PC5d/BS1dZ4fIYxwbOQD/mwRpYzmwfZeTjpdxScUKoRJsQLLsp3KWmWrYj2rglO1Z4jk82djHW8WdWEa7utlPHTPSxfGB9PkfM4wPYyXT7WxoVfZxnwu0dR4nOC6zF5J2OsRa3cDziqKZZf2Mtt4pGXavNKuFwBvi3GmcvjvUyWP8mK1yvyaVOgI4aKt44y3NYQaGn5tc9nDKmEm1DsOyePHj+aC1y0dnSHD/1Ev5ijyEKu9cXqnGv8Pkgd7YkUzXYvS/GWwJvOtVlaoJl1k5Bm4YXAJIIlp1irXzhUj2jmk/5oPqCZR48dw0sQRIuc9Sr+VwAIrIwGPqg13VST69/t+vY3WWTFLtvlQnOCbyJYNkt/eD5ooH9acMWi2iVps0yDyt7F+vYbyj1EixPpbUiKrt4P51qSxXawX7OwmDYX3lLk2Ewpms134LI7ypah2DZLWEgKhs4X9iKGHMbtH7w/DFBkEm9r3fr2MX+vnpOuEQMdhPZl6+7rsVe8lGlXGwe2IRg2S1hsOzyhb/pgIwNbLb/UMsTtX5nhWNdPBzEtk28lQ+UKZfhOXVtm2kPSCJYIo1e8HyWqAxnK+iKrALAum7Hr7b1nZNvyaSLHBvZ+O/cHoTJZtBaiVYiWCKFXvCcsNIgW65q132SLyR9sYeywv3F0iYIWaAcaXn3LABnjGCJFMIWDe66mzVL9H9xQmwIxUh20wEAFYIlgF1xE4BqKIUTXd4A1mBLR+C8HDMjnmWazlxWuJGkXyJUAtiAYAmcl/4R/5dgecaywjktrx4AAK8QLIHzcnvE/81jFQLdYqGSCToAtiJYAmfCZoQf04V5tWZrvVNEy2wgK9xYhEoAO6olWK4uSWK7L6TUD56XicoAJGPLwowjHMpFOEbbtW07wWT1py12zsxvADurs8VyETxPWTF+0Mse0RLrJuIMzQf5TH55mMXb73zTQn6XnpPXgpthSc/lSBJ0re50Kc4d2ULSZOXxM2mJgBP2XvUtIVJK+mjPc6WroFYvhGWKQgCpzQf5OCtcKf87sG9YmUrqn9HexH214yY0ZZAfKn3r7SR4PtPrtVTLlb/vvENUVrg/B5cKwEbv5SvPj9veeID74Lg3WeF61mrSGOv+CyvmuzO6MAKvzAf5g42TLLV7aHjUeYVKydcbMYYOHMzqryRjG4M95JuwkP95fLA/Z01fKwDEs7pAei/ise/lK+bq4uV03FInh5YhvHiOGj4/0DoWLofafWvH/MxCpSRdZoXL54PcJSxDymCbq97WyoXsGsEe9MBpWR1j2Yt1YLsQhRXjjV3MGmHLY1wFL33jLhjwLDA97vDWyRnvDz6ylrvG2Qz+OnqSdtWv8dh3knrzQZ4TKhFZP3UBUPNyQ/NBPtLyxeufJgbFr1lzbWplAfCiuvGbSPq28piuvKet6mxJvVSCr9/qyF1bk+tSV6j9bIHy3FrA0YxWTLo7d+/lx7RUuynU8U25lfQ7+HuZFe62jlaQYBZjWCkuxF0MsI6TdL+hJX9kY/zaHgDqGiNe+ZQV7mE+yBsJmBYqy5WXF2pwEo193+twl3howbMzWY/1HF20YAjL2VttsYxeeVlXx+eVc/yyPWejsfXWZloTKrk7Bl6bD/Knt4aHzAf5rAO/O02U758mhvFY9/dvva6Hm+4u7tV0XFfTcQ+Rpy4AapNsCAu8f61ZzLwf+yR29/B55eWvWeHKY8+XFa5vS6j8V8sV8lTStU1U6GWFG2eFG7VlfToAUTQVuv7JCufquGBlhfuQFe5e67u/p2te66pWjKdMOdsejbiU7xnlWp9INSv8US9bva3rijnafJC7rHDS8kzxG/nWy4kkt2vztVXut/J3nTdr3nInaRi0toS7R/RF1zhwKpoMK58k9a2rrYxxQGsJHWlzb9GD6mtBbFpPicOlXTvuU5YBz2Zaf/2O4UrS76xwP3Xcz1x5xpMXD1YFywctB8taWLh8kO8SCWds38jPGv8hP5GgtDKF3Vw9e/S1+YfxUT5QrlYc+VEFB9BK80H+lBUuvDGu26VebobHa+qarYI1InNtL3ep06m/+koYLO1zL+WvPU3+zGC9WQPn+Kjjx2CXEcpxVqpgWerlw+/XeUIbc3lt44lGev3LfaP972Ie5Sv5VwPsrav96tX/AHAqSjXftVndDD/Kt4CV8q0ba8d8Wrdc3x77XOhKnU6wHGWFcynG7drn7/RyLQgbU4CkYs85OVAv1oHCYFm5zAp3Xff6Ytbt7Sxg5jqsSfyn/KxW98Z78gOOC6A77pVuzNyl/DCbL5KUFW6h5Va5ng4PMNP5IJ/ZEKIm1RX8LuTHvjU2oTJoHf668k/hznBIo9Tr78u5OqnP4b30vBNH2DWQq6HtvIKAWY2bvLZHT8sV8lS+witlW39tq5wYpA2chTJ1AQIXijduzEU6zl7selDX4a/kw2Wti6Nb3Z9r837nZV3nxs5mqQuAeoRbOt7rZYJLrub2iZX0vFOPi3zY2McD0DI2zvJOp3cT6RKee6L6J1Z8lx/CNItxUAuTffkGirdaIyeJWoIRsO9Bo2u0ohlhsBzrJVh2fpFRG1tZV8UIoF2cTitY3iVeQ/Re9defXyR9sZm7pXwv1NZWTOvdupZU/Vk9dh1y4A4pLGpRiiEJJ+c5WNrdQ3iXOlJHfwGDHXgAnIH5IC8bnh1et1Hi899L+qehcz3P3LVWxIm9XtqfVYj8oOMnYj52ucHkBDHW9QSt7rwzCp5f2sSaLhrp9fhMAKdtlLoAkXyP1T18KDv/ZNv7alKtDPLVHh/t7zFW9xhFOAbiYU3RE7QULG0h0LAy6dzWSNYF/iV46af44QVOnrVEPaYux5EWak/4GaUuQGRTWivbxYZ73KUuB+JabbGUVlot1aHKxQZvhyFyIZYbAs5JnroARxomHlv5zBoaTumin6cuANZyqQuAuF4FS6tMfgYvfckKd9tYiQ4UbNUVzjDL21JJA6if1V/fU5fjQD9b2KI2lL9B77q/616bGYdZ01OKjlvXYin5O7uwMnEd2NB9rOUxON8P2W4NQOeN1L1x1a3sXbEb89Y3LGxxt25XNrRKrtO4gYE2BEurTPLgpWrHhFaGy6xwTstLjUzmg7zRdTgBtENQf3XlQrWQ1NhuNPuyFqXPqctxoLv5IM9TFwJvs8lio8TFQCSbWixlrX1/By+1MlyuCZVTdf8OG8ARrNuzr26Ey2Hbu2mti75r4ZJQ2SHWqnxKY3rP1sZgKa39RlfhMq+zULvICvdhTahcSLpt650/gOZ0JFx+buG4yrWCcNnmz7PyjVDZPfY969owFqx4M1hKz9/o1XD5Iyvcvc3Cbpydt9TrUNlPvf4bgPYIwmXbliFaSPpPV0JlxcrbV3sv/o+S/poP8lHqguAw80F+LVouO21rsJSew+XfKy9/lPSQFa7RtS6zwg0lPWh5os5UPlS2ujsJQPOsXrhWe2aLV/VVJycXBmH9W+KirPom6drGhKLDgszRhdZxrHi//S3efJCPs8I9yK85Ve1qcyG/M8IwK9xYkqurxdC630d6vWXbRC3v/rZF22NIulh9xK8jtQ+RvpZWjTfGZlY/DLPC3ev1ChJN+i5p1Ob6ahdW/pENRxop7T7td/Kf6SxhGRCZZQ4n//t6q+WlBNFiOwdL6Xk/3mv5tc2+Bv9UBcyvWeGqnW7uj6087Vy5/A/Vuj2Avx3Q5XGTFe7PMeU6wK+Gz1eXU/k6rnQ6Xwv2YK1Z12/cqNZlIh9+yobO1wgLc3lWuJH859lUAHiUb+SorTED6VUrPFiv6K09+iJkttpewVLa6U71oz1+ZIWbyo+FnMl3Xz+91V1tQfJa/genr82V/kQdmEkJ7MDJ/44caxbhGGfDxgo62/whl6+z6hAjULa+ngsCZhgAYn+mj/KNFmWkYQSxu/LLBs8lndHvvOUOZ48qK3yQzwl1Krf8u9vhPedmtnewrOx4p3qllS6nrHDhX6eSnuTD5C53ICd514/z1bXJG6fGAsp95BaRiV56bWYRytiZNXnXBIC+/Od5Lamn3YcgLOQDdfUoY7dMNjnBh8lEcQWNSmXicriU52+rd3/+xOkVrvFOtbpLdbRQAu1lISLGEIPJfJD3IxznYLbyRNWDIr3dMvKkl/BT1lqwE2CfbW/DP7/ZqwWg/aIFy1VH3qmW1YNKBuiGUwqWAIDDHNwVvo3duZerr2+ZjfvQ9dmSAAAA56q2YLkJXUUAAACnaacF0gEAAIBtCJYAAACIgmAJAACAKAiWAAAAiIJgCQAAgCgIlgAAAIiCYAkAAIAoCJYAAACIgmAJAACAKAiWAAAAiIJgCQAAgCgIlgAAAIiCYAkAAIAoCJYAAACIgmAJAACAKAiWAAAAiIJgCQAAgCgIlgAAAIiCYAkAAIAoCJYAAACIgmAJAACAKAiWAAAAiOJ96gIAOBkPkv6KcJynCMcAACTw/6L9hholrdcOAAAAAElFTkSuQmCC" alt="Um Quarto"></div>
-        <nav class="nav" id="nav"></nav>
-        <div class="side-bottom">
-          <button id="switch-role-btn" class="btn btn-light btn-small" style="display:none" onclick="showScreen('role')">Trocar modo</button>
-          <button class="btn btn-light btn-small" onclick="logout()">Sair</button>
+      <!-- FLASHCARDS -->
+      <section id="tab-flashcards" class="tab">
+        <div class="grid grid-2">
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <div class="section-title">Criar flashcard</div>
+              <div class="field"><label>Categoria</label><input id="fc-cat" class="input" placeholder="Ex.: Matemática"></div>
+              <div class="field"><label>Pergunta</label><textarea id="fc-q" class="textarea" placeholder="Ex.: O que é uma equação do 1º grau?"></textarea></div>
+              <div class="field"><label>Resposta</label><textarea id="fc-a" class="textarea" placeholder="Explique com suas palavras"></textarea></div>
+              <button class="btn btn-primary" onclick="addFlashcard()">Criar cartão</button>
+            </div>
+            <div class="card"><div class="section-title">Meus cartões</div><div id="flash-list" class="list"></div></div>
+          </div>
+          <div class="card">
+            <div class="section-title">Revisar</div>
+            <div id="flash-viewer"></div>
+            <div class="timer-actions" style="margin-top:14px">
+              <button class="btn btn-light" onclick="prevFlash()">Anterior</button>
+              <button class="btn btn-primary" onclick="nextFlash()">Próximo</button>
+            </div>
+          </div>
         </div>
-      </aside>
-      <main class="main">
-        <header class="app-head">
-          <div><h2 id="page-title">Painel</h2><p id="page-subtitle">Comece pequeno. Continue constante.</p></div>
-          <div class="avatar" id="avatar">U</div>
-        </header>
+      </section>
 
-        <section id="tab-dashboard" class="tab active">
-          <div class="grid grid-4" style="margin-bottom:16px">
-            <div class="card stat pattern"><div class="num" id="dash-min">0</div><div class="label">min estudados</div><div class="hint">Total acumulado</div></div>
-            <div class="card stat"><div class="num" id="dash-pending">0</div><div class="label">pendências</div><div class="hint">Tarefas e provas</div></div>
-            <div class="card stat"><div class="num" id="dash-classes">0</div><div class="label">aulas</div><div class="hint">Registradas</div></div>
-            <div class="card stat"><div class="num" id="dash-cards">0</div><div class="label">flashcards</div><div class="hint">Criados por você</div></div>
-          </div>
-          <div class="grid grid-2">
-            <div class="card quote"><h3>Mensagem do dia</h3><p>Um quarto de hora bem feito vale mais que uma hora cheia de distrações.</p></div>
-            <div class="card"><div class="section-title">Próximo passo</div><div id="next-step"></div></div>
-          </div>
-        </section>
+      <!-- HÁBITOS -->
+      <section id="tab-habits" class="tab">
+        <div class="card" style="margin-bottom:16px">
+          <div class="section-title">Novo hábito</div>
+          <div class="form-row"><input id="habit-name" class="input" placeholder="Ex.: ler 10 minutos"><button class="btn btn-primary" onclick="addHabit()">Adicionar hábito</button></div>
+        </div>
+        <div class="card"><div class="section-title">Minha semana</div><div id="habit-list" class="list"></div></div>
+      </section>
 
-        <section id="tab-timer" class="tab">
-          <div class="grid grid-2">
-            <div class="card timer-box">
-              <div class="modes">
-                <button class="mode active" data-mode="15" onclick="setMode(15,5)">15/5</button>
-                <button class="mode" data-mode="25" onclick="setMode(25,5)">25/5</button>
-                <button class="mode" data-mode="50" onclick="setMode(50,10)">50/10</button>
-                <button class="mode" data-mode="90" onclick="setMode(90,15)">90/15</button>
-                <button class="mode" data-mode="custom" onclick="applyCustomMode()">Livre</button>
-              </div>
-              <div class="timer" id="timer-ring"><div class="timer-inner"><div><div class="time" id="time">15:00</div><div class="timer-label" id="timer-label">Foco</div></div></div></div>
-              <div class="timer-actions">
-                <button class="btn btn-light" onclick="resetTimer()">Reset</button>
-                <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()">Iniciar</button>
-                <button class="btn btn-dark" onclick="startBreak()">Descanso</button>
-              </div>
-              <div class="form-row">
-                <div class="field"><label>Foco livre (min)</label><input id="custom-focus" class="input" type="number" value="40" min="1"></div>
-                <div class="field"><label>Descanso (min)</label><input id="custom-rest" class="input" type="number" value="10" min="1"></div>
-              </div>
-              <div class="field" style="text-align:left"><label>Tarefa opcional do foco</label><input id="focus-task" class="input" placeholder="Ex.: revisar equações"></div>
-            </div>
-            <div class="card">
-              <div class="section-title">Tarefas rápidas do timer</div>
-              <div class="form-row"><input id="quick-task" class="input" placeholder="Adicionar tarefa rápida"><button class="btn btn-primary" onclick="addQuickTask()">Adicionar</button></div>
-              <div id="quick-list" class="list" style="margin-top:14px"></div>
-            </div>
+      <!-- PROGRESSO -->
+      <section id="tab-progress" class="tab">
+        <div class="grid grid-2">
+          <div class="card"><div class="section-title">Resumo geral</div><div id="progress-summary"></div></div>
+          <div class="card"><div class="section-title">Meta semanal</div>
+            <p style="color:var(--muted)">Meta sugerida: 150 minutos.</p>
+            <div class="bar"><div id="weekly-bar"></div></div>
+            <p id="weekly-text" style="color:var(--muted);font-weight:1000;margin-top:10px"></p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="tab-tasks" class="tab">
-          <div class="card" style="margin-bottom:16px">
-            <div class="section-title">Nova tarefa pessoal</div>
-            <div class="form-row"><input id="task-title" class="input" placeholder="Tarefa"><input id="task-subject" class="input" placeholder="Matéria"></div>
-            <div class="form-row" style="margin-top:12px"><input id="task-date" type="date" class="input"><button class="btn btn-primary" onclick="addTask()">Adicionar</button></div>
+      <!-- GESTÃO (professor) -->
+      <section id="tab-teacher" class="tab">
+        <div class="grid grid-4" style="margin-bottom:16px">
+          <div class="card stat"><div class="num" id="t-students">0</div><div class="label">alunos</div><div class="hint">vinculados</div></div>
+          <div class="card stat"><div class="num" id="t-lessons">0</div><div class="label">aulas</div><div class="hint">lançadas</div></div>
+          <div class="card stat"><div class="num" id="t-tasks">0</div><div class="label">tarefas</div><div class="hint">enviadas</div></div>
+          <div class="card stat"><div class="num" id="t-tests">0</div><div class="label">provas</div><div class="hint">enviadas</div></div>
+        </div>
+        <div class="notice" style="margin-bottom:16px">
+          ✅ <strong>Firebase ativo:</strong> alunos podem vincular de qualquer dispositivo. Código do estudante: <b id="student-code-display">umquarto2026</b>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="section-title">Vincular aluno</div>
+            <div class="field"><label>Email do aluno cadastrado</label><input id="link-student-email" class="input" placeholder="aluno@email.com"></div>
+            <button class="btn btn-primary" onclick="linkStudent()">Vincular aluno</button>
+            <div class="section-title" style="margin-top:18px">Alunos vinculados</div>
+            <div id="linked-list" class="list"></div>
           </div>
-          <div class="card"><div class="section-title">Minhas tarefas</div><div id="task-list" class="list"></div></div>
-        </section>
+          <div class="card">
+            <div class="section-title">Selecionar alunos</div>
+            <div id="student-picker" class="student-picker"></div>
+          </div>
+        </div>
+        <div class="grid grid-3" style="margin-top:16px">
+          <div class="card">
+            <div class="section-title">Lançar aula dada</div>
+            <div class="field"><label>Matéria</label><input id="mg-lesson-subject" class="input" placeholder="Matemática"></div>
+            <div class="field"><label>Data</label><input id="mg-lesson-date" class="input" type="date"></div>
+            <div class="field"><label>Conteúdo</label><textarea id="mg-lesson-topic" class="textarea" placeholder="Conteúdo dado"></textarea></div>
+            <button class="btn btn-primary" onclick="teacherCreateLesson()">Enviar aula</button>
+          </div>
+          <div class="card">
+            <div class="section-title">Passar tarefa</div>
+            <div class="field"><label>Título</label><input id="mg-task-title" class="input" placeholder="Lista de exercícios"></div>
+            <div class="field"><label>Prazo</label><input id="mg-task-date" class="input" type="date"></div>
+            <div class="field"><label>Descrição</label><textarea id="mg-task-desc" class="textarea" placeholder="O que o aluno deve fazer"></textarea></div>
+            <button class="btn btn-primary" onclick="teacherCreateTask()">Enviar tarefa</button>
+          </div>
+          <div class="card">
+            <div class="section-title">Passar prova</div>
+            <div class="field"><label>Título</label><input id="mg-test-title" class="input" placeholder="Prova de revisão"></div>
+            <div class="field"><label>Data</label><input id="mg-test-date" class="input" type="date"></div>
+            <div class="field"><label>Orientações</label><textarea id="mg-test-desc" class="textarea" placeholder="Conteúdo, instruções, formato"></textarea></div>
+            <button class="btn btn-primary" onclick="teacherCreateTest()">Enviar prova</button>
+          </div>
+        </div>
+      </section>
 
-        <section id="tab-classes" class="tab">
-          <div class="card" style="margin-bottom:16px">
-            <div class="section-title">Registrar aula pessoal</div>
-            <div class="form-row"><input id="class-subject" class="input" placeholder="Matéria"><input id="class-date" type="date" class="input"></div>
-            <div class="form-row" style="margin-top:12px"><input id="class-min" type="number" class="input" placeholder="Duração em minutos"><input id="class-topic" class="input" placeholder="Conteúdo estudado"></div>
-            <div class="field" style="margin-top:12px"><textarea id="class-notes" class="textarea" placeholder="Observações e dúvidas"></textarea></div>
-            <button class="btn btn-primary" onclick="addClass()">Registrar aula</button>
-          </div>
-          <div class="card"><div class="section-title">Aulas e registros</div><div id="class-list" class="list"></div></div>
-        </section>
+    </main>
+  </div>
+</section>
 
-        <section id="tab-flashcards" class="tab">
-          <div class="grid grid-2">
-            <div>
-              <div class="card" style="margin-bottom:16px">
-                <div class="section-title">Criar flashcard</div>
-                <div class="field"><label>Categoria</label><input id="fc-cat" class="input" placeholder="Ex.: Matemática"></div>
-                <div class="field"><label>Pergunta</label><textarea id="fc-q" class="textarea" placeholder="Ex.: O que é uma equação do 1º grau?"></textarea></div>
-                <div class="field"><label>Resposta</label><textarea id="fc-a" class="textarea" placeholder="Explique com suas palavras"></textarea></div>
-                <button class="btn btn-primary" onclick="addFlashcard()">Criar cartão</button>
-              </div>
-              <div class="card"><div class="section-title">Meus cartões</div><div id="flash-list" class="list"></div></div>
-            </div>
-            <div class="card">
-              <div class="section-title">Revisar</div>
-              <div id="flash-viewer"></div>
-              <div class="timer-actions" style="margin-top:14px"><button class="btn btn-light" onclick="prevFlash()">Anterior</button><button class="btn btn-primary" onclick="nextFlash()">Próximo</button></div>
-            </div>
-          </div>
-        </section>
-
-        <section id="tab-habits" class="tab">
-          <div class="card" style="margin-bottom:16px">
-            <div class="section-title">Novo hábito</div>
-            <div class="form-row"><input id="habit-name" class="input" placeholder="Ex.: ler 10 minutos"><button class="btn btn-primary" onclick="addHabit()">Adicionar hábito</button></div>
-          </div>
-          <div class="card"><div class="section-title">Minha semana</div><div id="habit-list" class="list"></div></div>
-        </section>
-
-        <section id="tab-progress" class="tab">
-          <div class="grid grid-2">
-            <div class="card"><div class="section-title">Resumo geral</div><div id="progress-summary"></div></div>
-            <div class="card"><div class="section-title">Meta semanal</div><p style="color:var(--muted)">Meta sugerida: 150 minutos.</p><div class="bar"><div id="weekly-bar"></div></div><p id="weekly-text" style="color:var(--muted);font-weight:1000;margin-top:10px"></p></div>
-          </div>
-        </section>
-
-        <section id="tab-teacher" class="tab">
-          <div class="grid grid-4" style="margin-bottom:16px">
-            <div class="card stat"><div class="num" id="t-students">0</div><div class="label">alunos</div><div class="hint">vinculados</div></div>
-            <div class="card stat"><div class="num" id="t-lessons">0</div><div class="label">aulas</div><div class="hint">lançadas</div></div>
-            <div class="card stat"><div class="num" id="t-tasks">0</div><div class="label">tarefas</div><div class="hint">enviadas</div></div>
-            <div class="card stat"><div class="num" id="t-tests">0</div><div class="label">provas</div><div class="hint">enviadas</div></div>
-          </div>
-          <div class="notice" style="margin-bottom:16px"><strong>Protótipo local:</strong> alunos usam o código <b>umquarto2026</b>. Professor usa o código <b>UMQ-PROF-2026</b>. Para vincular alunos, as contas precisam existir neste mesmo navegador. Depois, com Firebase, isso funciona entre dispositivos.</div>
-          <div class="grid grid-2">
-            <div class="card">
-              <div class="section-title">Vincular aluno</div>
-              <div class="field"><label>Email do aluno cadastrado</label><input id="link-student-email" class="input" placeholder="aluno@email.com"></div>
-              <button class="btn btn-primary" onclick="linkStudent()">Vincular aluno</button>
-              <div class="section-title" style="margin-top:18px">Alunos vinculados</div>
-              <div id="linked-list" class="list"></div>
-            </div>
-            <div class="card">
-              <div class="section-title">Selecionar alunos</div>
-              <div id="student-picker" class="student-picker"></div>
-            </div>
-          </div>
-          <div class="grid grid-3" style="margin-top:16px">
-            <div class="card">
-              <div class="section-title">Lançar aula dada</div>
-              <div class="field"><label>Matéria</label><input id="mg-lesson-subject" class="input" placeholder="Matemática"></div>
-              <div class="field"><label>Data</label><input id="mg-lesson-date" class="input" type="date"></div>
-              <div class="field"><label>Conteúdo</label><textarea id="mg-lesson-topic" class="textarea" placeholder="Conteúdo dado"></textarea></div>
-              <button class="btn btn-primary" onclick="teacherCreateLesson()">Enviar aula</button>
-            </div>
-            <div class="card">
-              <div class="section-title">Passar tarefa</div>
-              <div class="field"><label>Título</label><input id="mg-task-title" class="input" placeholder="Lista de exercícios"></div>
-              <div class="field"><label>Prazo</label><input id="mg-task-date" class="input" type="date"></div>
-              <div class="field"><label>Descrição</label><textarea id="mg-task-desc" class="textarea" placeholder="O que o aluno deve fazer"></textarea></div>
-              <button class="btn btn-primary" onclick="teacherCreateTask()">Enviar tarefa</button>
-            </div>
-            <div class="card">
-              <div class="section-title">Passar prova</div>
-              <div class="field"><label>Título</label><input id="mg-test-title" class="input" placeholder="Prova de revisão"></div>
-              <div class="field"><label>Data</label><input id="mg-test-date" class="input" type="date"></div>
-              <div class="field"><label>Orientações</label><textarea id="mg-test-desc" class="textarea" placeholder="Conteúdo, instruções, formato"></textarea></div>
-              <button class="btn btn-primary" onclick="teacherCreateTest()">Enviar prova</button>
-            </div>
-          </div>
-        </section>
-      </main>
-    </div>
-  </section>
-
+<!-- ============================================================
+     JAVASCRIPT — FIREBASE + LÓGICA
+     ============================================================ -->
 <script>
-const KEY="umQuarto_v2";
-const TEACHER_CODE="UMQ-PROF-2026";
-const STUDENT_CODE="umquarto2026";
-let registerRole="student";
-let flashIndex=0, flashShowingAnswer=false;
-let timer={focusMin:15,restMin:5,total:900,left:900,running:false,isBreak:false,int:null};
-
-let state={
-  current:null, activeMode:"student",
-  users:[], links:[], tasks:[], classes:[], habits:[], quickTasks:[], flashcards:[], managedLessons:[], managedTasks:[], tests:[], studyMinutes:0
+// ================================================================
+// 1. CONFIGURAÇÃO DO FIREBASE
+//    ⚠️  SUBSTITUA pelos seus dados do Firebase Console
+// ================================================================
+const firebaseConfig = {
+  apiKey:            "COLE_AQUI_SUA_API_KEY",
+  authDomain:        "COLE_AQUI.firebaseapp.com",
+  projectId:         "COLE_AQUI_SEU_PROJECT_ID",
+  storageBucket:     "COLE_AQUI.appspot.com",
+  messagingSenderId: "COLE_AQUI",
+  appId:             "COLE_AQUI"
 };
 
-function load(){try{const s=localStorage.getItem(KEY);if(s)state={...state,...JSON.parse(s)}}catch{}}
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function showScreen(n){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(n+"-screen").classList.add("active");scrollTo(0,0)}
-function msg(id,text,type){const e=document.getElementById(id);e.className="msg "+type;e.textContent=text}
-function clearMsg(id){const e=document.getElementById(id);e.className="msg";e.textContent=""}
-function setRegisterRole(r){
-  registerRole=r;
-  document.getElementById("role-student").classList.toggle("active",r==="student");
-  document.getElementById("role-teacher").classList.toggle("active",r==="teacher");
-  document.getElementById("student-code-box").style.display=r==="student"?"block":"none";
-  document.getElementById("teacher-code-box").style.display=r==="teacher"?"block":"none";
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// ================================================================
+// 2. CONSTANTES
+// ================================================================
+const TEACHER_CODE  = "UMQ-PROF-2026";   // código p/ criar conta professor
+const STUDENT_CODE  = "umquarto2026";    // código padrão de turma
+let registerRole    = "student";
+let flashIndex      = 0;
+let flashShowingAnswer = false;
+let timer = {focusMin:15,restMin:5,total:900,left:900,running:false,isBreak:false,int:null};
+
+// estado em memória (sincronizado com Firestore)
+let state = {
+  current:null, activeMode:"student",
+  tasks:[], classes:[], habits:[], quickTasks:[], flashcards:[],
+  managedLessons:[], managedTasks:[], tests:[], links:[], users:[],
+  studyMinutes:0
+};
+
+let unsubscribeSnapshot = null;  // para cancelar listener do Firestore
+
+// ================================================================
+// 3. AUTENTICAÇÃO
+// ================================================================
+
+// Observa mudança de estado de login
+auth.onAuthStateChanged(async user => {
+  if (user) {
+    // busca perfil no Firestore
+    const doc = await db.collection("users").doc(user.uid).get();
+    if (!doc.exists) {
+      // conta Google sem perfil criado → precisa escolher papel
+      showScreen("register");
+      return;
+    }
+    const profile = doc.data();
+    state.current = {
+      id: user.uid,
+      name: profile.name || user.displayName || "Usuário",
+      email: user.email,
+      role: profile.role || "student",
+      emailVerified: user.emailVerified
+    };
+    subscribeToState();
+    if (profile.role === "teacher") showScreen("role");
+    else enterApp("student");
+  } else {
+    if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot = null; }
+    state.current = null;
+    showScreen("landing");
+  }
+});
+
+// Login com Google
+async function loginGoogle() {
+  clearMsg("login-msg"); clearMsg("register-msg");
+  const provider = new firebase.auth.GoogleAuthProvider();
+  try {
+    const result = await auth.signInWithPopup(provider);
+    const user   = result.user;
+    const doc    = await db.collection("users").doc(user.uid).get();
+    if (!doc.exists) {
+      // primeiro acesso Google → define como estudante por padrão
+      await db.collection("users").doc(user.uid).set({
+        name: user.displayName || "Usuário",
+        email: user.email,
+        role: "student",
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    }
+    // onAuthStateChanged cuida do restante
+  } catch(e) { showAuthError(e); }
 }
-function register(){
-  clearMsg("register-msg");
-  const name=v("reg-name"), email=v("reg-email").toLowerCase(), pass=v("reg-pass");
-  const teacherCode=v("reg-teacher-code");
-  const studentCode=v("reg-student-code").toLowerCase();
-  if(!name||!email||!pass){msg("register-msg","Preencha nome, email e senha.","error");return}
-  if(pass.length<4){msg("register-msg","Senha mínima: 4 caracteres.","error");return}
-  if(state.users.some(u=>u.email===email)){msg("register-msg","Este email já está cadastrado.","error");return}
-  if(registerRole==="student"&&studentCode!==STUDENT_CODE){msg("register-msg","Código do professor inválido. Peça o código correto ao professor.","error");return}
-  if(registerRole==="teacher"&&teacherCode!==TEACHER_CODE){msg("register-msg","Código de professor inválido.","error");return}
-  const user={id:String(Date.now()),name,email,pass,role:registerRole,verified:registerRole==="teacher",studentCode:registerRole==="student"?studentCode:""};
-  state.users.push(user);
-  state.current={id:user.id,name:user.name,email:user.email,role:user.role,verified:user.verified};
-  save();
-  user.role==="teacher"?showScreen("role"):enterApp("student");
-}
-function login(){
+
+// Login com email/senha
+async function loginEmail() {
   clearMsg("login-msg");
-  const email=v("login-email").toLowerCase(), pass=v("login-pass");
-  const user=state.users.find(u=>u.email===email&&u.pass===pass);
-  if(!user){msg("login-msg","Email ou senha incorretos.","error");return}
-  state.current={id:user.id,name:user.name,email:user.email,role:user.role,verified:user.verified};save();
-  user.role==="teacher"?showScreen("role"):enterApp("student");
+  const email = v("login-email"), pass = v("login-pass");
+  if (!email || !pass) { msg("login-msg","Preencha email e senha.","error"); return; }
+  try {
+    await auth.signInWithEmailAndPassword(email, pass);
+  } catch(e) { showAuthError(e,"login-msg"); }
 }
-function logout(){state.current=null;state.activeMode="student";save();showScreen("landing")}
-function enterApp(mode){state.activeMode=mode;save();buildNav();showScreen("app");openTab(mode==="teacher"?"teacher":"dashboard");document.getElementById("switch-role-btn").style.display=state.current?.role==="teacher"?"inline-flex":"none";document.getElementById("avatar").textContent=(state.current?.name||"U")[0].toUpperCase()}
-function buildNav(){
-  const nav=document.getElementById("nav");
-  if(state.activeMode==="teacher"){
-    nav.innerHTML=`<button data-tab="teacher" onclick="openTab('teacher')">👨‍🏫 <span>Gestão</span></button><button data-tab="dashboard" onclick="enterApp('student')">🎒 <span>Modo aluno</span></button>`;
-  }else{
-    nav.innerHTML=[
-      ["dashboard","🏠","Painel"],["timer","⏱️","Timer"],["tasks","✅","Tarefas"],["classes","📚","Aulas"],["flashcards","🃏","Cards"],["progress","📊","Progresso"]
+
+// Cadastro com email/senha
+async function registerEmail() {
+  clearMsg("register-msg");
+  const name  = v("reg-name");
+  const email = v("reg-email");
+  const pass  = v("reg-pass");
+  const tCode = v("reg-teacher-code");
+  const sCode = v("reg-student-code").toLowerCase();
+
+  if (!name || !email || !pass) { msg("register-msg","Preencha nome, email e senha.","error"); return; }
+  if (pass.length < 6)          { msg("register-msg","Senha mínima: 6 caracteres.","error"); return; }
+  if (registerRole === "student" && sCode !== STUDENT_CODE) {
+    msg("register-msg","Código do professor inválido.","error"); return;
+  }
+  if (registerRole === "teacher" && tCode !== TEACHER_CODE) {
+    msg("register-msg","Código de professor inválido.","error"); return;
+  }
+  try {
+    const cred = await auth.createUserWithEmailAndPassword(email, pass);
+    // envia verificação de email
+    await cred.user.sendEmailVerification();
+    // salva perfil no Firestore
+    await db.collection("users").doc(cred.user.uid).set({
+      name, email, role: registerRole,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    // onAuthStateChanged cuida do resto
+  } catch(e) { showAuthError(e,"register-msg"); }
+}
+
+// Reenviar verificação
+async function resendVerification() {
+  if (auth.currentUser) {
+    await auth.currentUser.sendEmailVerification();
+    alert("E-mail de verificação reenviado!");
+  }
+}
+
+// Logout
+function logout() {
+  if (unsubscribeSnapshot) { unsubscribeSnapshot(); unsubscribeSnapshot=null; }
+  auth.signOut();
+}
+
+// Traduz erros do Firebase
+function showAuthError(e, target="login-msg") {
+  const map = {
+    "auth/user-not-found":"Usuário não encontrado.",
+    "auth/wrong-password":"Senha incorreta.",
+    "auth/email-already-in-use":"Este e-mail já está cadastrado.",
+    "auth/invalid-email":"E-mail inválido.",
+    "auth/weak-password":"Senha muito fraca (mínimo 6 caracteres).",
+    "auth/popup-closed-by-user":"Login cancelado.",
+    "auth/network-request-failed":"Sem conexão. Verifique a internet."
+  };
+  msg(target, map[e.code] || e.message, "error");
+}
+
+// ================================================================
+// 4. FIRESTORE — sincronização em tempo real
+// ================================================================
+function subscribeToState() {
+  if (unsubscribeSnapshot) unsubscribeSnapshot();
+  const uid = state.current.id;
+
+  unsubscribeSnapshot = db.collection("state").doc(uid)
+    .onSnapshot(snap => {
+      if (snap.exists) {
+        const d = snap.data();
+        state.tasks           = d.tasks           || [];
+        state.classes         = d.classes         || [];
+        state.habits          = d.habits          || [];
+        state.quickTasks      = d.quickTasks      || [];
+        state.flashcards      = d.flashcards      || [];
+        state.managedLessons  = d.managedLessons  || [];
+        state.managedTasks    = d.managedTasks    || [];
+        state.tests           = d.tests           || [];
+        state.links           = d.links           || [];
+        state.users           = d.users           || [];
+        state.studyMinutes    = d.studyMinutes    || 0;
+      }
+      renderAll();
+    });
+}
+
+function save() {
+  if (!state.current) return;
+  db.collection("state").doc(state.current.id).set({
+    tasks: state.tasks, classes: state.classes, habits: state.habits,
+    quickTasks: state.quickTasks, flashcards: state.flashcards,
+    managedLessons: state.managedLessons, managedTasks: state.managedTasks,
+    tests: state.tests, links: state.links, users: state.users,
+    studyMinutes: state.studyMinutes,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  }, {merge: true});
+}
+
+// ================================================================
+// 5. NAVEGAÇÃO
+// ================================================================
+function showScreen(n) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(n+"-screen").classList.add("active");
+  scrollTo(0,0);
+}
+
+function msg(id, text, type) {
+  const e = document.getElementById(id);
+  if (!e) return;
+  e.className = "msg " + type;
+  e.textContent = text;
+}
+
+function clearMsg(id) {
+  const e = document.getElementById(id);
+  if (!e) return;
+  e.className = "msg";
+  e.textContent = "";
+}
+
+function setRegisterRole(r) {
+  registerRole = r;
+  document.getElementById("role-student").classList.toggle("active", r==="student");
+  document.getElementById("role-teacher").classList.toggle("active", r==="teacher");
+  document.getElementById("student-code-box").style.display = r==="student" ? "block":"none";
+  document.getElementById("teacher-code-box").style.display = r==="teacher" ? "block":"none";
+}
+
+function enterApp(mode) {
+  state.activeMode = mode;
+  buildNav();
+  showScreen("app");
+  openTab(mode==="teacher" ? "teacher" : "dashboard");
+  document.getElementById("switch-role-btn").style.display =
+    state.current?.role === "teacher" ? "inline-flex":"none";
+  document.getElementById("avatar").textContent =
+    (state.current?.name || "U")[0].toUpperCase();
+
+  // banner verificação de e-mail
+  const vb = document.getElementById("verify-banner");
+  if (auth.currentUser && !auth.currentUser.emailVerified &&
+      auth.currentUser.providerData[0]?.providerId === "password") {
+    vb.style.display = "flex";
+  } else {
+    vb.style.display = "none";
+  }
+}
+
+function buildNav() {
+  const nav = document.getElementById("nav");
+  if (state.activeMode === "teacher") {
+    nav.innerHTML = `<button data-tab="teacher" onclick="openTab('teacher')">👨‍🏫 <span>Gestão</span></button>
+      <button data-tab="dashboard" onclick="enterApp('student')">🎒 <span>Modo aluno</span></button>`;
+  } else {
+    nav.innerHTML = [
+      ["dashboard","🏠","Painel"],["timer","⏱️","Timer"],
+      ["tasks","✅","Tarefas"],["classes","📚","Aulas"],
+      ["flashcards","🃏","Cards"],["progress","📊","Progresso"]
     ].map(x=>`<button data-tab="${x[0]}" onclick="openTab('${x[0]}')">${x[1]} <span>${x[2]}</span></button>`).join("");
   }
 }
-function openTab(tab){
-  const titles={dashboard:["Painel","Comece pequeno. Continue constante."],timer:["Timer","Escolha foco, pausa e tarefa livre."],tasks:["Tarefas","Pessoais e enviadas pelo professor."],classes:["Aulas","Registre estudos e acompanhe aulas dadas."],flashcards:["Flashcards","Crie cartões e revise ativamente."],habits:["Hábitos","Rotina pessoal."],progress:["Progresso","Veja sua evolução."],teacher:["Gestão","Vincule alunos e lance aulas, tarefas e provas."]};
-  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));document.getElementById("tab-"+tab).classList.add("active");
+
+function openTab(tab) {
+  const titles = {
+    dashboard:["Painel","Comece pequeno. Continue constante."],
+    timer:["Timer","Escolha foco, pausa e tarefa livre."],
+    tasks:["Tarefas","Pessoais e enviadas pelo professor."],
+    classes:["Aulas","Registre estudos e acompanhe aulas dadas."],
+    flashcards:["Flashcards","Crie cartões e revise ativamente."],
+    habits:["Hábitos","Rotina pessoal."],
+    progress:["Progresso","Veja sua evolução."],
+    teacher:["Gestão","Vincule alunos e lance aulas, tarefas e provas."]
+  };
+  document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.tab===tab));
-  document.getElementById("page-title").textContent=titles[tab][0];document.getElementById("page-subtitle").textContent=titles[tab][1];
+  document.getElementById("page-title").textContent = titles[tab][0];
+  document.getElementById("page-subtitle").textContent = titles[tab][1];
   renderAll();
 }
-function id(){return state.current?.id}
-function byUser(arr){return arr.filter(x=>x.userId===id())}
-function linkedIds(){return state.links.filter(l=>l.teacherId===id()).map(l=>l.studentId)}
-function assignedToMe(arr){return arr.filter(x=>(x.studentIds||[]).includes(id()))}
-function v(id){return document.getElementById(id).value.trim()}
-function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function renderAll(){renderDashboard();renderQuick();renderTasks();renderClasses();renderHabits();renderFlash();renderProgress();renderTeacher();updateTimer()}
-function renderDashboard(){
-  const pending=[...byUser(state.tasks).filter(t=>!t.done),...assignedToMe(state.managedTasks).filter(t=>!t.done?.[id()]),...assignedToMe(state.tests).filter(t=>!t.done?.[id()])];
-  document.getElementById("dash-min").textContent=state.studyMinutes||0;
-  document.getElementById("dash-pending").textContent=pending.length;
-  document.getElementById("dash-classes").textContent=byUser(state.classes).length+assignedToMe(state.managedLessons).length;
-  document.getElementById("dash-cards").textContent=byUser(state.flashcards).length;
-  const n=document.getElementById("next-step");
-  n.innerHTML=pending.length?`<div class="item"><div><div class="item-title">${escapeHtml(pending[0].title||pending[0].topic)}</div><div class="item-sub">${escapeHtml(pending[0].desc||pending[0].subject||"Pendência")}</div></div></div>`:`<div class="empty"><strong>Nenhuma pendência.</strong>Cadastre uma tarefa ou revise seus flashcards.</div>`;
+
+// ================================================================
+// 6. HELPERS
+// ================================================================
+const id  = ()=> state.current?.id;
+const byUser     = arr => arr.filter(x => x.userId === id());
+const linkedIds  = ()=> state.links.filter(l=>l.teacherId===id()).map(l=>l.studentId);
+const assignedToMe = arr => arr.filter(x=>(x.studentIds||[]).includes(id()));
+const v = _id => document.getElementById(_id)?.value.trim() || "";
+const escapeHtml = s => String(s||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const userName = uid => state.users.find(u=>u.id===uid)?.name || "—";
+
+function renderAll() {
+  renderDashboard(); renderQuick(); renderTasks(); renderClasses();
+  renderHabits(); renderFlash(); renderProgress(); renderTeacher(); updateTimer();
 }
-function setMode(f,r){timer.focusMin=f;timer.restMin=r;timer.isBreak=false;timer.total=f*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.querySelectorAll(".mode").forEach(m=>m.classList.toggle("active",m.dataset.mode==f));document.getElementById("timer-btn").textContent="Iniciar";updateTimer()}
+
+// ================================================================
+// 7. RENDERIZAÇÕES (igual ao original, sem mudança de lógica)
+// ================================================================
+function renderDashboard() {
+  const pending = [
+    ...byUser(state.tasks).filter(t=>!t.done),
+    ...assignedToMe(state.managedTasks).filter(t=>!t.done?.[id()]),
+    ...assignedToMe(state.tests).filter(t=>!t.done?.[id()])
+  ];
+  document.getElementById("dash-min").textContent     = state.studyMinutes||0;
+  document.getElementById("dash-pending").textContent = pending.length;
+  document.getElementById("dash-classes").textContent =
+    byUser(state.classes).length + assignedToMe(state.managedLessons).length;
+  document.getElementById("dash-cards").textContent   = byUser(state.flashcards).length;
+  const n = document.getElementById("next-step");
+  n.innerHTML = pending.length
+    ? `<div class="item"><div><div class="item-title">${escapeHtml(pending[0].title||pending[0].topic)}</div>
+       <div class="item-sub">${escapeHtml(pending[0].desc||pending[0].subject||"Pendência")}</div></div></div>`
+    : `<div class="empty"><strong>Nenhuma pendência.</strong>Cadastre uma tarefa ou revise seus flashcards.</div>`;
+}
+
+function setMode(f,r){
+  timer.focusMin=f;timer.restMin=r;timer.isBreak=false;
+  timer.total=f*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);
+  document.querySelectorAll(".mode").forEach(m=>m.classList.toggle("active",m.dataset.mode==f));
+  document.getElementById("timer-btn").textContent="Iniciar";updateTimer();
+}
 function applyCustomMode(){setMode(Math.max(1,Number(v("custom-focus"))||40),Math.max(1,Number(v("custom-rest"))||10));document.querySelectorAll(".mode").forEach(m=>m.classList.toggle("active",m.dataset.mode==="custom"))}
 function startBreak(){timer.isBreak=true;timer.total=timer.restMin*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.getElementById("timer-btn").textContent="Iniciar";updateTimer()}
-function toggleTimer(){if(timer.running){timer.running=false;clearInterval(timer.int);document.getElementById("timer-btn").textContent="Continuar";return}timer.running=true;document.getElementById("timer-btn").textContent="Pausar";timer.int=setInterval(()=>{timer.left--;if(timer.left<=0){clearInterval(timer.int);timer.running=false;if(!timer.isBreak){state.studyMinutes=(state.studyMinutes||0)+timer.focusMin;save();alert("Foco concluído! +"+timer.focusMin+" minutos.");startBreak()}else{alert("Descanso concluído.");setMode(timer.focusMin,timer.restMin)}renderAll()}updateTimer()},1000)}
+function toggleTimer(){
+  if(timer.running){timer.running=false;clearInterval(timer.int);document.getElementById("timer-btn").textContent="Continuar";return}
+  timer.running=true;document.getElementById("timer-btn").textContent="Pausar";
+  timer.int=setInterval(()=>{
+    timer.left--;
+    if(timer.left<=0){
+      clearInterval(timer.int);timer.running=false;
+      if(!timer.isBreak){state.studyMinutes=(state.studyMinutes||0)+timer.focusMin;save();alert("Foco concluído! +"+timer.focusMin+" minutos.");startBreak()}
+      else{alert("Descanso concluído.");setMode(timer.focusMin,timer.restMin)}
+      renderAll();
+    }
+    updateTimer();
+  },1000);
+}
 function resetTimer(){timer.running=false;clearInterval(timer.int);timer.left=timer.total;document.getElementById("timer-btn").textContent="Iniciar";updateTimer()}
 function updateTimer(){const m=String(Math.floor(timer.left/60)).padStart(2,"0"),s=String(timer.left%60).padStart(2,"0");document.getElementById("time").textContent=m+":"+s;document.getElementById("timer-label").textContent=timer.isBreak?"Descanso":"Foco";document.getElementById("timer-ring").style.setProperty("--deg",(timer.left/timer.total*360)+"deg")}
 function addQuickTask(){const text=v("quick-task");if(!text)return;state.quickTasks.push({id:String(Date.now()),userId:id(),text,done:false});document.getElementById("quick-task").value="";save();renderQuick()}
@@ -544,14 +944,36 @@ function renderFlash(){const list=document.getElementById("flash-list"),viewer=d
 function line(label,value,pct){return `<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-weight:1000;color:var(--dark);gap:10px"><span>${label}</span><span style="color:var(--green-2)">${value}</span></div><div class="bar"><div style="width:${Math.max(0,Math.min(100,pct))}%"></div></div></div>`}
 function renderProgress(){const tasks=byUser(state.tasks),done=tasks.filter(t=>t.done).length,classes=byUser(state.classes).length+assignedToMe(state.managedLessons).length,cards=byUser(state.flashcards).length,min=state.studyMinutes||0,pct=Math.min(100,Math.round(min/150*100));document.getElementById("progress-summary").innerHTML=line("Tempo estudado",min+" min",min/3)+line("Tarefas concluídas",done+"/"+tasks.length,tasks.length?done/tasks.length*100:0)+line("Aulas registradas",classes+" aulas",classes*20)+line("Flashcards criados",cards+" cards",cards*10);document.getElementById("weekly-bar").style.width=pct+"%";document.getElementById("weekly-text").textContent=`${min}/150 minutos · ${pct}% da meta`}
 function item(title,done,toggle,del,sub){return `<div class="item ${done?"done":""}"><div style="display:flex;gap:10px"><button class="check" onclick="${toggle}">${done?"✓":""}</button><div><div class="item-title">${escapeHtml(title)}</div><div class="item-sub">${escapeHtml(sub||"")}</div></div></div><div class="item-actions">${del?`<button class="btn btn-danger btn-small" onclick="${del}">Excluir</button>`:""}</div></div>`}
-function userName(uid){return state.users.find(u=>u.id===uid)?.name||"—"}
-function linkStudent(){const email=v("link-student-email").toLowerCase(),u=state.users.find(x=>x.email===email&&x.role==="student");if(!u){alert("Aluno não encontrado. Ele precisa ter conta de estudante neste navegador.");return}if(state.links.some(l=>l.teacherId===id()&&l.studentId===u.id)){alert("Aluno já vinculado.");return}state.links.push({teacherId:id(),studentId:u.id});document.getElementById("link-student-email").value="";save();renderTeacher()}
+
+// ================================================================
+// 8. PROFESSOR — vincular alunos e enviar atividades
+// ================================================================
+async function linkStudent() {
+  const email = v("link-student-email").toLowerCase();
+  if (!email) { alert("Digite o e-mail do aluno."); return; }
+  // busca usuário pelo e-mail no Firestore
+  const snap = await db.collection("users").where("email","==",email).where("role","==","student").get();
+  if (snap.empty) { alert("Aluno não encontrado. Ele precisa ter conta de estudante."); return; }
+  const studentDoc = snap.docs[0];
+  const studentId = studentDoc.id;
+  if (state.links.some(l=>l.teacherId===id()&&l.studentId===studentId)) {
+    alert("Aluno já vinculado."); return;
+  }
+  // adiciona nas users locais
+  const sData = studentDoc.data();
+  if (!state.users.find(u=>u.id===studentId)) {
+    state.users.push({id:studentId, name:sData.name, email:sData.email});
+  }
+  state.links.push({teacherId:id(), studentId});
+  document.getElementById("link-student-email").value = "";
+  save(); renderTeacher();
+}
+
 function selectedStudents(){return [...document.querySelectorAll(".pick-student:checked")].map(x=>x.value)}
 function teacherCreateLesson(){const ids=selectedStudents(),subject=v("mg-lesson-subject"),date=v("mg-lesson-date"),topic=v("mg-lesson-topic");if(!ids.length||!subject||!date||!topic){alert("Selecione aluno(s) e preencha a aula.");return}state.managedLessons.push({id:String(Date.now()),teacherId:id(),studentIds:ids,subject,date,topic});["mg-lesson-subject","mg-lesson-date","mg-lesson-topic"].forEach(x=>document.getElementById(x).value="");save();renderTeacher();alert("Aula enviada.")}
 function teacherCreateTask(){const ids=selectedStudents(),title=v("mg-task-title"),date=v("mg-task-date"),desc=v("mg-task-desc");if(!ids.length||!title){alert("Selecione aluno(s) e informe a tarefa.");return}state.managedTasks.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});["mg-task-title","mg-task-date","mg-task-desc"].forEach(x=>document.getElementById(x).value="");save();renderTeacher();alert("Tarefa enviada.")}
 function teacherCreateTest(){const ids=selectedStudents(),title=v("mg-test-title"),date=v("mg-test-date"),desc=v("mg-test-desc");if(!ids.length||!title){alert("Selecione aluno(s) e informe a prova.");return}state.tests.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});["mg-test-title","mg-test-date","mg-test-desc"].forEach(x=>document.getElementById(x).value="");save();renderTeacher();alert("Prova enviada.")}
 function renderTeacher(){if(!document.getElementById("linked-list"))return;const ids=linkedIds(),users=ids.map(sid=>state.users.find(u=>u.id===sid)).filter(Boolean);document.getElementById("t-students").textContent=users.length;document.getElementById("t-lessons").textContent=state.managedLessons.filter(x=>x.teacherId===id()).length;document.getElementById("t-tasks").textContent=state.managedTasks.filter(x=>x.teacherId===id()).length;document.getElementById("t-tests").textContent=state.tests.filter(x=>x.teacherId===id()).length;document.getElementById("linked-list").innerHTML=users.length?users.map(u=>`<div class="item"><div><div class="item-title">${escapeHtml(u.name)}</div><div class="item-sub">${escapeHtml(u.email)}</div></div></div>`).join(""):`<div class="empty"><strong>Nenhum aluno vinculado.</strong>Digite o email de uma conta de estudante.</div>`;document.getElementById("student-picker").innerHTML=users.length?users.map(u=>`<label><input class="pick-student" type="checkbox" value="${u.id}"> ${escapeHtml(u.name)} <small style="color:var(--muted)">(${escapeHtml(u.email)})</small></label>`).join(""):`<div class="empty"><strong>Sem alunos.</strong>Vincule alunos primeiro.</div>`}
-load();if(state.current){state.current.role==="teacher"?showScreen("role"):enterApp("student")}
 </script>
 </body>
 </html>
