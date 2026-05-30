@@ -1,626 +1,675 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Um Quarto | Estudos, foco e gestão</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+  <title>Um Quarto</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900;1000&display=swap" rel="stylesheet">
-
-  <!-- ============================================================
-       FIREBASE SDK — Realtime Database (sem necessidade de billing)
-       ============================================================ -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-
   <style>
-    :root{
-      --dark:#2d4653;--green:#1cba9f;--green-2:#16a98f;--mint:#e6faf6;
-      --bg:#f5faf9;--paper:#ffffff;--text:#263f4b;--muted:#728692;
-      --line:#dbe9e8;--danger:#d94c4c;
-      --shadow:0 18px 46px rgba(45,70,83,.10);--r:24px;
-      --font:Nunito,system-ui,-apple-system,Segoe UI,sans-serif;
-    }
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{min-height:100vh;font-family:var(--font);color:var(--text);
-      background:radial-gradient(circle at 5% 8%,rgba(28,186,159,.13),transparent 28%),
-        radial-gradient(circle at 95% 2%,rgba(45,70,83,.09),transparent 24%),var(--bg)}
-    button,input,textarea,select{font:inherit}
-    button{border:0;cursor:pointer}
-    .screen{display:none;min-height:100vh}.screen.active{display:block}
-    .wrap{width:min(1180px,calc(100% - 32px));margin:auto}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:1000;letter-spacing:-1px;color:var(--dark)}
-    .brand b{color:var(--green)}
-    .logo-mark{width:38px;height:38px;border-radius:13px;background:var(--green);position:relative;
-      box-shadow:0 12px 28px rgba(28,186,159,.24)}
-    .logo-mark:before{content:"";position:absolute;left:10px;top:8px;width:13px;height:22px;
-      border-left:7px solid #fff;border-top:7px solid #fff}
-    .logo-mark:after{content:"✦";position:absolute;right:5px;top:7px;color:#fff;font-size:10px}
-    .topbar{height:76px;display:flex;align-items:center;justify-content:space-between}
-    .topbar .brand{font-size:30px}
-    .actions{display:flex;gap:10px;align-items:center}
-    .btn{min-height:46px;padding:12px 20px;border-radius:999px;display:inline-flex;align-items:center;
-      justify-content:center;gap:8px;font-weight:1000;transition:.16s;white-space:nowrap}
-    .btn:hover{transform:translateY(-1px)}
-    .btn-primary{background:var(--green);color:#fff;box-shadow:0 14px 26px rgba(28,186,159,.26)}
-    .btn-primary:hover{background:var(--green-2)}
-    .btn-light{background:#fff;color:var(--dark);border:1px solid var(--line)}
-    .btn-dark{background:var(--dark);color:#fff}
-    .btn-danger{background:#feecec;color:var(--danger)}
-    .btn-small{min-height:36px;padding:8px 12px;font-size:13px}
-    .btn-google{background:#fff;color:#3c4043;border:1px solid var(--line);gap:10px;width:100%;
-      margin-bottom:14px;font-size:14px}
-    .btn-google svg{width:18px;height:18px;flex:0 0 auto}
-    .divider{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:13px;margin-bottom:14px}
-    .divider:before,.divider:after{content:"";flex:1;height:1px;background:var(--line)}
-    .hero{position:relative;min-height:calc(100vh - 76px);display:grid;
-      grid-template-columns:1.05fr .95fr;gap:38px;align-items:center;padding:42px 0 70px}
-    .hero h1{font-size:clamp(44px,7vw,78px);line-height:.96;letter-spacing:-3px;color:var(--dark);margin:18px 0}
-    .hero h1 span{color:var(--green)}
-    .hero p{font-size:20px;line-height:1.65;color:var(--muted);max-width:620px;margin-bottom:28px}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;background:#fff;
-      border:1px solid rgba(28,186,159,.22);color:var(--green-2);border-radius:999px;
-      padding:9px 15px;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:2px}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
-    .hero-card{background:rgba(255,255,255,.82);border:1px solid rgba(45,70,83,.09);box-shadow:var(--shadow);
-      border-radius:34px;padding:24px;backdrop-filter:blur(14px);position:relative;overflow:hidden}
-    .hero-card:before{content:"";position:absolute;right:-60px;top:-60px;width:190px;height:190px;
-      border-radius:60px;background:var(--green);opacity:.12;transform:rotate(20deg)}
-    .mini-phone{border:1px solid var(--line);border-radius:30px;background:#fbfffe;overflow:hidden}
-    .mini-head{background:var(--dark);color:#fff;padding:22px}
-    .mini-head small{display:block;color:rgba(255,255,255,.56);margin-top:4px;font-weight:700}
-    .mini-body{display:grid;gap:12px;padding:16px}
-    .mini-row{display:flex;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);
-      border-radius:18px;padding:14px}
-    .mini-ico{width:42px;height:42px;border-radius:15px;background:var(--mint);display:grid;
-      place-items:center;color:var(--green);font-size:21px;flex:0 0 auto}
-    .mini-row strong{display:block;color:var(--dark);font-size:14px}
-    .mini-row span{display:block;color:var(--muted);font-size:12px;margin-top:2px}
-    .features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding-bottom:54px}
-    .feature{background:#fff;border:1px solid rgba(45,70,83,.08);box-shadow:0 12px 30px rgba(45,70,83,.06);
-      border-radius:24px;padding:20px}
-    .feature .ico{font-size:28px;margin-bottom:10px}
-    .feature h3{color:var(--dark);margin-bottom:6px}
-    .feature p{color:var(--muted);font-size:13px;line-height:1.45}
-    .auth{min-height:100vh;display:grid;place-items:center;padding:28px 16px}
-    .auth-card{width:min(460px,100%);background:#fff;border:1px solid rgba(45,70,83,.08);
-      box-shadow:var(--shadow);border-radius:32px;padding:28px}
-    .auth-card h2{font-size:34px;color:var(--dark);letter-spacing:-1px;margin:20px 0 4px}
-    .auth-card p{color:var(--muted);margin-bottom:20px}
-    .field{margin-bottom:13px}
-    .field label{display:block;color:var(--muted);font-size:13px;font-weight:1000;margin-bottom:6px}
-    .input,.select,.textarea{width:100%;border:2px solid var(--line);background:#fcfffe;border-radius:16px;
-      padding:13px 14px;outline:0;color:var(--text);transition:.15s}
-    .input:focus,.select:focus,.textarea:focus{border-color:var(--green);box-shadow:0 0 0 5px rgba(28,186,159,.10)}
-    .textarea{min-height:98px;resize:vertical}
-    .msg{display:none;border-radius:16px;padding:12px 14px;margin-bottom:12px;font-weight:900;font-size:14px}
-    .msg.error{display:block;background:#feecec;color:var(--danger)}
-    .msg.ok{display:block;background:var(--mint);color:var(--green-2)}
-    .auth-switch{text-align:center;color:var(--muted);font-size:14px;margin-top:14px}
-    .auth-switch a{color:var(--green-2);font-weight:1000;cursor:pointer}
-    .role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
-    .role-card{border:2px solid var(--line);border-radius:22px;padding:16px;background:#fcfffe;text-align:left}
-    .role-card.active{border-color:var(--green);background:var(--mint)}
-    .verify-banner{background:#fff8e1;border:1px solid #ffe082;color:#7a5c00;border-radius:16px;
-      padding:12px 16px;margin-bottom:16px;font-size:13px;display:flex;align-items:center;
-      justify-content:space-between;gap:12px}
-    .verify-banner button{background:#f59e0b;color:#fff;border-radius:999px;padding:6px 14px;
-      font-size:12px;font-weight:700;white-space:nowrap}
-    /* APP */
-    .app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
-    .side{position:sticky;top:0;height:100vh;background:var(--dark);color:#fff;
-      padding:22px 16px;display:flex;flex-direction:column;gap:18px}
-    .side .brand{font-size:23px;color:#fff;padding:4px 8px 14px}
-    .side .logo-mark{width:32px;height:32px}
-    .nav{display:grid;gap:6px}
-    .nav button{min-height:44px;border-radius:15px;background:transparent;color:rgba(255,255,255,.72);
-      font-weight:1000;text-align:left;padding:10px 12px;display:flex;gap:10px;align-items:center}
-    .nav button:hover,.nav button.active{background:var(--green);color:#fff}
-    .side-bottom{margin-top:auto;display:grid;gap:8px}
-    .main{padding:26px}
-    .app-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}
-    .app-head h2{font-size:31px;color:var(--dark);letter-spacing:-1px}
-    .app-head p{color:var(--muted);margin-top:3px}
-    .avatar{width:50px;height:50px;border-radius:18px;background:var(--green);color:#fff;
-      display:grid;place-items:center;font-weight:1000;box-shadow:0 10px 24px rgba(28,186,159,.22)}
-    .tab{display:none}.tab.active{display:block}
-    .grid{display:grid;gap:16px}
-    .grid-4{grid-template-columns:repeat(4,1fr)}
-    .grid-3{grid-template-columns:repeat(3,1fr)}
-    .grid-2{grid-template-columns:1.15fr .85fr;align-items:start}
-    .card{background:#fff;border:1px solid rgba(45,70,83,.08);border-radius:var(--r);
-      box-shadow:0 12px 34px rgba(45,70,83,.06);padding:20px;position:relative;overflow:hidden}
-    .card.pattern:after{content:"";position:absolute;right:-50px;bottom:-68px;width:160px;height:160px;
-      border:3px solid var(--green);opacity:.13;
-      clip-path:polygon(50% 0%,62% 30%,95% 15%,76% 47%,100% 50%,76% 53%,95% 85%,62% 70%,50% 100%,38% 70%,5% 85%,24% 53%,0 50%,24% 47%,5% 15%,38% 30%)}
-    .section-title{font-size:20px;color:var(--dark);font-weight:1000;margin-bottom:12px}
-    .stat{min-height:118px}
-    .stat .num{font-size:34px;font-weight:1000;color:var(--green);line-height:1;margin-bottom:8px}
-    .stat .label{color:var(--dark);font-weight:1000}
-    .stat .hint{color:var(--muted);font-size:13px;margin-top:4px}
-    .quote{background:linear-gradient(135deg,var(--dark),#3b5a68);color:#fff}
-    .quote p{color:rgba(255,255,255,.76);line-height:1.55;margin-top:8px}
-    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-    .list{display:grid;gap:10px}
-    .item{background:#fbfffe;border:1px solid var(--line);border-radius:18px;padding:14px;
-      display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-    .item-title{color:var(--dark);font-weight:1000;margin-bottom:4px}
-    .item-sub{color:var(--muted);font-size:13px;line-height:1.4}
-    .item-actions{display:flex;gap:6px;flex-wrap:wrap}
-    .check{width:23px;height:23px;border-radius:8px;border:2px solid var(--green);background:#fff;
-      color:#fff;font-weight:1000;display:inline-grid;place-items:center;flex:0 0 auto;margin-top:1px}
-    .item.done .check{background:var(--green)}
-    .item.done .item-title{text-decoration:line-through;color:var(--muted)}
-    .tag{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:4px 8px;
-      font-size:11px;font-weight:1000;background:var(--mint);color:var(--green-2);margin-top:6px}
-    .empty{text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:20px;
-      padding:26px 16px;background:#fcfffe}
-    .empty strong{color:var(--dark);display:block;margin-bottom:4px}
-    .timer-box{text-align:center;padding:28px}
-    .modes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
-    .mode{background:#eff7f6;color:var(--muted);border-radius:999px;padding:9px 12px;
-      font-weight:1000;font-size:13px}
-    .mode.active{background:var(--green);color:#fff}
-    .timer{width:230px;height:230px;border-radius:50%;margin:0 auto 22px;
-      background:conic-gradient(var(--green) var(--deg,360deg),#e8f1f2 0);
-      display:grid;place-items:center;box-shadow:inset 0 0 0 14px rgba(255,255,255,.82)}
-    .timer-inner{width:172px;height:172px;border-radius:50%;background:#fff;display:grid;
-      place-items:center;box-shadow:0 12px 30px rgba(45,70,83,.08)}
-    .time{font-size:46px;font-weight:1000;color:var(--dark);letter-spacing:-2px}
-    .timer-label{color:var(--muted);font-size:12px;font-weight:1000;letter-spacing:1.6px;
-      text-transform:uppercase;margin-top:-8px}
-    .timer-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-    .bar{height:10px;border-radius:999px;background:#e6f0f0;overflow:hidden;margin-top:10px}
-    .bar>div{height:100%;background:var(--green);border-radius:999px;transition:.25s}
-    .days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:10px}
-    .day{min-height:38px;border-radius:12px;background:#eef7f6;color:var(--muted);font-size:12px;font-weight:1000}
-    .day.done{background:var(--green);color:#fff}
-    .flash-card{min-height:260px;border-radius:26px;background:linear-gradient(135deg,#fff,#effbf8);
-      border:1px solid var(--line);display:grid;place-items:center;text-align:center;padding:28px;
-      cursor:pointer;box-shadow:0 14px 35px rgba(45,70,83,.07)}
-    .flash-card .small{color:var(--green-2);font-weight:1000;text-transform:uppercase;
-      font-size:12px;letter-spacing:1.5px;margin-bottom:12px}
-    .flash-card h3{font-size:26px;color:var(--dark);line-height:1.2}
-    .flash-card p{color:var(--muted);line-height:1.55;margin-top:10px;white-space:pre-line}
-    .student-picker{max-height:190px;overflow:auto;border:1px solid var(--line);
-      border-radius:16px;padding:8px;background:#fcfffe;display:grid;gap:4px}
-    .student-picker label{display:flex;align-items:center;gap:8px;padding:8px;
-      border-radius:10px;color:var(--dark);font-weight:900}
-    .student-picker label:hover{background:var(--mint)}
-    .notice{background:var(--mint);border:1px solid rgba(28,186,159,.20);color:var(--dark);
-      border-radius:18px;padding:14px;font-size:14px;line-height:1.45}
-    /* CALENDÁRIO */
-    .cal-grid-wrap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:16px}
-    .cal-day-label{text-align:center;font-size:11px;font-weight:1000;color:var(--muted);
-      padding:6px 0;text-transform:uppercase;letter-spacing:.5px}
-    .cal-day{min-height:70px;border-radius:10px;padding:6px;cursor:pointer;
-      border:1px solid transparent;transition:all .12s;position:relative}
-    .cal-day:hover{border-color:var(--green);background:var(--mint)}
-    .cal-day.other-month .cal-day-num{color:#ccc}
-    .cal-day.today{border-color:var(--green);background:var(--mint)}
-    .cal-day.today .cal-day-num{background:var(--green);color:#fff;border-radius:50%;
-      width:22px;height:22px;display:flex;align-items:center;justify-content:center}
-    .cal-day.selected{border-color:var(--dark);background:#f0f4f6}
-    .cal-day-num{font-size:13px;font-weight:1000;color:var(--dark);margin-bottom:3px;
-      width:22px;height:22px;display:flex;align-items:center;justify-content:center}
-    .cal-evt{font-size:10px;font-weight:700;padding:1px 5px;border-radius:4px;
-      margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
-    .cal-evt.prova{background:#feecec;color:var(--danger)}
-    .cal-evt.compromisso{background:#e8f4fd;color:#1565c0}
-    .cal-evt.aula{background:var(--mint);color:var(--green-2)}
-    .cal-evt.pessoal{background:#fff8e1;color:#e65100}
-    .cal-evt.lembrete{background:#f3e5f5;color:#7b1fa2}
-    .cal-more{font-size:10px;color:var(--muted);padding-left:2px}
-    .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-    .cal-nav h3{font-size:20px;color:var(--dark);font-weight:1000;flex:1;text-align:center}
-    .cal-nav button{min-height:36px;padding:6px 14px}
-    .cal-side{background:#fbfffe;border:1px solid var(--line);border-radius:18px;padding:18px}
-    .cal-side h4{font-size:15px;color:var(--dark);font-weight:1000;margin-bottom:12px}
-    .cal-evt-item{display:flex;align-items:center;gap:10px;padding:10px;
-      border-radius:12px;border:1px solid var(--line);margin-bottom:8px;background:#fff}
-    .cal-evt-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
-    .cal-evt-dot.prova{background:var(--danger)}
-    .cal-evt-dot.compromisso{background:#1565c0}
-    .cal-evt-dot.aula{background:var(--green)}
-    .cal-evt-dot.pessoal{background:#e65100}
-    .cal-evt-dot.lembrete{background:#7b1fa2}
-    .cal-legend{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
-    .cal-leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
-    .cal-leg-dot{width:8px;height:8px;border-radius:50%}
-    @media(max-width:980px){
-      .hero{grid-template-columns:1fr;text-align:center}
-      .hero p{margin-left:auto;margin-right:auto}
-      .hero-actions{justify-content:center}
-      .features,.grid-4{grid-template-columns:repeat(2,1fr)}
-      .grid-2{grid-template-columns:1fr}
-      .app{grid-template-columns:1fr}
-      .side{position:fixed;top:auto;left:0;right:0;bottom:0;height:auto;z-index:50;
-        border-radius:24px 24px 0 0;padding:8px}
-      .side .brand,.side-bottom{display:none}
-      .nav{grid-template-columns:repeat(7,1fr);gap:2px}
-      .nav button{min-height:58px;padding:4px 2px;flex-direction:column;
-        justify-content:center;text-align:center;font-size:9px;gap:2px}
-      .main{padding:18px 14px 100px}
-    }
-    @media(max-width:660px){
-      .wrap{width:min(100% - 24px,1180px)}
-      .topbar{height:68px}.topbar .brand{font-size:22px}
-      .actions .btn-light{display:none}
-      .hero{padding-top:32px}
-      .hero h1{font-size:42px;letter-spacing:-1.5px}
-      .hero p{font-size:16px}
-      .hero-actions{display:grid}.hero-actions .btn{width:100%}
-      .hero-card{display:none}
-      .features,.grid-4,.grid-3,.form-row,.form-row-3,.role-grid{grid-template-columns:1fr}
-      .auth-card{padding:22px}
-      .app-head h2{font-size:24px}
-      .timer{width:200px;height:200px}.timer-inner{width:150px;height:150px}.time{font-size:40px}
-      .item{display:block}.item-actions{margin-top:10px}
-      .nav{grid-template-columns:repeat(4,1fr)}
-    }
+:root{
+  --dark:#2d4653;--green:#1cba9f;--green2:#16a98f;--mint:#e6faf6;
+  --bg:#f5faf9;--white:#fff;--text:#263f4b;--muted:#728692;
+  --line:#dbe9e8;--danger:#d94c4c;--r:20px;
+  --font:'Nunito',system-ui,sans-serif;
+  --nav-h:68px;--top-h:60px;
+  --safe-b:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overscroll-behavior:none}
+body{font-family:var(--font);color:var(--text);background:var(--bg);font-size:15px}
+button,input,textarea,select{font:inherit;border:none;outline:none}
+button{cursor:pointer;background:none}
+img{display:block}
+
+/* ── SCREENS ── */
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+
+/* ── LOGO ── */
+.logo-img{height:36px;width:auto;object-fit:contain}
+.logo-img-sm{height:28px;width:auto;object-fit:contain}
+
+/* ── LANDING ── */
+#landing-screen{background:var(--bg)}
+.land-top{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--white)}
+.land-hero{background:var(--dark);padding:40px 24px 48px;text-align:center;position:relative;overflow:hidden}
+.land-hero::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(28,186,159,.15);top:-100px;right:-80px}
+.land-hero h1{font-size:clamp(26px,7vw,42px);font-weight:900;color:#fff;line-height:1.1;margin:12px 0 10px}
+.land-hero h1 span{color:var(--green)}
+.land-hero p{color:rgba(255,255,255,.75);font-size:15px;line-height:1.55;margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto}
+.land-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.land-features{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:20px}
+.land-feat{background:var(--white);border-radius:16px;padding:18px 14px;border:1px solid var(--line)}
+.land-feat .ico{font-size:26px;margin-bottom:8px}
+.land-feat h3{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:4px}
+.land-feat p{font-size:12px;color:var(--muted);line-height:1.45}
+.land-footer{text-align:center;padding:16px;font-size:12px;color:var(--muted);border-top:1px solid var(--line)}
+
+/* ── BOTÕES ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px 22px;border-radius:999px;font-weight:800;font-size:14px;
+  transition:transform .12s,opacity .12s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--green);color:#fff}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5)}
+.btn-light{background:var(--white);color:var(--dark);border:1px solid var(--line)}
+.btn-dark{background:var(--dark);color:#fff}
+.btn-danger-soft{background:#feecec;color:var(--danger)}
+.btn-sm{padding:8px 14px;font-size:13px}
+.btn-full{width:100%}
+.btn-google{background:var(--white);color:#3c4043;border:1px solid var(--line);width:100%;margin-bottom:12px}
+.btn-google svg{width:18px;height:18px}
+
+/* ── AUTH ── */
+#login-screen,#register-screen,#role-screen,#loading-screen{background:var(--bg);align-items:center;justify-content:center;padding:20px}
+.auth-card{background:var(--white);border-radius:24px;padding:28px 22px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(45,70,83,.1)}
+.auth-card h2{font-size:26px;font-weight:900;color:var(--dark);margin:16px 0 4px}
+.auth-card .sub{color:var(--muted);font-size:14px;margin-bottom:18px}
+.divider{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;margin-bottom:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:12px;font-weight:800;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.inp{width:100%;padding:12px 14px;border:2px solid var(--line);border-radius:14px;font-size:14px;color:var(--text);background:#fcfffe;transition:border-color .15s}
+.inp:focus{border-color:var(--green)}
+.textarea{min-height:80px;resize:vertical}
+.sel{width:100%;padding:11px 14px;border:2px solid var(--line);border-radius:14px;font-size:14px;color:var(--text);background:#fcfffe}
+.msg{display:none;padding:11px 14px;border-radius:12px;margin-bottom:12px;font-weight:700;font-size:13px}
+.msg.error{display:block;background:#feecec;color:var(--danger)}
+.msg.ok{display:block;background:var(--mint);color:var(--green2)}
+.auth-link{text-align:center;font-size:13px;color:var(--muted);margin-top:12px}
+.auth-link a{color:var(--green);font-weight:800;cursor:pointer}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.role-card{border:2px solid var(--line);border-radius:16px;padding:14px 10px;text-align:center;font-size:13px;font-weight:800;color:var(--dark);background:#fcfffe;transition:all .15s}
+.role-card.active{border-color:var(--green);background:var(--mint);color:var(--green2)}
+
+/* ── APP LAYOUT ── */
+#app-screen{background:var(--bg);padding-bottom:calc(var(--nav-h) + var(--safe-b))}
+.app-topbar{position:sticky;top:0;z-index:100;background:var(--dark);
+  height:var(--top-h);display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;flex-shrink:0}
+.app-topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-menu-btn{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.12);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:5px}
+.topbar-menu-btn span{display:block;width:18px;height:2px;background:#fff;border-radius:2px;transition:all .25s}
+.topbar-menu-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.topbar-menu-btn.open span:nth-child(2){opacity:0}
+.topbar-menu-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.avatar{width:38px;height:38px;border-radius:12px;background:var(--green);color:#fff;
+  display:grid;place-items:center;font-weight:900;font-size:15px}
+
+/* Drawer lateral */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;
+  opacity:0;pointer-events:none;transition:opacity .25s}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:min(280px,85vw);
+  background:var(--dark);z-index:201;transform:translateX(-100%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;overflow-y:auto}
+.drawer.open{transform:translateX(0)}
+.drawer-head{padding:20px 18px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.drawer-user{display:flex;align-items:center;gap:12px;margin-top:14px}
+.drawer-user-name{font-weight:800;color:#fff;font-size:15px}
+.drawer-user-email{font-size:12px;color:rgba(255,255,255,.55);margin-top:2px}
+.drawer-nav{padding:12px 8px;flex:1}
+.drawer-btn{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;
+  border-radius:14px;color:rgba(255,255,255,.72);font-weight:700;font-size:14px;
+  transition:all .15s;margin-bottom:2px}
+.drawer-btn:active,.drawer-btn.active{background:var(--green);color:#fff}
+.drawer-btn .ico{font-size:20px;width:26px;text-align:center}
+.drawer-footer{padding:12px 8px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.drawer-logout{display:flex;align-items:center;gap:10px;width:100%;padding:13px 12px;
+  border-radius:14px;color:rgba(255,255,255,.6);font-weight:700;font-size:14px}
+.drawer-logout:active{background:rgba(217,76,76,.2);color:#f87171}
+
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:var(--dark);border-top:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:8px 4px calc(8px + var(--safe-b))}
+.bnav-btn{display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 10px;border-radius:12px;color:rgba(255,255,255,.5);
+  font-size:10px;font-weight:700;min-width:48px;transition:all .15s}
+.bnav-btn .ico{font-size:22px;line-height:1}
+.bnav-btn.active{color:var(--green)}
+.bnav-btn.active .ico{transform:scale(1.1)}
+
+/* Conteúdo das abas */
+.tab-content{flex:1;overflow-y:auto}
+.tab{display:none;padding:16px}
+.tab.active{display:block}
+
+/* Cards */
+.card{background:var(--white);border-radius:var(--r);padding:16px;margin-bottom:14px;
+  border:1px solid rgba(45,70,83,.07);box-shadow:0 4px 16px rgba(45,70,83,.06)}
+.card-title{font-size:16px;font-weight:900;color:var(--dark);margin-bottom:12px}
+.stat-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--white);border-radius:16px;padding:16px 14px;
+  border:1px solid rgba(45,70,83,.07);box-shadow:0 4px 12px rgba(45,70,83,.06)}
+.stat-num{font-size:30px;font-weight:900;color:var(--green);line-height:1;margin-bottom:4px}
+.stat-label{font-size:12px;font-weight:700;color:var(--dark)}
+.stat-hint{font-size:11px;color:var(--muted);margin-top:2px}
+.quote-card{background:linear-gradient(135deg,var(--dark),#3b5a68);color:#fff;border-radius:var(--r);padding:16px;margin-bottom:14px}
+.quote-card p{color:rgba(255,255,255,.78);font-size:13px;line-height:1.55;margin-top:6px}
+
+/* Timer */
+.timer-wrap{text-align:center;padding:10px 0 20px}
+.timer-ring{width:210px;height:210px;border-radius:50%;margin:0 auto 20px;
+  background:conic-gradient(var(--green) var(--deg,360deg),#e2eeec 0);
+  display:grid;place-items:center;box-shadow:inset 0 0 0 12px rgba(255,255,255,.85)}
+.timer-inner{width:160px;height:160px;border-radius:50%;background:#fff;display:grid;place-items:center}
+.timer-time{font-size:42px;font-weight:900;color:var(--dark);letter-spacing:-2px;line-height:1}
+.timer-lbl{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px}
+.timer-modes{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px}
+.tmode{background:#eff7f6;color:var(--muted);border-radius:999px;padding:8px 14px;font-weight:800;font-size:12px}
+.tmode.active{background:var(--green);color:#fff}
+.timer-btns{display:flex;gap:10px;justify-content:center;margin-bottom:16px}
+.timer-save-btn{background:var(--mint);color:var(--green2);border-radius:999px;padding:10px 20px;font-weight:800;font-size:13px;border:1px solid rgba(28,186,159,.3)}
+
+/* Modal salvar timer */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;
+  display:flex;align-items:flex-end;justify-content:center}
+.modal-overlay.hidden{display:none}
+.modal-sheet{background:var(--white);border-radius:24px 24px 0 0;padding:24px 20px;
+  width:100%;max-width:500px;padding-bottom:calc(24px + var(--safe-b))}
+.modal-sheet h3{font-size:18px;font-weight:900;color:var(--dark);margin-bottom:4px}
+.modal-sheet p{font-size:13px;color:var(--muted);margin-bottom:16px}
+
+/* Itens de lista */
+.list-item{background:#fbfffe;border:1px solid var(--line);border-radius:16px;padding:13px;
+  display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.list-item.done .item-title{text-decoration:line-through;color:var(--muted)}
+.check-circle{width:24px;height:24px;min-width:24px;border-radius:8px;
+  border:2px solid var(--green);background:#fff;color:#fff;font-weight:900;
+  display:grid;place-items:center;font-size:12px;cursor:pointer;transition:background .15s}
+.list-item.done .check-circle{background:var(--green)}
+.item-body{flex:1;min-width:0}
+.item-title{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:3px}
+.item-sub{font-size:12px;color:var(--muted);line-height:1.4}
+.item-del{color:var(--muted);font-size:20px;padding:0 4px;line-height:1;align-self:flex-start}
+.item-del:active{color:var(--danger)}
+.tag{display:inline-flex;align-items:center;border-radius:999px;padding:3px 8px;
+  font-size:11px;font-weight:700;background:var(--mint);color:var(--green2);margin-top:4px}
+
+/* Formulário rápido */
+.quick-form{display:flex;gap:8px;margin-bottom:12px}
+.quick-form .inp{flex:1}
+
+/* Hábitos */
+.habit-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px}
+.hday{min-height:34px;border-radius:8px;background:#eef7f6;color:var(--muted);font-size:11px;font-weight:800;display:grid;place-items:center}
+.hday.done{background:var(--green);color:#fff}
+
+/* Flash cards */
+.flash-card{min-height:200px;border-radius:20px;background:linear-gradient(135deg,#fff,#effbf8);
+  border:1px solid var(--line);display:grid;place-items:center;text-align:center;
+  padding:24px 20px;cursor:pointer}
+.flash-card .fc-cat{color:var(--green2);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px}
+.flash-card h3{font-size:20px;color:var(--dark);line-height:1.25}
+.flash-card .fc-hint{color:var(--muted);font-size:13px;margin-top:8px}
+.flash-nav{display:flex;gap:10px;justify-content:center;margin-top:12px}
+
+/* Calendário mobile */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-header h3{font-size:16px;font-weight:900;color:var(--dark)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-dlbl{text-align:center;font-size:10px;font-weight:800;color:var(--muted);padding:4px 0;text-transform:uppercase}
+.cal-day{min-height:48px;border-radius:8px;padding:4px 3px;cursor:pointer;
+  border:1px solid transparent;transition:all .12s;position:relative}
+.cal-day:active{background:var(--mint)}
+.cal-day.other{opacity:.35}
+.cal-day.today{border-color:var(--green);background:var(--mint)}
+.cal-day.today .cdn{background:var(--green);color:#fff;border-radius:50%}
+.cal-day.sel{border-color:var(--dark);background:#f0f4f6}
+.cdn{font-size:12px;font-weight:800;color:var(--dark);width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.cev{font-size:8px;font-weight:700;padding:1px 3px;border-radius:3px;
+  margin-bottom:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.5}
+.cev.prova{background:#feecec;color:var(--danger)}
+.cev.compromisso{background:#e8f4fd;color:#1565c0}
+.cev.aula{background:var(--mint);color:var(--green2)}
+.cev.pessoal{background:#fff8e1;color:#e65100}
+.cev.lembrete{background:#f3e5f5;color:#7b1fa2}
+.cal-more{font-size:8px;color:var(--muted)}
+.cal-legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.cal-leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.cal-leg-dot{width:7px;height:7px;border-radius:50%}
+/* painel de evento selecionado */
+.cal-side{margin-top:14px}
+.cal-side-lbl{font-size:13px;font-weight:800;color:var(--dark);margin-bottom:10px}
+.cal-evt-item{display:flex;align-items:center;gap:10px;padding:10px 12px;
+  border-radius:12px;border:1px solid var(--line);margin-bottom:8px;background:#fff}
+.cal-evt-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
+.cal-evt-dot.prova{background:var(--danger)}
+.cal-evt-dot.compromisso{background:#1565c0}
+.cal-evt-dot.aula{background:var(--green)}
+.cal-evt-dot.pessoal{background:#e65100}
+.cal-evt-dot.lembrete{background:#7b1fa2}
+
+/* Barra de progresso */
+.prog-bar-track{height:10px;border-radius:999px;background:#e6f0f0;overflow:hidden;margin-top:6px;margin-bottom:14px}
+.prog-bar-fill{height:100%;background:var(--green);border-radius:999px;transition:width .3s}
+.prog-row{display:flex;justify-content:space-between;font-size:13px;font-weight:700;color:var(--dark)}
+
+/* Aviso verificação */
+.verify-banner{background:#fff8e1;border:1px solid #ffe082;color:#7a5c00;border-radius:14px;
+  padding:11px 14px;margin-bottom:14px;font-size:13px;display:flex;align-items:center;
+  justify-content:space-between;gap:10px}
+.verify-banner button{background:#f59e0b;color:#fff;border-radius:999px;padding:6px 12px;font-size:12px;font-weight:700}
+
+/* Gestão professor */
+.notice{background:var(--mint);border:1px solid rgba(28,186,159,.2);color:var(--dark);border-radius:14px;padding:12px 14px;font-size:13px;margin-bottom:14px;line-height:1.45}
+.student-picker{border:1px solid var(--line);border-radius:12px;padding:8px;max-height:160px;overflow-y:auto;display:grid;gap:4px;margin-bottom:12px}
+.student-picker label{display:flex;align-items:center;gap:8px;padding:8px;border-radius:8px;font-size:13px;font-weight:700;color:var(--dark)}
+.empty-state{text-align:center;color:var(--muted);border:1.5px dashed var(--line);border-radius:16px;padding:24px;background:#fcfffe}
+.empty-state strong{color:var(--dark);display:block;margin-bottom:4px;font-size:14px}
+
+/* DESKTOP override */
+@media(min-width:768px){
+  #app-screen{flex-direction:row;padding-bottom:0}
+  .bottom-nav{display:none}
+  .drawer-overlay,.drawer{display:none!important}
+  .app-topbar{display:none}
+  .desktop-side{display:flex!important}
+  .tab-content{overflow-y:auto;height:100vh}
+  .tab{padding:24px;max-width:900px;margin:0 auto}
+  .stat-row{grid-template-columns:repeat(4,1fr)}
+  .grid-2-desktop{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;align-items:start}
+}
+.desktop-side{display:none;width:260px;min-height:100vh;background:var(--dark);
+  flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.desktop-side-head{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.dside-nav{padding:12px 8px;flex:1}
+.dside-btn{display:flex;align-items:center;gap:10px;width:100%;padding:12px;
+  border-radius:14px;color:rgba(255,255,255,.72);font-weight:700;font-size:14px;margin-bottom:2px}
+.dside-btn:hover,.dside-btn.active{background:var(--green);color:#fff}
+.dside-btn .ico{font-size:18px;width:24px;text-align:center}
+.dside-footer{padding:12px 8px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.dside-logout{display:flex;align-items:center;gap:10px;width:100%;padding:12px;
+  border-radius:14px;color:rgba(255,255,255,.6);font-weight:700;font-size:14px}
+.dside-logout:hover{background:rgba(217,76,76,.2);color:#f87171}
+.dside-user{display:flex;align-items:center;gap:10px;padding:12px 8px}
+.dside-user-name{font-weight:800;color:#fff;font-size:14px}
+.dside-user-email{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
   </style>
 </head>
 <body>
 
-<!-- LANDING -->
+<!-- ========== LANDING ========== -->
 <section id="landing-screen" class="screen active">
-  <div class="wrap">
-    <header class="topbar">
-      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
-      <div class="actions">
-        <button class="btn btn-light" onclick="showScreen('login')">Entrar</button>
-        <button class="btn btn-primary" onclick="showScreen('register')">Criar conta</button>
-      </div>
-    </header>
-    <main class="hero">
-      <div>
-        <div class="eyebrow">✦ Reforço dedicado e monitorado</div>
-        <h1>Aprenda com foco, <span>acompanhamento</span> e rotina.</h1>
-        <p>Um Quarto conecta estudante e professor: tempo de estudo, aulas, tarefas, provas, flashcards, calendário e progresso.</p>
-        <div class="hero-actions">
-          <button class="btn btn-primary" onclick="showScreen('register')">Começar agora</button>
-          <button class="btn btn-light" onclick="showScreen('login')">Já tenho conta</button>
-        </div>
-      </div>
-      <div class="hero-card">
-        <div class="mini-phone">
-          <div class="mini-head"><strong>Boa noite, estudante 👋</strong><small>Seu plano monitorado</small></div>
-          <div class="mini-body">
-            <div class="mini-row"><div class="mini-ico">⏱️</div><div><strong>Foco livre</strong><span>15, 25, 50 ou personalizado.</span></div></div>
-            <div class="mini-row"><div class="mini-ico">👨‍🏫</div><div><strong>Gestão do professor</strong><span>Aulas, tarefas e provas vinculadas.</span></div></div>
-            <div class="mini-row"><div class="mini-ico">📅</div><div><strong>Calendário</strong><span>Provas, compromissos e lembretes.</span></div></div>
-            <div class="mini-row"><div class="mini-ico">📊</div><div><strong>Progresso</strong><span>Estudo monitorado com clareza.</span></div></div>
-          </div>
-        </div>
-      </div>
-    </main>
-    <section class="features">
-      <div class="feature"><div class="ico">⏱️</div><h3>Timer</h3><p>Ciclos de foco e pausa personalizados para manter o ritmo.</p></div>
-      <div class="feature"><div class="ico">📅</div><h3>Calendário</h3><p>Organize provas, aulas e compromissos num calendário visual.</p></div>
-      <div class="feature"><div class="ico">🃏</div><h3>Flashcards</h3><p>Cartões de pergunta e resposta para revisão ativa e eficiente.</p></div>
-      <div class="feature"><div class="ico">👨‍🏫</div><h3>Professor</h3><p>Perfil verificado para gestão de alunos, aulas, tarefas e provas.</p></div>
-    </section>
+  <div class="land-top">
+    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+    <div style="display:none;align-items:center;gap:8px;font-weight:900;font-size:20px;color:var(--dark)">Um <span style="color:var(--green)">Quarto</span></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-light btn-sm" onclick="showScreen('login')">Entrar</button>
+      <button class="btn btn-primary btn-sm" onclick="showScreen('register')">Cadastrar</button>
+    </div>
   </div>
+  <div class="land-hero">
+    <div style="display:inline-block;background:rgba(28,186,159,.25);color:var(--green);border-radius:999px;padding:6px 14px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px">✦ Plataforma de estudos</div>
+    <h1>15 minutos por dia para <span>virar a chave.</span></h1>
+    <p>Organiza estudos, tarefas, provas e hábitos. Conecta aluno e professor de qualquer lugar.</p>
+    <div class="land-btns">
+      <button class="btn btn-primary" onclick="showScreen('register')">Começar agora</button>
+      <button class="btn btn-outline" onclick="showScreen('login')">Já tenho conta</button>
+    </div>
+  </div>
+  <div class="land-features">
+    <div class="land-feat"><div class="ico">⏱️</div><h3>Timer</h3><p>Ciclos de foco com pomodoro ou modo livre.</p></div>
+    <div class="land-feat"><div class="ico">📅</div><h3>Agenda</h3><p>Provas, aulas e compromissos organizados.</p></div>
+    <div class="land-feat"><div class="ico">✅</div><h3>Tarefas</h3><p>Pessoais e enviadas pelo professor.</p></div>
+    <div class="land-feat"><div class="ico">🃏</div><h3>Flashcards</h3><p>Revisão ativa para fixar o conteúdo.</p></div>
+  </div>
+  <div class="land-footer">© 2026 Um Quarto · Feito para quem quer crescer.</div>
 </section>
 
-<!-- LOGIN -->
+<!-- ========== LOGIN ========== -->
 <section id="login-screen" class="screen">
-  <div class="auth">
-    <div class="auth-card">
-      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
-      <h2>Entrar</h2><p>Acesse como estudante ou professor.</p>
-      <div id="login-msg" class="msg"></div>
-      <button class="btn btn-google" onclick="loginGoogle()">
-        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Entrar com Google
-      </button>
-      <div class="divider">ou</div>
-      <div class="field"><label>Email</label><input id="login-email" class="input" type="email" placeholder="seu@email.com"></div>
-      <div class="field"><label>Senha</label><input id="login-pass" class="input" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')loginEmail()"></div>
-      <button class="btn btn-primary" style="width:100%" onclick="loginEmail()">Entrar</button>
-      <div class="auth-switch">Não tem conta? <a onclick="showScreen('register')">Criar conta</a></div>
-      <div class="auth-switch"><a onclick="showScreen('landing')">← Voltar</a></div>
-    </div>
+  <div class="auth-card">
+    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none'">
+    <h2>Entrar</h2><div class="sub">Acesse sua conta.</div>
+    <div id="login-msg" class="msg"></div>
+    <button class="btn btn-google" onclick="loginGoogle()">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Entrar com Google
+    </button>
+    <div class="divider">ou</div>
+    <div class="field"><label>Email</label><input id="login-email" class="inp" type="email" placeholder="seu@email.com"></div>
+    <div class="field"><label>Senha</label><input id="login-pass" class="inp" type="password" placeholder="••••••" onkeydown="if(event.key==='Enter')loginEmail()"></div>
+    <button class="btn btn-primary btn-full" onclick="loginEmail()">Entrar</button>
+    <div class="auth-link">Não tem conta? <a onclick="showScreen('register')">Criar agora</a></div>
+    <div class="auth-link" style="margin-top:6px"><a onclick="showScreen('landing')">← Voltar</a></div>
   </div>
 </section>
 
-<!-- CADASTRO -->
+<!-- ========== CADASTRO ========== -->
 <section id="register-screen" class="screen">
-  <div class="auth">
-    <div class="auth-card">
-      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
-      <h2>Criar conta</h2><p>Escolha o tipo de perfil.</p>
-      <div id="register-msg" class="msg"></div>
-      <button class="btn btn-google" onclick="loginGoogle()">
-        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Criar conta com Google
-      </button>
-      <div class="divider">ou preencha os dados</div>
-      <div class="role-grid">
-        <button id="role-student" class="role-card active" onclick="setRegisterRole('student')"><strong>🎒 Estudante</strong><br><span>Organizar estudos</span></button>
-        <button id="role-teacher" class="role-card" onclick="setRegisterRole('teacher')"><strong>👨‍🏫 Professor</strong><br><span>Gestão verificada</span></button>
-      </div>
-      <div class="field"><label>Nome</label><input id="reg-name" class="input" placeholder="Seu nome"></div>
-      <div class="field"><label>Email</label><input id="reg-email" class="input" type="email" placeholder="seu@email.com"></div>
-      <div class="field"><label>Senha</label><input id="reg-pass" class="input" type="password" placeholder="Mínimo 6 caracteres"></div>
-      <div id="student-code-box" class="field">
-        <label>Código do professor</label>
-        <input id="reg-student-code" class="input" placeholder="Ex.: umquarto2026">
-        <small style="color:var(--muted);display:block;margin-top:6px">Todo estudante precisa do código da turma para criar conta.</small>
-      </div>
-      <div id="teacher-code-box" class="field" style="display:none">
-        <label>Código de verificação do professor</label>
-        <input id="reg-teacher-code" class="input" placeholder="Ex.: UMQ-PROF-2026">
-      </div>
-      <button class="btn btn-primary" style="width:100%" onclick="registerEmail()">Criar conta</button>
-      <div class="auth-switch">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
-      <div class="auth-switch"><a onclick="showScreen('landing')">← Voltar</a></div>
+  <div class="auth-card">
+    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none'">
+    <h2>Criar conta</h2><div class="sub">Escolha seu perfil.</div>
+    <div id="register-msg" class="msg"></div>
+    <button class="btn btn-google" onclick="loginGoogle()">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Criar conta com Google
+    </button>
+    <div class="divider">ou preencha</div>
+    <div class="role-grid">
+      <button id="role-student" class="role-card active" onclick="setRegRole('student')">🎒<br><span style="display:block;margin-top:4px">Estudante</span></button>
+      <button id="role-teacher" class="role-card" onclick="setRegRole('teacher')">👨‍🏫<br><span style="display:block;margin-top:4px">Professor</span></button>
     </div>
+    <div class="field"><label>Nome</label><input id="reg-name" class="inp" placeholder="Seu nome"></div>
+    <div class="field"><label>Email</label><input id="reg-email" class="inp" type="email" placeholder="seu@email.com"></div>
+    <div class="field"><label>Senha</label><input id="reg-pass" class="inp" type="password" placeholder="Mínimo 6 caracteres"></div>
+    <div id="student-code-box" class="field">
+      <label>Código do professor</label>
+      <input id="reg-student-code" class="inp" placeholder="Ex.: umquarto2026">
+      <small style="color:var(--muted);display:block;margin-top:5px;font-size:12px">Peça o código ao seu professor.</small>
+    </div>
+    <div id="teacher-code-box" class="field" style="display:none">
+      <label>Código de verificação</label>
+      <input id="reg-teacher-code" class="inp" placeholder="Código do professor">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="registerEmail()">Criar conta</button>
+    <div class="auth-link">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
+    <div class="auth-link" style="margin-top:6px"><a onclick="showScreen('landing')">← Voltar</a></div>
   </div>
 </section>
 
-<!-- ESCOLHA DE MODO (professor) -->
+<!-- ========== ESCOLHA MODO PROFESSOR ========== -->
 <section id="role-screen" class="screen">
-  <div class="auth">
-    <div class="auth-card">
-      <div class="brand"><div class="logo-mark"></div> Um <b>Quarto</b></div>
-      <h2>Como deseja entrar?</h2>
-      <p>Seu perfil de professor permite usar como aluno ou acessar a gestão.</p>
-      <div class="role-grid">
-        <button class="role-card" onclick="enterApp('student')"><strong>🎒 Modo aluno</strong><br><span>Timer, tarefas, aulas e flashcards.</span></button>
-        <button class="role-card" onclick="enterApp('teacher')"><strong>👨‍🏫 Gestão</strong><br><span>Alunos, aulas, tarefas e provas.</span></button>
-      </div>
-      <button class="btn btn-light" style="width:100%;margin-top:8px" onclick="logout()">Sair</button>
+  <div class="auth-card">
+    <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img" onerror="this.style.display='none'">
+    <h2>Como entrar?</h2>
+    <div class="sub">Seu perfil de professor tem dois modos.</div>
+    <div class="role-grid" style="margin-top:20px">
+      <button class="role-card" onclick="enterApp('student')">🎒<br><span style="display:block;margin-top:4px;font-size:12px">Modo aluno</span></button>
+      <button class="role-card" onclick="enterApp('teacher')">👨‍🏫<br><span style="display:block;margin-top:4px;font-size:12px">Gestão</span></button>
+    </div>
+    <button class="btn btn-light btn-full" style="margin-top:12px" onclick="logout()">Sair</button>
+  </div>
+</section>
+
+<!-- ========== LOADING ========== -->
+<section id="loading-screen" class="screen">
+  <div class="auth-card" style="text-align:center;padding:48px 24px">
+    <div style="width:48px;height:48px;border-radius:14px;background:var(--green);margin:0 auto 16px"></div>
+    <div style="color:var(--muted);font-weight:700">Carregando...</div>
+  </div>
+</section>
+
+<!-- ========== APP ========== -->
+<section id="app-screen" class="screen">
+
+  <!-- DESKTOP SIDEBAR -->
+  <div class="desktop-side" id="desktop-side">
+    <div class="desktop-side-head">
+      <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img-sm" onerror="this.style.display='none'">
+    </div>
+    <div class="dside-user">
+      <div class="avatar" id="avatar-desktop">U</div>
+      <div><div class="dside-user-name" id="dside-name">—</div><div class="dside-user-email" id="dside-email">—</div></div>
+    </div>
+    <div class="dside-nav" id="dside-nav"></div>
+    <div class="dside-footer">
+      <button id="dside-role-btn" class="dside-btn" style="display:none" onclick="showScreen('role')"><span class="ico">🔄</span> Trocar modo</button>
+      <button class="dside-logout" onclick="logout()"><span class="ico">🚪</span> Sair</button>
     </div>
   </div>
-</section>
 
-<!-- LOADING -->
-<section id="loading-screen" class="screen">
-  <div class="auth"><div class="auth-card" style="text-align:center;padding:50px 28px">
-    <div class="logo-mark" style="margin:0 auto 20px"></div>
-    <p style="color:var(--muted);font-weight:700;font-size:15px">Carregando...</p>
-  </div></div>
-</section>
-
-<!-- APP -->
-<section id="app-screen" class="screen">
-  <div class="app">
-    <aside class="side">
-      <div class="brand"><div class="logo-mark"></div> Um <b style="color:var(--green)">Quarto</b></div>
-      <nav class="nav" id="nav"></nav>
-      <div class="side-bottom">
-        <button id="switch-role-btn" class="btn btn-light btn-small" style="display:none" onclick="showScreen('role')">Trocar modo</button>
-        <button class="btn btn-light btn-small" onclick="logout()">Sair</button>
-      </div>
-    </aside>
-    <main class="main">
-      <header class="app-head">
-        <div><h2 id="page-title">Painel</h2><p id="page-subtitle">Comece pequeno. Continue constante.</p></div>
-        <div class="avatar" id="avatar">U</div>
-      </header>
-      <div id="verify-banner" class="verify-banner" style="display:none">
-        📧 Confirme seu e-mail para liberar todos os recursos.
-        <button onclick="resendVerification()">Reenviar e-mail</button>
-      </div>
-
-      <!-- PAINEL -->
-      <section id="tab-dashboard" class="tab active">
-        <div class="grid grid-4" style="margin-bottom:16px">
-          <div class="card stat pattern"><div class="num" id="dash-min">0</div><div class="label">min estudados</div><div class="hint">Total acumulado</div></div>
-          <div class="card stat"><div class="num" id="dash-pending">0</div><div class="label">pendências</div><div class="hint">Tarefas e provas</div></div>
-          <div class="card stat"><div class="num" id="dash-classes">0</div><div class="label">aulas</div><div class="hint">Registradas</div></div>
-          <div class="card stat"><div class="num" id="dash-cards">0</div><div class="label">flashcards</div><div class="hint">Criados por você</div></div>
-        </div>
-        <div class="grid grid-2">
-          <div class="card quote"><h3>Mensagem do dia</h3><p>Um quarto de hora bem feito vale mais que uma hora cheia de distrações.</p></div>
-          <div class="card"><div class="section-title">Próximo passo</div><div id="next-step"></div></div>
-        </div>
-      </section>
-
-      <!-- TIMER -->
-      <section id="tab-timer" class="tab">
-        <div class="grid grid-2">
-          <div class="card timer-box">
-            <div class="modes">
-              <button class="mode active" data-mode="15" onclick="setMode(15,5)">15/5</button>
-              <button class="mode" data-mode="25" onclick="setMode(25,5)">25/5</button>
-              <button class="mode" data-mode="50" onclick="setMode(50,10)">50/10</button>
-              <button class="mode" data-mode="90" onclick="setMode(90,15)">90/15</button>
-              <button class="mode" data-mode="custom" onclick="applyCustomMode()">Livre</button>
-            </div>
-            <div class="timer" id="timer-ring"><div class="timer-inner"><div>
-              <div class="time" id="time">15:00</div>
-              <div class="timer-label" id="timer-label">Foco</div>
-            </div></div></div>
-            <div class="timer-actions">
-              <button class="btn btn-light" onclick="resetTimer()">Reset</button>
-              <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()">Iniciar</button>
-              <button class="btn btn-dark" onclick="startBreak()">Descanso</button>
-            </div>
-            <div class="form-row">
-              <div class="field"><label>Foco livre (min)</label><input id="custom-focus" class="input" type="number" value="40" min="1"></div>
-              <div class="field"><label>Descanso (min)</label><input id="custom-rest" class="input" type="number" value="10" min="1"></div>
-            </div>
-            <div class="field" style="text-align:left"><label>Tarefa do foco</label><input id="focus-task" class="input" placeholder="Ex.: revisar equações"></div>
-          </div>
-          <div class="card">
-            <div class="section-title">Tarefas rápidas do timer</div>
-            <div class="form-row"><input id="quick-task" class="input" placeholder="Adicionar tarefa rápida"><button class="btn btn-primary" onclick="addQuickTask()">+</button></div>
-            <div id="quick-list" class="list" style="margin-top:14px"></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TAREFAS -->
-      <section id="tab-tasks" class="tab">
-        <div class="card" style="margin-bottom:16px">
-          <div class="section-title">Nova tarefa pessoal</div>
-          <div class="form-row"><input id="task-title" class="input" placeholder="Tarefa"><input id="task-subject" class="input" placeholder="Matéria"></div>
-          <div class="form-row" style="margin-top:12px"><input id="task-date" type="date" class="input"><button class="btn btn-primary" onclick="addTask()">Adicionar</button></div>
-        </div>
-        <div class="card"><div class="section-title">Minhas tarefas</div><div id="task-list" class="list"></div></div>
-      </section>
-
-      <!-- AULAS -->
-      <section id="tab-classes" class="tab">
-        <div class="card" style="margin-bottom:16px">
-          <div class="section-title">Registrar aula pessoal</div>
-          <div class="form-row"><input id="class-subject" class="input" placeholder="Matéria"><input id="class-date" type="date" class="input"></div>
-          <div class="form-row" style="margin-top:12px"><input id="class-min" type="number" class="input" placeholder="Duração em minutos"><input id="class-topic" class="input" placeholder="Conteúdo estudado"></div>
-          <div class="field" style="margin-top:12px"><textarea id="class-notes" class="textarea" placeholder="Observações e dúvidas"></textarea></div>
-          <button class="btn btn-primary" onclick="addClass()">Registrar aula</button>
-        </div>
-        <div class="card"><div class="section-title">Aulas e registros</div><div id="class-list" class="list"></div></div>
-      </section>
-
-      <!-- CALENDÁRIO -->
-      <section id="tab-calendar" class="tab">
-        <div class="grid grid-2">
-          <div class="card">
-            <div class="cal-nav">
-              <button class="btn btn-light btn-small" onclick="calChangeMonth(-1)">‹</button>
-              <h3 id="cal-month-label"></h3>
-              <button class="btn btn-light btn-small" onclick="calChangeMonth(1)">›</button>
-              <button class="btn btn-primary btn-small" onclick="calGoToday()">Hoje</button>
-            </div>
-            <div class="cal-grid-wrap" id="cal-grid"></div>
-            <div class="cal-legend">
-              <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--danger)"></div>Prova</div>
-              <div class="cal-leg"><div class="cal-leg-dot" style="background:#1565c0"></div>Compromisso</div>
-              <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--green)"></div>Aula</div>
-              <div class="cal-leg"><div class="cal-leg-dot" style="background:#e65100"></div>Pessoal</div>
-              <div class="cal-leg"><div class="cal-leg-dot" style="background:#7b1fa2"></div>Lembrete</div>
-            </div>
-          </div>
-          <div class="cal-side">
-            <h4 id="cal-selected-label">Selecione um dia</h4>
-            <div id="cal-evt-list"></div>
-            <div id="cal-add-form" style="display:none">
-              <div class="section-title" style="font-size:15px;margin-bottom:10px">Novo evento</div>
-              <div class="field"><input id="cal-evt-title" class="input" placeholder="Título do evento..." onkeydown="if(event.key==='Enter')addCalEvent()"></div>
-              <div class="form-row">
-                <div class="field">
-                  <label>Tipo</label>
-                  <select id="cal-evt-type" class="select" style="padding:10px 12px">
-                    <option value="prova">📝 Prova</option>
-                    <option value="compromisso">📌 Compromisso</option>
-                    <option value="aula">📚 Aula</option>
-                    <option value="pessoal" selected>🌟 Pessoal</option>
-                    <option value="lembrete">🔔 Lembrete</option>
-                  </select>
-                </div>
-                <div class="field"><label>Horário</label><input type="time" id="cal-evt-time" class="input" value="08:00"></div>
-              </div>
-              <button class="btn btn-primary" style="width:100%" onclick="addCalEvent()">Adicionar evento</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FLASHCARDS -->
-      <section id="tab-flashcards" class="tab">
-        <div class="grid grid-2">
-          <div>
-            <div class="card" style="margin-bottom:16px">
-              <div class="section-title">Criar flashcard</div>
-              <div class="field"><label>Categoria</label><input id="fc-cat" class="input" placeholder="Ex.: Matemática"></div>
-              <div class="field"><label>Pergunta</label><textarea id="fc-q" class="textarea" placeholder="O que é uma equação do 1º grau?"></textarea></div>
-              <div class="field"><label>Resposta</label><textarea id="fc-a" class="textarea" placeholder="Explique com suas palavras"></textarea></div>
-              <button class="btn btn-primary" onclick="addFlashcard()">Criar cartão</button>
-            </div>
-            <div class="card"><div class="section-title">Meus cartões</div><div id="flash-list" class="list"></div></div>
-          </div>
-          <div class="card">
-            <div class="section-title">Revisar</div>
-            <div id="flash-viewer"></div>
-            <div class="timer-actions" style="margin-top:14px">
-              <button class="btn btn-light" onclick="prevFlash()">Anterior</button>
-              <button class="btn btn-primary" onclick="nextFlash()">Próximo</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- HÁBITOS -->
-      <section id="tab-habits" class="tab">
-        <div class="card" style="margin-bottom:16px">
-          <div class="section-title">Novo hábito</div>
-          <div class="form-row"><input id="habit-name" class="input" placeholder="Ex.: ler 10 minutos"><button class="btn btn-primary" onclick="addHabit()">Adicionar</button></div>
-        </div>
-        <div class="card"><div class="section-title">Minha semana</div><div id="habit-list" class="list"></div></div>
-      </section>
-
-      <!-- PROGRESSO -->
-      <section id="tab-progress" class="tab">
-        <div class="grid grid-2">
-          <div class="card"><div class="section-title">Resumo geral</div><div id="progress-summary"></div></div>
-          <div class="card"><div class="section-title">Meta semanal</div>
-            <p style="color:var(--muted)">Meta sugerida: 150 minutos.</p>
-            <div class="bar"><div id="weekly-bar"></div></div>
-            <p id="weekly-text" style="color:var(--muted);font-weight:1000;margin-top:10px"></p>
-          </div>
-        </div>
-      </section>
-
-      <!-- GESTÃO (professor) -->
-      <section id="tab-teacher" class="tab">
-        <div class="grid grid-4" style="margin-bottom:16px">
-          <div class="card stat"><div class="num" id="t-students">0</div><div class="label">alunos</div><div class="hint">vinculados</div></div>
-          <div class="card stat"><div class="num" id="t-lessons">0</div><div class="label">aulas</div><div class="hint">lançadas</div></div>
-          <div class="card stat"><div class="num" id="t-tasks">0</div><div class="label">tarefas</div><div class="hint">enviadas</div></div>
-          <div class="card stat"><div class="num" id="t-tests">0</div><div class="label">provas</div><div class="hint">enviadas</div></div>
-        </div>
-        <div class="notice" style="margin-bottom:16px">✅ <strong>Firebase ativo.</strong> Código do estudante: <b>umquarto2026</b> · Código do professor: <b>UMQ-PROF-2026</b></div>
-        <div class="grid grid-2">
-          <div class="card">
-            <div class="section-title">Vincular aluno</div>
-            <div class="field"><label>Email do aluno</label><input id="link-student-email" class="input" placeholder="aluno@email.com"></div>
-            <button class="btn btn-primary" onclick="linkStudent()">Vincular aluno</button>
-            <div class="section-title" style="margin-top:18px">Alunos vinculados</div>
-            <div id="linked-list" class="list"></div>
-          </div>
-          <div class="card">
-            <div class="section-title">Selecionar alunos</div>
-            <div id="student-picker" class="student-picker"></div>
-          </div>
-        </div>
-        <div class="grid grid-3" style="margin-top:16px">
-          <div class="card">
-            <div class="section-title">Lançar aula dada</div>
-            <div class="field"><label>Matéria</label><input id="mg-lesson-subject" class="input" placeholder="Matemática"></div>
-            <div class="field"><label>Data</label><input id="mg-lesson-date" class="input" type="date"></div>
-            <div class="field"><label>Conteúdo</label><textarea id="mg-lesson-topic" class="textarea" placeholder="Conteúdo dado"></textarea></div>
-            <button class="btn btn-primary" onclick="teacherCreateLesson()">Enviar aula</button>
-          </div>
-          <div class="card">
-            <div class="section-title">Passar tarefa</div>
-            <div class="field"><label>Título</label><input id="mg-task-title" class="input" placeholder="Lista de exercícios"></div>
-            <div class="field"><label>Prazo</label><input id="mg-task-date" class="input" type="date"></div>
-            <div class="field"><label>Descrição</label><textarea id="mg-task-desc" class="textarea" placeholder="O que o aluno deve fazer"></textarea></div>
-            <button class="btn btn-primary" onclick="teacherCreateTask()">Enviar tarefa</button>
-          </div>
-          <div class="card">
-            <div class="section-title">Passar prova</div>
-            <div class="field"><label>Título</label><input id="mg-test-title" class="input" placeholder="Prova de revisão"></div>
-            <div class="field"><label>Data</label><input id="mg-test-date" class="input" type="date"></div>
-            <div class="field"><label>Orientações</label><textarea id="mg-test-desc" class="textarea" placeholder="Conteúdo, instruções, formato"></textarea></div>
-            <button class="btn btn-primary" onclick="teacherCreateTest()">Enviar prova</button>
-          </div>
-        </div>
-      </section>
-
-    </main>
+  <!-- MOBILE TOPBAR -->
+  <div class="app-topbar">
+    <div class="app-topbar-left">
+      <button class="topbar-menu-btn" id="menu-btn" onclick="toggleDrawer()">
+        <span></span><span></span><span></span>
+      </button>
+      <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" style="height:26px;object-fit:contain" onerror="this.style.display='none'">
+    </div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div id="page-title-mobile" style="font-size:15px;font-weight:800;color:#fff"></div>
+      <div class="avatar" id="avatar-mobile">U</div>
+    </div>
   </div>
-</section>
+
+  <!-- DRAWER OVERLAY -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+
+  <!-- DRAWER -->
+  <div class="drawer" id="drawer">
+    <div class="drawer-head">
+      <img src="https://raw.githubusercontent.com/paulovsalles/um-quarto/main/logo.png" alt="Um Quarto" class="logo-img-sm" onerror="this.style.display='none'">
+      <div class="drawer-user">
+        <div class="avatar" id="avatar-drawer">U</div>
+        <div><div class="drawer-user-name" id="drawer-name">—</div><div class="drawer-user-email" id="drawer-email">—</div></div>
+      </div>
+    </div>
+    <div class="drawer-nav" id="drawer-nav"></div>
+    <div class="drawer-footer">
+      <button id="drawer-role-btn" class="drawer-btn" style="display:none" onclick="showScreen('role');toggleDrawer()"><span class="ico">🔄</span> Trocar modo</button>
+      <button class="drawer-logout" onclick="logout()"><span class="ico">🚪</span> Sair da conta</button>
+    </div>
+  </div>
+
+  <!-- CONTEÚDO -->
+  <div class="tab-content" id="tab-content">
+
+    <!-- AVISO EMAIL -->
+    <div id="verify-banner" class="verify-banner" style="display:none;margin:14px 16px 0">
+      📧 Confirme seu e-mail.
+      <button onclick="resendVerification()">Reenviar</button>
+    </div>
+
+    <!-- PAINEL -->
+    <div id="tab-dashboard" class="tab active">
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num" id="dash-min">0</div><div class="stat-label">min estudados</div><div class="stat-hint">Total acumulado</div></div>
+        <div class="stat-card"><div class="stat-num" id="dash-pending">0</div><div class="stat-label">pendências</div><div class="stat-hint">Tarefas e provas</div></div>
+        <div class="stat-card"><div class="stat-num" id="dash-classes">0</div><div class="stat-label">aulas</div><div class="stat-hint">Registradas</div></div>
+        <div class="stat-card"><div class="stat-num" id="dash-cards">0</div><div class="stat-label">flashcards</div><div class="stat-hint">Criados</div></div>
+      </div>
+      <div class="quote-card"><h3 style="font-size:15px;font-weight:900">✦ Mensagem do dia</h3><p>Um quarto de hora bem feito vale mais que uma hora cheia de distrações.</p></div>
+      <div class="card"><div class="card-title">Próxima pendência</div><div id="next-step"></div></div>
+    </div>
+
+    <!-- TIMER -->
+    <div id="tab-timer" class="tab">
+      <div class="card">
+        <div class="timer-modes" id="timer-modes">
+          <button class="tmode active" data-m="15" onclick="setMode(15,5)">15/5</button>
+          <button class="tmode" data-m="25" onclick="setMode(25,5)">25/5</button>
+          <button class="tmode" data-m="50" onclick="setMode(50,10)">50/10</button>
+          <button class="tmode" data-m="90" onclick="setMode(90,15)">90/15</button>
+          <button class="tmode" data-m="custom" onclick="applyCustom()">Livre</button>
+        </div>
+        <div class="timer-wrap">
+          <div class="timer-ring" id="timer-ring">
+            <div class="timer-inner">
+              <div><div class="timer-time" id="timer-time">15:00</div><div class="timer-lbl" id="timer-lbl">Foco</div></div>
+            </div>
+          </div>
+          <div class="timer-btns">
+            <button class="btn btn-light btn-sm" onclick="resetTimer()">↺ Reset</button>
+            <button class="btn btn-primary" id="timer-btn" onclick="toggleTimer()">▶ Iniciar</button>
+            <button class="btn btn-dark btn-sm" onclick="startBreak()">☕ Pausa</button>
+          </div>
+          <button class="timer-save-btn" onclick="openSaveModal()">💾 Registrar tempo agora</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div class="field"><label>Foco livre (min)</label><input id="custom-focus" class="inp" type="number" value="40" min="1"></div>
+          <div class="field"><label>Descanso (min)</label><input id="custom-rest" class="inp" type="number" value="10" min="1"></div>
+        </div>
+        <div class="field"><label>Estudando agora</label><input id="focus-task" class="inp" placeholder="Ex.: Funções do 1º grau..."></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Tarefas rápidas</div>
+        <div class="quick-form"><input id="quick-task" class="inp" placeholder="Adicionar..."><button class="btn btn-primary btn-sm" onclick="addQuickTask()">+</button></div>
+        <div id="quick-list"></div>
+      </div>
+    </div>
+
+    <!-- TAREFAS -->
+    <div id="tab-tasks" class="tab">
+      <div class="card">
+        <div class="card-title">Nova tarefa</div>
+        <div class="field"><input id="task-title" class="inp" placeholder="O que fazer?"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <input id="task-subject" class="inp" placeholder="Matéria">
+          <input id="task-date" type="date" class="inp">
+        </div>
+        <button class="btn btn-primary btn-full btn-sm" onclick="addTask()">Adicionar tarefa</button>
+      </div>
+      <div id="task-list"></div>
+    </div>
+
+    <!-- AULAS -->
+    <div id="tab-classes" class="tab">
+      <div class="card">
+        <div class="card-title">Registrar aula</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <input id="class-subject" class="inp" placeholder="Matéria">
+          <input id="class-date" type="date" class="inp">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <input id="class-min" type="number" class="inp" placeholder="Duração (min)">
+          <input id="class-topic" class="inp" placeholder="Conteúdo">
+        </div>
+        <textarea id="class-notes" class="inp textarea" placeholder="Observações (opcional)"></textarea>
+        <button class="btn btn-primary btn-full btn-sm" style="margin-top:10px" onclick="addClass()">Registrar</button>
+      </div>
+      <div id="class-list"></div>
+    </div>
+
+    <!-- AGENDA/CALENDÁRIO -->
+    <div id="tab-calendar" class="tab">
+      <div class="card">
+        <div class="cal-header">
+          <button class="btn btn-light btn-sm" onclick="calChangeMonth(-1)">‹</button>
+          <h3 id="cal-month-lbl"></h3>
+          <button class="btn btn-light btn-sm" onclick="calChangeMonth(1)">›</button>
+          <button class="btn btn-primary btn-sm" onclick="calGoToday()">Hoje</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-legend" id="cal-legend">
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--danger)"></div>Prova</div>
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:#1565c0"></div>Compromisso</div>
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:var(--green)"></div>Aula</div>
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:#e65100"></div>Pessoal</div>
+          <div class="cal-leg"><div class="cal-leg-dot" style="background:#7b1fa2"></div>Lembrete</div>
+        </div>
+        <div class="cal-side" id="cal-side"></div>
+      </div>
+    </div>
+
+    <!-- FLASHCARDS -->
+    <div id="tab-flashcards" class="tab">
+      <div class="card">
+        <div class="card-title">Criar flashcard</div>
+        <div class="field"><label>Categoria</label><input id="fc-cat" class="inp" placeholder="Ex.: Matemática"></div>
+        <div class="field"><label>Pergunta</label><textarea id="fc-q" class="inp textarea" placeholder="Pergunta..."></textarea></div>
+        <div class="field"><label>Resposta</label><textarea id="fc-a" class="inp textarea" placeholder="Resposta..."></textarea></div>
+        <button class="btn btn-primary btn-full btn-sm" onclick="addFlashcard()">Criar cartão</button>
+      </div>
+      <div class="card">
+        <div class="card-title">Revisar</div>
+        <div id="flash-viewer"></div>
+        <div class="flash-nav">
+          <button class="btn btn-light btn-sm" onclick="prevFlash()">← Anterior</button>
+          <button class="btn btn-primary btn-sm" onclick="nextFlash()">Próximo →</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Meus cartões</div>
+        <div id="flash-list"></div>
+      </div>
+    </div>
+
+    <!-- HÁBITOS -->
+    <div id="tab-habits" class="tab">
+      <div class="card">
+        <div class="card-title">Novo hábito</div>
+        <div class="quick-form"><input id="habit-name" class="inp" placeholder="Ex.: Ler 10 minutos"><button class="btn btn-primary btn-sm" onclick="addHabit()">+</button></div>
+      </div>
+      <div id="habit-list"></div>
+    </div>
+
+    <!-- PROGRESSO -->
+    <div id="tab-progress" class="tab">
+      <div class="card" id="progress-card"></div>
+    </div>
+
+    <!-- GESTÃO PROFESSOR -->
+    <div id="tab-teacher" class="tab">
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num" id="t-students">0</div><div class="stat-label">alunos</div></div>
+        <div class="stat-card"><div class="stat-num" id="t-lessons">0</div><div class="stat-label">aulas</div></div>
+        <div class="stat-card"><div class="stat-num" id="t-tasks">0</div><div class="stat-label">tarefas</div></div>
+        <div class="stat-card"><div class="stat-num" id="t-tests">0</div><div class="stat-label">provas</div></div>
+      </div>
+      <div class="notice">✅ Firebase ativo. Código do estudante: <strong>umquarto2026</strong></div>
+      <div class="card">
+        <div class="card-title">Vincular aluno</div>
+        <div class="quick-form"><input id="link-email" class="inp" placeholder="email do aluno"><button class="btn btn-primary btn-sm" onclick="linkStudent()">Vincular</button></div>
+        <div id="linked-list"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Selecionar alunos</div>
+        <div class="student-picker" id="student-picker"></div>
+        <div style="display:grid;gap:8px;margin-top:10px">
+          <details>
+            <summary style="font-weight:800;color:var(--dark);padding:10px 0;cursor:pointer">📚 Lançar aula</summary>
+            <div style="padding-top:10px">
+              <div class="field"><input id="mg-lesson-subject" class="inp" placeholder="Matéria"></div>
+              <div class="field"><input id="mg-lesson-date" class="inp" type="date"></div>
+              <div class="field"><textarea id="mg-lesson-topic" class="inp textarea" placeholder="Conteúdo"></textarea></div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="teacherCreateLesson()">Enviar aula</button>
+            </div>
+          </details>
+          <details>
+            <summary style="font-weight:800;color:var(--dark);padding:10px 0;cursor:pointer">✅ Passar tarefa</summary>
+            <div style="padding-top:10px">
+              <div class="field"><input id="mg-task-title" class="inp" placeholder="Título da tarefa"></div>
+              <div class="field"><input id="mg-task-date" class="inp" type="date"></div>
+              <div class="field"><textarea id="mg-task-desc" class="inp textarea" placeholder="Descrição"></textarea></div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="teacherCreateTask()">Enviar tarefa</button>
+            </div>
+          </details>
+          <details>
+            <summary style="font-weight:800;color:var(--dark);padding:10px 0;cursor:pointer">📝 Passar prova</summary>
+            <div style="padding-top:10px">
+              <div class="field"><input id="mg-test-title" class="inp" placeholder="Título da prova"></div>
+              <div class="field"><input id="mg-test-date" class="inp" type="date"></div>
+              <div class="field"><textarea id="mg-test-desc" class="inp textarea" placeholder="Orientações"></textarea></div>
+              <button class="btn btn-primary btn-full btn-sm" onclick="teacherCreateTest()">Enviar prova</button>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /tab-content -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav" id="bottom-nav"></nav>
+
+</section><!-- /app-screen -->
+
+<!-- MODAL SALVAR TIMER -->
+<div class="modal-overlay hidden" id="save-modal">
+  <div class="modal-sheet">
+    <h3>💾 Registrar tempo</h3>
+    <p id="save-modal-desc">Registrar minutos de estudo.</p>
+    <div class="field"><label>O que você estudou?</label><input id="save-what" class="inp" placeholder="Ex.: Funções do 1º grau, Redação..."></div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button class="btn btn-light btn-full" onclick="closeSaveModal()">Cancelar</button>
+      <button class="btn btn-primary btn-full" onclick="confirmSave()">Salvar ✓</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ================================================================
-// 1. CONFIGURAÇÃO DO FIREBASE
-//    ⚠️  SUBSTITUA pelos seus dados do Firebase Console
+// FIREBASE CONFIG
 // ================================================================
 const firebaseConfig = {
   apiKey:            "AIzaSyDlxZpvhfRuy-7AX1_hNrWuDAfX4rArsoM",
@@ -631,59 +680,44 @@ const firebaseConfig = {
   messagingSenderId: "1057520002134",
   appId:             "1:1057520002134:web:c5e91e007bd6c2058ec7f7"
 };
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.database();   // ← Realtime Database
+const db   = firebase.database();
 
 // ================================================================
-// 2. CONSTANTES E ESTADO
+// CONSTANTES
 // ================================================================
-const TEACHER_CODE = "UMQ-PROF-2026";
-const STUDENT_CODE = "umquarto2026";
-let registerRole   = "student";
-let flashIndex     = 0, flashShowingAnswer = false;
+const TEACHER_CODE = 'UMQ-PROF-2026';
+const STUDENT_CODE = 'umquarto2026';
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const now = new Date();
+
+// ================================================================
+// ESTADO
+// ================================================================
+let registerRole = 'student';
+let flashIndex = 0, flashShowAnswer = false;
 let timer = {focusMin:15,restMin:5,total:900,left:900,running:false,isBreak:false,int:null};
-
+let calYear = now.getFullYear(), calMonth = now.getMonth(), calSel = null;
 let state = {
-  current:null, activeMode:"student",
-  tasks:[], classes:[], habits:[], quickTasks:[], flashcards:[],
-  managedLessons:[], managedTasks:[], tests:[], links:[], users:[],
+  current:null, activeMode:'student',
+  tasks:[],classes:[],habits:[],quickTasks:[],flashcards:[],
+  managedLessons:[],managedTasks:[],tests:[],links:[],users:[],
   studyMinutes:0, calEvents:{}
 };
-
-// Calendário
-const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-                'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const now = new Date();
-let calYear  = now.getFullYear();
-let calMonth = now.getMonth();
-let calSelectedDate = null;
-
-let dbListener = null;  // referência para cancelar listener
+let dbListener = null;
 
 // ================================================================
-// 3. AUTENTICAÇÃO
+// AUTH
 // ================================================================
 auth.onAuthStateChanged(async user => {
   if (user) {
-    // lê perfil do Realtime Database
     const snap = await db.ref('users/' + user.uid).get();
-    if (!snap.exists()) {
-      // Google sem perfil → pede para completar cadastro
-      showScreen('register');
-      return;
-    }
-    const profile = snap.val();
-    state.current = {
-      id: user.uid,
-      name: profile.name || user.displayName || 'Usuário',
-      email: user.email,
-      role: profile.role || 'student',
-      emailVerified: user.emailVerified
-    };
+    if (!snap.exists()) { showScreen('register'); return; }
+    const p = snap.val();
+    state.current = {id:user.uid, name:p.name||user.displayName||'Usuário', email:user.email, role:p.role||'student'};
     subscribeToState();
-    if (profile.role === 'teacher') showScreen('role');
+    if (p.role === 'teacher') showScreen('role');
     else enterApp('student');
   } else {
     if (dbListener) { dbListener.off(); dbListener = null; }
@@ -694,466 +728,520 @@ auth.onAuthStateChanged(async user => {
 
 async function loginGoogle() {
   clearMsg('login-msg'); clearMsg('register-msg');
-  const provider = new firebase.auth.GoogleAuthProvider();
   try {
-    const result = await auth.signInWithPopup(provider);
-    const user   = result.user;
-    const snap   = await db.ref('users/' + user.uid).get();
-    if (!snap.exists()) {
-      // primeiro acesso → cria perfil como estudante
-      await db.ref('users/' + user.uid).set({
-        name: user.displayName || 'Usuário',
-        email: user.email,
-        role: 'student'
-      });
-    }
-    // onAuthStateChanged cuida do restante
-  } catch(e) { showAuthError(e, 'login-msg'); }
+    const r = await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    const snap = await db.ref('users/' + r.user.uid).get();
+    if (!snap.exists()) await db.ref('users/' + r.user.uid).set({name:r.user.displayName||'Usuário',email:r.user.email,role:'student'});
+  } catch(e) { showAuthErr(e,'login-msg'); }
 }
 
 async function loginEmail() {
   clearMsg('login-msg');
-  const email = v('login-email'), pass = v('login-pass');
-  if (!email || !pass) { msg('login-msg','Preencha email e senha.','error'); return; }
-  try {
-    await auth.signInWithEmailAndPassword(email, pass);
-  } catch(e) { showAuthError(e, 'login-msg'); }
+  const em = v('login-email'), pw = v('login-pass');
+  if (!em||!pw) { msg('login-msg','Preencha email e senha.','error'); return; }
+  try { await auth.signInWithEmailAndPassword(em,pw); }
+  catch(e) { showAuthErr(e,'login-msg'); }
 }
 
 async function registerEmail() {
   clearMsg('register-msg');
-  const name  = v('reg-name');
-  const email = v('reg-email');
-  const pass  = v('reg-pass');
-  const tCode = v('reg-teacher-code');
-  const sCode = v('reg-student-code').toLowerCase();
-  if (!name || !email || !pass) { msg('register-msg','Preencha nome, email e senha.','error'); return; }
-  if (pass.length < 6)          { msg('register-msg','Senha mínima: 6 caracteres.','error'); return; }
-  if (registerRole === 'student' && sCode !== STUDENT_CODE) {
-    msg('register-msg','Código do professor inválido.','error'); return; }
-  if (registerRole === 'teacher' && tCode !== TEACHER_CODE) {
-    msg('register-msg','Código de professor inválido.','error'); return; }
+  const name=v('reg-name'),em=v('reg-email'),pw=v('reg-pass');
+  const tc=v('reg-teacher-code'),sc=v('reg-student-code').toLowerCase();
+  if (!name||!em||!pw) { msg('register-msg','Preencha todos os campos.','error'); return; }
+  if (pw.length<6) { msg('register-msg','Senha mínima: 6 caracteres.','error'); return; }
+  if (registerRole==='student'&&sc!==STUDENT_CODE) { msg('register-msg','Código do professor inválido.','error'); return; }
+  if (registerRole==='teacher'&&tc!==TEACHER_CODE) { msg('register-msg','Código de professor inválido.','error'); return; }
   try {
-    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-    await cred.user.sendEmailVerification();
-    // salva perfil no Realtime Database
-    await db.ref('users/' + cred.user.uid).set({ name, email, role: registerRole });
-  } catch(e) { showAuthError(e, 'register-msg'); }
+    const c = await auth.createUserWithEmailAndPassword(em,pw);
+    await c.user.sendEmailVerification();
+    await db.ref('users/'+c.user.uid).set({name,email:em,role:registerRole});
+  } catch(e) { showAuthErr(e,'register-msg'); }
 }
 
 async function resendVerification() {
-  if (auth.currentUser) {
-    await auth.currentUser.sendEmailVerification();
-    alert('E-mail de verificação reenviado!');
-  }
+  if (auth.currentUser) { await auth.currentUser.sendEmailVerification(); alert('E-mail reenviado!'); }
 }
 
 function logout() {
-  if (dbListener) { dbListener.off(); dbListener = null; }
+  if (dbListener) { dbListener.off(); dbListener=null; }
   auth.signOut();
 }
 
-function showAuthError(e, target='login-msg') {
-  const map = {
-    'auth/user-not-found':'Usuário não encontrado.',
-    'auth/wrong-password':'Senha incorreta.',
-    'auth/invalid-credential':'Email ou senha incorretos.',
-    'auth/email-already-in-use':'Este e-mail já está cadastrado.',
-    'auth/invalid-email':'E-mail inválido.',
-    'auth/weak-password':'Senha muito fraca (mínimo 6 caracteres).',
-    'auth/popup-closed-by-user':'Login cancelado.',
-    'auth/network-request-failed':'Sem conexão. Verifique a internet.'
-  };
-  msg(target, map[e.code] || e.message, 'error');
+function showAuthErr(e, target) {
+  const m = {'auth/user-not-found':'Usuário não encontrado.','auth/wrong-password':'Senha incorreta.',
+    'auth/invalid-credential':'Email ou senha incorretos.','auth/email-already-in-use':'Email já cadastrado.',
+    'auth/weak-password':'Senha muito fraca.','auth/popup-closed-by-user':'Login cancelado.',
+    'auth/network-request-failed':'Sem conexão.'};
+  msg(target, m[e.code]||e.message, 'error');
 }
 
 // ================================================================
-// 4. REALTIME DATABASE — listener em tempo real
+// REALTIME DATABASE
 // ================================================================
 function subscribeToState() {
   if (dbListener) dbListener.off();
-  const uid = state.current.id;
-  dbListener = db.ref('state/' + uid);
-
-  // .on('value') dispara toda vez que os dados mudam no servidor
+  dbListener = db.ref('state/'+state.current.id);
   dbListener.on('value', snap => {
-    const d = snap.val() || {};
-    state.tasks          = d.tasks          || [];
-    state.classes        = d.classes        || [];
-    state.habits         = d.habits         || [];
-    state.quickTasks     = d.quickTasks     || [];
-    state.flashcards     = d.flashcards     || [];
-    state.managedLessons = d.managedLessons || [];
-    state.managedTasks   = d.managedTasks   || [];
-    state.tests          = d.tests          || [];
-    state.links          = d.links          || [];
-    state.users          = d.users          || [];
-    state.studyMinutes   = d.studyMinutes   || 0;
-    state.calEvents      = d.calEvents      || {};
+    const d = snap.val()||{};
+    state.tasks=d.tasks||[]; state.classes=d.classes||[];
+    state.habits=d.habits||[]; state.quickTasks=d.quickTasks||[];
+    state.flashcards=d.flashcards||[]; state.managedLessons=d.managedLessons||[];
+    state.managedTasks=d.managedTasks||[]; state.tests=d.tests||[];
+    state.links=d.links||[]; state.users=d.users||[];
+    state.studyMinutes=d.studyMinutes||0; state.calEvents=d.calEvents||{};
     renderAll();
   });
 }
 
 function save() {
   if (!state.current) return;
-  // .set() substitui o nó inteiro (equivalente ao set com merge no Firestore)
-  db.ref('state/' + state.current.id).set({
-    tasks:          state.tasks,
-    classes:        state.classes,
-    habits:         state.habits,
-    quickTasks:     state.quickTasks,
-    flashcards:     state.flashcards,
-    managedLessons: state.managedLessons,
-    managedTasks:   state.managedTasks,
-    tests:          state.tests,
-    links:          state.links,
-    users:          state.users,
-    studyMinutes:   state.studyMinutes,
-    calEvents:      state.calEvents
+  db.ref('state/'+state.current.id).set({
+    tasks:state.tasks, classes:state.classes, habits:state.habits,
+    quickTasks:state.quickTasks, flashcards:state.flashcards,
+    managedLessons:state.managedLessons, managedTasks:state.managedTasks,
+    tests:state.tests, links:state.links, users:state.users,
+    studyMinutes:state.studyMinutes, calEvents:state.calEvents
   });
 }
 
 // ================================================================
-// 5. NAVEGAÇÃO
+// NAVEGAÇÃO
 // ================================================================
 function showScreen(n) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(n + '-screen').classList.add('active');
-  scrollTo(0, 0);
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(n+'-screen').classList.add('active');
+  scrollTo(0,0);
 }
 
-function msg(id, text, type) {
-  const e = document.getElementById(id); if (!e) return;
-  e.className = 'msg ' + type; e.textContent = text;
-}
-function clearMsg(id) {
-  const e = document.getElementById(id); if (!e) return;
-  e.className = 'msg'; e.textContent = '';
-}
+function msg(id,text,type) { const e=document.getElementById(id); if(!e)return; e.className='msg '+type; e.textContent=text; }
+function clearMsg(id) { const e=document.getElementById(id); if(!e)return; e.className='msg'; e.textContent=''; }
 
-function setRegisterRole(r) {
-  registerRole = r;
-  document.getElementById('role-student').classList.toggle('active', r==='student');
-  document.getElementById('role-teacher').classList.toggle('active', r==='teacher');
-  document.getElementById('student-code-box').style.display = r==='student'?'block':'none';
-  document.getElementById('teacher-code-box').style.display = r==='teacher'?'block':'none';
+function setRegRole(r) {
+  registerRole=r;
+  document.getElementById('role-student').classList.toggle('active',r==='student');
+  document.getElementById('role-teacher').classList.toggle('active',r==='teacher');
+  document.getElementById('student-code-box').style.display=r==='student'?'block':'none';
+  document.getElementById('teacher-code-box').style.display=r==='teacher'?'block':'none';
 }
 
 function enterApp(mode) {
-  state.activeMode = mode;
+  state.activeMode=mode;
   buildNav(); showScreen('app');
-  openTab(mode==='teacher' ? 'teacher' : 'dashboard');
-  document.getElementById('switch-role-btn').style.display =
-    state.current?.role === 'teacher' ? 'inline-flex' : 'none';
-  document.getElementById('avatar').textContent =
-    (state.current?.name || 'U')[0].toUpperCase();
-  const vb = document.getElementById('verify-banner');
-  if (auth.currentUser && !auth.currentUser.emailVerified &&
-      auth.currentUser.providerData[0]?.providerId === 'password') {
-    vb.style.display = 'flex';
-  } else { vb.style.display = 'none'; }
+  openTab(mode==='teacher'?'teacher':'dashboard');
+  const initials=(state.current?.name||'U')[0].toUpperCase();
+  ['avatar-mobile','avatar-drawer','avatar-desktop'].forEach(id=>{ const el=document.getElementById(id); if(el)el.textContent=initials; });
+  const nm=state.current?.name||''; const em=state.current?.email||'';
+  ['drawer-name','dside-name'].forEach(id=>{ const el=document.getElementById(id); if(el)el.textContent=nm; });
+  ['drawer-email','dside-email'].forEach(id=>{ const el=document.getElementById(id); if(el)el.textContent=em; });
+  const isTeacher = state.current?.role==='teacher';
+  ['drawer-role-btn','dside-role-btn','switch-role-btn'].forEach(id=>{ const el=document.getElementById(id); if(el)el.style.display=isTeacher?'flex':'none'; });
+  const vb=document.getElementById('verify-banner');
+  if (auth.currentUser&&!auth.currentUser.emailVerified&&auth.currentUser.providerData[0]?.providerId==='password') vb.style.display='flex';
+  else vb.style.display='none';
 }
 
+// ── TABS ──
+const TAB_DEFS_STUDENT = [
+  {id:'dashboard',ico:'🏠',label:'Painel'},
+  {id:'timer',ico:'⏱️',label:'Timer'},
+  {id:'tasks',ico:'✅',label:'Tarefas'},
+  {id:'classes',ico:'📚',label:'Aulas'},
+  {id:'calendar',ico:'📅',label:'Agenda'},
+  {id:'flashcards',ico:'🃏',label:'Cards'},
+  {id:'progress',ico:'📊',label:'Progresso'},
+];
+const TAB_DEFS_TEACHER = [
+  {id:'teacher',ico:'👨‍🏫',label:'Gestão'},
+  {id:'dashboard',ico:'🏠',label:'Modo aluno'},
+];
+const TAB_TITLES = {
+  dashboard:'Painel', timer:'Timer', tasks:'Tarefas', classes:'Aulas',
+  calendar:'Agenda', flashcards:'Flashcards', progress:'Progresso',
+  teacher:'Gestão', habits:'Hábitos'
+};
+
 function buildNav() {
-  const nav = document.getElementById('nav');
-  if (state.activeMode === 'teacher') {
-    nav.innerHTML = `<button data-tab="teacher" onclick="openTab('teacher')">👨‍🏫 <span>Gestão</span></button>
-      <button data-tab="dashboard" onclick="enterApp('student')">🎒 <span>Modo aluno</span></button>`;
-  } else {
-    nav.innerHTML = [
-      ['dashboard','🏠','Painel'],['timer','⏱️','Timer'],
-      ['tasks','✅','Tarefas'],['classes','📚','Aulas'],
-      ['calendar','📅','Agenda'],['flashcards','🃏','Cards'],
-      ['progress','📊','Progresso']
-    ].map(x=>`<button data-tab="${x[0]}" onclick="openTab('${x[0]}')">${x[1]} <span>${x[2]}</span></button>`).join('');
+  const defs = state.activeMode==='teacher' ? TAB_DEFS_TEACHER : TAB_DEFS_STUDENT;
+  // Bottom nav (mobile) — máx 5 visíveis
+  const bnav = document.getElementById('bottom-nav');
+  const visible = defs.slice(0,5);
+  bnav.innerHTML = visible.map(t=>`
+    <button class="bnav-btn" data-tab="${t.id}" onclick="openTab('${t.id}')">
+      <span class="ico">${t.ico}</span>${t.label}
+    </button>`).join('');
+  // Drawer (mobile) — todos
+  const drawer = document.getElementById('drawer-nav');
+  drawer.innerHTML = defs.map(t=>`
+    <button class="drawer-btn" data-tab="${t.id}" onclick="openTab('${t.id}');toggleDrawer()">
+      <span class="ico">${t.ico}</span>${t.label}
+    </button>`).join('');
+  // Desktop sidebar
+  const dside = document.getElementById('dside-nav');
+  dside.innerHTML = defs.map(t=>`
+    <button class="dside-btn" data-tab="${t.id}" onclick="openTab('${t.id}')">
+      <span class="ico">${t.ico}</span>${t.label}
+    </button>`).join('');
+  // Botão "modo aluno" no teacher vai para dashboard como student
+  if (state.activeMode==='teacher') {
+    document.querySelectorAll('[data-tab="dashboard"]').forEach(b=>b.onclick=()=>{enterApp('student')});
   }
 }
 
 function openTab(tab) {
-  const titles = {
-    dashboard:  ['Painel','Comece pequeno. Continue constante.'],
-    timer:      ['Timer','Escolha foco, pausa e tarefa livre.'],
-    tasks:      ['Tarefas','Pessoais e enviadas pelo professor.'],
-    classes:    ['Aulas','Registre estudos e acompanhe aulas dadas.'],
-    calendar:   ['Agenda','Provas, compromissos e lembretes.'],
-    flashcards: ['Flashcards','Crie cartões e revise ativamente.'],
-    habits:     ['Hábitos','Rotina pessoal.'],
-    progress:   ['Progresso','Veja sua evolução.'],
-    teacher:    ['Gestão','Vincule alunos e lance aulas, tarefas e provas.']
-  };
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(b =>
-    b.classList.toggle('active', b.dataset.tab === tab));
-  document.getElementById('page-title').textContent    = titles[tab][0];
-  document.getElementById('page-subtitle').textContent = titles[tab][1];
-  if (tab === 'calendar') renderCalendar();
+  if (tab==='dashboard'&&state.activeMode==='teacher') { enterApp('student'); return; }
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById('tab-'+tab);
+  if (el) el.classList.add('active');
+  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  const title=TAB_TITLES[tab]||'';
+  const tm=document.getElementById('page-title-mobile'); if(tm)tm.textContent=title;
+  if (tab==='calendar') { calSel=calSel||calDateKey(now.getFullYear(),now.getMonth(),now.getDate()); renderCalendar(); renderCalSide(); }
   renderAll();
 }
 
+// ── DRAWER ──
+function toggleDrawer() {
+  const drawer=document.getElementById('drawer');
+  const overlay=document.getElementById('drawer-overlay');
+  const btn=document.getElementById('menu-btn');
+  const open=drawer.classList.toggle('open');
+  overlay.classList.toggle('open',open);
+  btn.classList.toggle('open',open);
+}
+
 // ================================================================
-// 6. HELPERS
+// HELPERS
 // ================================================================
-const id           = () => state.current?.id;
-const byUser       = arr => arr.filter(x => x.userId === id());
-const linkedIds    = () => state.links.filter(l => l.teacherId === id()).map(l => l.studentId);
-const assignedToMe = arr => arr.filter(x => (x.studentIds||[]).includes(id()));
-const v            = _id => document.getElementById(_id)?.value.trim() || '';
-const escapeHtml   = s => String(s||'').replace(/[&<>"']/g, m =>
-  ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-const userName     = uid => state.users.find(u => u.id === uid)?.name || '—';
+const uid = ()=>state.current?.id;
+const byUser = arr=>arr.filter(x=>x.userId===uid());
+const linkedIds = ()=>state.links.filter(l=>l.teacherId===uid()).map(l=>l.studentId);
+const assignedToMe = arr=>arr.filter(x=>(x.studentIds||[]).includes(uid()));
+const v = id=>document.getElementById(id)?.value.trim()||'';
+const esc = s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+const uname = uid2=>state.users.find(u=>u.id===uid2)?.name||'—';
 
 function renderAll() {
   renderDashboard(); renderQuick(); renderTasks(); renderClasses();
   renderHabits(); renderFlash(); renderProgress(); renderTeacher(); updateTimer();
-  if (document.getElementById('tab-calendar').classList.contains('active')) {
-    renderCalendar();
-  }
 }
 
 // ================================================================
-// 7. PAINEL
+// PAINEL
 // ================================================================
 function renderDashboard() {
-  const pending = [
-    ...byUser(state.tasks).filter(t=>!t.done),
-    ...assignedToMe(state.managedTasks).filter(t=>!t.done?.[id()]),
-    ...assignedToMe(state.tests).filter(t=>!t.done?.[id()])
-  ];
-  document.getElementById('dash-min').textContent     = state.studyMinutes||0;
-  document.getElementById('dash-pending').textContent = pending.length;
-  document.getElementById('dash-classes').textContent =
-    byUser(state.classes).length + assignedToMe(state.managedLessons).length;
-  document.getElementById('dash-cards').textContent   = byUser(state.flashcards).length;
-  const n = document.getElementById('next-step');
-  n.innerHTML = pending.length
-    ? `<div class="item"><div><div class="item-title">${escapeHtml(pending[0].title||pending[0].topic)}</div>
-       <div class="item-sub">${escapeHtml(pending[0].desc||pending[0].subject||'Pendência')}</div></div></div>`
-    : `<div class="empty"><strong>Nenhuma pendência.</strong>Cadastre uma tarefa ou revise seus flashcards.</div>`;
+  const pending=[...byUser(state.tasks).filter(t=>!t.done),...assignedToMe(state.managedTasks).filter(t=>!t.done?.[uid()]),...assignedToMe(state.tests).filter(t=>!t.done?.[uid()])];
+  document.getElementById('dash-min').textContent=state.studyMinutes||0;
+  document.getElementById('dash-pending').textContent=pending.length;
+  document.getElementById('dash-classes').textContent=byUser(state.classes).length+assignedToMe(state.managedLessons).length;
+  document.getElementById('dash-cards').textContent=byUser(state.flashcards).length;
+  const n=document.getElementById('next-step');
+  n.innerHTML=pending.length
+    ?`<div class="list-item"><div class="item-body"><div class="item-title">${esc(pending[0].title||pending[0].topic)}</div><div class="item-sub">${esc(pending[0].desc||pending[0].subject||'Pendência')}</div></div></div>`
+    :`<div class="empty-state"><strong>Nenhuma pendência.</strong>Você está em dia! 🎉</div>`;
 }
 
 // ================================================================
-// 8. TIMER
+// TIMER + MODAL SALVAR
 // ================================================================
-function setMode(f,r){timer.focusMin=f;timer.restMin=r;timer.isBreak=false;timer.total=f*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.querySelectorAll('.mode').forEach(m=>m.classList.toggle('active',m.dataset.mode==f));document.getElementById('timer-btn').textContent='Iniciar';updateTimer()}
-function applyCustomMode(){setMode(Math.max(1,Number(v('custom-focus'))||40),Math.max(1,Number(v('custom-rest'))||10));document.querySelectorAll('.mode').forEach(m=>m.classList.toggle('active',m.dataset.mode==='custom'))}
-function startBreak(){timer.isBreak=true;timer.total=timer.restMin*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.getElementById('timer-btn').textContent='Iniciar';updateTimer()}
+let pendingMins = 0;
+
+function setMode(f,r){
+  timer.focusMin=f;timer.restMin=r;timer.isBreak=false;timer.total=f*60;timer.left=timer.total;
+  timer.running=false;clearInterval(timer.int);
+  document.querySelectorAll('.tmode').forEach(m=>m.classList.toggle('active',m.dataset.m==f));
+  document.getElementById('timer-btn').textContent='▶ Iniciar';updateTimer();
+}
+function applyCustom(){
+  setMode(Math.max(1,Number(v('custom-focus'))||40),Math.max(1,Number(v('custom-rest'))||10));
+  document.querySelectorAll('.tmode').forEach(m=>m.classList.toggle('active',m.dataset.m==='custom'));
+}
+function startBreak(){timer.isBreak=true;timer.total=timer.restMin*60;timer.left=timer.total;timer.running=false;clearInterval(timer.int);document.getElementById('timer-btn').textContent='▶ Iniciar';updateTimer()}
 function toggleTimer(){
-  if(timer.running){timer.running=false;clearInterval(timer.int);document.getElementById('timer-btn').textContent='Continuar';return}
-  timer.running=true;document.getElementById('timer-btn').textContent='Pausar';
+  if(timer.running){timer.running=false;clearInterval(timer.int);document.getElementById('timer-btn').textContent='▶ Continuar';return}
+  timer.running=true;document.getElementById('timer-btn').textContent='⏸ Pausar';
   timer.int=setInterval(()=>{
     timer.left--;
-    if(timer.left<=0){clearInterval(timer.int);timer.running=false;
-      if(!timer.isBreak){state.studyMinutes=(state.studyMinutes||0)+timer.focusMin;save();alert('Foco concluído! +'+timer.focusMin+' minutos.');startBreak()}
-      else{alert('Descanso concluído.');setMode(timer.focusMin,timer.restMin)}
-      renderAll();}
-    updateTimer();},1000)}
-function resetTimer(){timer.running=false;clearInterval(timer.int);timer.left=timer.total;document.getElementById('timer-btn').textContent='Iniciar';updateTimer()}
-function updateTimer(){const m=String(Math.floor(timer.left/60)).padStart(2,'0'),s=String(timer.left%60).padStart(2,'0');document.getElementById('time').textContent=m+':'+s;document.getElementById('timer-label').textContent=timer.isBreak?'Descanso':'Foco';document.getElementById('timer-ring').style.setProperty('--deg',(timer.left/timer.total*360)+'deg')}
+    if(timer.left<=0){
+      clearInterval(timer.int);timer.running=false;
+      if(!timer.isBreak){
+        pendingMins=timer.focusMin;
+        openSaveModal(true);
+      } else { alert('Descanso concluído!'); setMode(timer.focusMin,timer.restMin); }
+      renderAll();
+    }
+    updateTimer();
+  },1000);
+}
+function resetTimer(){timer.running=false;clearInterval(timer.int);timer.left=timer.total;document.getElementById('timer-btn').textContent='▶ Iniciar';updateTimer()}
+function updateTimer(){
+  const m=String(Math.floor(timer.left/60)).padStart(2,'0'),s=String(timer.left%60).padStart(2,'0');
+  document.getElementById('timer-time').textContent=m+':'+s;
+  document.getElementById('timer-lbl').textContent=timer.isBreak?'Descanso':'Foco';
+  document.getElementById('timer-ring').style.setProperty('--deg',(timer.left/timer.total*360)+'deg');
+}
+
+function openSaveModal(afterCycle=false) {
+  const elapsed=Math.round((timer.total-timer.left)/60)||1;
+  pendingMins=afterCycle?timer.focusMin:elapsed;
+  document.getElementById('save-modal-desc').textContent=`Registrar ${pendingMins} minuto(s) de estudo.`;
+  document.getElementById('save-what').value=v('focus-task')||'';
+  document.getElementById('save-modal').classList.remove('hidden');
+}
+function closeSaveModal(){ document.getElementById('save-modal').classList.add('hidden'); }
+function confirmSave(){
+  const what=v('save-what');
+  state.studyMinutes=(state.studyMinutes||0)+pendingMins;
+  save();
+  closeSaveModal();
+  if(!timer.isBreak) startBreak();
+  renderAll();
+  alert(`✅ +${pendingMins} minutos registrados!${what?' ('+what+')':''}`);
+}
 
 // ================================================================
-// 9. TAREFAS RÁPIDAS
+// TAREFAS RÁPIDAS
 // ================================================================
-function addQuickTask(){const text=v('quick-task');if(!text)return;state.quickTasks.push({id:String(Date.now()),userId:id(),text,done:false});document.getElementById('quick-task').value='';save();renderQuick()}
-function toggleQuick(i){const t=state.quickTasks.find(x=>x.id===i);if(t)t.done=!t.done;save();renderQuick()}
+function addQuickTask(){const t=v('quick-task');if(!t)return;state.quickTasks.push({id:String(Date.now()),userId:uid(),text:t,done:false});document.getElementById('quick-task').value='';save();renderQuick()}
+function toggleQuick(i){const t=state.quickTasks.find(x=>x.id===i);if(t){t.done=!t.done;save();renderQuick()}}
 function delQuick(i){state.quickTasks=state.quickTasks.filter(x=>x.id!==i);save();renderQuick()}
-function renderQuick(){const l=document.getElementById('quick-list');if(!l)return;const qs=byUser(state.quickTasks);l.innerHTML=qs.length?qs.map(t=>item(t.text,t.done,`toggleQuick('${t.id}')`,`delQuick('${t.id}')`,t.done?'Concluída':'Pendente')).join(''):`<div class="empty"><strong>Nenhuma tarefa rápida.</strong></div>`}
+function renderQuick(){
+  const l=document.getElementById('quick-list');if(!l)return;
+  const qs=byUser(state.quickTasks);
+  l.innerHTML=qs.length?qs.map(t=>`<div class="list-item ${t.done?'done':''}">
+    <div class="check-circle" onclick="toggleQuick('${t.id}')">${t.done?'✓':''}</div>
+    <div class="item-body"><div class="item-title">${esc(t.text)}</div></div>
+    <button class="item-del" onclick="delQuick('${t.id}')">×</button>
+  </div>`).join(''):`<div class="empty-state" style="padding:14px"><strong>Sem tarefas rápidas.</strong></div>`;
+}
 
 // ================================================================
-// 10. TAREFAS
+// TAREFAS
 // ================================================================
-function addTask(){const title=v('task-title'),subject=v('task-subject'),date=v('task-date');if(!title){alert('Digite a tarefa.');return}state.tasks.push({id:String(Date.now()),userId:id(),title,subject,date,done:false});['task-title','task-subject','task-date'].forEach(x=>document.getElementById(x).value='');save();renderAll()}
-function toggleTask(i){const t=state.tasks.find(x=>x.id===i);if(t)t.done=!t.done;save();renderAll()}
+function addTask(){const title=v('task-title'),sub=v('task-subject'),date=v('task-date');if(!title){alert('Digite a tarefa.');return}state.tasks.push({id:String(Date.now()),userId:uid(),title,subject:sub,date,done:false});['task-title','task-subject','task-date'].forEach(x=>document.getElementById(x).value='');save();renderAll()}
+function toggleTask(i){const t=state.tasks.find(x=>x.id===i);if(t){t.done=!t.done;save();renderAll()}}
 function delTask(i){state.tasks=state.tasks.filter(x=>x.id!==i);save();renderAll()}
-function toggleManaged(kind,i){const arr=kind==='task'?state.managedTasks:state.tests;const t=arr.find(x=>x.id===i);if(!t)return;t.done=t.done||{};t.done[id()]=!t.done[id()];save();renderAll()}
+function toggleManaged(kind,i){const arr=kind==='task'?state.managedTasks:state.tests;const t=arr.find(x=>x.id===i);if(!t)return;t.done=t.done||{};t.done[uid()]=!t.done[uid()];save();renderAll()}
 function renderTasks(){
-  const mine=byUser(state.tasks),sentTasks=assignedToMe(state.managedTasks),tests=assignedToMe(state.tests);
+  const mine=byUser(state.tasks),sent=assignedToMe(state.managedTasks),tests=assignedToMe(state.tests);
   const all=[
-    ...mine.map(t=>({html:item(t.title,t.done,`toggleTask('${t.id}')`,`delTask('${t.id}')`,`${t.subject||'Pessoal'} · ${t.date||'Sem prazo'}`)})),
-    ...sentTasks.map(t=>({html:item('📌 '+t.title,!!t.done?.[id()],`toggleManaged('task','${t.id}')`,'',`${t.desc||''} · Prazo: ${t.date||'sem prazo'}`)})),
-    ...tests.map(t=>({html:item('📝 '+t.title,!!t.done?.[id()],`toggleManaged('test','${t.id}')`,'',`${t.desc||''} · Data: ${t.date||'sem data'}`)}))
+    ...mine.map(t=>`<div class="list-item ${t.done?'done':''}">
+      <div class="check-circle" onclick="toggleTask('${t.id}')">${t.done?'✓':''}</div>
+      <div class="item-body"><div class="item-title">${esc(t.title)}</div>
+        <div class="item-sub">${esc(t.subject||'Pessoal')}${t.date?' · '+t.date:''}</div></div>
+      <button class="item-del" onclick="delTask('${t.id}')">×</button></div>`),
+    ...sent.map(t=>`<div class="list-item ${t.done?.[uid()]?'done':''}">
+      <div class="check-circle" onclick="toggleManaged('task','${t.id}')">${t.done?.[uid()]?'✓':''}</div>
+      <div class="item-body"><div class="item-title">📌 ${esc(t.title)}</div>
+        <div class="item-sub">${esc(t.desc||'')}${t.date?' · Prazo: '+t.date:''}</div></div></div>`),
+    ...tests.map(t=>`<div class="list-item ${t.done?.[uid()]?'done':''}">
+      <div class="check-circle" onclick="toggleManaged('test','${t.id}')">${t.done?.[uid()]?'✓':''}</div>
+      <div class="item-body"><div class="item-title">📝 ${esc(t.title)}</div>
+        <div class="item-sub">${esc(t.desc||'')}${t.date?' · Data: '+t.date:''}</div></div></div>`)
   ];
-  document.getElementById('task-list').innerHTML=all.length?all.map(x=>x.html).join(''):`<div class="empty"><strong>Nenhuma tarefa.</strong>Crie uma ou aguarde o professor enviar.</div>`}
+  const el=document.getElementById('task-list');
+  el.innerHTML=all.length?all.join(''):`<div class="empty-state"><strong>Nenhuma tarefa.</strong>Crie uma ou aguarde o professor enviar.</div>`;
+}
 
 // ================================================================
-// 11. AULAS
+// AULAS
 // ================================================================
-function addClass(){const subject=v('class-subject'),date=v('class-date'),minutes=Number(v('class-min')),topic=v('class-topic'),notes=v('class-notes');if(!subject||!date||!minutes||!topic){alert('Preencha matéria, data, duração e conteúdo.');return}state.classes.push({id:String(Date.now()),userId:id(),subject,date,minutes,topic,notes});state.studyMinutes=(state.studyMinutes||0)+minutes;['class-subject','class-date','class-min','class-topic','class-notes'].forEach(x=>document.getElementById(x).value='');save();renderAll()}
+function addClass(){const sub=v('class-subject'),date=v('class-date'),min=Number(v('class-min')),topic=v('class-topic'),notes=v('class-notes');if(!sub||!date||!min||!topic){alert('Preencha matéria, data, duração e conteúdo.');return}state.classes.push({id:String(Date.now()),userId:uid(),subject:sub,date,minutes:min,topic,notes});state.studyMinutes=(state.studyMinutes||0)+min;['class-subject','class-date','class-min','class-topic','class-notes'].forEach(x=>document.getElementById(x).value='');save();renderAll()}
 function delClass(i){const c=state.classes.find(x=>x.id===i);if(c)state.studyMinutes=Math.max(0,(state.studyMinutes||0)-Number(c.minutes||0));state.classes=state.classes.filter(x=>x.id!==i);save();renderAll()}
 function renderClasses(){
-  const personal=byUser(state.classes).map(c=>`<div class="item"><div><div class="item-title">${escapeHtml(c.topic)}</div><div class="item-sub">${escapeHtml(c.subject)} · ${c.date} · ${c.minutes} min${c.notes?'<br>'+escapeHtml(c.notes):''}</div></div><div class="item-actions"><button class="btn btn-danger btn-small" onclick="delClass('${c.id}')">Excluir</button></div></div>`);
-  const managed=assignedToMe(state.managedLessons).map(c=>`<div class="item"><div><div class="item-title">👨‍🏫 ${escapeHtml(c.topic)}</div><div class="item-sub">${escapeHtml(c.subject)} · ${c.date}<br>Professor: ${escapeHtml(userName(c.teacherId))}</div><span class="tag">Aula lançada</span></div></div>`);
-  document.getElementById('class-list').innerHTML=(managed.concat(personal)).length?managed.concat(personal).join(''):`<div class="empty"><strong>Nenhuma aula registrada.</strong></div>`}
+  const personal=byUser(state.classes).map(c=>`<div class="list-item">
+    <div class="item-body"><div class="item-title">${esc(c.topic)}</div>
+      <div class="item-sub">${esc(c.subject)} · ${c.date} · ${c.minutes} min${c.notes?'<br>'+esc(c.notes):''}</div></div>
+    <button class="item-del" onclick="delClass('${c.id}')">×</button></div>`);
+  const managed=assignedToMe(state.managedLessons).map(c=>`<div class="list-item">
+    <div class="item-body"><div class="item-title">👨‍🏫 ${esc(c.topic)}</div>
+      <div class="item-sub">${esc(c.subject)} · ${c.date} · Prof: ${esc(uname(c.teacherId))}</div></div></div>`);
+  const el=document.getElementById('class-list');
+  el.innerHTML=(managed.concat(personal)).length?(managed.concat(personal)).join(''):`<div class="empty-state"><strong>Nenhuma aula registrada.</strong></div>`;
+}
 
 // ================================================================
-// 12. CALENDÁRIO
+// CALENDÁRIO
 // ================================================================
 function calDateKey(y,m,d){return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`}
-
-function calChangeMonth(dir){
-  calMonth+=dir;
-  if(calMonth>11){calMonth=0;calYear++;}
-  if(calMonth<0){calMonth=11;calYear--;}
-  renderCalendar();
-}
-
-function calGoToday(){
-  calYear=now.getFullYear();calMonth=now.getMonth();
-  calSelectedDate=calDateKey(now.getFullYear(),now.getMonth(),now.getDate());
-  renderCalendar();renderCalSide();
-}
+function calChangeMonth(dir){calMonth+=dir;if(calMonth>11){calMonth=0;calYear++;}if(calMonth<0){calMonth=11;calYear--;}renderCalendar()}
+function calGoToday(){calYear=now.getFullYear();calMonth=now.getMonth();calSel=calDateKey(now.getFullYear(),now.getMonth(),now.getDate());renderCalendar();renderCalSide()}
 
 function renderCalendar(){
-  document.getElementById('cal-month-label').textContent=`${MONTHS[calMonth]} ${calYear}`;
+  document.getElementById('cal-month-lbl').textContent=`${MONTHS[calMonth]} ${calYear}`;
   const grid=document.getElementById('cal-grid');
   grid.innerHTML='';
-  // cabeçalho dos dias
-  ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].forEach(d=>{
-    const el=document.createElement('div');
-    el.className='cal-day-label';el.textContent=d;grid.appendChild(el);
-  });
+  ['D','S','T','Q','Q','S','S'].forEach(d=>{const el=document.createElement('div');el.className='cal-dlbl';el.textContent=d;grid.appendChild(el)});
   const first=new Date(calYear,calMonth,1).getDay();
-  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
-  const daysInPrev=new Date(calYear,calMonth,0).getDate();
-  // dias do mês anterior
-  for(let i=0;i<first;i++){
-    const d=daysInPrev-first+1+i;
-    let adjY=calYear,adjM=calMonth-1;
-    if(adjM<0){adjM=11;adjY--;}
-    grid.appendChild(makeCalDay(adjY,adjM,d,true));
-  }
-  // dias do mês atual
-  for(let d=1;d<=daysInMonth;d++) grid.appendChild(makeCalDay(calYear,calMonth,d,false));
-  // dias do próximo mês
-  const total=first+daysInMonth;
-  const remaining=total%7===0?0:7-(total%7);
-  for(let d=1;d<=remaining;d++){
-    let adjY=calYear,adjM=calMonth+1;
-    if(adjM>11){adjM=0;adjY++;}
-    grid.appendChild(makeCalDay(adjY,adjM,d,true));
-  }
+  const dIM=new Date(calYear,calMonth+1,0).getDate();
+  const dPM=new Date(calYear,calMonth,0).getDate();
+  for(let i=0;i<first;i++){let y=calYear,m=calMonth-1;if(m<0){m=11;y--;}grid.appendChild(makeCalDay(y,m,dPM-first+1+i,true))}
+  for(let d=1;d<=dIM;d++)grid.appendChild(makeCalDay(calYear,calMonth,d,false));
+  const tot=first+dIM,rem=tot%7===0?0:7-(tot%7);
+  for(let d=1;d<=rem;d++){let y=calYear,m=calMonth+1;if(m>11){m=0;y++;}grid.appendChild(makeCalDay(y,m,d,true))}
 }
 
 function makeCalDay(y,m,d,other){
   const key=calDateKey(y,m,d);
   const isToday=y===now.getFullYear()&&m===now.getMonth()&&d===now.getDate();
-  const isSel=key===calSelectedDate;
+  const isSel=key===calSel;
   const cell=document.createElement('div');
-  cell.className='cal-day'+(other?' other-month':'')+(isToday?' today':'')+(isSel?' selected':'');
-  cell.onclick=()=>{calSelectedDate=key;renderCalendar();renderCalSide();};
-  const numDiv=document.createElement('div');
-  numDiv.className='cal-day-num';numDiv.textContent=d;cell.appendChild(numDiv);
+  cell.className='cal-day'+(other?' other':'')+(isToday?' today':'')+(isSel?' sel':'');
+  cell.onclick=()=>{calSel=key;renderCalendar();renderCalSide()};
+  const num=document.createElement('div');num.className='cdn';num.textContent=d;cell.appendChild(num);
   const evts=(state.calEvents[key]||[]);
-  evts.slice(0,2).forEach(e=>{
-    const dot=document.createElement('div');
-    dot.className=`cal-evt ${e.type}`;
-    dot.textContent=(e.time?e.time+' ':'')+e.title;
-    cell.appendChild(dot);
-  });
-  if(evts.length>2){
-    const more=document.createElement('div');
-    more.className='cal-more';more.textContent=`+${evts.length-2} mais`;
-    cell.appendChild(more);
-  }
+  evts.slice(0,2).forEach(e=>{const dot=document.createElement('div');dot.className=`cev ${e.type}`;dot.textContent=(e.time?e.time.slice(0,5)+' ':'')+e.title;cell.appendChild(dot)});
+  if(evts.length>2){const more=document.createElement('div');more.className='cal-more';more.textContent=`+${evts.length-2}`;cell.appendChild(more)}
   return cell;
 }
 
 function renderCalSide(){
-  const label=document.getElementById('cal-selected-label');
-  const list=document.getElementById('cal-evt-list');
-  const form=document.getElementById('cal-add-form');
-  if(!calSelectedDate){label.textContent='Selecione um dia';list.innerHTML='';form.style.display='none';return;}
-  const [y,m,d]=calSelectedDate.split('-').map(Number);
-  const dateObj=new Date(y,m-1,d);
+  const side=document.getElementById('cal-side');
+  if(!calSel){side.innerHTML='';return}
+  const [y,m,d]=calSel.split('-').map(Number);
   const dias=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
-  label.textContent=`${dias[dateObj.getDay()]}, ${d} de ${MONTHS[m-1]}`;
-  const evts=state.calEvents[calSelectedDate]||[];
-  if(!evts.length){
-    list.innerHTML=`<div class="empty" style="margin-bottom:14px"><strong>Nenhum evento.</strong>Adicione um evento abaixo.</div>`;
-  } else {
-    list.innerHTML=evts.map((e,i)=>`
-      <div class="cal-evt-item">
-        <div class="cal-evt-dot ${e.type}"></div>
-        <div style="flex:1">
-          <div style="font-weight:1000;color:var(--dark);font-size:14px">${escapeHtml(e.title)}</div>
-          ${e.time?`<div style="font-size:12px;color:var(--muted)">${e.time}</div>`:''}
-        </div>
-        <button onclick="delCalEvent('${calSelectedDate}',${i})" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:18px;padding:0 4px" title="Remover">×</button>
-      </div>`).join('');
-  }
-  form.style.display='block';
+  const do2=new Date(y,m-1,d);
+  const evts=state.calEvents[calSel]||[];
+  side.innerHTML=`<div class="cal-side-lbl">${dias[do2.getDay()]}, ${d} de ${MONTHS[m-1]}</div>
+    ${evts.length?evts.map((e,i)=>`<div class="cal-evt-item">
+      <div class="cal-evt-dot ${e.type}"></div>
+      <div style="flex:1"><div style="font-weight:800;font-size:14px;color:var(--dark)">${esc(e.title)}</div>
+        ${e.time?`<div style="font-size:12px;color:var(--muted)">${e.time}</div>`:''}</div>
+      <button onclick="delCalEvt('${calSel}',${i})" style="font-size:18px;color:var(--muted);padding:0 4px">×</button>
+    </div>`).join(''):`<div class="empty-state" style="padding:14px;margin-bottom:10px"><strong>Nenhum evento.</strong></div>`}
+    <div style="margin-top:10px">
+      <div class="field"><input id="cal-title" class="inp" placeholder="Título do evento..." onkeydown="if(event.key==='Enter')addCalEvt()"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+        <select id="cal-type" class="sel">
+          <option value="prova">📝 Prova</option>
+          <option value="compromisso">📌 Compromisso</option>
+          <option value="aula">📚 Aula</option>
+          <option value="pessoal" selected>🌟 Pessoal</option>
+          <option value="lembrete">🔔 Lembrete</option>
+        </select>
+        <input type="time" id="cal-time" class="inp" value="08:00">
+      </div>
+      <button class="btn btn-primary btn-full btn-sm" onclick="addCalEvt()">+ Adicionar evento</button>
+    </div>`;
 }
 
-function addCalEvent(){
-  const title=v('cal-evt-title');
-  if(!title){alert('Digite o título do evento.');return;}
-  const type=document.getElementById('cal-evt-type').value;
-  const time=document.getElementById('cal-evt-time').value;
-  if(!state.calEvents[calSelectedDate]) state.calEvents[calSelectedDate]=[];
-  state.calEvents[calSelectedDate].push({title,type,time});
-  state.calEvents[calSelectedDate].sort((a,b)=>a.time.localeCompare(b.time));
-  document.getElementById('cal-evt-title').value='';
+function addCalEvt(){
+  const title=v('cal-title');if(!title){alert('Digite o título.');return}
+  const type=document.getElementById('cal-type').value;
+  const time=document.getElementById('cal-time').value;
+  if(!state.calEvents[calSel])state.calEvents[calSel]=[];
+  state.calEvents[calSel].push({title,type,time});
+  state.calEvents[calSel].sort((a,b)=>a.time.localeCompare(b.time));
   save();renderCalendar();renderCalSide();
 }
-
-function delCalEvent(key,idx){
+function delCalEvt(key,idx){
   state.calEvents[key].splice(idx,1);
-  if(!state.calEvents[key].length) delete state.calEvents[key];
+  if(!state.calEvents[key].length)delete state.calEvents[key];
   save();renderCalendar();renderCalSide();
 }
 
 // ================================================================
-// 13. HÁBITOS
+// HÁBITOS
 // ================================================================
-function addHabit(){const name=v('habit-name');if(!name)return;state.habits.push({id:String(Date.now()),userId:id(),name,days:{}});document.getElementById('habit-name').value='';save();renderHabits()}
-function toggleHabitDay(i,d){const h=state.habits.find(x=>x.id===i);if(h)h.days[d]=!h.days[d];save();renderHabits()}
+function addHabit(){const n=v('habit-name');if(!n)return;state.habits.push({id:String(Date.now()),userId:uid(),name:n,days:{}});document.getElementById('habit-name').value='';save();renderHabits()}
+function toggleHabitDay(i,d){const h=state.habits.find(x=>x.id===i);if(h){h.days[d]=!h.days[d];save();renderHabits()}}
 function delHabit(i){state.habits=state.habits.filter(x=>x.id!==i);save();renderHabits()}
-function renderHabits(){const e=document.getElementById('habit-list');if(!e)return;const days=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'],hs=byUser(state.habits);e.innerHTML=hs.length?hs.map(h=>`<div class="item" style="display:block"><div style="display:flex;justify-content:space-between"><div><div class="item-title">${escapeHtml(h.name)}</div><div class="item-sub">Marque os dias feitos.</div></div><button class="btn btn-danger btn-small" onclick="delHabit('${h.id}')">Excluir</button></div><div class="days">${days.map(d=>`<button class="day ${h.days[d]?'done':''}" onclick="toggleHabitDay('${h.id}','${d}')">${d}</button>`).join('')}</div></div>`).join(''):`<div class="empty"><strong>Nenhum hábito.</strong>Crie um hábito pequeno.</div>`}
+function renderHabits(){
+  const el=document.getElementById('habit-list');if(!el)return;
+  const hs=byUser(state.habits);
+  const days=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+  el.innerHTML=hs.length?hs.map(h=>`<div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <div style="font-weight:800;color:var(--dark);font-size:14px">${esc(h.name)}</div>
+      <button onclick="delHabit('${h.id}')" style="font-size:18px;color:var(--muted)">×</button>
+    </div>
+    <div class="habit-days">${days.map(d=>`<button class="hday ${h.days[d]?'done':''}" onclick="toggleHabitDay('${h.id}','${d}')">${d}</button>`).join('')}
+    </div></div>`).join(''):`<div class="empty-state"><strong>Nenhum hábito.</strong>Crie um hábito pequeno!</div>`;
+}
 
 // ================================================================
-// 14. FLASHCARDS
+// FLASHCARDS
 // ================================================================
-function addFlashcard(){const cat=v('fc-cat')||'Geral',q=v('fc-q'),a=v('fc-a');if(!q||!a){alert('Preencha pergunta e resposta.');return}state.flashcards.push({id:String(Date.now()),userId:id(),cat,q,a});['fc-q','fc-a'].forEach(x=>document.getElementById(x).value='');save();flashIndex=byUser(state.flashcards).length-1;flashShowingAnswer=false;renderFlash()}
+function addFlashcard(){const cat=v('fc-cat')||'Geral',q=v('fc-q'),a=v('fc-a');if(!q||!a){alert('Preencha pergunta e resposta.');return}state.flashcards.push({id:String(Date.now()),userId:uid(),cat,q,a});['fc-q','fc-a'].forEach(x=>document.getElementById(x).value='');save();flashIndex=byUser(state.flashcards).length-1;flashShowAnswer=false;renderFlash()}
 function delFlash(i){state.flashcards=state.flashcards.filter(x=>x.id!==i);flashIndex=0;save();renderFlash()}
-function nextFlash(){const f=byUser(state.flashcards);if(!f.length)return;flashIndex=(flashIndex+1)%f.length;flashShowingAnswer=false;renderFlash()}
-function prevFlash(){const f=byUser(state.flashcards);if(!f.length)return;flashIndex=(flashIndex-1+f.length)%f.length;flashShowingAnswer=false;renderFlash()}
-function flipFlash(){flashShowingAnswer=!flashShowingAnswer;renderFlash()}
-function renderFlash(){const list=document.getElementById('flash-list'),viewer=document.getElementById('flash-viewer');if(!list)return;const fs=byUser(state.flashcards);list.innerHTML=fs.length?fs.map(f=>`<div class="item"><div><div class="item-title">${escapeHtml(f.q)}</div><div class="item-sub">${escapeHtml(f.cat)}</div></div><button class="btn btn-danger btn-small" onclick="delFlash('${f.id}')">Excluir</button></div>`).join(''):`<div class="empty"><strong>Nenhum flashcard.</strong>Crie o primeiro cartão.</div>`;if(!fs.length){viewer.innerHTML=`<div class="empty"><strong>Sem cartões para revisar.</strong></div>`;return}if(flashIndex>=fs.length)flashIndex=0;const f=fs[flashIndex];viewer.innerHTML=`<div class="flash-card" onclick="flipFlash()"><div><div class="small">${escapeHtml(f.cat)} · ${flashIndex+1}/${fs.length}</div><h3>${escapeHtml(flashShowingAnswer?f.a:f.q)}</h3><p>${flashShowingAnswer?'Clique para voltar à pergunta':'Clique para ver a resposta'}</p></div></div>`}
+function nextFlash(){const f=byUser(state.flashcards);if(!f.length)return;flashIndex=(flashIndex+1)%f.length;flashShowAnswer=false;renderFlash()}
+function prevFlash(){const f=byUser(state.flashcards);if(!f.length)return;flashIndex=(flashIndex-1+f.length)%f.length;flashShowAnswer=false;renderFlash()}
+function flipFlash(){flashShowAnswer=!flashShowAnswer;renderFlash()}
+function renderFlash(){
+  const viewer=document.getElementById('flash-viewer'),list=document.getElementById('flash-list');
+  if(!viewer)return;
+  const fs=byUser(state.flashcards);
+  if(!fs.length){viewer.innerHTML=`<div class="empty-state"><strong>Sem cartões.</strong>Crie flashcards acima.</div>`;list.innerHTML='';return}
+  if(flashIndex>=fs.length)flashIndex=0;
+  const f=fs[flashIndex];
+  viewer.innerHTML=`<div class="flash-card" onclick="flipFlash()">
+    <div class="fc-cat">${esc(f.cat)} · ${flashIndex+1}/${fs.length}</div>
+    <h3>${esc(flashShowAnswer?f.a:f.q)}</h3>
+    <div class="fc-hint">${flashShowAnswer?'Toque para voltar à pergunta':'Toque para ver a resposta'}</div>
+  </div>`;
+  list.innerHTML=fs.map(f=>`<div class="list-item">
+    <div class="item-body"><div class="item-title">${esc(f.q)}</div><div class="item-sub">${esc(f.cat)}</div></div>
+    <button class="item-del" onclick="delFlash('${f.id}')">×</button>
+  </div>`).join('');
+}
 
 // ================================================================
-// 15. PROGRESSO
+// PROGRESSO
 // ================================================================
-function line(label,value,pct){return `<div style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;font-weight:1000;color:var(--dark);gap:10px"><span>${label}</span><span style="color:var(--green-2)">${value}</span></div><div class="bar"><div style="width:${Math.max(0,Math.min(100,pct))}%"></div></div></div>`}
-function renderProgress(){const tasks=byUser(state.tasks),done=tasks.filter(t=>t.done).length,classes=byUser(state.classes).length+assignedToMe(state.managedLessons).length,cards=byUser(state.flashcards).length,min=state.studyMinutes||0,pct=Math.min(100,Math.round(min/150*100));document.getElementById('progress-summary').innerHTML=line('Tempo estudado',min+' min',min/3)+line('Tarefas concluídas',done+'/'+tasks.length,tasks.length?done/tasks.length*100:0)+line('Aulas registradas',classes+' aulas',classes*20)+line('Flashcards criados',cards+' cards',cards*10);document.getElementById('weekly-bar').style.width=pct+'%';document.getElementById('weekly-text').textContent=`${min}/150 minutos · ${pct}% da meta`}
-function item(title,done,toggle,del,sub){return `<div class="item ${done?'done':''}"><div style="display:flex;gap:10px"><button class="check" onclick="${toggle}">${done?'✓':''}</button><div><div class="item-title">${escapeHtml(title)}</div><div class="item-sub">${escapeHtml(sub||'')}</div></div></div><div class="item-actions">${del?`<button class="btn btn-danger btn-small" onclick="${del}">Excluir</button>`:''}</div></div>`}
+function renderProgress(){
+  const tasks=byUser(state.tasks),done=tasks.filter(t=>t.done).length;
+  const classes=byUser(state.classes).length+assignedToMe(state.managedLessons).length;
+  const cards=byUser(state.flashcards).length;
+  const min=state.studyMinutes||0;
+  const pct=Math.min(100,Math.round(min/150*100));
+  const line=(label,val,pct2)=>`<div class="prog-row"><span>${label}</span><span style="color:var(--green)">${val}</span></div>
+    <div class="prog-bar-track"><div class="prog-bar-fill" style="width:${Math.max(0,Math.min(100,pct2))}%"></div></div>`;
+  const el=document.getElementById('progress-card');
+  el.innerHTML=`<div class="card-title">📊 Seu progresso</div>
+    ${line('⏱️ Tempo estudado',min+' min',min/3)}
+    ${line('✅ Tarefas concluídas',done+'/'+tasks.length,tasks.length?done/tasks.length*100:0)}
+    ${line('📚 Aulas registradas',classes+' aulas',classes*20)}
+    ${line('🃏 Flashcards criados',cards+' cards',cards*10)}
+    <div style="margin-top:16px">
+      <div class="prog-row" style="margin-bottom:6px"><span style="font-weight:900">Meta semanal (150 min)</span><span style="color:var(--green)">${pct}%</span></div>
+      <div class="prog-bar-track"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${min}/150 minutos estudados esta semana</div>
+    </div>`;
+}
 
 // ================================================================
-// 16. PROFESSOR
+// PROFESSOR
 // ================================================================
 async function linkStudent(){
-  const email=v('link-student-email').toLowerCase();
-  if(!email){alert('Digite o e-mail do aluno.');return;}
-  // busca usuário pelo email no Realtime Database
-  const snap=await db.ref('users').orderByChild('email').equalTo(email).get();
-  if(!snap.exists()){alert('Aluno não encontrado. Ele precisa ter conta de estudante.');return;}
-  let studentId=null, studentData=null;
-  snap.forEach(child=>{
-    if(child.val().role==='student'){studentId=child.key;studentData=child.val();}
-  });
-  if(!studentId){alert('Este email não pertence a uma conta de estudante.');return;}
-  if(state.links.some(l=>l.teacherId===id()&&l.studentId===studentId)){alert('Aluno já vinculado.');return;}
-  if(!state.users.find(u=>u.id===studentId)){
-    state.users.push({id:studentId,name:studentData.name,email:studentData.email});
-  }
-  state.links.push({teacherId:id(),studentId});
-  document.getElementById('link-student-email').value='';
+  const em=v('link-email').toLowerCase();if(!em){alert('Digite o e-mail.');return}
+  const snap=await db.ref('users').orderByChild('email').equalTo(em).get();
+  if(!snap.exists()){alert('Aluno não encontrado.');return}
+  let sid=null,sd=null;
+  snap.forEach(c=>{if(c.val().role==='student'){sid=c.key;sd=c.val()}});
+  if(!sid){alert('Este email não pertence a um estudante.');return}
+  if(state.links.some(l=>l.teacherId===uid()&&l.studentId===sid)){alert('Aluno já vinculado.');return}
+  if(!state.users.find(u=>u.id===sid))state.users.push({id:sid,name:sd.name,email:sd.email});
+  state.links.push({teacherId:uid(),studentId:sid});
+  document.getElementById('link-email').value='';
   save();renderTeacher();
 }
-function selectedStudents(){return[...document.querySelectorAll('.pick-student:checked')].map(x=>x.value)}
-function teacherCreateLesson(){const ids=selectedStudents(),subject=v('mg-lesson-subject'),date=v('mg-lesson-date'),topic=v('mg-lesson-topic');if(!ids.length||!subject||!date||!topic){alert('Selecione aluno(s) e preencha a aula.');return}state.managedLessons.push({id:String(Date.now()),teacherId:id(),studentIds:ids,subject,date,topic});['mg-lesson-subject','mg-lesson-date','mg-lesson-topic'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Aula enviada.')}
-function teacherCreateTask(){const ids=selectedStudents(),title=v('mg-task-title'),date=v('mg-task-date'),desc=v('mg-task-desc');if(!ids.length||!title){alert('Selecione aluno(s) e informe a tarefa.');return}state.managedTasks.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});['mg-task-title','mg-task-date','mg-task-desc'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Tarefa enviada.')}
-function teacherCreateTest(){const ids=selectedStudents(),title=v('mg-test-title'),date=v('mg-test-date'),desc=v('mg-test-desc');if(!ids.length||!title){alert('Selecione aluno(s) e informe a prova.');return}state.tests.push({id:String(Date.now()),teacherId:id(),studentIds:ids,title,date,desc,done:{}});['mg-test-title','mg-test-date','mg-test-desc'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Prova enviada.')}
-function renderTeacher(){if(!document.getElementById('linked-list'))return;const ids=linkedIds(),users=ids.map(sid=>state.users.find(u=>u.id===sid)).filter(Boolean);document.getElementById('t-students').textContent=users.length;document.getElementById('t-lessons').textContent=state.managedLessons.filter(x=>x.teacherId===id()).length;document.getElementById('t-tasks').textContent=state.managedTasks.filter(x=>x.teacherId===id()).length;document.getElementById('t-tests').textContent=state.tests.filter(x=>x.teacherId===id()).length;document.getElementById('linked-list').innerHTML=users.length?users.map(u=>`<div class="item"><div><div class="item-title">${escapeHtml(u.name)}</div><div class="item-sub">${escapeHtml(u.email)}</div></div></div>`).join(''):`<div class="empty"><strong>Nenhum aluno vinculado.</strong></div>`;document.getElementById('student-picker').innerHTML=users.length?users.map(u=>`<label><input class="pick-student" type="checkbox" value="${u.id}"> ${escapeHtml(u.name)} <small style="color:var(--muted)">(${escapeHtml(u.email)})</small></label>`).join(''):`<div class="empty"><strong>Sem alunos.</strong>Vincule alunos primeiro.</div>`}
+function selStudents(){return[...document.querySelectorAll('.pick-s:checked')].map(x=>x.value)}
+function teacherCreateLesson(){const ids=selStudents(),sub=v('mg-lesson-subject'),date=v('mg-lesson-date'),topic=v('mg-lesson-topic');if(!ids.length||!sub||!date||!topic){alert('Selecione aluno(s) e preencha.');return}state.managedLessons.push({id:String(Date.now()),teacherId:uid(),studentIds:ids,subject:sub,date,topic});['mg-lesson-subject','mg-lesson-date','mg-lesson-topic'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Aula enviada!')}
+function teacherCreateTask(){const ids=selStudents(),title=v('mg-task-title'),date=v('mg-task-date'),desc=v('mg-task-desc');if(!ids.length||!title){alert('Selecione aluno(s) e informe a tarefa.');return}state.managedTasks.push({id:String(Date.now()),teacherId:uid(),studentIds:ids,title,date,desc,done:{}});['mg-task-title','mg-task-date','mg-task-desc'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Tarefa enviada!')}
+function teacherCreateTest(){const ids=selStudents(),title=v('mg-test-title'),date=v('mg-test-date'),desc=v('mg-test-desc');if(!ids.length||!title){alert('Selecione aluno(s) e informe a prova.');return}state.tests.push({id:String(Date.now()),teacherId:uid(),studentIds:ids,title,date,desc,done:{}});['mg-test-title','mg-test-date','mg-test-desc'].forEach(x=>document.getElementById(x).value='');save();renderTeacher();alert('Prova enviada!')}
+function renderTeacher(){
+  if(!document.getElementById('linked-list'))return;
+  const ids=linkedIds(),users=ids.map(s=>state.users.find(u=>u.id===s)).filter(Boolean);
+  document.getElementById('t-students').textContent=users.length;
+  document.getElementById('t-lessons').textContent=state.managedLessons.filter(x=>x.teacherId===uid()).length;
+  document.getElementById('t-tasks').textContent=state.managedTasks.filter(x=>x.teacherId===uid()).length;
+  document.getElementById('t-tests').textContent=state.tests.filter(x=>x.teacherId===uid()).length;
+  document.getElementById('linked-list').innerHTML=users.length
+    ?users.map(u=>`<div class="list-item"><div class="item-body"><div class="item-title">${esc(u.name)}</div><div class="item-sub">${esc(u.email)}</div></div></div>`).join('')
+    :`<div class="empty-state" style="padding:14px"><strong>Nenhum aluno vinculado.</strong></div>`;
+  document.getElementById('student-picker').innerHTML=users.length
+    ?users.map(u=>`<label><input class="pick-s" type="checkbox" value="${u.id}"> ${esc(u.name)} <small style="color:var(--muted)">(${esc(u.email)})</small></label>`).join('')
+    :`<div style="padding:8px;color:var(--muted);font-size:13px">Vincule alunos primeiro.</div>`;
+}
 </script>
 </body>
 </html>
