@@ -413,13 +413,9 @@ a{text-decoration:none;color:inherit}
      =========================== -->
 <div id="screen-modo" class="screen">
   <div class="modo-card">
-    <div class="modo-logo">
-      <span class="modo-logo-text-um" style="font-size:28px;font-weight:800;color:var(--verde)">um</span>
-      <span style="font-size:28px;font-weight:800;color:var(--azul);margin-left:6px">quarto</span>
-    </div>
-    <div style="margin-bottom:6px">
-      <span style="font-size:28px;font-weight:800;color:var(--verde)">um</span>
-      <span style="font-size:28px;font-weight:800;color:var(--azul);margin-left:6px">quarto</span>
+    <div class="modo-logo" style="margin-bottom:16px">
+      <span style="font-size:32px;font-weight:800;color:var(--verde)">um</span>
+      <span style="font-size:32px;font-weight:800;color:var(--azul);margin-left:6px">quarto</span>
     </div>
     <h3 style="margin-top:16px">Como entrar?</h3>
     <p style="font-size:13px;color:var(--cinza-texto);margin:6px 0 24px">Seu perfil de professor tem dois modos.</p>
@@ -787,44 +783,18 @@ function doRegister(){
 }
 
 function doLogin(){
-  try{
-    const email=document.getElementById('login-email').value.trim();
-    const pass=document.getElementById('login-pass').value;
-    if(!email){showError('Digite o e-mail.');return}
-    if(!pass){showError('Digite a senha.');return}
-    let users=ls.get('uq_users',{});
-    console.log('Users no localStorage:', Object.keys(users));
-    if(!users[email]){
-      showError('E-mail não encontrado. Crie sua conta abaixo.');
-      return;
-    }
-    if(users[email].pass!==pass){
-      showError('Senha incorreta. <span style="color:var(--verde);cursor:pointer;font-weight:700" onclick="resetSenha(\''+email+'\')">Redefinir senha</span>');
-      document.getElementById('auth-error').innerHTML = 'Senha incorreta. <span style="color:var(--verde);cursor:pointer;font-weight:700" onclick="resetSenha(\''+email+'\')">Redefinir senha →</span>';
-      document.getElementById('auth-error').style.display='block';
-      return;
-    }
-    currentUser={email,name:users[email].name};
-    ls.set('uq_session',currentUser);
-    afterLogin();
-  }catch(err){
-    showError('Erro ao entrar: '+err.message);
-    console.error(err);
-  }
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  if(!email){showError('Digite o e-mail.');return}
+  if(!pass){showError('Digite a senha.');return}
+  const users=ls.get('uq_users',{});
+  if(!users[email]){showError('E-mail não encontrado. Crie sua conta.');return}
+  if(users[email].pass!==pass){showError('Senha incorreta.');return}
+  currentUser={email,name:users[email].name};
+  ls.set('uq_session',currentUser);
+  afterLogin();
 }
 
-function resetSenha(email){
-  const novaSenha = prompt(`Nova senha para ${email} (mínimo 6 caracteres):`);
-  if(!novaSenha||novaSenha.length<6){alert('Senha muito curta.');return}
-  let users=ls.get('uq_users',{});
-  if(!users[email]){alert('Usuário não encontrado.');return}
-  users[email].pass=novaSenha;
-  ls.set('uq_users',users);
-  document.getElementById('login-pass').value=novaSenha;
-  showError('');
-  document.getElementById('auth-error').style.display='none';
-  alert('Senha atualizada! Clique em Entrar.');
-}
 
 function afterLogin(){
   // se for professor com financeiro, mostra tela de seleção de modo
