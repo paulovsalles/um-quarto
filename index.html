@@ -787,15 +787,43 @@ function doRegister(){
 }
 
 function doLogin(){
-  const email=document.getElementById('login-email').value.trim();
-  const pass=document.getElementById('login-pass').value;
-  if(!email){showError('Digite o e-mail.');return}
-  if(!pass){showError('Digite a senha.');return}
+  try{
+    const email=document.getElementById('login-email').value.trim();
+    const pass=document.getElementById('login-pass').value;
+    if(!email){showError('Digite o e-mail.');return}
+    if(!pass){showError('Digite a senha.');return}
+    let users=ls.get('uq_users',{});
+    console.log('Users no localStorage:', Object.keys(users));
+    if(!users[email]){
+      showError('E-mail não encontrado. Crie sua conta abaixo.');
+      return;
+    }
+    if(users[email].pass!==pass){
+      showError('Senha incorreta. <span style="color:var(--verde);cursor:pointer;font-weight:700" onclick="resetSenha(\''+email+'\')">Redefinir senha</span>');
+      document.getElementById('auth-error').innerHTML = 'Senha incorreta. <span style="color:var(--verde);cursor:pointer;font-weight:700" onclick="resetSenha(\''+email+'\')">Redefinir senha →</span>';
+      document.getElementById('auth-error').style.display='block';
+      return;
+    }
+    currentUser={email,name:users[email].name};
+    ls.set('uq_session',currentUser);
+    afterLogin();
+  }catch(err){
+    showError('Erro ao entrar: '+err.message);
+    console.error(err);
+  }
+}
+
+function resetSenha(email){
+  const novaSenha = prompt(`Nova senha para ${email} (mínimo 6 caracteres):`);
+  if(!novaSenha||novaSenha.length<6){alert('Senha muito curta.');return}
   let users=ls.get('uq_users',{});
-  if(!users[email]||users[email].pass!==pass){showError('E-mail ou senha incorretos.');return}
-  currentUser={email,name:users[email].name};
-  ls.set('uq_session',currentUser);
-  afterLogin();
+  if(!users[email]){alert('Usuário não encontrado.');return}
+  users[email].pass=novaSenha;
+  ls.set('uq_users',users);
+  document.getElementById('login-pass').value=novaSenha;
+  showError('');
+  document.getElementById('auth-error').style.display='none';
+  alert('Senha atualizada! Clique em Entrar.');
 }
 
 function afterLogin(){
