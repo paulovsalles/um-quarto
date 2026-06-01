@@ -142,6 +142,37 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 .finance-table td:last-child{border-right:1px solid var(--borda);border-radius:0 10px 10px 0}
 .finance-pill{display:inline-block;padding:3px 8px;border-radius:50px;font-size:11px;font-weight:800;background:#fff3e8;color:#c8721a}
 .finance-pill.recebido{background:#e8f5f3;color:var(--verde-dark)}
+
+/* CALENDÁRIO VISUAL */
+.calendar-shell{background:#fff;border:1.5px solid var(--borda);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--borda);background:#fff;position:sticky;top:65px;z-index:4}
+.calendar-toolbar-left,.calendar-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.calendar-title{font-size:18px;font-weight:800;color:var(--azul);text-transform:capitalize;min-width:170px;text-align:center}
+.calendar-btn{background:var(--bg);color:var(--azul);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:800;white-space:nowrap}
+.calendar-btn.primary{background:var(--verde);color:#fff}
+.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--borda);background:#fbfcfc}
+.calendar-weekday{text-align:center;font-size:12px;font-weight:800;color:var(--cinza);padding:10px 4px;text-transform:uppercase}
+.calendar-month-grid{display:grid;grid-template-columns:repeat(7,1fr);background:var(--borda);gap:1px}
+.calendar-cell{min-height:118px;background:#fff;padding:8px;position:relative;overflow:hidden}
+.calendar-cell.other-month{background:#f8faf9;color:#a8bec8}
+.calendar-cell.today{box-shadow:inset 0 0 0 2px var(--verde)}
+.calendar-cell-number{font-size:12px;font-weight:800;color:var(--azul);display:flex;align-items:center;justify-content:center;width:25px;height:25px;border-radius:999px;margin-bottom:6px}
+.calendar-cell.today .calendar-cell-number{background:var(--verde);color:#fff}
+.calendar-cell-events{display:flex;flex-direction:column;gap:4px}
+.calendar-chip{display:block;width:100%;border-radius:6px;padding:4px 6px;font-size:11px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left;line-height:1.2}
+.calendar-chip.compromisso{background:#c8721a}.calendar-chip.tarefa{background:#3a6275}.calendar-chip.aula{background:#23B8A6}.calendar-chip.prova{background:#7b61ff}.calendar-chip.more{background:#a8bec8;text-align:center;color:#fff}
+.calendar-agenda{padding:14px 16px;background:#fff;border-top:1px solid var(--borda)}
+.calendar-agenda-title{font-size:13px;font-weight:800;color:var(--cinza);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+.calendar-agenda-list{display:grid;gap:8px}
+.calendar-agenda-item{display:grid;grid-template-columns:80px 1fr auto;gap:10px;align-items:start;border:1px solid var(--borda);border-left:5px solid var(--verde);border-radius:12px;padding:10px;background:#fff}
+.calendar-agenda-item.compromisso{border-left-color:#c8721a}.calendar-agenda-item.tarefa{border-left-color:#3a6275}.calendar-agenda-item.aula{border-left-color:#23B8A6}.calendar-agenda-item.prova{border-left-color:#7b61ff}
+.calendar-time{font-size:12px;font-weight:800;color:var(--cinza)}
+.calendar-agenda-main strong{font-size:14px;color:var(--azul)}
+.calendar-agenda-main p{font-size:12px;color:var(--cinza);line-height:1.35;margin-top:3px}
+.calendar-legend{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;background:#fbfcfc;border-top:1px solid var(--borda)}
+.legend-item{font-size:11px;font-weight:800;color:var(--cinza);display:flex;align-items:center;gap:5px}.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.legend-dot.compromisso{background:#c8721a}.legend-dot.tarefa{background:#3a6275}.legend-dot.aula{background:#23B8A6}.legend-dot.prova{background:#7b61ff}
+@media(max-width:720px){.calendar-toolbar{align-items:stretch;flex-direction:column;position:static}.calendar-toolbar-left,.calendar-toolbar-right{justify-content:center}.calendar-title{min-width:auto}.calendar-cell{min-height:86px;padding:5px}.calendar-cell-number{width:22px;height:22px;font-size:11px}.calendar-chip{font-size:10px;padding:3px 4px}.calendar-agenda-item{grid-template-columns:1fr auto}.calendar-time{grid-column:1/-1}.calendar-weekday{font-size:10px;padding:8px 2px}}
+
 .bottom-nav{background:#fff;border-top:1.5px solid var(--borda);display:flex;align-items:center;justify-content:space-around;gap:4px;padding:8px 0 max(8px,env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:10;overflow-x:auto}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;color:var(--cinza);background:transparent;font-size:10px;font-weight:800;padding:6px 7px;border-radius:10px}
 .nav-item.active{color:var(--verde)}
@@ -325,7 +356,34 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <div class="form-field"><label>Descrição</label><textarea id="cal-desc" placeholder="Detalhes, local, orientação, link..."></textarea></div>
         <button class="btn-add" onclick="addCalendarioItem()">Salvar no calendário</button>
       </div>
-      <div id="lista-calendario"><div class="empty-state"><div>📅</div>Nenhum item no calendário ainda.</div></div>
+
+      <div class="calendar-shell">
+        <div class="calendar-toolbar">
+          <div class="calendar-toolbar-left">
+            <button class="calendar-btn" onclick="changeCalendarMonth(-1)">‹ Mês anterior</button>
+            <button class="calendar-btn primary" onclick="goCalendarToday()">Hoje</button>
+            <button class="calendar-btn" onclick="changeCalendarMonth(1)">Próximo mês ›</button>
+          </div>
+          <div class="calendar-title" id="calendar-title">Calendário</div>
+          <div class="calendar-toolbar-right">
+            <button class="calendar-btn" onclick="toggleCalendarAgenda()" id="calendar-agenda-toggle">Agenda</button>
+          </div>
+        </div>
+        <div class="calendar-weekdays">
+          <div class="calendar-weekday">Dom</div><div class="calendar-weekday">Seg</div><div class="calendar-weekday">Ter</div><div class="calendar-weekday">Qua</div><div class="calendar-weekday">Qui</div><div class="calendar-weekday">Sex</div><div class="calendar-weekday">Sáb</div>
+        </div>
+        <div class="calendar-month-grid" id="calendar-grid"></div>
+        <div class="calendar-legend">
+          <span class="legend-item"><span class="legend-dot compromisso"></span>Compromisso</span>
+          <span class="legend-item"><span class="legend-dot tarefa"></span>Tarefa</span>
+          <span class="legend-item"><span class="legend-dot aula"></span>Aula</span>
+          <span class="legend-item"><span class="legend-dot prova"></span>Prova/Avaliação</span>
+        </div>
+        <div class="calendar-agenda" id="calendar-agenda">
+          <div class="calendar-agenda-title" id="calendar-agenda-title">Agenda do mês</div>
+          <div class="calendar-agenda-list" id="calendar-agenda-list"></div>
+        </div>
+      </div>
     </div>
 
     <div id="tab-habitos" class="tab-panel">
@@ -403,6 +461,8 @@ if(firebaseConfig.apiKey && firebaseConfig.databaseURL){
 }
 
 let currentUser=null,currentProfile=null,currentAccessMode=null;
+let calendarCurrentDate = new Date();
+let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},unsubscribers=[];
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const today=()=>new Date().toISOString().slice(0,10);
@@ -689,13 +749,86 @@ async function addCalendarioItem(){
 }
 async function delCalendarioItem(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("calendario/"+uid+"/"+id).remove()}
 function renderCalendario(){
-  const el=document.getElementById("lista-calendario"); if(!el)return;
-  const list=isTeacher()?allCalendario:calendario;
-  if(!list.length){el.innerHTML='<div class="empty-state"><div>📅</div>Nenhum item no calendário ainda.</div>';return}
-  const grouped={};
-  list.forEach(item=>{const d=item.date||"Sem data"; if(!grouped[d])grouped[d]=[]; grouped[d].push(item)});
-  el.innerHTML=Object.keys(grouped).sort().map(date=>`<div class="calendar-day"><div class="calendar-date">${date==="Sem data"?date:formatDate(date)}</div><div class="calendar-events">${grouped[date].map(item=>{const uid=item.studentUid||ownUid();return`<div class="calendar-event ${safeText(item.type||"compromisso")}"><div class="aula-header"><div class="item-title">${iconForCalendar(item.type)} ${safeText(item.title)}</div><button class="btn-del" onclick="delCalendarioItem('${item.id}','${uid}')">×</button></div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(item.studentName||getUserName(uid))}</span>`:""}<span class="badge warn">${safeText(labelForCalendar(item.type))}</span>${item.start?`<span class="badge">🕒 ${safeText(item.start)}${item.end?` às ${safeText(item.end)}`:""}</span>`:""}</div>${item.desc?`<div class="item-text">${safeText(item.desc)}</div>`:""}</div>`}).join("")}</div></div>`).join("");
+  const grid=document.getElementById("calendar-grid");
+  const titleEl=document.getElementById("calendar-title");
+  const agendaTitle=document.getElementById("calendar-agenda-title");
+  const agendaList=document.getElementById("calendar-agenda-list");
+  const agendaBox=document.getElementById("calendar-agenda");
+  if(!grid||!titleEl||!agendaList)return;
+
+  const list=(isTeacher()?allCalendario:calendario).slice().sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));
+  const year=calendarCurrentDate.getFullYear();
+  const month=calendarCurrentDate.getMonth();
+  const monthNames=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  titleEl.textContent=`${monthNames[month]} de ${year}`;
+  agendaTitle.textContent=`Agenda de ${monthNames[month]} de ${year}`;
+  if(agendaBox)agendaBox.style.display=calendarAgendaVisible?"block":"none";
+
+  const first=new Date(year,month,1);
+  const startDate=new Date(first);
+  startDate.setDate(first.getDate()-first.getDay());
+  const todayKey=today();
+  let cells=[];
+  for(let i=0;i<42;i++){
+    const d=new Date(startDate);
+    d.setDate(startDate.getDate()+i);
+    const key=dateKeyLocal(d);
+    const dayEvents=list.filter(item=>item.date===key).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+    const shown=dayEvents.slice(0,3);
+    const other=d.getMonth()!==month;
+    cells.push(`
+      <div class="calendar-cell ${other?"other-month":""} ${key===todayKey?"today":""}" onclick="prefillCalendarDate('${key}')">
+        <div class="calendar-cell-number">${d.getDate()}</div>
+        <div class="calendar-cell-events">
+          ${shown.map(item=>`<button class="calendar-chip ${safeText(item.type||"compromisso")}" title="${safeText(item.title)}" onclick="event.stopPropagation();focusCalendarAgenda('${item.id}','${safeText(item.studentUid||ownUid())}')">${item.start?safeText(item.start)+" ":""}${iconForCalendar(item.type)} ${safeText(item.title)}</button>`).join("")}
+          ${dayEvents.length>3?`<span class="calendar-chip more">+${dayEvents.length-3} mais</span>`:""}
+        </div>
+      </div>`);
+  }
+  grid.innerHTML=cells.join("");
+
+  const monthItems=list.filter(item=>{
+    if(!item.date)return false;
+    const [y,m]=item.date.split("-").map(Number);
+    return y===year && m===(month+1);
+  });
+  if(!monthItems.length){
+    agendaList.innerHTML='<div class="empty-state"><div>📅</div>Nenhum item neste mês.</div>';
+    return;
+  }
+  agendaList.innerHTML=monthItems.map(item=>renderCalendarAgendaItem(item)).join("");
 }
+
+function renderCalendarAgendaItem(item){
+  const uid=item.studentUid||ownUid();
+  const time=item.start?`${safeText(item.start)}${item.end?` às ${safeText(item.end)}`:""}`:"Dia todo";
+  return `<div class="calendar-agenda-item ${safeText(item.type||"compromisso")}" id="cal-agenda-${safeText(item.id)}">
+    <div class="calendar-time">${formatDate(item.date)}<br>${time}</div>
+    <div class="calendar-agenda-main">
+      <strong>${iconForCalendar(item.type)} ${safeText(item.title)}</strong>
+      <p>${safeText(labelForCalendar(item.type))}${isTeacher()?` · 👤 ${safeText(item.studentName||getUserName(uid))}`:""}</p>
+      ${item.desc?`<p>${safeText(item.desc)}</p>`:""}
+    </div>
+    <button class="btn-del" onclick="delCalendarioItem('${safeText(item.id)}','${safeText(uid)}')">×</button>
+  </div>`;
+}
+
+function dateKeyLocal(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
+function changeCalendarMonth(delta){calendarCurrentDate.setMonth(calendarCurrentDate.getMonth()+delta);renderCalendario()}
+function goCalendarToday(){calendarCurrentDate=new Date();const el=document.getElementById("cal-date");if(el)el.value=today();renderCalendario()}
+function toggleCalendarAgenda(){calendarAgendaVisible=!calendarAgendaVisible;const btn=document.getElementById("calendar-agenda-toggle");if(btn)btn.textContent=calendarAgendaVisible?"Ocultar agenda":"Mostrar agenda";renderCalendario()}
+function prefillCalendarDate(key){const el=document.getElementById("cal-date");if(el)el.value=key}
+function focusCalendarAgenda(id,uid){
+  calendarAgendaVisible=true;
+  renderCalendario();
+  setTimeout(()=>{const el=document.getElementById("cal-agenda-"+id); if(el){el.scrollIntoView({behavior:"smooth",block:"center"}); el.style.boxShadow="0 0 0 3px rgba(35,184,166,.22)"; setTimeout(()=>el.style.boxShadow="",1200)}},50);
+}
+
 function iconForCalendar(type){return type==="aula"?"📚":type==="tarefa"?"✅":type==="prova"?"📝":"📌"}
 function labelForCalendar(type){return type==="aula"?"Aula":type==="tarefa"?"Tarefa":type==="prova"?"Prova/Avaliação":"Compromisso"}
 
