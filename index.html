@@ -7,20 +7,146 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Nunito,sans-serif;background:#f4f7f6;color:#284754;min-height:100vh}button,input,select{font-family:Nunito,sans-serif}button{border:0;cursor:pointer}.screen{display:none;min-height:100vh}.screen.active{display:block}:root{--verde:#23B8A6;--verde-dark:#1a9a89;--azul:#284754;--azul-light:#3a6275;--cinza:#6b8c9a;--bg:#f4f7f6;--borda:#e8eded;--radius:16px;--shadow:0 2px 12px rgba(40,71,84,.08)}
-.logo-mark{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:20px;background:var(--verde);margin:0 auto 20px;font-size:32px;font-weight:800;color:#fff;box-shadow:0 4px 20px rgba(35,184,166,.4)}
-#screen-landing{background:#fff}.landing-hero{background:linear-gradient(135deg,#284754,#1e5f6e);color:#fff;text-align:center;padding:64px 24px 72px;position:relative;overflow:hidden}.landing-hero:before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(35,184,166,.18)}.landing-hero:after{content:'';position:absolute;bottom:-40px;left:-40px;width:150px;height:150px;border-radius:50%;background:rgba(35,184,166,.12)}.landing-hero h1{font-size:clamp(28px,7vw,44px);font-weight:800;margin-bottom:12px}.landing-hero h1 span{color:var(--verde)}.landing-hero p{font-size:18px;opacity:.9;margin-bottom:36px}.btn-hero-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.btn-primary,.btn-outline{padding:14px 32px;border-radius:50px;font-weight:800}.btn-primary{background:var(--verde);color:#fff}.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
-.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:48px 24px;max-width:900px;margin:auto}.feature-card{background:#fff;border:1.5px solid var(--borda);border-radius:var(--radius);padding:24px 20px;text-align:center}.feature-icon{width:52px;height:52px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px}.feature-card h3{font-size:15px;margin-bottom:6px}.feature-card p{font-size:13px;color:var(--cinza);line-height:1.5}.landing-footer{text-align:center;padding:24px;color:var(--cinza);font-size:13px;border-top:1px solid var(--borda)}
-#screen-auth{background:var(--bg);align-items:center;justify-content:center;padding:24px}#screen-auth.active{display:flex}.auth-card{background:#fff;border-radius:var(--radius);padding:36px 28px;width:100%;max-width:400px;box-shadow:var(--shadow)}.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}.auth-brand .logo-mark{width:44px;height:44px;font-size:18px;border-radius:12px;margin:0}.auth-brand strong{font-size:20px;font-weight:800}.auth-card h2{font-size:20px;margin-bottom:4px}.subtitle{font-size:13px;color:var(--cinza);margin-bottom:24px}.auth-tabs{display:flex;gap:4px;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:24px}.auth-tab{flex:1;padding:9px;border-radius:8px;font-weight:700;color:var(--cinza);background:transparent}.auth-tab.active{background:#fff;color:var(--verde);box-shadow:0 1px 4px #0001}.form-group,.form-field{margin-bottom:12px}.form-group label,.form-field label{display:block;font-size:12px;font-weight:800;margin-bottom:5px;color:var(--azul)}input,select{width:100%;padding:11px 12px;border:1.5px solid var(--borda);border-radius:10px;font-size:14px;background:#fff;color:var(--azul);outline:0}input:focus,select:focus{border-color:var(--verde)}.btn-full,.btn-add{width:100%;padding:14px;border-radius:50px;font-size:15px;font-weight:800;background:var(--verde);color:#fff}.auth-link{text-align:center;margin-top:16px;font-size:13px;color:var(--cinza)}.auth-link span{color:var(--verde);font-weight:800;cursor:pointer}.config-alert{background:#fff3e8;color:#a05a0d;border:1px solid #ffd7a3;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px}
-#screen-app{display:none;flex-direction:column;min-height:100vh}#screen-app.active{display:flex}.topbar{background:#fff;border-bottom:1.5px solid var(--borda);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}.topbar-logo{display:flex;align-items:center;gap:8px}.topbar-logo .logo-mark{width:36px;height:36px;font-size:14px;border-radius:10px;margin:0}.topbar-logo span{font-size:17px;font-weight:800}.btn-logout{background:var(--bg);color:var(--cinza);padding:8px 14px;border-radius:50px;font-size:12px;font-weight:800}.app-content{flex:1;padding:16px;max-width:760px;width:100%;margin:auto}.tab-panel{display:none}.tab-panel.active{display:block}.card,.stat-card,.prog-stat{background:#fff;border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}.card-title{font-size:14px;font-weight:800;color:var(--cinza);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
-.painel-saudacao{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:var(--radius);padding:24px 20px;margin-bottom:14px}.painel-saudacao h2{font-size:22px}.painel-saudacao p{font-size:13px;opacity:.8;margin-top:4px}.frase-motivacional{background:var(--bg);border-left:4px solid var(--verde);padding:14px 16px;border-radius:0 10px 10px 0;font-size:13px;font-weight:700;color:var(--azul-light);font-style:italic;margin-bottom:14px}.stats-grid,.prog-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.stat-card{text-align:center;margin-bottom:0}.stat-num{font-size:24px;font-weight:800}.stat-label{font-size:12px;color:var(--cinza);font-weight:700}.stat-icon{font-size:22px;margin-bottom:4px}
-.timer-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.mode-btn{flex:1;min-width:120px;padding:10px;border-radius:50px;font-size:13px;font-weight:800;background:var(--bg);color:var(--cinza)}.mode-btn.active{background:var(--verde);color:#fff}.timer-display{text-align:center;padding:26px 10px}.timer-circle{width:200px;height:200px;border-radius:50%;margin:0 auto 24px;background:#fff;box-shadow:0 0 0 10px var(--borda),0 4px 24px rgba(40,71,84,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}.timer-ring{position:absolute;inset:0;width:200px;height:200px;transform:rotate(-90deg)}.timer-ring circle{fill:none;stroke-width:8;stroke-linecap:round}.bg-ring{stroke:var(--borda)}.prog-ring{stroke:var(--verde);transition:.5s}.timer-time{font-size:42px;font-weight:800;z-index:1}.timer-mode-label{font-size:12px;color:var(--cinza);font-weight:800;z-index:1}.timer-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.btn-timer{padding:14px 28px;border-radius:50px;font-weight:800}.btn-start{background:var(--verde);color:#fff}.btn-pause,.btn-reset{background:var(--bg);color:var(--azul)}.timer-task-input{background:var(--bg);border-radius:var(--radius);padding:16px;margin-top:16px}.timer-task-input label{font-size:13px;font-weight:800;display:block;margin-bottom:8px}
-.add-form{background:var(--bg);border-radius:var(--radius);padding:18px;margin-bottom:16px}.add-form h3{font-size:14px;margin-bottom:12px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tarefa-item,.aula-item,.habito-item{background:#fff;border:1.5px solid var(--borda);border-radius:10px;padding:14px;margin-bottom:8px}.tarefa-item{display:flex;gap:12px;align-items:flex-start}.tarefa-item.done{opacity:.6}.tarefa-item.done .tarefa-nome{text-decoration:line-through;color:var(--cinza)}.check-btn{width:22px;height:22px;min-width:22px;border-radius:50%;border:2px solid var(--borda);background:#fff;display:flex;align-items:center;justify-content:center}.check-btn.done{background:var(--verde);border-color:var(--verde)}.check-btn svg{width:12px;height:12px;stroke:#fff;display:none}.check-btn.done svg{display:block}.tarefa-info{flex:1}.tarefa-nome,.habito-nome{font-size:14px;font-weight:800}.tarefa-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}.badge{font-size:11px;font-weight:800;padding:2px 8px;border-radius:50px;background:var(--bg);color:var(--cinza)}.badge.materia{background:#e8f5f3;color:var(--verde-dark)}.badge.prazo{background:#fff3e8;color:#c8721a}.btn-del{background:none;color:var(--cinza);font-size:20px;padding:0 4px}.empty-state{text-align:center;padding:32px;color:var(--cinza);font-size:14px}.empty-state div{font-size:32px;margin-bottom:8px}
-.aula-header{display:flex;justify-content:space-between;gap:10px}.aula-materia{font-size:14px;font-weight:800}.aula-dur{background:#e8f5f3;color:var(--verde-dark);font-size:12px;font-weight:800;padding:3px 10px;border-radius:50px;white-space:nowrap}.aula-conteudo{font-size:13px;color:var(--cinza);margin-top:6px;line-height:1.4}.aula-date,.aula-obs{font-size:11px;color:var(--cinza);margin-top:6px}.finance-aula-box{margin-top:12px;padding:12px;border-radius:10px;background:var(--bg)}.habito-item{display:flex;align-items:center;gap:12px}.habito-item.done{background:#f4faf9}.habito-check{width:26px;height:26px;min-width:26px;border-radius:8px;border:2px solid var(--borda);background:#fff;display:flex;align-items:center;justify-content:center}.habito-check.done{background:var(--verde);border-color:var(--verde)}.habito-check svg{width:14px;height:14px;stroke:#fff;display:none}.habito-check.done svg{display:block}.habito-nome{flex:1}.habito-streak{font-size:12px;font-weight:800;color:var(--cinza);background:var(--bg);padding:3px 8px;border-radius:50px}
-.prog-stat{text-align:center;margin-bottom:0}.prog-stat .num{font-size:32px;font-weight:800;color:var(--verde)}.prog-stat .label{font-size:12px;font-weight:700;color:var(--cinza)}.weekly-label{font-size:12px;font-weight:800;color:var(--cinza);text-transform:uppercase;margin-bottom:12px}.week-bars{display:flex;align-items:flex-end;gap:6px;height:80px}.day-bar-wrap{flex:1;display:flex;height:100%}.day-bar-bg{flex:1;background:var(--bg);border-radius:6px;position:relative;overflow:hidden}.day-bar-fill{position:absolute;bottom:0;left:0;right:0;background:var(--verde);border-radius:6px}.prog-bar-label{display:flex;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:8px}.prog-bar-track{height:10px;background:var(--bg);border-radius:50px;overflow:hidden;margin-bottom:14px}.prog-bar-fill{height:100%;background:var(--verde);border-radius:50px}
-.finance-table{width:100%;border-collapse:separate;border-spacing:0 8px}.finance-table th{text-align:left;color:var(--cinza);font-size:12px;padding:0 8px 4px}.finance-table td{background:#fff;border-top:1px solid var(--borda);border-bottom:1px solid var(--borda);padding:10px 8px;font-size:13px;vertical-align:top}.finance-table td:first-child{border-left:1px solid var(--borda);border-radius:10px 0 0 10px}.finance-table td:last-child{border-right:1px solid var(--borda);border-radius:0 10px 10px 0}.finance-pill{display:inline-block;padding:3px 8px;border-radius:50px;font-size:11px;font-weight:800;background:#fff3e8;color:#c8721a}.finance-pill.recebido{background:#e8f5f3;color:var(--verde-dark)}
-.bottom-nav{background:#fff;border-top:1.5px solid var(--borda);display:flex;justify-content:space-around;align-items:center;padding:8px 0 max(8px,env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:10;overflow-x:auto}.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:800;color:var(--cinza);padding:6px 8px;border-radius:10px;background:transparent;min-width:52px}.nav-item.active{color:var(--verde)}.nav-item svg{width:20px;height:20px}
-@media(min-width:600px){.stats-grid,.prog-stats{grid-template-columns:repeat(4,1fr)}.app-content{padding:24px}}@media(max-width:480px){.form-row{grid-template-columns:1fr}.stat-num{font-size:20px}.bottom-nav{justify-content:flex-start}}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--verde:#23B8A6;--verde-dark:#159281;--azul:#284754;--azul-light:#3a6275;--cinza:#6b8c9a;--bg:#f4f7f6;--borda:#e8eded;--danger:#e84040;--warn:#fff3e8;--shadow:0 2px 12px rgba(40,71,84,.08);--radius:16px}
+body{font-family:Nunito,sans-serif;background:var(--bg);color:var(--azul);min-height:100vh}
+button,input,select,textarea{font-family:Nunito,sans-serif;outline:0}
+button{border:0;cursor:pointer}
+.screen{display:none;min-height:100vh}
+.screen.active{display:block}
+.logo-mark{display:inline-flex;align-items:center;justify-content:center;background:var(--verde);color:#fff;font-weight:800;box-shadow:0 4px 20px rgba(35,184,166,.35)}
+#screen-landing{background:#fff}
+.landing-hero{background:linear-gradient(135deg,#284754,#1e5f6e);color:#fff;text-align:center;padding:64px 24px 72px;position:relative;overflow:hidden}
+.landing-hero:before{content:"";position:absolute;right:-70px;top:-70px;width:220px;height:220px;border-radius:50%;background:rgba(35,184,166,.18)}
+.landing-hero:after{content:"";position:absolute;left:-50px;bottom:-50px;width:160px;height:160px;border-radius:50%;background:rgba(35,184,166,.13)}
+.landing-hero .logo-mark{width:72px;height:72px;border-radius:20px;font-size:32px;margin-bottom:18px}
+.landing-hero h1{font-size:clamp(30px,7vw,46px);font-weight:800;margin-bottom:10px}
+.landing-hero h1 span{color:var(--verde)}
+.landing-hero p{font-size:18px;opacity:.9;margin-bottom:34px}
+.btn-hero-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary,.btn-outline{padding:14px 32px;border-radius:50px;font-weight:800;font-size:15px}
+.btn-primary{background:var(--verde);color:#fff}
+.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.65)}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;padding:44px 24px;max-width:950px;margin:auto}
+.feature-card{background:#fff;border:1.5px solid var(--borda);border-radius:var(--radius);padding:24px 18px;text-align:center}
+.feature-icon{width:52px;height:52px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px}
+.feature-card h3{font-size:15px;margin-bottom:6px}
+.feature-card p{font-size:13px;color:var(--cinza);line-height:1.45}
+.landing-footer{text-align:center;padding:22px;color:var(--cinza);font-size:13px;border-top:1px solid var(--borda)}
+#screen-auth{background:var(--bg);align-items:center;justify-content:center;padding:24px}
+#screen-auth.active{display:flex}
+.auth-card{background:#fff;border-radius:var(--radius);padding:34px 28px;width:100%;max-width:420px;box-shadow:var(--shadow)}
+.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.auth-brand .logo-mark{width:44px;height:44px;border-radius:12px;font-size:18px}
+.auth-brand strong{font-size:21px}
+.auth-card h2{font-size:21px;margin-bottom:4px}
+.subtitle{font-size:13px;color:var(--cinza);margin-bottom:24px}
+.auth-tabs{display:flex;gap:4px;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:24px}
+.auth-tab{flex:1;padding:9px;border-radius:8px;font-weight:800;color:var(--cinza);background:transparent}
+.auth-tab.active{background:#fff;color:var(--verde);box-shadow:0 1px 4px #0001}
+.form-group,.form-field{margin-bottom:12px}
+label{display:block;font-size:12px;font-weight:800;color:var(--azul);margin-bottom:5px}
+input,select,textarea{width:100%;padding:11px 12px;border:1.5px solid var(--borda);border-radius:10px;font-size:14px;background:#fff;color:var(--azul)}
+textarea{resize:vertical;min-height:80px}
+input:focus,select:focus,textarea:focus{border-color:var(--verde)}
+.btn-full,.btn-add{width:100%;padding:13px;border-radius:50px;background:var(--verde);color:#fff;font-weight:800;font-size:15px}
+.btn-add:hover,.btn-full:hover,.btn-primary:hover{background:var(--verde-dark)}
+.auth-link{text-align:center;margin-top:16px;font-size:13px;color:var(--cinza)}
+.auth-link span{color:var(--verde);font-weight:800;cursor:pointer}
+.config-alert{background:var(--warn);border:1px solid #ffd7a3;color:#9c5a0b;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px}
+#screen-app{display:none;flex-direction:column;min-height:100vh}
+#screen-app.active{display:flex}
+.topbar{background:#fff;border-bottom:1.5px solid var(--borda);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.topbar-logo{display:flex;align-items:center;gap:8px}
+.topbar-logo .logo-mark{width:36px;height:36px;border-radius:10px;font-size:14px}
+.topbar-logo span{font-size:17px;font-weight:800}
+.btn-logout{background:var(--bg);color:var(--cinza);padding:8px 14px;border-radius:50px;font-size:12px;font-weight:800}
+.app-content{flex:1;padding:16px;max-width:860px;width:100%;margin:auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.card,.stat-card,.prog-stat{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:14px}
+.card-title{font-size:14px;font-weight:800;color:var(--cinza);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.painel-saudacao{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:var(--radius);padding:24px 20px;margin-bottom:14px}
+.painel-saudacao h2{font-size:22px}
+.painel-saudacao p{font-size:13px;opacity:.85;margin-top:4px}
+.frase-motivacional{background:var(--bg);border-left:4px solid var(--verde);padding:14px 16px;border-radius:0 10px 10px 0;font-size:13px;font-weight:700;color:var(--azul-light);font-style:italic;margin-bottom:14px}
+.stats-grid,.prog-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.stat-card,.prog-stat{text-align:center;margin-bottom:0}
+.stat-icon{font-size:22px;margin-bottom:4px}
+.stat-num,.prog-stat .num{font-size:24px;font-weight:800}
+.prog-stat .num{color:var(--verde);font-size:32px}
+.stat-label,.prog-stat .label{font-size:12px;color:var(--cinza);font-weight:700}
+.teacher-badge{display:inline-block;background:#e8f5f3;color:var(--verde-dark);border-radius:50px;padding:5px 10px;font-size:12px;font-weight:800;margin-top:8px}
+.timer-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
+.mode-btn{flex:1;min-width:120px;padding:10px;border-radius:50px;background:var(--bg);color:var(--cinza);font-weight:800;font-size:13px}
+.mode-btn.active{background:var(--verde);color:#fff}
+.timer-display{text-align:center;padding:24px 10px}
+.timer-circle{width:200px;height:200px;border-radius:50%;background:#fff;margin:0 auto 24px;box-shadow:0 0 0 10px var(--borda),0 4px 24px rgba(40,71,84,.1);display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative}
+.timer-ring{position:absolute;inset:0;width:200px;height:200px;transform:rotate(-90deg)}
+.timer-ring circle{fill:none;stroke-width:8;stroke-linecap:round}
+.bg-ring{stroke:var(--borda)}
+.prog-ring{stroke:var(--verde);transition:.5s}
+.timer-time{font-size:42px;font-weight:800;z-index:1}
+.timer-mode-label{font-size:12px;color:var(--cinza);font-weight:800;z-index:1}
+.timer-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-timer{padding:13px 26px;border-radius:50px;font-weight:800}
+.btn-start{background:var(--verde);color:#fff}
+.btn-pause,.btn-reset{background:var(--bg);color:var(--azul)}
+.timer-task-input{background:var(--bg);border-radius:var(--radius);padding:16px;margin-top:16px}
+.add-form{background:var(--bg);border-radius:var(--radius);padding:18px;margin-bottom:16px}
+.add-form h3{font-size:15px;margin-bottom:12px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{background:#fff;border:1.5px solid var(--borda);border-radius:12px;padding:14px;margin-bottom:8px}
+.tarefa-item,.habito-item{display:flex;gap:12px;align-items:flex-start}
+.tarefa-item.done{opacity:.62}
+.tarefa-item.done .item-title{text-decoration:line-through;color:var(--cinza)}
+.check-btn{width:24px;height:24px;min-width:24px;border-radius:50%;border:2px solid var(--borda);background:#fff;display:flex;align-items:center;justify-content:center}
+.check-btn.done{background:var(--verde);border-color:var(--verde)}
+.check-btn svg{width:12px;height:12px;stroke:#fff;display:none}
+.check-btn.done svg{display:block}
+.item-body{flex:1;min-width:0}
+.item-title{font-size:14px;font-weight:800;color:var(--azul)}
+.item-text{font-size:13px;color:var(--cinza);margin-top:6px;line-height:1.45}
+.item-meta{display:flex;gap:8px;margin-top:7px;flex-wrap:wrap}
+.badge{font-size:11px;font-weight:800;padding:3px 8px;border-radius:50px;background:var(--bg);color:var(--cinza)}
+.badge.ok{background:#e8f5f3;color:var(--verde-dark)}
+.badge.warn{background:#fff3e8;color:#c8721a}
+.badge.danger{background:#ffecec;color:#d83232}
+.btn-del{background:none;color:var(--cinza);font-size:20px;padding:0 4px}
+.btn-small{background:var(--bg);color:var(--azul);border-radius:50px;padding:8px 12px;font-weight:800;font-size:12px}
+.btn-small.primary{background:var(--verde);color:#fff}
+.empty-state{text-align:center;padding:32px;color:var(--cinza);font-size:14px}
+.empty-state div{font-size:32px;margin-bottom:8px}
+.aula-header{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.aula-dur{white-space:nowrap}
+.finance-aula-box,.answer-box{margin-top:12px;padding:12px;border-radius:10px;background:var(--bg)}
+.habito-item{align-items:center}
+.habito-check{width:26px;height:26px;min-width:26px;border-radius:8px;border:2px solid var(--borda);background:#fff;display:flex;align-items:center;justify-content:center}
+.habito-check.done{background:var(--verde);border-color:var(--verde)}
+.habito-check svg{display:none;width:14px;height:14px;stroke:#fff}
+.habito-check.done svg{display:block}
+.habito-title{flex:1;font-weight:800;font-size:14px}
+.habito-streak{font-size:12px;font-weight:800;color:var(--cinza);background:var(--bg);padding:3px 8px;border-radius:50px}
+.weekly-label{font-size:12px;font-weight:800;color:var(--cinza);text-transform:uppercase;margin-bottom:12px}
+.week-bars{display:flex;align-items:flex-end;gap:6px;height:80px}
+.day-bar-wrap{flex:1;display:flex;height:100%}
+.day-bar-bg{flex:1;background:var(--bg);border-radius:6px;position:relative;overflow:hidden}
+.day-bar-fill{position:absolute;bottom:0;left:0;right:0;background:var(--verde);border-radius:6px}
+.prog-bar-label{display:flex;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:8px}
+.prog-bar-track{height:10px;background:var(--bg);border-radius:50px;overflow:hidden;margin-bottom:14px}
+.prog-bar-fill{height:100%;background:var(--verde);border-radius:50px}
+.finance-table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.finance-table th{text-align:left;color:var(--cinza);font-size:12px;padding:0 8px 4px}
+.finance-table td{background:#fff;border-top:1px solid var(--borda);border-bottom:1px solid var(--borda);padding:10px 8px;font-size:13px;vertical-align:top}
+.finance-table td:first-child{border-left:1px solid var(--borda);border-radius:10px 0 0 10px}
+.finance-table td:last-child{border-right:1px solid var(--borda);border-radius:0 10px 10px 0}
+.finance-pill{display:inline-block;padding:3px 8px;border-radius:50px;font-size:11px;font-weight:800;background:#fff3e8;color:#c8721a}
+.finance-pill.recebido{background:#e8f5f3;color:var(--verde-dark)}
+.bottom-nav{background:#fff;border-top:1.5px solid var(--borda);display:flex;align-items:center;justify-content:space-around;gap:4px;padding:8px 0 max(8px,env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:10;overflow-x:auto}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;color:var(--cinza);background:transparent;font-size:10px;font-weight:800;padding:6px 7px;border-radius:10px}
+.nav-item.active{color:var(--verde)}
+@media(min-width:680px){.stats-grid,.prog-stats{grid-template-columns:repeat(4,1fr)}.app-content{padding:24px}}
+@media(max-width:520px){.form-row{grid-template-columns:1fr}.bottom-nav{justify-content:flex-start}.stat-num{font-size:20px}}
 </style>
 </head>
 <body>
@@ -37,9 +163,9 @@
   </div>
   <div class="features-grid">
     <div class="feature-card"><div class="feature-icon">⏱️</div><h3>Foco Total</h3><p>Timer de 15 minutos e Pomodoro para manter o ritmo.</p></div>
-    <div class="feature-card"><div class="feature-icon">✅</div><h3>Tarefas</h3><p>Organize pendências por matéria e prazo.</p></div>
-    <div class="feature-card"><div class="feature-icon">📚</div><h3>Aulas</h3><p>Registre cada aula com conteúdo, horário e financeiro.</p></div>
-    <div class="feature-card"><div class="feature-icon">🌱</div><h3>Evolução</h3><p>Acompanhe hábitos e progresso diário.</p></div>
+    <div class="feature-card"><div class="feature-icon">✅</div><h3>Tarefas</h3><p>Professor pode vincular tarefas aos alunos cadastrados.</p></div>
+    <div class="feature-card"><div class="feature-icon">📚</div><h3>Aulas</h3><p>Registre aulas, alunos, horários e valores.</p></div>
+    <div class="feature-card"><div class="feature-icon">📝</div><h3>Avaliações</h3><p>Envie atividades e acompanhe respostas dos alunos.</p></div>
   </div>
   <div class="landing-footer">&copy; 2026 Um Quarto · Crescendo 15 minutos por vez.</div>
 </div>
@@ -47,7 +173,7 @@
 <div id="screen-auth" class="screen">
   <div class="auth-card">
     <div class="auth-brand"><div class="logo-mark">¼</div><strong>Um Quarto</strong></div>
-    <div id="firebase-config-alert" class="config-alert" style="display:none">Configure o <strong>firebaseConfig</strong> no final deste arquivo para ativar login e Realtime Database.</div>
+    <div id="firebase-config-alert" class="config-alert" style="display:none">Configure o Firebase para ativar login e banco de dados.</div>
     <h2 id="auth-title">Bem-vindo de volta!</h2>
     <p class="subtitle" id="auth-subtitle">Entre na sua conta para continuar.</p>
     <div class="auth-tabs">
@@ -67,7 +193,7 @@
       <button class="btn-full" onclick="doRegister()">Criar conta →</button>
       <p class="auth-link">Já tem conta? <span onclick="switchAuthTab('login')">Entrar</span></p>
     </div>
-    <p id="auth-error" style="color:#e84040;font-size:13px;text-align:center;margin-top:12px;display:none"></p>
+    <p id="auth-error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none"></p>
   </div>
 </div>
 
@@ -76,15 +202,24 @@
     <div class="topbar-logo"><div class="logo-mark">¼</div><span>Um Quarto</span></div>
     <button class="btn-logout" onclick="doLogout()">Sair</button>
   </div>
+
   <div class="app-content">
     <div id="tab-painel" class="tab-panel active">
-      <div class="painel-saudacao"><h2 id="painel-nome">Olá! 👋</h2><p id="painel-data">Hoje é um ótimo dia para aprender.</p></div>
+      <div class="painel-saudacao">
+        <h2 id="painel-nome">Olá! 👋</h2>
+        <p id="painel-data">Hoje é um ótimo dia para aprender.</p>
+        <span id="teacher-badge" class="teacher-badge" style="display:none">Perfil professor completo</span>
+      </div>
       <div class="frase-motivacional" id="frase-mot"></div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num" id="stat-mins">0</div><div class="stat-label">min estudados hoje</div></div>
         <div class="stat-card"><div class="stat-icon">📌</div><div class="stat-num" id="stat-pending">0</div><div class="stat-label">tarefas pendentes</div></div>
         <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="stat-aulas">0</div><div class="stat-label">aulas registradas</div></div>
-        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" id="stat-streak">0</div><div class="stat-label">dias seguidos</div></div>
+        <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-num" id="stat-avaliacoes">0</div><div class="stat-label">avaliações abertas</div></div>
+      </div>
+      <div class="card teacher-only" style="display:none">
+        <div class="card-title">Alunos cadastrados</div>
+        <div id="lista-alunos"></div>
       </div>
       <div class="card finance-only" style="display:none">
         <div class="card-title">Resumo financeiro do mês</div>
@@ -93,7 +228,7 @@
           <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="painel-fin-recebido">R$ 0,00</div><div class="stat-label">recebido</div></div>
         </div>
       </div>
-      <div class="card"><div class="card-title">Tarefas de hoje</div><div id="painel-tarefas"></div></div>
+      <div class="card"><div class="card-title">Tarefas pendentes</div><div id="painel-tarefas"></div></div>
     </div>
 
     <div id="tab-timer" class="tab-panel">
@@ -117,6 +252,7 @@
     <div id="tab-tarefas" class="tab-panel">
       <div class="add-form">
         <h3>+ Nova tarefa</h3>
+        <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="t-student"></select></div>
         <div class="form-field"><label>Tarefa</label><input type="text" id="t-nome" placeholder="O que precisa fazer?"></div>
         <div class="form-row"><div class="form-field"><label>Matéria</label><input type="text" id="t-materia" placeholder="Ex: Matemática"></div><div class="form-field"><label>Prazo</label><input type="date" id="t-prazo"></div></div>
         <button class="btn-add" onclick="addTarefa()">Adicionar tarefa</button>
@@ -127,6 +263,7 @@
     <div id="tab-aulas" class="tab-panel">
       <div class="add-form">
         <h3>+ Registrar aula</h3>
+        <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="a-student"></select></div>
         <div class="form-row"><div class="form-field"><label>Matéria</label><input type="text" id="a-materia" placeholder="Ex: Biologia"></div><div class="form-field"><label>Data</label><input type="date" id="a-data"></div></div>
         <div class="form-row"><div class="form-field"><label>Início</label><input type="time" id="a-inicio"></div><div class="form-field"><label>Fim</label><input type="time" id="a-fim"></div></div>
         <div class="form-field"><label>Conteúdo estudado</label><input type="text" id="a-conteudo" placeholder="Ex: Equações do 2º grau"></div>
@@ -135,6 +272,23 @@
         <button class="btn-add" onclick="addAula()">Registrar aula</button>
       </div>
       <div id="lista-aulas"><div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div></div>
+    </div>
+
+    <div id="tab-avaliacoes" class="tab-panel">
+      <div class="add-form teacher-only" style="display:none">
+        <h3>+ Nova avaliação</h3>
+        <div class="form-field"><label>Vincular aluno</label><select id="av-student"></select></div>
+        <div class="form-row"><div class="form-field"><label>Título</label><input type="text" id="av-title" placeholder="Ex: Lista de Matemática"></div><div class="form-field"><label>Matéria</label><input type="text" id="av-materia" placeholder="Ex: Matemática"></div></div>
+        <div class="form-field"><label>Prazo</label><input type="date" id="av-prazo"></div>
+        <div class="form-field"><label>Descrição</label><textarea id="av-desc" placeholder="Explique a avaliação, páginas, questões ou orientações..."></textarea></div>
+        <div class="form-field"><label>Link do anexo/arquivo (opcional)</label><input type="url" id="av-anexo" placeholder="https://..."></div>
+        <button class="btn-add" onclick="addAvaliacao()">Enviar avaliação</button>
+      </div>
+      <div class="card" id="student-answer-info" style="display:none">
+        <div class="card-title">Minhas avaliações</div>
+        <p style="font-size:13px;color:var(--cinza)">Abra a avaliação, preencha sua resposta e envie o link do arquivo se houver.</p>
+      </div>
+      <div id="lista-avaliacoes"><div class="empty-state"><div>📝</div>Nenhuma avaliação ainda.</div></div>
     </div>
 
     <div id="tab-habitos" class="tab-panel">
@@ -148,7 +302,7 @@
         <div class="prog-stat"><div class="num" id="prog-mins">0</div><div class="label">min totais</div></div>
         <div class="prog-stat"><div class="num" id="prog-tarefas">0</div><div class="label">tarefas concluídas</div></div>
         <div class="prog-stat"><div class="num" id="prog-aulas">0</div><div class="label">aulas registradas</div></div>
-        <div class="prog-stat"><div class="num" id="prog-habitos">0</div><div class="label">hábitos hoje</div></div>
+        <div class="prog-stat"><div class="num" id="prog-avaliacoes">0</div><div class="label">avaliações respondidas</div></div>
       </div>
       <div class="card"><div class="weekly-label">Minutos estudados esta semana</div><div class="week-bars" id="week-bars"></div><div id="week-days-labels" style="display:flex;gap:6px;margin-top:4px"></div></div>
       <div class="card">
@@ -156,7 +310,7 @@
         <div class="prog-bar-label"><span>⏱️ Tempo (meta: 300 min)</span><span id="pb-mins-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-mins"></div></div>
         <div class="prog-bar-label"><span>✅ Tarefas (meta: 10)</span><span id="pb-tar-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-tar"></div></div>
         <div class="prog-bar-label"><span>📚 Aulas (meta: 7)</span><span id="pb-aul-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-aul"></div></div>
-        <div class="prog-bar-label"><span>🌱 Hábitos hoje (meta: 5)</span><span id="pb-hab-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-hab"></div></div>
+        <div class="prog-bar-label"><span>📝 Avaliações (meta: 3)</span><span id="pb-av-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-av"></div></div>
       </div>
     </div>
 
@@ -164,7 +318,6 @@
       <div class="card">
         <div class="card-title">Financeiro</div>
         <div class="form-row"><div class="form-field"><label>Mês</label><input type="month" id="fin-mes" onchange="updateFinanceiro()"></div><div class="form-field"><label>Ano</label><input type="number" id="fin-ano" min="2020" max="2100" onchange="updateFinanceiro()"></div></div>
-        <p style="font-size:12px;color:var(--cinza);line-height:1.4">A aba financeira aparece apenas para o perfil autorizado: <strong>salles.paulo@hotmail.com</strong>.</p>
       </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="fin-mes-previsto">R$ 0,00</div><div class="stat-label">previsto no mês</div></div>
@@ -181,6 +334,7 @@
     <button class="nav-item" id="nav-timer" onclick="switchTab('timer')">⏱<span>Timer</span></button>
     <button class="nav-item" id="nav-tarefas" onclick="switchTab('tarefas')">✅<span>Tarefas</span></button>
     <button class="nav-item" id="nav-aulas" onclick="switchTab('aulas')">📚<span>Aulas</span></button>
+    <button class="nav-item" id="nav-avaliacoes" onclick="switchTab('avaliacoes')">📝<span>Avaliações</span></button>
     <button class="nav-item" id="nav-habitos" onclick="switchTab('habitos')">🌱<span>Hábitos</span></button>
     <button class="nav-item" id="nav-progresso" onclick="switchTab('progresso')">📊<span>Progresso</span></button>
     <button class="nav-item finance-only" id="nav-financeiro" onclick="switchTab('financeiro')" style="display:none">💰<span>Financ.</span></button>
@@ -203,94 +357,48 @@ const firebaseConfig = {
 };
 
 let auth=null, db=null, firebaseReady=false;
-function isFirebaseConfigured(){
-  return firebaseConfig.apiKey && firebaseConfig.databaseURL && !firebaseConfig.apiKey.includes("COLE_") && !firebaseConfig.databaseURL.includes("COLE_");
-}
-if(isFirebaseConfigured()){
+if(firebaseConfig.apiKey && firebaseConfig.databaseURL){
   firebase.initializeApp(firebaseConfig);
   auth=firebase.auth();
   db=firebase.database();
   firebaseReady=true;
 }
 
-let currentUser=null,currentProfile=null,tarefas=[],aulas=[],allAulas=[],habitos=[],minsMap={},unsubscribers=[];
-const FINANCE_EMAILS=["salles.paulo@hotmail.com"];
+let currentUser=null,currentProfile=null;
+let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],habitos=[],minsMap={},unsubscribers=[];
+const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const today=()=>new Date().toISOString().slice(0,10);
-const frases=[
-  '"O segredo do sucesso é a constância."',
-  '"Comece onde você está. Use o que você tem. Faça o que você pode."',
-  '"15 minutos por dia valem mais que uma hora só de vez em quando."',
-  '"A disciplina é a ponte entre metas e realizações."',
-  '"Cada quartinho de hora conta. Você está no caminho certo! 🌱"',
-  '"Pequenos progressos diários levam a grandes resultados."',
-  '"Foco no processo, e os resultados vêm naturalmente."'
-];
+const frases=['"O segredo do sucesso é a constância."','"Comece onde você está. Use o que você tem. Faça o que você pode."','"15 minutos por dia valem mais que uma hora só de vez em quando."','"A disciplina é a ponte entre metas e realizações."','"Cada quartinho de hora conta. Você está no caminho certo! 🌱"'];
 
 function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
-function isFinanceUser(){return FINANCE_EMAILS.includes(userEmail())||currentProfile?.financeiro===true}
-function applyPermissions(){
-  const f=isFinanceUser();
-  document.querySelectorAll(".finance-only").forEach(el=>el.style.display=f?"":"none");
-  const nav=document.getElementById("nav-financeiro"); if(nav) nav.style.display=f?"flex":"none";
-}
+function isTeacher(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.role==="teacher" || currentProfile?.financeiro===true}
+function isFinanceUser(){return isTeacher()}
+function ownUid(){return currentUser?.uid||""}
+function safeText(t){return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function formatDate(str){if(!str)return"";const [y,m,d]=str.split("-");return`${d}/${m}/${y}`}
 function formatMoney(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
-function safeText(t){return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function objToArray(obj){return obj?Object.entries(obj).map(([id,value])=>({id,...value})):[]}
 function clearFirebaseListeners(){unsubscribers.forEach(fn=>{try{fn()}catch(e){}});unsubscribers=[]}
-function requireFirebase(){
-  if(firebaseReady)return true;
-  showError("Firebase ainda não foi configurado. Preencha o firebaseConfig no final do arquivo.");
-  const a=document.getElementById("firebase-config-alert"); if(a)a.style.display="block";
-  return false;
-}
+function requireFirebase(){if(firebaseReady)return true;showError("Firebase não configurado.");return false}
 
-function showScreen(name, sub = ""){
-  const screens = {
-    landing: document.getElementById("screen-landing"),
-    auth: document.getElementById("screen-auth"),
-    app: document.getElementById("screen-app")
-  };
-
-  Object.values(screens).forEach(screen=>{
-    if(!screen) return;
-    screen.classList.remove("active");
-    screen.style.display = "none";
-  });
-
-  const target = screens[name];
-  if(!target) return;
-
+function showScreen(name, sub=""){
+  const screens={landing:document.getElementById("screen-landing"),auth:document.getElementById("screen-auth"),app:document.getElementById("screen-app")};
+  Object.values(screens).forEach(s=>{if(!s)return;s.classList.remove("active");s.style.display="none"});
+  const target=screens[name]; if(!target)return;
   target.classList.add("active");
-
-  if(name === "auth"){
-    target.style.display = "flex";
-  }else if(name === "app"){
-    target.style.display = "flex";
-  }else{
-    target.style.display = "block";
-  }
-
-  window.scrollTo({ top: 0, behavior: "instant" });
-
-  if(name === "auth" && sub){
-    switchAuthTab(sub);
-  }
-
-  if(name === "app"){
-    initApp();
-  }
+  target.style.display=name==="auth"||name==="app"?"flex":"block";
+  window.scrollTo({top:0,behavior:"instant"});
+  if(name==="auth"&&sub)switchAuthTab(sub);
+  if(name==="app")initApp();
 }
-
 function switchAuthTab(tab){
   document.getElementById("form-login").style.display=tab==="login"?"block":"none";
   document.getElementById("form-register").style.display=tab==="register"?"block":"none";
   document.getElementById("tab-login").classList.toggle("active",tab==="login");
   document.getElementById("tab-register").classList.toggle("active",tab==="register");
   document.getElementById("auth-title").textContent=tab==="login"?"Bem-vindo de volta!":"Criar sua conta";
-  document.getElementById("auth-subtitle").textContent=tab==="login"?"Entre para continuar estudando.":"Comece sua jornada agora.";
+  document.getElementById("auth-subtitle").textContent=tab==="login"?"Entre na sua conta para continuar.":"Comece sua jornada agora.";
   document.getElementById("auth-error").style.display="none";
-  const a=document.getElementById("firebase-config-alert"); if(a)a.style.display=firebaseReady?"none":"block";
 }
 function showError(msg){const el=document.getElementById("auth-error"); if(el){el.textContent=msg;el.style.display="block"}}
 
@@ -304,8 +412,8 @@ async function doRegister(){
   if(pass.length<6)return showError("Senha: mínimo 6 caracteres.");
   try{
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
-    const uid=cred.user.uid, isPaulo=email==="salles.paulo@hotmail.com";
-    await db.ref("users/"+uid).set({name,email,role:isPaulo?"teacher":"student",financeiro:isPaulo,createdAt:firebase.database.ServerValue.TIMESTAMP});
+    const isProf=email===PROFESSOR_EMAIL;
+    await db.ref("users/"+cred.user.uid).set({name,email,role:isProf?"teacher":"student",financeiro:isProf,createdAt:firebase.database.ServerValue.TIMESTAMP});
   }catch(e){showError(firebaseErrorMessage(e))}
 }
 async function doLogin(){
@@ -320,36 +428,27 @@ function doLogout(){resetTimer();clearFirebaseListeners();auth?auth.signOut():sh
 function firebaseErrorMessage(e){
   const c=e?.code||"";
   if(c.includes("invalid-email"))return"E-mail inválido.";
-  if(c.includes("user-not-found"))return"Usuário não encontrado.";
-  if(c.includes("wrong-password"))return"Senha incorreta.";
   if(c.includes("invalid-credential"))return"E-mail ou senha incorretos.";
   if(c.includes("email-already-in-use"))return"Este e-mail já está cadastrado.";
   if(c.includes("weak-password"))return"Senha muito fraca. Use pelo menos 6 caracteres.";
   if(c.includes("permission-denied"))return"Sem permissão no Realtime Database. Confira as Rules.";
   return"Erro: "+(e?.message||"não foi possível concluir.");
 }
-
 if(firebaseReady){
   auth.onAuthStateChanged(async user=>{
     clearFirebaseListeners();
-    if(!user){
-      currentUser=null;currentProfile=null;tarefas=[];aulas=[];allAulas=[];habitos=[];minsMap={};
-      showScreen("landing");return;
-    }
+    if(!user){currentUser=null;currentProfile=null;users=[];tarefas=[];allTarefas=[];aulas=[];allAulas=[];avaliacoes=[];allAvaliacoes=[];habitos=[];minsMap={};showScreen("landing");return}
     currentUser=user;
     await loadOrCreateUserProfile();
     showScreen("app");
   });
 }
-
 async function loadOrCreateUserProfile(){
-  const uid=currentUser.uid;
-  const snap=await db.ref("users/"+uid).once("value");
+  const snap=await db.ref("users/"+currentUser.uid).once("value");
   if(snap.exists()){currentProfile=snap.val();return}
-  const isPaulo=currentUser.email.toLowerCase()==="salles.paulo@hotmail.com";
-  const profile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isPaulo?"teacher":"student",financeiro:isPaulo,createdAt:firebase.database.ServerValue.TIMESTAMP};
-  await db.ref("users/"+uid).set(profile);
-  currentProfile=profile;
+  const isProf=currentUser.email.toLowerCase()===PROFESSOR_EMAIL;
+  currentProfile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isProf?"teacher":"student",financeiro:isProf,createdAt:firebase.database.ServerValue.TIMESTAMP};
+  await db.ref("users/"+currentUser.uid).set(currentProfile);
 }
 
 function initApp(){
@@ -360,104 +459,198 @@ function initApp(){
   document.getElementById("painel-data").textContent=`${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
   document.getElementById("frase-mot").textContent=frases[Math.floor(Math.random()*frases.length)];
   attachRealtimeListeners();
-  renderTarefas();renderAulas();renderHabitos();updateStats();updateProgresso();updateFinanceiro();checkStreak();
+  renderAll();
+}
+function applyPermissions(){
+  const teacher=isTeacher();
+  document.querySelectorAll(".teacher-only").forEach(el=>el.style.display=teacher?"":"none");
+  document.querySelectorAll(".finance-only").forEach(el=>el.style.display=isFinanceUser()?"":"none");
+  const badge=document.getElementById("teacher-badge"); if(badge)badge.style.display=teacher?"inline-block":"none";
+  const info=document.getElementById("student-answer-info"); if(info)info.style.display=teacher?"none":"block";
 }
 function attachRealtimeListeners(){
   if(!firebaseReady||!currentUser)return;
   clearFirebaseListeners();
-  const uid=currentUser.uid;
-  const tr=db.ref("tarefas/"+uid);tr.on("value",s=>{tarefas=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));renderTarefas();renderPainelTarefas();updateStats();updateProgresso()});unsubscribers.push(()=>tr.off());
-  const hr=db.ref("habitos/"+uid);hr.on("value",s=>{habitos=objToArray(s.val()).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));renderHabitos();updateStats();updateProgresso()});unsubscribers.push(()=>hr.off());
-  const mr=db.ref("mins/"+uid);mr.on("value",s=>{minsMap=s.val()||{};updateStats();updateProgresso();checkStreak()});unsubscribers.push(()=>mr.off());
-  if(isFinanceUser()){
-    const ar=db.ref("aulas");ar.on("value",s=>{
-      const data=s.val()||{};let lista=[];
-      Object.entries(data).forEach(([ownerUid,obj])=>Object.entries(obj||{}).forEach(([id,a])=>lista.push({id,ownerUid,...a})));
-      allAulas=lista.sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));
-      aulas=allAulas.filter(a=>a.ownerUid===uid);
-      renderAulas();updateStats();updateProgresso();updateFinanceiro();
-    },e=>alert("Erro ao carregar aulas. Confira as regras do Realtime Database."));unsubscribers.push(()=>ar.off());
-  }else{
-    const ar=db.ref("aulas/"+uid);ar.on("value",s=>{
-      aulas=objToArray(s.val()).map(a=>({...a,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));
-      allAulas=aulas;renderAulas();updateStats();updateProgresso();
-    });unsubscribers.push(()=>ar.off());
-  }
+  const uid=ownUid();
+
+  const usersRef=db.ref("users");
+  usersRef.on("value",s=>{users=objToArray(s.val()).sort((a,b)=>(a.name||"").localeCompare(b.name||""));populateStudentSelects();renderAlunos()});
+  unsubscribers.push(()=>usersRef.off());
+
+  const tarefasRef=isTeacher()?db.ref("tarefas"):db.ref("tarefas/"+uid);
+  tarefasRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,t])=>list.push({id,studentUid,...t})));
+      allTarefas=list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));tarefas=allTarefas.filter(t=>t.studentUid===uid);
+    }else{tarefas=objToArray(s.val()).map(t=>({...t,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allTarefas=tarefas}
+    renderTarefas();renderPainelTarefas();updateStats();updateProgresso();
+  });unsubscribers.push(()=>tarefasRef.off());
+
+  const aulasRef=isTeacher()?db.ref("aulas"):db.ref("aulas/"+uid);
+  aulasRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,a])=>list.push({id,studentUid,ownerUid:studentUid,...a})));
+      allAulas=list.sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));aulas=allAulas.filter(a=>a.studentUid===uid);
+    }else{aulas=objToArray(s.val()).map(a=>({...a,studentUid:uid,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));allAulas=aulas}
+    renderAulas();updateStats();updateProgresso();updateFinanceiro();
+  });unsubscribers.push(()=>aulasRef.off());
+
+  const avRef=isTeacher()?db.ref("avaliacoes"):db.ref("avaliacoes/"+uid);
+  avRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,av])=>list.push({id,studentUid,...av})));
+      allAvaliacoes=list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));avaliacoes=allAvaliacoes.filter(a=>a.studentUid===uid);
+    }else{avaliacoes=objToArray(s.val()).map(a=>({...a,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allAvaliacoes=avaliacoes}
+    renderAvaliacoes();updateStats();updateProgresso();
+  });unsubscribers.push(()=>avRef.off());
+
+  const habitosRef=db.ref("habitos/"+uid);
+  habitosRef.on("value",s=>{habitos=objToArray(s.val()).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));renderHabitos();updateStats();updateProgresso()});
+  unsubscribers.push(()=>habitosRef.off());
+
+  const minsRef=db.ref("mins/"+uid);
+  minsRef.on("value",s=>{minsMap=s.val()||{};updateStats();updateProgresso()});
+  unsubscribers.push(()=>minsRef.off());
 }
+function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderHabitos();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function populateStudentSelects(){
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email)}</option>`).join("");
+  ["t-student","a-student","av-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno cadastrado</option>'});
+}
+function getUserName(uid){const u=users.find(x=>x.id===uid);return u?(u.name||u.email):uid}
+function getUserEmail(uid){const u=users.find(x=>x.id===uid);return u?.email||""}
+function renderAlunos(){
+  const el=document.getElementById("lista-alunos"); if(!el)return;
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  if(!studentUsers.length){el.innerHTML='<div class="empty-state"><div>👥</div>Nenhum aluno cadastrado ainda.</div>';return}
+  el.innerHTML=studentUsers.map(u=>`<div class="item"><div class="item-title">${safeText(u.name||u.email)}</div><div class="item-text">${safeText(u.email)} · ${countByStudent(allAulas,u.id)} aulas · ${countByStudent(allTarefas,u.id)} tarefas · ${countByStudent(allAvaliacoes,u.id)} avaliações</div></div>`).join("");
+}
+function countByStudent(list,uid){return list.filter(x=>x.studentUid===uid||x.ownerUid===uid).length}
+function selectedStudentOrSelf(selectId){return isTeacher()?(document.getElementById(selectId)?.value || ""):ownUid()}
 
 function switchTab(tab){
   if(tab==="financeiro"&&!isFinanceUser())return alert("Acesso financeiro disponível apenas para o perfil autorizado.");
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
-  document.getElementById("nav-"+tab).classList.add("active");
-  if(tab==="progresso")updateProgresso(); if(tab==="financeiro")updateFinanceiro(); if(tab==="aulas")renderAulas(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  document.getElementById("tab-"+tab)?.classList.add("active");
+  document.getElementById("nav-"+tab)?.classList.add("active");
+  if(tab==="progresso")updateProgresso(); if(tab==="financeiro")updateFinanceiro(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  window.scrollTo({top:0,behavior:"instant"});
 }
 
+async function addTarefa(){
+  if(!currentUser||!db)return;
+  const studentUid=selectedStudentOrSelf("t-student");
+  if(!studentUid)return alert("Selecione um aluno.");
+  const nome=document.getElementById("t-nome").value.trim();
+  if(!nome)return alert("Digite o nome da tarefa.");
+  const payload={nome,materia:document.getElementById("t-materia").value.trim(),prazo:document.getElementById("t-prazo").value,done:false,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
+  await db.ref("tarefas/"+studentUid).push(payload);
+  ["t-nome","t-materia","t-prazo"].forEach(id=>document.getElementById(id).value="");
+}
+async function toggleTarefa(id,studentUid){
+  const uid=studentUid||ownUid();
+  const list=isTeacher()?allTarefas:tarefas;
+  const t=list.find(x=>x.id===id&&x.studentUid===uid);
+  if(t)await db.ref("tarefas/"+uid+"/"+id).update({done:!t.done});
+}
+async function delTarefa(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("tarefas/"+uid+"/"+id).remove()}
+function renderTarefas(){
+  const list=isTeacher()?allTarefas:tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}
+  el.innerHTML=list.map(t=>`<div class="item tarefa-item ${t.done?"done":""}"><button class="check-btn ${t.done?"done":""}" onclick="toggleTarefa('${t.id}','${t.studentUid}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></button><div class="item-body"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge ok">📌 ${safeText(t.materia)}</span>`:""}${t.prazo?`<span class="badge warn">📅 ${formatDate(t.prazo)}</span>`:""}<span class="badge ${t.done?"ok":"warn"}">${t.done?"Concluída":"Pendente"}</span></div></div><button class="btn-del" onclick="delTarefa('${t.id}','${t.studentUid}')">×</button></div>`).join("");
+}
+function renderPainelTarefas(){
+  const el=document.getElementById("painel-tarefas"); if(!el)return;
+  const list=(isTeacher()?allTarefas:tarefas).filter(t=>!t.done).slice(0,5);
+  if(!list.length){el.innerHTML='<p style="color:var(--cinza);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';return}
+  el.innerHTML=list.map(t=>`<div class="item"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge ok">${safeText(t.materia)}</span>`:""}</div></div>`).join("");
+}
+
+function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inicio.split(":").map(Number),[hf,mf]=fim.split(":").map(Number);let i=hi*60+mi,f=hf*60+mf;if(f<i)f+=1440;return f-i}
+function formatDuracao(min){const n=Number(min||0),h=Math.floor(n/60),m=n%60;if(h&&m)return`${h}h${String(m).padStart(2,"0")}`;if(h)return`${h}h`;return`${m} min`}
+async function addAula(){
+  const studentUid=selectedStudentOrSelf("a-student"); if(!studentUid)return alert("Selecione um aluno.");
+  const mat=document.getElementById("a-materia").value.trim(),data=document.getElementById("a-data").value||today(),inicio=document.getElementById("a-inicio").value,fim=document.getElementById("a-fim").value,cont=document.getElementById("a-conteudo").value.trim();
+  if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria, início, fim e conteúdo.");
+  const dur=calcularDuracao(inicio,fim); if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
+  const aula={studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),userId:studentUid,userEmail:getUserEmail(studentUid),userName:getUserName(studentUid),materia:mat,data,inicio,fim,dur,conteudo:cont,obs:document.getElementById("a-obs").value.trim(),valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
+  await db.ref("aulas/"+studentUid).push(aula);
+  ["a-materia","a-data","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
+}
+async function delAula(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("aulas/"+uid+"/"+id).remove()}
+async function updateAulaFinanceiro(studentUid,id,campo,valor){if(!isFinanceUser())return;const up={};if(campo==="valor")up.valor=Number(valor||0);if(campo==="statusFinanceiro")up.statusFinanceiro=valor;await db.ref("aulas/"+studentUid+"/"+id).update(up)}
+function renderAulas(){
+  const list=isTeacher()?allAulas:aulas,el=document.getElementById("lista-aulas"); if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}
+  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Previsão</option><option value="recebido" ${status==="recebido"?"selected":""}>Recebido</option></select></div></div></div>`:""}</div>`}).join("");
+}
+
+async function addAvaliacao(){
+  const studentUid=selectedStudentOrSelf("av-student"); if(!studentUid)return alert("Selecione um aluno.");
+  const title=document.getElementById("av-title").value.trim(),materia=document.getElementById("av-materia").value.trim(),prazo=document.getElementById("av-prazo").value,desc=document.getElementById("av-desc").value.trim(),anexo=document.getElementById("av-anexo").value.trim();
+  if(!title||!materia||!desc)return alert("Preencha título, matéria e descrição.");
+  await db.ref("avaliacoes/"+studentUid).push({title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP});
+  ["av-title","av-materia","av-prazo","av-desc","av-anexo"].forEach(id=>document.getElementById(id).value="");
+}
+async function delAvaliacao(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("avaliacoes/"+uid+"/"+id).remove()}
+async function submitAvaliacao(id,studentUid){
+  const texto=document.getElementById("resp-text-"+id)?.value.trim()||"", link=document.getElementById("resp-link-"+id)?.value.trim()||"";
+  if(!texto&&!link)return alert("Escreva uma resposta ou envie um link.");
+  await db.ref("avaliacoes/"+studentUid+"/"+id).update({respostaTexto:texto,respostaLink:link,status:"respondida",respondedAt:firebase.database.ServerValue.TIMESTAMP});
+}
+function renderAvaliacoes(){
+  const list=isTeacher()?allAvaliacoes:avaliacoes,el=document.getElementById("lista-avaliacoes"); if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>📝</div>Nenhuma avaliação ainda.</div>';return}
+  el.innerHTML=list.map(av=>{const uid=av.studentUid||ownUid(),respondida=av.status==="respondida";return`<div class="item"><div class="aula-header"><div class="item-title">📝 ${safeText(av.title)}</div><button class="btn-del" onclick="delAvaliacao('${av.id}','${uid}')">×</button></div><div class="item-text">${safeText(av.desc)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(av.studentName||getUserName(uid))}</span>`:""}<span class="badge ok">${safeText(av.materia)}</span>${av.prazo?`<span class="badge warn">Prazo: ${formatDate(av.prazo)}</span>`:""}<span class="badge ${respondida?"ok":"warn"}">${respondida?"Respondida":"Aberta"}</span>${av.anexo?`<a class="badge" href="${safeText(av.anexo)}" target="_blank">📎 Anexo</a>`:""}</div>${isTeacher()?`<div class="answer-box"><strong>Resposta do aluno:</strong><div class="item-text">${safeText(av.respostaTexto||"Ainda sem resposta.")}</div>${av.respostaLink?`<a class="badge ok" href="${safeText(av.respostaLink)}" target="_blank">Abrir resposta/anexo</a>`:""}</div>`:`<div class="answer-box"><div class="form-field"><label>Sua resposta</label><textarea id="resp-text-${av.id}" placeholder="Digite sua resposta...">${safeText(av.respostaTexto||"")}</textarea></div><div class="form-field"><label>Link da resposta/anexo</label><input type="url" id="resp-link-${av.id}" value="${safeText(av.respostaLink||"")}" placeholder="https://..."></div><button class="btn-small primary" onclick="submitAvaliacao('${av.id}','${uid}')">Enviar resposta</button></div>`}</div>`}).join("");
+}
+
+async function addHabito(){const nome=document.getElementById("h-nome").value.trim(); if(!nome)return alert("Digite o nome do hábito."); await db.ref("habitos/"+ownUid()).push({nome,checks:{},createdAt:firebase.database.ServerValue.TIMESTAMP}); document.getElementById("h-nome").value=""}
+async function toggleHabito(id){const h=habitos.find(x=>x.id===id); if(!h)return; const d=today(),atual=h.checks?.[d]||false; await db.ref("habitos/"+ownUid()+"/"+id+"/checks/"+d).set(!atual)}
+async function delHabito(id){await db.ref("habitos/"+ownUid()+"/"+id).remove()}
+function calcStreak(checks){let s=0,d=new Date();while(true){const k=d.toISOString().slice(0,10);if(checks[k]){s++;d.setDate(d.getDate()-1)}else break}return s}
+function renderHabitos(){
+  const el=document.getElementById("lista-habitos"); if(!el)return;
+  if(!habitos.length){el.innerHTML='<div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div>';return}
+  const d=today(); el.innerHTML=habitos.map(h=>{const checks=h.checks||{},done=checks[d]||false,st=calcStreak(checks);return`<div class="item habito-item ${done?"done":""}"><div class="habito-check ${done?"done":""}" onclick="toggleHabito('${h.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="habito-title">${safeText(h.nome)}</div>${st>0?`<span class="habito-streak">🔥 ${st}</span>`:""}<button class="btn-del" onclick="delHabito('${h.id}')">×</button></div>`}).join("");
+}
+
+function updateStats(){
+  const taskList=isTeacher()?allTarefas:tarefas, aulaList=isTeacher()?allAulas:aulas, avList=isTeacher()?allAvaliacoes:avaliacoes;
+  document.getElementById("stat-mins").textContent=Number(minsMap[today()]||0);
+  document.getElementById("stat-pending").textContent=taskList.filter(t=>!t.done).length;
+  document.getElementById("stat-aulas").textContent=aulaList.length;
+  document.getElementById("stat-avaliacoes").textContent=avList.filter(a=>a.status!=="respondida").length;
+  renderPainelTarefas();updatePainelFinanceiro();
+}
+function updateProgresso(){
+  if(!currentUser)return;
+  const taskList=isTeacher()?allTarefas:tarefas, aulaList=isTeacher()?allAulas:aulas, avList=isTeacher()?allAvaliacoes:avaliacoes;
+  let total=0;Object.values(minsMap||{}).forEach(v=>total+=Number(v||0));
+  const tarDone=taskList.filter(t=>t.done).length, avDone=avList.filter(a=>a.status==="respondida").length;
+  document.getElementById("prog-mins").textContent=total;document.getElementById("prog-tarefas").textContent=tarDone;document.getElementById("prog-aulas").textContent=aulaList.length;document.getElementById("prog-avaliacoes").textContent=avDone;
+  const setBar=(id,valId,val,max)=>{const pct=Math.min(100,Math.round(val/max*100));document.getElementById(id).style.width=pct+"%";document.getElementById(valId).textContent=pct+"%"};
+  let weekMins=0,days=[],labels=["D","S","T","Q","Q","S","S"];for(let i=6;i>=0;i--){const dt=new Date();dt.setDate(dt.getDate()-i);const k=dt.toISOString().slice(0,10),m=Number(minsMap[k]||0);weekMins+=m;days.push({m,label:labels[dt.getDay()]})}
+  setBar("pb-mins","pb-mins-val",weekMins,300);setBar("pb-tar","pb-tar-val",tarDone,10);setBar("pb-aul","pb-aul-val",aulaList.length,7);setBar("pb-av","pb-av-val",avDone,3);
+  const max=Math.max(...days.map(d=>d.m),1);document.getElementById("week-bars").innerHTML=days.map(d=>`<div class="day-bar-wrap"><div class="day-bar-bg"><div class="day-bar-fill" style="height:${Math.round(d.m/max*100)}%"></div></div></div>`).join("");document.getElementById("week-days-labels").innerHTML=days.map(d=>`<div style="flex:1;text-align:center;font-size:10px;font-weight:800;color:var(--cinza)">${d.label}</div>`).join("");
+}
+function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
+function calcFinanceiro(){const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7),ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());let mp=0,mr=0,ap=0,ar=0;allAulas.forEach(a=>{const val=Number(a.valor||0),status=a.statusFinanceiro||"previsto",data=a.data||"";if(!data)return;if(data.slice(0,7)===mes){mp+=val;if(status==="recebido")mr+=val}if(data.slice(0,4)===String(ano)){ap+=val;if(status==="recebido")ar+=val}});return{mesPrevisto:mp,mesRecebido:mr,anoPrevisto:ap,anoRecebido:ar}}
+function updatePainelFinanceiro(){if(!isFinanceUser())return;const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;let p=0,r=0;allAulas.forEach(a=>{if((a.data||"").slice(0,7)!==m)return;const v=Number(a.valor||0);p+=v;if((a.statusFinanceiro||"previsto")==="recebido")r+=v});document.getElementById("painel-fin-previsto").textContent=formatMoney(p);document.getElementById("painel-fin-recebido").textContent=formatMoney(r)}
+function updateFinanceiro(){if(!isFinanceUser())return;initFinanceiroInputs();const d=calcFinanceiro();document.getElementById("fin-mes-previsto").textContent=formatMoney(d.mesPrevisto);document.getElementById("fin-mes-recebido").textContent=formatMoney(d.mesRecebido);document.getElementById("fin-ano-previsto").textContent=formatMoney(d.anoPrevisto);document.getElementById("fin-ano-recebido").textContent=formatMoney(d.anoRecebido);renderFinanceiroLista();updatePainelFinanceiro()}
+function renderFinanceiroLista(){const el=document.getElementById("fin-lista"); if(!el)return; const mes=document.getElementById("fin-mes")?.value, list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Valor</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}</td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Recebido":"Previsão"}</span></td></tr>`).join("")}</tbody></table>`}
+
 const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"}};
-let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null;
-const CIRC=2*Math.PI*86;
+let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null;const CIRC=2*Math.PI*86;
 function setupTimerRing(){const r=document.getElementById("timer-prog");if(r){r.style.strokeDasharray=CIRC;r.style.strokeDashoffset=0}}
 function setMode(m){if(timerRunning)return;timerMode=m;document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));document.getElementById("mode-"+m).classList.add("active");timerTotal=MODES[m].sec;timerLeft=timerTotal;document.getElementById("timer-label").textContent=MODES[m].label;updateTimerDisplay()}
 function updateTimerDisplay(){const m=Math.floor(timerLeft/60),s=timerLeft%60;document.getElementById("timer-display").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;document.getElementById("timer-prog").style.strokeDashoffset=CIRC*(timerLeft/timerTotal)}
-function startTimer(){
-  if(timerRunning)return;timerRunning=true;document.getElementById("btn-start").style.display="none";document.getElementById("btn-pause").style.display="inline-block";
-  timerInterval=setInterval(async()=>{timerLeft--;updateTimerDisplay();if(timerLeft<=0){clearInterval(timerInterval);timerRunning=false;document.getElementById("btn-start").style.display="inline-block";document.getElementById("btn-pause").style.display="none";if(timerMode!=="pausa"&&currentUser&&db){const mins=Math.round(timerTotal/60),key=today();await db.ref("mins/"+currentUser.uid+"/"+key).transaction(c=>Number(c||0)+mins)}try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),g=ctx.createGain();osc.connect(g);g.connect(ctx.destination);osc.frequency.value=880;g.gain.setValueAtTime(.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.8);osc.start();osc.stop(ctx.currentTime+.8)}catch(e){}}},1000)
-}
+function startTimer(){if(timerRunning)return;timerRunning=true;document.getElementById("btn-start").style.display="none";document.getElementById("btn-pause").style.display="inline-block";timerInterval=setInterval(async()=>{timerLeft--;updateTimerDisplay();if(timerLeft<=0){clearInterval(timerInterval);timerRunning=false;document.getElementById("btn-start").style.display="inline-block";document.getElementById("btn-pause").style.display="none";if(timerMode!=="pausa"&&currentUser&&db){await db.ref("mins/"+ownUid()+"/"+today()).transaction(c=>Number(c||0)+Math.round(timerTotal/60))}}},1000)}
 function pauseTimer(){if(!timerRunning)return;clearInterval(timerInterval);timerRunning=false;document.getElementById("btn-start").style.display="inline-block";document.getElementById("btn-pause").style.display="none"}
 function resetTimer(){pauseTimer();timerLeft=timerTotal;updateTimerDisplay()}
 
-async function addTarefa(){if(!currentUser||!db)return;const nome=document.getElementById("t-nome").value.trim();if(!nome)return alert("Digite o nome da tarefa.");await db.ref("tarefas/"+currentUser.uid).push({nome,materia:document.getElementById("t-materia").value.trim(),prazo:document.getElementById("t-prazo").value,done:false,createdAt:firebase.database.ServerValue.TIMESTAMP});["t-nome","t-materia","t-prazo"].forEach(id=>document.getElementById(id).value="")}
-async function toggleTarefa(id){if(!currentUser||!db)return;const t=tarefas.find(x=>x.id===id);if(t)await db.ref("tarefas/"+currentUser.uid+"/"+id).update({done:!t.done})}
-async function delTarefa(id){if(currentUser&&db)await db.ref("tarefas/"+currentUser.uid+"/"+id).remove()}
-function renderTarefas(){const el=document.getElementById("lista-tarefas");if(!el)return;if(!tarefas.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}el.innerHTML=tarefas.map(x=>`<div class="tarefa-item ${x.done?"done":""}"><button class="check-btn ${x.done?"done":""}" onclick="toggleTarefa('${x.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></button><div class="tarefa-info"><div class="tarefa-nome">${safeText(x.nome)}</div><div class="tarefa-meta">${x.materia?`<span class="badge materia">📌 ${safeText(x.materia)}</span>`:""}${x.prazo?`<span class="badge prazo">📅 ${formatDate(x.prazo)}</span>`:""}</div></div><button class="btn-del" onclick="delTarefa('${x.id}')">×</button></div>`).join("")}
-function renderPainelTarefas(){const el=document.getElementById("painel-tarefas");if(!el)return;const t=tarefas.filter(x=>!x.done).slice(0,4);if(!t.length){el.innerHTML='<p style="color:var(--cinza);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';return}el.innerHTML=t.map(x=>`<div class="tarefa-item"><button class="check-btn" onclick="toggleTarefa('${x.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></button><div class="tarefa-info"><div class="tarefa-nome">${safeText(x.nome)}</div>${x.materia?`<div class="tarefa-meta"><span class="badge materia">${safeText(x.materia)}</span></div>`:""}</div></div>`).join("")}
-
-function getAulas(){return isFinanceUser()?allAulas:aulas}
-function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inicio.split(":").map(Number),[hf,mf]=fim.split(":").map(Number);let ini=hi*60+mi,fin=hf*60+mf;if(fin<ini)fin+=1440;return fin-ini}
-function formatDuracao(min){const n=Number(min||0),h=Math.floor(n/60),m=n%60;if(h&&m)return`${h}h${String(m).padStart(2,"0")}`;if(h)return`${h}h`;return`${m} min`}
-async function addAula(){
-  if(!currentUser||!db)return;
-  const mat=document.getElementById("a-materia").value.trim(),data=document.getElementById("a-data").value||today(),inicio=document.getElementById("a-inicio").value,fim=document.getElementById("a-fim").value,cont=document.getElementById("a-conteudo").value.trim();
-  if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria, início, fim e conteúdo.");
-  const dur=calcularDuracao(inicio,fim);if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
-  const aula={userId:currentUser.uid,userEmail:currentUser.email,userName:currentProfile?.name||currentUser.email,materia:mat,data,inicio,fim,dur,conteudo:cont,obs:document.getElementById("a-obs").value.trim(),valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",createdAt:firebase.database.ServerValue.TIMESTAMP};
-  await db.ref("aulas/"+currentUser.uid).push(aula);
-  ["a-materia","a-data","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});const st=document.getElementById("a-status");if(st)st.value="previsto";
-}
-async function delAula(id,ownerUid){if(!currentUser||!db)return;const uid=ownerUid||currentUser.uid;if(uid!==currentUser.uid&&!isFinanceUser())return alert("Você não tem permissão para excluir esta aula.");await db.ref("aulas/"+uid+"/"+id).remove()}
-async function updateAulaFinanceiro(ownerUid,id,campo,valor){if(!isFinanceUser()||!db)return;const up={};if(campo==="valor")up.valor=Number(valor||0);if(campo==="statusFinanceiro")up.statusFinanceiro=valor;await db.ref("aulas/"+ownerUid+"/"+id).update(up)}
-function renderAulas(){const lista=getAulas(),el=document.getElementById("lista-aulas");if(!el)return;if(!lista.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}el.innerHTML=lista.map(x=>{const f=isFinanceUser(),owner=x.ownerUid||x.userId||currentUser.uid,status=x.statusFinanceiro||"previsto";return`<div class="aula-item"><div class="aula-header"><div class="aula-materia">📚 ${safeText(x.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="aula-dur">⏱ ${formatDuracao(x.dur)}</span><button class="btn-del" onclick="delAula('${x.id}','${owner}')">×</button></div></div>${f?`<div class="aula-date">👤 ${safeText(x.userName||x.userEmail||owner)}</div>`:""}<div class="aula-conteudo">${safeText(x.conteudo)}</div><div class="aula-date">📅 ${formatDate(x.data)} · 🕒 ${x.inicio||"--:--"} às ${x.fim||"--:--"}</div>${x.obs?`<div class="aula-obs">💬 ${safeText(x.obs)}</div>`:""}${f?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(x.valor||0)}" onchange="updateAulaFinanceiro('${owner}','${x.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${owner}','${x.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Previsão</option><option value="recebido" ${status==="recebido"?"selected":""}>Recebido</option></select></div></div></div>`:""}</div>`}).join("")}
-
-async function addHabito(){if(!currentUser||!db)return;const nome=document.getElementById("h-nome").value.trim();if(!nome)return alert("Digite o nome do hábito.");await db.ref("habitos/"+currentUser.uid).push({nome,checks:{},createdAt:firebase.database.ServerValue.TIMESTAMP});document.getElementById("h-nome").value=""}
-async function toggleHabito(id){if(!currentUser||!db)return;const h=habitos.find(x=>x.id===id);if(!h)return;const d=today(),atual=h.checks?.[d]||false;await db.ref("habitos/"+currentUser.uid+"/"+id+"/checks/"+d).set(!atual)}
-async function delHabito(id){if(currentUser&&db)await db.ref("habitos/"+currentUser.uid+"/"+id).remove()}
-function calcStreak(checks){let s=0,d=new Date();while(true){const k=d.toISOString().slice(0,10);if(checks[k]){s++;d.setDate(d.getDate()-1)}else break}return s}
-function renderHabitos(){const el=document.getElementById("lista-habitos");if(!el)return;if(!habitos.length){el.innerHTML='<div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div>';return}const d=today();el.innerHTML=habitos.map(x=>{const checks=x.checks||{},done=checks[d]||false,st=calcStreak(checks);return`<div class="habito-item ${done?"done":""}"><div class="habito-check ${done?"done":""}" onclick="toggleHabito('${x.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="habito-nome">${safeText(x.nome)}</div>${st>0?`<span class="habito-streak">🔥 ${st}</span>`:""}<button class="btn-del" onclick="delHabito('${x.id}')">×</button></div>`}).join("")}
-
-function updateStats(){document.getElementById("stat-mins").textContent=Number(minsMap[today()]||0);document.getElementById("stat-pending").textContent=tarefas.filter(t=>!t.done).length;document.getElementById("stat-aulas").textContent=aulas.length;renderPainelTarefas();updatePainelFinanceiro()}
-function checkStreak(){let st=0,d=new Date();while(true){const k=d.toISOString().slice(0,10);if(Number(minsMap[k]||0)>0){st++;d.setDate(d.getDate()-1)}else break}const el=document.getElementById("stat-streak");if(el)el.textContent=st}
-function updateProgresso(){
-  if(!currentUser)return;const hojeDone=habitos.filter(h=>(h.checks||{})[today()]).length;let total=0;Object.values(minsMap||{}).forEach(v=>total+=Number(v||0));const tarDone=tarefas.filter(t=>t.done).length;
-  document.getElementById("prog-mins").textContent=total;document.getElementById("prog-tarefas").textContent=tarDone;document.getElementById("prog-aulas").textContent=aulas.length;document.getElementById("prog-habitos").textContent=hojeDone;
-  const setBar=(id,valId,val,max)=>{const pct=Math.min(100,Math.round(val/max*100));document.getElementById(id).style.width=pct+"%";document.getElementById(valId).textContent=pct+"%"};
-  let weekMins=0,days=[],labels=["D","S","T","Q","Q","S","S"];for(let i=6;i>=0;i--){const dt=new Date();dt.setDate(dt.getDate()-i);const k=dt.toISOString().slice(0,10),m=Number(minsMap[k]||0);weekMins+=m;days.push({m,label:labels[dt.getDay()]})}
-  setBar("pb-mins","pb-mins-val",weekMins,300);setBar("pb-tar","pb-tar-val",tarDone,10);setBar("pb-aul","pb-aul-val",aulas.length,7);setBar("pb-hab","pb-hab-val",hojeDone,5);
-  const max=Math.max(...days.map(d=>d.m),1);document.getElementById("week-bars").innerHTML=days.map(d=>`<div class="day-bar-wrap"><div class="day-bar-bg"><div class="day-bar-fill" style="height:${Math.round(d.m/max*100)}%"></div></div></div>`).join("");document.getElementById("week-days-labels").innerHTML=days.map(d=>`<div style="flex:1;text-align:center;font-size:10px;font-weight:800;color:var(--cinza)">${d.label}</div>`).join("");
-}
-
-function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano");if(!mes||!ano)return;const d=new Date(),mesAtual=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;if(!mes.value)mes.value=mesAtual;if(!ano.value)ano.value=d.getFullYear()}
-function calcFinanceiro(){const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7),ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());let mp=0,mr=0,ap=0,ar=0;allAulas.forEach(a=>{const val=Number(a.valor||0),status=a.statusFinanceiro||"previsto",data=a.data||"";if(!data)return;if(data.slice(0,7)===mes){mp+=val;if(status==="recebido")mr+=val}if(data.slice(0,4)===String(ano)){ap+=val;if(status==="recebido")ar+=val}});return{aulas:allAulas,mesPrevisto:mp,mesRecebido:mr,anoPrevisto:ap,anoRecebido:ar}}
-function updatePainelFinanceiro(){if(!isFinanceUser())return;const d=new Date(),mes=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;let p=0,r=0;allAulas.forEach(a=>{if((a.data||"").slice(0,7)!==mes)return;const v=Number(a.valor||0);p+=v;if((a.statusFinanceiro||"previsto")==="recebido")r+=v});document.getElementById("painel-fin-previsto").textContent=formatMoney(p);document.getElementById("painel-fin-recebido").textContent=formatMoney(r)}
-function updateFinanceiro(){if(!isFinanceUser())return;initFinanceiroInputs();const d=calcFinanceiro();document.getElementById("fin-mes-previsto").textContent=formatMoney(d.mesPrevisto);document.getElementById("fin-mes-recebido").textContent=formatMoney(d.mesRecebido);document.getElementById("fin-ano-previsto").textContent=formatMoney(d.anoPrevisto);document.getElementById("fin-ano-recebido").textContent=formatMoney(d.anoRecebido);renderFinanceiroLista(d.aulas);updatePainelFinanceiro()}
-function renderFinanceiroLista(lista){const el=document.getElementById("fin-lista");if(!el)return;if(!lista.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro ainda.</div>';return}const mes=document.getElementById("fin-mes")?.value,filtradas=mes?lista.filter(a=>(a.data||"").slice(0,7)===mes):lista;if(!filtradas.length){el.innerHTML='<div class="empty-state"><div>📭</div>Nenhum lançamento neste mês.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Valor</th><th>Status</th></tr></thead><tbody>${filtradas.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small><br><small>👤 ${safeText(a.userName||a.userEmail||a.ownerUid)}</small></td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Recebido":"Previsão"}</span></td></tr>`).join("")}</tbody></table>`}
-
-document.addEventListener("DOMContentLoaded",()=>{
-  setupTimerRing();updateTimerDisplay();
-  const alertBox=document.getElementById("firebase-config-alert");if(alertBox)alertBox.style.display=firebaseReady?"none":"block";
-  ["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
-  ["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));
-});
+document.addEventListener("DOMContentLoaded",()=>{setupTimerRing();updateTimerDisplay();["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));});
 </script>
 </body>
 </html>
