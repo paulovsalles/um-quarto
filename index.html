@@ -474,7 +474,7 @@ function attachRealtimeListeners(){
   const uid=ownUid();
 
   const usersRef=db.ref("users");
-  usersRef.on("value",s=>{users=objToArray(s.val()).sort((a,b)=>(a.name||"").localeCompare(b.name||""));populateStudentSelects();renderAlunos()});
+  usersRef.on("value",s=>{users=objToArray(s.val()).sort((a,b)=>(a.name||"").localeCompare(b.name||""));populateStudentSelects();renderAlunos()},e=>{console.error(e);alert("Erro ao carregar usuários. Confira as regras do Realtime Database.")});
   unsubscribers.push(()=>usersRef.off());
 
   const tarefasRef=isTeacher()?db.ref("tarefas"):db.ref("tarefas/"+uid);
@@ -484,7 +484,7 @@ function attachRealtimeListeners(){
       allTarefas=list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));tarefas=allTarefas.filter(t=>t.studentUid===uid);
     }else{tarefas=objToArray(s.val()).map(t=>({...t,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allTarefas=tarefas}
     renderTarefas();renderPainelTarefas();updateStats();updateProgresso();
-  });unsubscribers.push(()=>tarefasRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>tarefasRef.off());
 
   const aulasRef=isTeacher()?db.ref("aulas"):db.ref("aulas/"+uid);
   aulasRef.on("value",s=>{
@@ -493,7 +493,7 @@ function attachRealtimeListeners(){
       allAulas=list.sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));aulas=allAulas.filter(a=>a.studentUid===uid);
     }else{aulas=objToArray(s.val()).map(a=>({...a,studentUid:uid,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));allAulas=aulas}
     renderAulas();updateStats();updateProgresso();updateFinanceiro();
-  });unsubscribers.push(()=>aulasRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar aulas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>aulasRef.off());
 
   const avRef=isTeacher()?db.ref("avaliacoes"):db.ref("avaliacoes/"+uid);
   avRef.on("value",s=>{
@@ -502,7 +502,7 @@ function attachRealtimeListeners(){
       allAvaliacoes=list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));avaliacoes=allAvaliacoes.filter(a=>a.studentUid===uid);
     }else{avaliacoes=objToArray(s.val()).map(a=>({...a,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allAvaliacoes=avaliacoes}
     renderAvaliacoes();updateStats();updateProgresso();
-  });unsubscribers.push(()=>avRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar avaliações. Confira as regras do Realtime Database.")});unsubscribers.push(()=>avRef.off());
 
   const habitosRef=db.ref("habitos/"+uid);
   habitosRef.on("value",s=>{habitos=objToArray(s.val()).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));renderHabitos();updateStats();updateProgresso()});
@@ -546,8 +546,11 @@ async function addTarefa(){
   const nome=document.getElementById("t-nome").value.trim();
   if(!nome)return alert("Digite o nome da tarefa.");
   const payload={nome,materia:document.getElementById("t-materia").value.trim(),prazo:document.getElementById("t-prazo").value,done:false,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
-  await db.ref("tarefas/"+studentUid).push(payload);
-  ["t-nome","t-materia","t-prazo"].forEach(id=>document.getElementById(id).value="");
+  try{
+    await db.ref("tarefas/"+studentUid).push(payload);
+    ["t-nome","t-materia","t-prazo"].forEach(id=>document.getElementById(id).value="");
+    alert("Tarefa enviada com sucesso!");
+  }catch(e){alert(firebaseErrorMessage(e));}
 }
 async function toggleTarefa(id,studentUid){
   const uid=studentUid||ownUid();
@@ -576,8 +579,11 @@ async function addAula(){
   if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria, início, fim e conteúdo.");
   const dur=calcularDuracao(inicio,fim); if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
   const aula={studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),userId:studentUid,userEmail:getUserEmail(studentUid),userName:getUserName(studentUid),materia:mat,data,inicio,fim,dur,conteudo:cont,obs:document.getElementById("a-obs").value.trim(),valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
-  await db.ref("aulas/"+studentUid).push(aula);
-  ["a-materia","a-data","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
+  try{
+    await db.ref("aulas/"+studentUid).push(aula);
+    ["a-materia","a-data","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
+    alert("Aula salva com sucesso!");
+  }catch(e){alert(firebaseErrorMessage(e));}
 }
 async function delAula(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("aulas/"+uid+"/"+id).remove()}
 async function updateAulaFinanceiro(studentUid,id,campo,valor){if(!isFinanceUser())return;const up={};if(campo==="valor")up.valor=Number(valor||0);if(campo==="statusFinanceiro")up.statusFinanceiro=valor;await db.ref("aulas/"+studentUid+"/"+id).update(up)}
@@ -591,8 +597,11 @@ async function addAvaliacao(){
   const studentUid=selectedStudentOrSelf("av-student"); if(!studentUid)return alert("Selecione um aluno.");
   const title=document.getElementById("av-title").value.trim(),materia=document.getElementById("av-materia").value.trim(),prazo=document.getElementById("av-prazo").value,desc=document.getElementById("av-desc").value.trim(),anexo=document.getElementById("av-anexo").value.trim();
   if(!title||!materia||!desc)return alert("Preencha título, matéria e descrição.");
-  await db.ref("avaliacoes/"+studentUid).push({title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP});
-  ["av-title","av-materia","av-prazo","av-desc","av-anexo"].forEach(id=>document.getElementById(id).value="");
+  try{
+    await db.ref("avaliacoes/"+studentUid).push({title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP});
+    ["av-title","av-materia","av-prazo","av-desc","av-anexo"].forEach(id=>document.getElementById(id).value="");
+    alert("Avaliação enviada com sucesso!");
+  }catch(e){alert(firebaseErrorMessage(e));}
 }
 async function delAvaliacao(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("avaliacoes/"+uid+"/"+id).remove()}
 async function submitAvaliacao(id,studentUid){
