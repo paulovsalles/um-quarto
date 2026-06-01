@@ -1,1096 +1,28 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Um Quarto – 15 minutos por dia para virar a chave.</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Um Quarto</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:'Nunito',sans-serif;background:#f4f7f6;color:#284754;min-height:100vh;font-size:16px}
-button{font-family:'Nunito',sans-serif;cursor:pointer;border:none;outline:none}
-input,select,textarea{font-family:'Nunito',sans-serif;outline:none}
-a{text-decoration:none;color:inherit}
-
-:root{
-  --verde:#23B8A6;
-  --verde-dark:#1a9a89;
-  --azul:#284754;
-  --azul-light:#3a6275;
-  --branco:#ffffff;
-  --cinza-claro:#f4f7f6;
-  --cinza-medio:#e8eded;
-  --cinza-texto:#6b8c9a;
-  --radius:16px;
-  --radius-sm:10px;
-  --shadow:0 2px 12px rgba(40,71,84,.08);
-}
-
-.screen{display:none;min-height:100vh}
-.screen.active{display:block}
-
-/* LANDING */
-#screen-landing{background:#fff}
-
-.landing-hero{
-  background:linear-gradient(135deg,#284754 0%,#1e5f6e 100%);
-  color:#fff;
-  text-align:center;
-  padding:64px 24px 72px;
-  position:relative;
-  overflow:hidden;
-}
-
-.landing-hero::before{
-  content:'';
-  position:absolute;
-  top:-60px;
-  right:-60px;
-  width:200px;
-  height:200px;
-  border-radius:50%;
-  background:rgba(35,184,166,.18);
-}
-
-.landing-hero::after{
-  content:'';
-  position:absolute;
-  bottom:-40px;
-  left:-40px;
-  width:150px;
-  height:150px;
-  border-radius:50%;
-  background:rgba(35,184,166,.12);
-}
-
-.logo-mark{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:72px;
-  height:72px;
-  border-radius:20px;
-  background:var(--verde);
-  margin:0 auto 20px;
-  font-size:32px;
-  font-weight:800;
-  color:#fff;
-  box-shadow:0 4px 20px rgba(35,184,166,.4);
-}
-
-.landing-hero h1{
-  font-size:clamp(28px,7vw,44px);
-  font-weight:800;
-  margin-bottom:12px;
-}
-
-.landing-hero h1 span{color:var(--verde)}
-
-.landing-hero p{
-  font-size:clamp(15px,4vw,18px);
-  opacity:.85;
-  margin-bottom:36px;
-  max-width:380px;
-  margin-left:auto;
-  margin-right:auto;
-}
-
-.btn-hero-group{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  flex-wrap:wrap;
-}
-
-.btn-primary{
-  background:var(--verde);
-  color:#fff;
-  padding:14px 32px;
-  border-radius:50px;
-  font-size:15px;
-  font-weight:700;
-  transition:all .2s;
-  box-shadow:0 4px 16px rgba(35,184,166,.35);
-}
-
-.btn-primary:hover{
-  background:var(--verde-dark);
-  transform:translateY(-2px);
-}
-
-.btn-outline{
-  background:transparent;
-  color:#fff;
-  border:2px solid rgba(255,255,255,.6);
-  padding:12px 28px;
-  border-radius:50px;
-  font-size:15px;
-  font-weight:700;
-  transition:all .2s;
-}
-
-.btn-outline:hover{
-  background:rgba(255,255,255,.1);
-  border-color:#fff;
-}
-
-.features-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  padding:48px 24px;
-  max-width:900px;
-  margin:0 auto;
-}
-
-.feature-card{
-  background:#fff;
-  border:1.5px solid var(--cinza-medio);
-  border-radius:var(--radius);
-  padding:24px 20px;
-  text-align:center;
-  transition:box-shadow .2s;
-}
-
-.feature-card:hover{box-shadow:var(--shadow)}
-
-.feature-icon{
-  width:52px;
-  height:52px;
-  border-radius:14px;
-  background:var(--cinza-claro);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin:0 auto 14px;
-  font-size:24px;
-}
-
-.feature-card h3{
-  font-size:15px;
-  font-weight:700;
-  color:var(--azul);
-  margin-bottom:6px;
-}
-
-.feature-card p{
-  font-size:13px;
-  color:var(--cinza-texto);
-  line-height:1.5;
-}
-
-.landing-footer{
-  text-align:center;
-  padding:24px;
-  color:var(--cinza-texto);
-  font-size:13px;
-  border-top:1px solid var(--cinza-medio);
-}
-
-/* AUTH */
-#screen-auth{
-  background:var(--cinza-claro);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px;
-}
-
-.auth-card{
-  background:#fff;
-  border-radius:var(--radius);
-  padding:36px 28px;
-  width:100%;
-  max-width:400px;
-  box-shadow:var(--shadow);
-}
-
-.auth-brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin-bottom:14px;
-}
-
-.auth-brand .logo-mark{
-  width:44px;
-  height:44px;
-  font-size:18px;
-  border-radius:12px;
-  margin:0;
-}
-
-.auth-brand strong{
-  font-size:20px;
-  font-weight:800;
-  color:var(--azul);
-}
-
-.auth-card h2{
-  font-size:20px;
-  font-weight:800;
-  color:var(--azul);
-  margin-bottom:4px;
-}
-
-.auth-card .subtitle{
-  font-size:13px;
-  color:var(--cinza-texto);
-  margin-bottom:24px;
-}
-
-.auth-tabs{
-  display:flex;
-  gap:4px;
-  background:var(--cinza-claro);
-  border-radius:10px;
-  padding:4px;
-  margin-bottom:24px;
-}
-
-.auth-tab{
-  flex:1;
-  padding:9px;
-  border-radius:8px;
-  font-size:14px;
-  font-weight:600;
-  color:var(--cinza-texto);
-  background:transparent;
-  transition:all .2s;
-  text-align:center;
-}
-
-.auth-tab.active{
-  background:#fff;
-  color:var(--verde);
-  box-shadow:0 1px 4px rgba(0,0,0,.08);
-}
-
-.form-group{margin-bottom:16px}
-
-.form-group label{
-  display:block;
-  font-size:13px;
-  font-weight:600;
-  color:var(--azul);
-  margin-bottom:6px;
-}
-
-.form-group input{
-  width:100%;
-  padding:12px 14px;
-  border:1.5px solid var(--cinza-medio);
-  border-radius:var(--radius-sm);
-  font-size:14px;
-  color:var(--azul);
-  background:#fff;
-  transition:border-color .2s;
-}
-
-.form-group input:focus{border-color:var(--verde)}
-
-.btn-full{
-  width:100%;
-  padding:14px;
-  border-radius:50px;
-  font-size:15px;
-  font-weight:700;
-  background:var(--verde);
-  color:#fff;
-  margin-top:8px;
-  transition:all .2s;
-}
-
-.btn-full:hover{background:var(--verde-dark)}
-
-.auth-link{
-  text-align:center;
-  margin-top:16px;
-  font-size:13px;
-  color:var(--cinza-texto);
-}
-
-.auth-link span{
-  color:var(--verde);
-  cursor:pointer;
-  font-weight:600;
-}
-
-/* APP */
-#screen-app{display:none;flex-direction:column;min-height:100vh}
-#screen-app.active{display:flex}
-
-.topbar{
-  background:#fff;
-  border-bottom:1.5px solid var(--cinza-medio);
-  padding:14px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  position:sticky;
-  top:0;
-  z-index:100;
-}
-
-.topbar-logo{
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.topbar-logo .logo-mark{
-  width:36px;
-  height:36px;
-  font-size:14px;
-  border-radius:10px;
-  margin:0;
-}
-
-.topbar-logo span{
-  font-size:17px;
-  font-weight:800;
-  color:var(--azul);
-}
-
-.btn-logout{
-  background:var(--cinza-claro);
-  color:var(--cinza-texto);
-  padding:8px 14px;
-  border-radius:50px;
-  font-size:12px;
-  font-weight:600;
-  transition:all .2s;
-}
-
-.btn-logout:hover{background:var(--cinza-medio)}
-
-.bottom-nav{
-  background:#fff;
-  border-top:1.5px solid var(--cinza-medio);
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  padding:8px 0 max(8px, env(safe-area-inset-bottom));
-  position:sticky;
-  bottom:0;
-  z-index:100;
-  overflow-x:auto;
-}
-
-.nav-item{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:3px;
-  font-size:10px;
-  font-weight:600;
-  color:var(--cinza-texto);
-  padding:6px 8px;
-  border-radius:10px;
-  transition:all .2s;
-  background:transparent;
-  min-width:52px;
-}
-
-.nav-item.active{color:var(--verde)}
-.nav-item svg{width:20px;height:20px;stroke-width:2}
-
-.app-content{
-  flex:1;
-  padding:16px;
-  max-width:760px;
-  width:100%;
-  margin:0 auto;
-}
-
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-
-.card{
-  background:#fff;
-  border-radius:var(--radius);
-  padding:20px;
-  margin-bottom:14px;
-  box-shadow:var(--shadow);
-}
-
-.card-title{
-  font-size:14px;
-  font-weight:700;
-  color:var(--cinza-texto);
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  margin-bottom:16px;
-}
-
-/* PAINEL */
-.painel-saudacao{
-  background:linear-gradient(135deg,var(--azul),var(--azul-light));
-  color:#fff;
-  border-radius:var(--radius);
-  padding:24px 20px;
-  margin-bottom:14px;
-}
-
-.painel-saudacao h2{
-  font-size:22px;
-  font-weight:800;
-}
-
-.painel-saudacao p{
-  font-size:13px;
-  opacity:.8;
-  margin-top:4px;
-}
-
-.frase-motivacional{
-  background:var(--cinza-claro);
-  border-left:4px solid var(--verde);
-  padding:14px 16px;
-  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
-  font-size:13px;
-  font-weight:600;
-  color:var(--azul-light);
-  font-style:italic;
-  margin-bottom:14px;
-}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.stat-card{
-  background:#fff;
-  border-radius:var(--radius);
-  padding:18px 16px;
-  box-shadow:var(--shadow);
-  text-align:center;
-}
-
-.stat-num{
-  font-size:24px;
-  font-weight:800;
-  color:var(--azul);
-  word-break:break-word;
-}
-
-.stat-label{
-  font-size:12px;
-  color:var(--cinza-texto);
-  font-weight:600;
-  margin-top:2px;
-}
-
-.stat-icon{
-  font-size:22px;
-  margin-bottom:4px;
-}
-
-/* TIMER */
-.timer-modes{
-  display:flex;
-  gap:8px;
-  margin-bottom:20px;
-  flex-wrap:wrap;
-}
-
-.mode-btn{
-  flex:1;
-  min-width:120px;
-  padding:10px;
-  border-radius:50px;
-  font-size:13px;
-  font-weight:700;
-  background:var(--cinza-claro);
-  color:var(--cinza-texto);
-  transition:all .2s;
-}
-
-.mode-btn.active{
-  background:var(--verde);
-  color:#fff;
-  box-shadow:0 2px 10px rgba(35,184,166,.3);
-}
-
-.timer-display{
-  text-align:center;
-  padding:32px 20px;
-}
-
-.timer-circle{
-  width:200px;
-  height:200px;
-  border-radius:50%;
-  margin:0 auto 24px;
-  background:#fff;
-  box-shadow:0 0 0 10px var(--cinza-medio), 0 4px 24px rgba(40,71,84,.1);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  position:relative;
-}
-
-.timer-ring{
-  position:absolute;
-  top:0;
-  left:0;
-  width:200px;
-  height:200px;
-  transform:rotate(-90deg);
-}
-
-.timer-ring circle{
-  fill:none;
-  stroke-width:8;
-  stroke-linecap:round;
-}
-
-.timer-ring .bg-ring{stroke:var(--cinza-medio)}
-.timer-ring .prog-ring{stroke:var(--verde);transition:stroke-dashoffset .5s ease}
-
-.timer-time{
-  font-size:42px;
-  font-weight:800;
-  color:var(--azul);
-  line-height:1;
-  position:relative;
-  z-index:1;
-}
-
-.timer-mode-label{
-  font-size:12px;
-  color:var(--cinza-texto);
-  font-weight:600;
-  margin-top:4px;
-  position:relative;
-  z-index:1;
-}
-
-.timer-buttons{
-  display:flex;
-  gap:12px;
-  justify-content:center;
-  margin-bottom:20px;
-  flex-wrap:wrap;
-}
-
-.btn-timer{
-  padding:14px 28px;
-  border-radius:50px;
-  font-size:14px;
-  font-weight:700;
-  transition:all .2s;
-}
-
-.btn-start{
-  background:var(--verde);
-  color:#fff;
-  box-shadow:0 3px 14px rgba(35,184,166,.35);
-}
-
-.btn-start:hover{
-  background:var(--verde-dark);
-  transform:translateY(-1px);
-}
-
-.btn-pause,.btn-reset{
-  background:var(--cinza-claro);
-  color:var(--azul);
-}
-
-.btn-pause:hover,.btn-reset:hover{background:var(--cinza-medio)}
-
-.timer-task-input{
-  background:var(--cinza-claro);
-  border-radius:var(--radius);
-  padding:16px;
-  margin-top:8px;
-}
-
-.timer-task-input label{
-  font-size:13px;
-  font-weight:700;
-  color:var(--azul);
-  display:block;
-  margin-bottom:8px;
-}
-
-.timer-task-input input{
-  width:100%;
-  padding:10px 12px;
-  border:1.5px solid var(--cinza-medio);
-  border-radius:var(--radius-sm);
-  font-size:14px;
-  background:#fff;
-}
-
-.timer-task-input input:focus{border-color:var(--verde)}
-
-/* FORM */
-.add-form{
-  background:var(--cinza-claro);
-  border-radius:var(--radius);
-  padding:18px;
-  margin-bottom:16px;
-}
-
-.add-form h3{
-  font-size:14px;
-  font-weight:700;
-  color:var(--azul);
-  margin-bottom:12px;
-}
-
-.form-row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.form-field{margin-bottom:10px}
-
-.form-field label{
-  display:block;
-  font-size:12px;
-  font-weight:600;
-  color:var(--cinza-texto);
-  margin-bottom:5px;
-}
-
-.form-field input,.form-field select,.form-field textarea{
-  width:100%;
-  padding:10px 12px;
-  border:1.5px solid var(--cinza-medio);
-  border-radius:var(--radius-sm);
-  font-size:13px;
-  background:#fff;
-  color:var(--azul);
-}
-
-.form-field input:focus,.form-field select:focus,.form-field textarea:focus{border-color:var(--verde)}
-
-.btn-add{
-  background:var(--verde);
-  color:#fff;
-  padding:11px 20px;
-  border-radius:50px;
-  font-size:13px;
-  font-weight:700;
-  width:100%;
-  transition:all .2s;
-}
-
-.btn-add:hover{background:var(--verde-dark)}
-
-/* TAREFAS */
-.tarefa-item{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  padding:14px;
-  background:#fff;
-  border-radius:var(--radius-sm);
-  border:1.5px solid var(--cinza-medio);
-  margin-bottom:8px;
-  transition:all .2s;
-}
-
-.tarefa-item.done{
-  opacity:.6;
-  border-color:var(--cinza-claro);
-}
-
-.tarefa-item.done .tarefa-nome{
-  text-decoration:line-through;
-  color:var(--cinza-texto);
-}
-
-.check-btn{
-  width:22px;
-  height:22px;
-  min-width:22px;
-  border-radius:50%;
-  border:2px solid var(--cinza-medio);
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-top:1px;
-  transition:all .2s;
-}
-
-.check-btn.done{
-  background:var(--verde);
-  border-color:var(--verde);
-}
-
-.check-btn svg{
-  width:12px;
-  height:12px;
-  stroke:#fff;
-  display:none;
-}
-
-.check-btn.done svg{display:block}
-
-.tarefa-info{
-  flex:1;
-  min-width:0;
-}
-
-.tarefa-nome{
-  font-size:14px;
-  font-weight:600;
-  color:var(--azul);
-}
-
-.tarefa-meta{
-  display:flex;
-  gap:8px;
-  margin-top:4px;
-  flex-wrap:wrap;
-}
-
-.badge{
-  font-size:11px;
-  font-weight:600;
-  padding:2px 8px;
-  border-radius:50px;
-  background:var(--cinza-claro);
-  color:var(--cinza-texto);
-}
-
-.badge.materia{
-  background:#e8f5f3;
-  color:var(--verde-dark);
-}
-
-.badge.prazo{
-  background:#fff3e8;
-  color:#c8721a;
-}
-
-.btn-del{
-  background:none;
-  color:var(--cinza-texto);
-  font-size:18px;
-  padding:2px 4px;
-  line-height:1;
-  transition:color .2s;
-  align-self:flex-start;
-}
-
-.btn-del:hover{color:#e84040}
-
-.empty-state{
-  text-align:center;
-  padding:32px;
-  color:var(--cinza-texto);
-  font-size:14px;
-}
-
-.empty-state div{
-  font-size:32px;
-  margin-bottom:8px;
-}
-
-/* AULAS */
-.aula-item{
-  padding:14px;
-  background:#fff;
-  border-radius:var(--radius-sm);
-  border:1.5px solid var(--cinza-medio);
-  margin-bottom:8px;
-}
-
-.aula-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:10px;
-}
-
-.aula-materia{
-  font-size:14px;
-  font-weight:700;
-  color:var(--azul);
-}
-
-.aula-dur{
-  background:#e8f5f3;
-  color:var(--verde-dark);
-  font-size:12px;
-  font-weight:700;
-  padding:3px 10px;
-  border-radius:50px;
-  white-space:nowrap;
-}
-
-.aula-conteudo{
-  font-size:13px;
-  color:var(--cinza-texto);
-  margin-top:6px;
-  line-height:1.4;
-}
-
-.aula-obs{
-  font-size:12px;
-  color:#a8bec8;
-  margin-top:4px;
-  font-style:italic;
-}
-
-.aula-date{
-  font-size:11px;
-  color:var(--cinza-texto);
-  margin-top:6px;
-}
-
-.finance-aula-box{
-  margin-top:12px;
-  padding:12px;
-  border-radius:var(--radius-sm);
-  background:var(--cinza-claro);
-}
-
-/* HÁBITOS */
-.habito-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px;
-  background:#fff;
-  border-radius:var(--radius-sm);
-  border:1.5px solid var(--cinza-medio);
-  margin-bottom:8px;
-  transition:all .2s;
-}
-
-.habito-item.done{
-  border-color:#e8f5f3;
-  background:#f4faf9;
-}
-
-.habito-check{
-  width:26px;
-  height:26px;
-  min-width:26px;
-  border-radius:8px;
-  border:2px solid var(--cinza-medio);
-  background:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:all .2s;
-  cursor:pointer;
-}
-
-.habito-check.done{
-  background:var(--verde);
-  border-color:var(--verde);
-}
-
-.habito-check svg{
-  width:14px;
-  height:14px;
-  stroke:#fff;
-  display:none;
-}
-
-.habito-check.done svg{display:block}
-
-.habito-nome{
-  flex:1;
-  font-size:14px;
-  font-weight:600;
-  color:var(--azul);
-}
-
-.habito-item.done .habito-nome{color:var(--verde-dark)}
-
-.habito-streak{
-  font-size:12px;
-  font-weight:700;
-  color:var(--cinza-texto);
-  background:var(--cinza-claro);
-  padding:3px 8px;
-  border-radius:50px;
-}
-
-/* PROGRESSO */
-.prog-stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
-  margin-bottom:14px;
-}
-
-.prog-stat{
-  background:#fff;
-  border-radius:var(--radius);
-  padding:20px 16px;
-  box-shadow:var(--shadow);
-  text-align:center;
-}
-
-.prog-stat .num{
-  font-size:32px;
-  font-weight:800;
-  color:var(--verde);
-}
-
-.prog-stat .label{
-  font-size:12px;
-  font-weight:600;
-  color:var(--cinza-texto);
-  margin-top:4px;
-}
-
-.weekly-label{
-  font-size:12px;
-  font-weight:700;
-  color:var(--cinza-texto);
-  text-transform:uppercase;
-  letter-spacing:.5px;
-  margin-bottom:12px;
-}
-
-.week-bars{
-  display:flex;
-  align-items:flex-end;
-  gap:6px;
-  height:80px;
-}
-
-.day-bar-wrap{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:4px;
-  height:100%;
-}
-
-.day-bar-bg{
-  flex:1;
-  width:100%;
-  background:var(--cinza-claro);
-  border-radius:6px;
-  position:relative;
-  overflow:hidden;
-}
-
-.day-bar-fill{
-  position:absolute;
-  bottom:0;
-  left:0;
-  right:0;
-  background:var(--verde);
-  border-radius:6px;
-  transition:height .5s ease;
-}
-
-.prog-bar-section{
-  background:#fff;
-  border-radius:var(--radius);
-  padding:20px;
-  box-shadow:var(--shadow);
-}
-
-.prog-bar-label{
-  display:flex;
-  justify-content:space-between;
-  font-size:13px;
-  font-weight:600;
-  margin-bottom:8px;
-}
-
-.prog-bar-track{
-  height:10px;
-  background:var(--cinza-claro);
-  border-radius:50px;
-  overflow:hidden;
-  margin-bottom:14px;
-}
-
-.prog-bar-fill{
-  height:100%;
-  background:var(--verde);
-  border-radius:50px;
-  transition:width .5s ease;
-}
-
-/* FINANCEIRO */
-.finance-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0 8px;
-}
-
-.finance-table th{
-  text-align:left;
-  color:var(--cinza-texto);
-  font-size:12px;
-  padding:0 8px 4px;
-}
-
-.finance-table td{
-  background:#fff;
-  border-top:1px solid var(--cinza-medio);
-  border-bottom:1px solid var(--cinza-medio);
-  padding:10px 8px;
-  font-size:13px;
-  vertical-align:top;
-}
-
-.finance-table td:first-child{
-  border-left:1px solid var(--cinza-medio);
-  border-radius:10px 0 0 10px;
-}
-
-.finance-table td:last-child{
-  border-right:1px solid var(--cinza-medio);
-  border-radius:0 10px 10px 0;
-}
-
-.finance-pill{
-  display:inline-block;
-  padding:3px 8px;
-  border-radius:50px;
-  font-size:11px;
-  font-weight:700;
-  background:#fff3e8;
-  color:#c8721a;
-}
-
-.finance-pill.recebido{
-  background:#e8f5f3;
-  color:var(--verde-dark);
-}
-
-@media(min-width:600px){
-  .stats-grid{grid-template-columns:repeat(4,1fr)}
-  .form-row{grid-template-columns:1fr 1fr}
-  .prog-stats{grid-template-columns:repeat(4,1fr)}
-  .app-content{padding:24px}
-}
-
-@media(max-width:480px){
-  .form-row{grid-template-columns:1fr}
-  .stat-num{font-size:20px}
-  .bottom-nav{justify-content:flex-start}
-}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Nunito,sans-serif;background:#f4f7f6;color:#284754;min-height:100vh}button,input,select{font-family:Nunito,sans-serif}button{border:0;cursor:pointer}.screen{display:none;min-height:100vh}.screen.active{display:block}:root{--verde:#23B8A6;--verde-dark:#1a9a89;--azul:#284754;--azul-light:#3a6275;--cinza:#6b8c9a;--bg:#f4f7f6;--borda:#e8eded;--radius:16px;--shadow:0 2px 12px rgba(40,71,84,.08)}
+.logo-mark{display:inline-flex;align-items:center;justify-content:center;width:72px;height:72px;border-radius:20px;background:var(--verde);margin:0 auto 20px;font-size:32px;font-weight:800;color:#fff;box-shadow:0 4px 20px rgba(35,184,166,.4)}
+#screen-landing{background:#fff}.landing-hero{background:linear-gradient(135deg,#284754,#1e5f6e);color:#fff;text-align:center;padding:64px 24px 72px;position:relative;overflow:hidden}.landing-hero:before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:rgba(35,184,166,.18)}.landing-hero:after{content:'';position:absolute;bottom:-40px;left:-40px;width:150px;height:150px;border-radius:50%;background:rgba(35,184,166,.12)}.landing-hero h1{font-size:clamp(28px,7vw,44px);font-weight:800;margin-bottom:12px}.landing-hero h1 span{color:var(--verde)}.landing-hero p{font-size:18px;opacity:.9;margin-bottom:36px}.btn-hero-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.btn-primary,.btn-outline{padding:14px 32px;border-radius:50px;font-weight:800}.btn-primary{background:var(--verde);color:#fff}.btn-outline{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.6)}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:48px 24px;max-width:900px;margin:auto}.feature-card{background:#fff;border:1.5px solid var(--borda);border-radius:var(--radius);padding:24px 20px;text-align:center}.feature-icon{width:52px;height:52px;border-radius:14px;background:var(--bg);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:24px}.feature-card h3{font-size:15px;margin-bottom:6px}.feature-card p{font-size:13px;color:var(--cinza);line-height:1.5}.landing-footer{text-align:center;padding:24px;color:var(--cinza);font-size:13px;border-top:1px solid var(--borda)}
+#screen-auth{background:var(--bg);align-items:center;justify-content:center;padding:24px}#screen-auth.active{display:flex}.auth-card{background:#fff;border-radius:var(--radius);padding:36px 28px;width:100%;max-width:400px;box-shadow:var(--shadow)}.auth-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}.auth-brand .logo-mark{width:44px;height:44px;font-size:18px;border-radius:12px;margin:0}.auth-brand strong{font-size:20px;font-weight:800}.auth-card h2{font-size:20px;margin-bottom:4px}.subtitle{font-size:13px;color:var(--cinza);margin-bottom:24px}.auth-tabs{display:flex;gap:4px;background:var(--bg);border-radius:10px;padding:4px;margin-bottom:24px}.auth-tab{flex:1;padding:9px;border-radius:8px;font-weight:700;color:var(--cinza);background:transparent}.auth-tab.active{background:#fff;color:var(--verde);box-shadow:0 1px 4px #0001}.form-group,.form-field{margin-bottom:12px}.form-group label,.form-field label{display:block;font-size:12px;font-weight:800;margin-bottom:5px;color:var(--azul)}input,select{width:100%;padding:11px 12px;border:1.5px solid var(--borda);border-radius:10px;font-size:14px;background:#fff;color:var(--azul);outline:0}input:focus,select:focus{border-color:var(--verde)}.btn-full,.btn-add{width:100%;padding:14px;border-radius:50px;font-size:15px;font-weight:800;background:var(--verde);color:#fff}.auth-link{text-align:center;margin-top:16px;font-size:13px;color:var(--cinza)}.auth-link span{color:var(--verde);font-weight:800;cursor:pointer}.config-alert{background:#fff3e8;color:#a05a0d;border:1px solid #ffd7a3;border-radius:12px;padding:12px;margin-bottom:14px;font-size:13px}
+#screen-app{display:none;flex-direction:column}#screen-app.active{display:flex}.topbar{background:#fff;border-bottom:1.5px solid var(--borda);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}.topbar-logo{display:flex;align-items:center;gap:8px}.topbar-logo .logo-mark{width:36px;height:36px;font-size:14px;border-radius:10px;margin:0}.topbar-logo span{font-size:17px;font-weight:800}.btn-logout{background:var(--bg);color:var(--cinza);padding:8px 14px;border-radius:50px;font-size:12px;font-weight:800}.app-content{flex:1;padding:16px;max-width:760px;width:100%;margin:auto}.tab-panel{display:none}.tab-panel.active{display:block}.card,.stat-card,.prog-stat{background:#fff;border-radius:var(--radius);padding:20px;margin-bottom:14px;box-shadow:var(--shadow)}.card-title{font-size:14px;font-weight:800;color:var(--cinza);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px}
+.painel-saudacao{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:var(--radius);padding:24px 20px;margin-bottom:14px}.painel-saudacao h2{font-size:22px}.painel-saudacao p{font-size:13px;opacity:.8;margin-top:4px}.frase-motivacional{background:var(--bg);border-left:4px solid var(--verde);padding:14px 16px;border-radius:0 10px 10px 0;font-size:13px;font-weight:700;color:var(--azul-light);font-style:italic;margin-bottom:14px}.stats-grid,.prog-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.stat-card{text-align:center;margin-bottom:0}.stat-num{font-size:24px;font-weight:800}.stat-label{font-size:12px;color:var(--cinza);font-weight:700}.stat-icon{font-size:22px;margin-bottom:4px}
+.timer-modes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.mode-btn{flex:1;min-width:120px;padding:10px;border-radius:50px;font-size:13px;font-weight:800;background:var(--bg);color:var(--cinza)}.mode-btn.active{background:var(--verde);color:#fff}.timer-display{text-align:center;padding:26px 10px}.timer-circle{width:200px;height:200px;border-radius:50%;margin:0 auto 24px;background:#fff;box-shadow:0 0 0 10px var(--borda),0 4px 24px rgba(40,71,84,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}.timer-ring{position:absolute;inset:0;width:200px;height:200px;transform:rotate(-90deg)}.timer-ring circle{fill:none;stroke-width:8;stroke-linecap:round}.bg-ring{stroke:var(--borda)}.prog-ring{stroke:var(--verde);transition:.5s}.timer-time{font-size:42px;font-weight:800;z-index:1}.timer-mode-label{font-size:12px;color:var(--cinza);font-weight:800;z-index:1}.timer-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}.btn-timer{padding:14px 28px;border-radius:50px;font-weight:800}.btn-start{background:var(--verde);color:#fff}.btn-pause,.btn-reset{background:var(--bg);color:var(--azul)}.timer-task-input{background:var(--bg);border-radius:var(--radius);padding:16px;margin-top:16px}.timer-task-input label{font-size:13px;font-weight:800;display:block;margin-bottom:8px}
+.add-form{background:var(--bg);border-radius:var(--radius);padding:18px;margin-bottom:16px}.add-form h3{font-size:14px;margin-bottom:12px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tarefa-item,.aula-item,.habito-item{background:#fff;border:1.5px solid var(--borda);border-radius:10px;padding:14px;margin-bottom:8px}.tarefa-item{display:flex;gap:12px;align-items:flex-start}.tarefa-item.done{opacity:.6}.tarefa-item.done .tarefa-nome{text-decoration:line-through;color:var(--cinza)}.check-btn{width:22px;height:22px;min-width:22px;border-radius:50%;border:2px solid var(--borda);background:#fff;display:flex;align-items:center;justify-content:center}.check-btn.done{background:var(--verde);border-color:var(--verde)}.check-btn svg{width:12px;height:12px;stroke:#fff;display:none}.check-btn.done svg{display:block}.tarefa-info{flex:1}.tarefa-nome,.habito-nome{font-size:14px;font-weight:800}.tarefa-meta{display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}.badge{font-size:11px;font-weight:800;padding:2px 8px;border-radius:50px;background:var(--bg);color:var(--cinza)}.badge.materia{background:#e8f5f3;color:var(--verde-dark)}.badge.prazo{background:#fff3e8;color:#c8721a}.btn-del{background:none;color:var(--cinza);font-size:20px;padding:0 4px}.empty-state{text-align:center;padding:32px;color:var(--cinza);font-size:14px}.empty-state div{font-size:32px;margin-bottom:8px}
+.aula-header{display:flex;justify-content:space-between;gap:10px}.aula-materia{font-size:14px;font-weight:800}.aula-dur{background:#e8f5f3;color:var(--verde-dark);font-size:12px;font-weight:800;padding:3px 10px;border-radius:50px;white-space:nowrap}.aula-conteudo{font-size:13px;color:var(--cinza);margin-top:6px;line-height:1.4}.aula-date,.aula-obs{font-size:11px;color:var(--cinza);margin-top:6px}.finance-aula-box{margin-top:12px;padding:12px;border-radius:10px;background:var(--bg)}.habito-item{display:flex;align-items:center;gap:12px}.habito-item.done{background:#f4faf9}.habito-check{width:26px;height:26px;min-width:26px;border-radius:8px;border:2px solid var(--borda);background:#fff;display:flex;align-items:center;justify-content:center}.habito-check.done{background:var(--verde);border-color:var(--verde)}.habito-check svg{width:14px;height:14px;stroke:#fff;display:none}.habito-check.done svg{display:block}.habito-nome{flex:1}.habito-streak{font-size:12px;font-weight:800;color:var(--cinza);background:var(--bg);padding:3px 8px;border-radius:50px}
+.prog-stat{text-align:center;margin-bottom:0}.prog-stat .num{font-size:32px;font-weight:800;color:var(--verde)}.prog-stat .label{font-size:12px;font-weight:700;color:var(--cinza)}.weekly-label{font-size:12px;font-weight:800;color:var(--cinza);text-transform:uppercase;margin-bottom:12px}.week-bars{display:flex;align-items:flex-end;gap:6px;height:80px}.day-bar-wrap{flex:1;display:flex;height:100%}.day-bar-bg{flex:1;background:var(--bg);border-radius:6px;position:relative;overflow:hidden}.day-bar-fill{position:absolute;bottom:0;left:0;right:0;background:var(--verde);border-radius:6px}.prog-bar-label{display:flex;justify-content:space-between;font-size:13px;font-weight:800;margin-bottom:8px}.prog-bar-track{height:10px;background:var(--bg);border-radius:50px;overflow:hidden;margin-bottom:14px}.prog-bar-fill{height:100%;background:var(--verde);border-radius:50px}
+.finance-table{width:100%;border-collapse:separate;border-spacing:0 8px}.finance-table th{text-align:left;color:var(--cinza);font-size:12px;padding:0 8px 4px}.finance-table td{background:#fff;border-top:1px solid var(--borda);border-bottom:1px solid var(--borda);padding:10px 8px;font-size:13px;vertical-align:top}.finance-table td:first-child{border-left:1px solid var(--borda);border-radius:10px 0 0 10px}.finance-table td:last-child{border-right:1px solid var(--borda);border-radius:0 10px 10px 0}.finance-pill{display:inline-block;padding:3px 8px;border-radius:50px;font-size:11px;font-weight:800;background:#fff3e8;color:#c8721a}.finance-pill.recebido{background:#e8f5f3;color:var(--verde-dark)}
+.bottom-nav{background:#fff;border-top:1.5px solid var(--borda);display:flex;justify-content:space-around;align-items:center;padding:8px 0 max(8px,env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:10;overflow-x:auto}.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:800;color:var(--cinza);padding:6px 8px;border-radius:10px;background:transparent;min-width:52px}.nav-item.active{color:var(--verde)}.nav-item svg{width:20px;height:20px}
+@media(min-width:600px){.stats-grid,.prog-stats{grid-template-columns:repeat(4,1fr)}.app-content{padding:24px}}@media(max-width:480px){.form-row{grid-template-columns:1fr}.stat-num{font-size:20px}.bottom-nav{justify-content:flex-start}}
 </style>
 </head>
-
 <body>
 
 <div id="screen-landing" class="screen active">
@@ -1098,173 +30,70 @@ a{text-decoration:none;color:inherit}
     <div class="logo-mark">¼</div>
     <h1>Um <span>Quarto</span></h1>
     <p>15 minutos por dia para virar a chave.</p>
-
     <div class="btn-hero-group">
       <button class="btn-primary" onclick="showScreen('auth','login')">Entrar</button>
       <button class="btn-outline" onclick="showScreen('auth','register')">Criar conta</button>
     </div>
   </div>
-
   <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">⏱️</div>
-      <h3>Foco Total</h3>
-      <p>Timer de 15 minutos e Pomodoro para manter o ritmo de estudos.</p>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon">✅</div>
-      <h3>Tarefas</h3>
-      <p>Organize o que precisa fazer por matéria, defina prazos e acompanhe o progresso.</p>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon">📚</div>
-      <h3>Aulas</h3>
-      <p>Registre cada aula com conteúdo, horário, observações e financeiro autorizado.</p>
-    </div>
-
-    <div class="feature-card">
-      <div class="feature-icon">🌱</div>
-      <h3>Evolução Pessoal</h3>
-      <p>Crie e acompanhe hábitos diários. Pequenas ações constroem grandes resultados.</p>
-    </div>
+    <div class="feature-card"><div class="feature-icon">⏱️</div><h3>Foco Total</h3><p>Timer de 15 minutos e Pomodoro para manter o ritmo.</p></div>
+    <div class="feature-card"><div class="feature-icon">✅</div><h3>Tarefas</h3><p>Organize pendências por matéria e prazo.</p></div>
+    <div class="feature-card"><div class="feature-icon">📚</div><h3>Aulas</h3><p>Registre cada aula com conteúdo, horário e financeiro.</p></div>
+    <div class="feature-card"><div class="feature-icon">🌱</div><h3>Evolução</h3><p>Acompanhe hábitos e progresso diário.</p></div>
   </div>
-
-  <div class="landing-footer">
-    &copy; 2026 Um Quarto · Feito para quem quer crescer 15 minutos por vez.
-  </div>
+  <div class="landing-footer">&copy; 2026 Um Quarto · Crescendo 15 minutos por vez.</div>
 </div>
 
 <div id="screen-auth" class="screen">
   <div class="auth-card">
-    <div class="auth-brand">
-      <div class="logo-mark">¼</div>
-      <strong>Um Quarto</strong>
-    </div>
-
+    <div class="auth-brand"><div class="logo-mark">¼</div><strong>Um Quarto</strong></div>
+    <div id="firebase-config-alert" class="config-alert" style="display:none">Configure o <strong>firebaseConfig</strong> no final deste arquivo para ativar login e Realtime Database.</div>
     <h2 id="auth-title">Bem-vindo de volta!</h2>
     <p class="subtitle" id="auth-subtitle">Entre na sua conta para continuar.</p>
-
     <div class="auth-tabs">
       <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Entrar</button>
       <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Criar conta</button>
     </div>
-
     <div id="form-login">
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" id="login-email" placeholder="seu@email.com">
-      </div>
-
-      <div class="form-group">
-        <label>Senha</label>
-        <input type="password" id="login-pass" placeholder="••••••••">
-      </div>
-
+      <div class="form-group"><label>E-mail</label><input type="email" id="login-email" placeholder="seu@email.com"></div>
+      <div class="form-group"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••"></div>
       <button class="btn-full" onclick="doLogin()">Entrar →</button>
-
-      <p class="auth-link">
-        Não tem conta? <span onclick="switchAuthTab('register')">Criar agora</span>
-      </p>
+      <p class="auth-link">Não tem conta? <span onclick="switchAuthTab('register')">Criar agora</span></p>
     </div>
-
     <div id="form-register" style="display:none">
-      <div class="form-group">
-        <label>Seu nome</label>
-        <input type="text" id="reg-name" placeholder="Como quer ser chamado?">
-      </div>
-
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" id="reg-email" placeholder="seu@email.com">
-      </div>
-
-      <div class="form-group">
-        <label>Senha</label>
-        <input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres">
-      </div>
-
+      <div class="form-group"><label>Seu nome</label><input type="text" id="reg-name" placeholder="Como quer ser chamado?"></div>
+      <div class="form-group"><label>E-mail</label><input type="email" id="reg-email" placeholder="seu@email.com"></div>
+      <div class="form-group"><label>Senha</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"></div>
       <button class="btn-full" onclick="doRegister()">Criar conta →</button>
-
-      <p class="auth-link">
-        Já tem conta? <span onclick="switchAuthTab('login')">Entrar</span>
-      </p>
+      <p class="auth-link">Já tem conta? <span onclick="switchAuthTab('login')">Entrar</span></p>
     </div>
-
     <p id="auth-error" style="color:#e84040;font-size:13px;text-align:center;margin-top:12px;display:none"></p>
   </div>
 </div>
 
 <div id="screen-app" class="screen">
-
   <div class="topbar">
-    <div class="topbar-logo">
-      <div class="logo-mark">¼</div>
-      <span>Um Quarto</span>
-    </div>
-
+    <div class="topbar-logo"><div class="logo-mark">¼</div><span>Um Quarto</span></div>
     <button class="btn-logout" onclick="doLogout()">Sair</button>
   </div>
-
   <div class="app-content">
-
     <div id="tab-painel" class="tab-panel active">
-      <div class="painel-saudacao">
-        <h2 id="painel-nome">Olá, aluno! 👋</h2>
-        <p id="painel-data">Hoje é um ótimo dia para aprender.</p>
-      </div>
-
+      <div class="painel-saudacao"><h2 id="painel-nome">Olá! 👋</h2><p id="painel-data">Hoje é um ótimo dia para aprender.</p></div>
       <div class="frase-motivacional" id="frase-mot"></div>
-
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">⏱️</div>
-          <div class="stat-num" id="stat-mins">0</div>
-          <div class="stat-label">min estudados hoje</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">📌</div>
-          <div class="stat-num" id="stat-pending">0</div>
-          <div class="stat-label">tarefas pendentes</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">📚</div>
-          <div class="stat-num" id="stat-aulas">0</div>
-          <div class="stat-label">aulas registradas</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">🔥</div>
-          <div class="stat-num" id="stat-streak">0</div>
-          <div class="stat-label">dias seguidos</div>
-        </div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num" id="stat-mins">0</div><div class="stat-label">min estudados hoje</div></div>
+        <div class="stat-card"><div class="stat-icon">📌</div><div class="stat-num" id="stat-pending">0</div><div class="stat-label">tarefas pendentes</div></div>
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="stat-aulas">0</div><div class="stat-label">aulas registradas</div></div>
+        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num" id="stat-streak">0</div><div class="stat-label">dias seguidos</div></div>
       </div>
-
       <div class="card finance-only" style="display:none">
         <div class="card-title">Resumo financeiro do mês</div>
-
         <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-icon">📅</div>
-            <div class="stat-num" id="painel-fin-previsto">R$ 0,00</div>
-            <div class="stat-label">previsto</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-icon">✅</div>
-            <div class="stat-num" id="painel-fin-recebido">R$ 0,00</div>
-            <div class="stat-label">recebido</div>
-          </div>
+          <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="painel-fin-previsto">R$ 0,00</div><div class="stat-label">previsto</div></div>
+          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="painel-fin-recebido">R$ 0,00</div><div class="stat-label">recebido</div></div>
         </div>
       </div>
-
-      <div class="card">
-        <div class="card-title">Tarefas de hoje</div>
-        <div id="painel-tarefas"></div>
-      </div>
+      <div class="card"><div class="card-title">Tarefas de hoje</div><div id="painel-tarefas"></div></div>
     </div>
 
     <div id="tab-timer" class="tab-panel">
@@ -1274,342 +103,121 @@ a{text-decoration:none;color:inherit}
           <button class="mode-btn" id="mode-pomo" onclick="setMode('pomo')">Pomodoro (25min)</button>
           <button class="mode-btn" id="mode-pausa" onclick="setMode('pausa')">Pausa (5min)</button>
         </div>
-
         <div class="timer-display">
           <div class="timer-circle">
-            <svg class="timer-ring" viewBox="0 0 200 200">
-              <circle class="bg-ring" cx="100" cy="100" r="86"/>
-              <circle class="prog-ring" id="timer-prog" cx="100" cy="100" r="86"/>
-            </svg>
-
-            <div class="timer-time" id="timer-display">15:00</div>
-            <div class="timer-mode-label" id="timer-label">Um Quarto</div>
+            <svg class="timer-ring" viewBox="0 0 200 200"><circle class="bg-ring" cx="100" cy="100" r="86"/><circle class="prog-ring" id="timer-prog" cx="100" cy="100" r="86"/></svg>
+            <div class="timer-time" id="timer-display">15:00</div><div class="timer-mode-label" id="timer-label">Um Quarto</div>
           </div>
-
-          <div class="timer-buttons">
-            <button class="btn-timer btn-start" id="btn-start" onclick="startTimer()">▶ Iniciar</button>
-            <button class="btn-timer btn-pause" id="btn-pause" onclick="pauseTimer()" style="display:none">⏸ Pausar</button>
-            <button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button>
-          </div>
+          <div class="timer-buttons"><button class="btn-timer btn-start" id="btn-start" onclick="startTimer()">▶ Iniciar</button><button class="btn-timer btn-pause" id="btn-pause" onclick="pauseTimer()" style="display:none">⏸ Pausar</button><button class="btn-timer btn-reset" onclick="resetTimer()">↺ Reset</button></div>
         </div>
-
-        <div class="timer-task-input">
-          <label>🎯 O que você vai focar agora?</label>
-          <input type="text" id="timer-task" placeholder="Ex: Resolver exercícios de física...">
-        </div>
+        <div class="timer-task-input"><label>🎯 O que você vai focar agora?</label><input type="text" id="timer-task" placeholder="Ex: Resolver exercícios..."></div>
       </div>
     </div>
 
     <div id="tab-tarefas" class="tab-panel">
       <div class="add-form">
         <h3>+ Nova tarefa</h3>
-
-        <div class="form-field">
-          <label>Tarefa</label>
-          <input type="text" id="t-nome" placeholder="O que precisa fazer?">
-        </div>
-
-        <div class="form-row">
-          <div class="form-field">
-            <label>Matéria</label>
-            <input type="text" id="t-materia" placeholder="Ex: Matemática">
-          </div>
-
-          <div class="form-field">
-            <label>Prazo</label>
-            <input type="date" id="t-prazo">
-          </div>
-        </div>
-
+        <div class="form-field"><label>Tarefa</label><input type="text" id="t-nome" placeholder="O que precisa fazer?"></div>
+        <div class="form-row"><div class="form-field"><label>Matéria</label><input type="text" id="t-materia" placeholder="Ex: Matemática"></div><div class="form-field"><label>Prazo</label><input type="date" id="t-prazo"></div></div>
         <button class="btn-add" onclick="addTarefa()">Adicionar tarefa</button>
       </div>
-
-      <div id="lista-tarefas">
-        <div class="empty-state"><div>✅</div>Nenhuma tarefa ainda. Adicione a primeira!</div>
-      </div>
+      <div id="lista-tarefas"><div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div></div>
     </div>
 
     <div id="tab-aulas" class="tab-panel">
       <div class="add-form">
         <h3>+ Registrar aula</h3>
-
-        <div class="form-row">
-          <div class="form-field">
-            <label>Matéria</label>
-            <input type="text" id="a-materia" placeholder="Ex: Biologia">
-          </div>
-
-          <div class="form-field">
-            <label>Data</label>
-            <input type="date" id="a-data">
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-field">
-            <label>Início</label>
-            <input type="time" id="a-inicio">
-          </div>
-
-          <div class="form-field">
-            <label>Fim</label>
-            <input type="time" id="a-fim">
-          </div>
-        </div>
-
-        <div class="form-field">
-          <label>Conteúdo estudado</label>
-          <input type="text" id="a-conteudo" placeholder="Ex: Fotossíntese e respiração celular">
-        </div>
-
-        <div class="form-field">
-          <label>Observações</label>
-          <input type="text" id="a-obs" placeholder="Dúvidas, pontos importantes... opcional">
-        </div>
-
-        <div class="form-row finance-only" style="display:none">
-          <div class="form-field">
-            <label>Valor da aula (R$)</label>
-            <input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01">
-          </div>
-
-          <div class="form-field">
-            <label>Status financeiro</label>
-            <select id="a-status">
-              <option value="previsto">Previsão</option>
-              <option value="recebido">Recebido</option>
-            </select>
-          </div>
-        </div>
-
+        <div class="form-row"><div class="form-field"><label>Matéria</label><input type="text" id="a-materia" placeholder="Ex: Biologia"></div><div class="form-field"><label>Data</label><input type="date" id="a-data"></div></div>
+        <div class="form-row"><div class="form-field"><label>Início</label><input type="time" id="a-inicio"></div><div class="form-field"><label>Fim</label><input type="time" id="a-fim"></div></div>
+        <div class="form-field"><label>Conteúdo estudado</label><input type="text" id="a-conteudo" placeholder="Ex: Equações do 2º grau"></div>
+        <div class="form-field"><label>Observações</label><input type="text" id="a-obs" placeholder="Opcional"></div>
+        <div class="form-row finance-only" style="display:none"><div class="form-field"><label>Valor da aula (R$)</label><input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01"></div><div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Previsão</option><option value="recebido">Recebido</option></select></div></div>
         <button class="btn-add" onclick="addAula()">Registrar aula</button>
       </div>
-
-      <div id="lista-aulas">
-        <div class="empty-state"><div>📚</div>Nenhuma aula registrada ainda.</div>
-      </div>
+      <div id="lista-aulas"><div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div></div>
     </div>
 
     <div id="tab-habitos" class="tab-panel">
-      <div class="add-form">
-        <h3>+ Novo hábito</h3>
-
-        <div class="form-field">
-          <label>Nome do hábito</label>
-          <input type="text" id="h-nome" placeholder="Ex: Ler 15 minutos, revisar anotações...">
-        </div>
-
-        <button class="btn-add" onclick="addHabito()">Criar hábito</button>
-      </div>
-
-      <p style="font-size:12px;color:var(--cinza-texto);margin-bottom:12px;font-weight:600">
-        Marque os hábitos que já fez hoje:
-      </p>
-
-      <div id="lista-habitos">
-        <div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div>
-      </div>
+      <div class="add-form"><h3>+ Novo hábito</h3><div class="form-field"><label>Nome do hábito</label><input type="text" id="h-nome" placeholder="Ex: Ler 15 minutos"></div><button class="btn-add" onclick="addHabito()">Criar hábito</button></div>
+      <p style="font-size:12px;color:var(--cinza);margin-bottom:12px;font-weight:700">Marque os hábitos que já fez hoje:</p>
+      <div id="lista-habitos"><div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div></div>
     </div>
 
     <div id="tab-progresso" class="tab-panel">
       <div class="prog-stats">
-        <div class="prog-stat">
-          <div class="num" id="prog-mins">0</div>
-          <div class="label">min totais</div>
-        </div>
-
-        <div class="prog-stat">
-          <div class="num" id="prog-tarefas">0</div>
-          <div class="label">tarefas concluídas</div>
-        </div>
-
-        <div class="prog-stat">
-          <div class="num" id="prog-aulas">0</div>
-          <div class="label">aulas registradas</div>
-        </div>
-
-        <div class="prog-stat">
-          <div class="num" id="prog-habitos">0</div>
-          <div class="label">hábitos hoje</div>
-        </div>
+        <div class="prog-stat"><div class="num" id="prog-mins">0</div><div class="label">min totais</div></div>
+        <div class="prog-stat"><div class="num" id="prog-tarefas">0</div><div class="label">tarefas concluídas</div></div>
+        <div class="prog-stat"><div class="num" id="prog-aulas">0</div><div class="label">aulas registradas</div></div>
+        <div class="prog-stat"><div class="num" id="prog-habitos">0</div><div class="label">hábitos hoje</div></div>
       </div>
-
+      <div class="card"><div class="weekly-label">Minutos estudados esta semana</div><div class="week-bars" id="week-bars"></div><div id="week-days-labels" style="display:flex;gap:6px;margin-top:4px"></div></div>
       <div class="card">
-        <div class="weekly-label">Minutos estudados esta semana</div>
-        <div class="week-bars" id="week-bars"></div>
-        <div id="week-days-labels" style="display:flex;gap:6px;margin-top:4px"></div>
-      </div>
-
-      <div class="prog-bar-section">
         <div class="card-title">Metas semanais</div>
-
-        <div class="prog-bar-label">
-          <span>⏱️ Tempo (meta: 300 min)</span>
-          <span id="pb-mins-val">0%</span>
-        </div>
-        <div class="prog-bar-track"><div class="prog-bar-fill" id="pb-mins"></div></div>
-
-        <div class="prog-bar-label">
-          <span>✅ Tarefas (meta: 10)</span>
-          <span id="pb-tar-val">0%</span>
-        </div>
-        <div class="prog-bar-track"><div class="prog-bar-fill" id="pb-tar"></div></div>
-
-        <div class="prog-bar-label">
-          <span>📚 Aulas (meta: 7)</span>
-          <span id="pb-aul-val">0%</span>
-        </div>
-        <div class="prog-bar-track"><div class="prog-bar-fill" id="pb-aul"></div></div>
-
-        <div class="prog-bar-label">
-          <span>🌱 Hábitos hoje (meta: 5)</span>
-          <span id="pb-hab-val">0%</span>
-        </div>
-        <div class="prog-bar-track"><div class="prog-bar-fill" id="pb-hab"></div></div>
+        <div class="prog-bar-label"><span>⏱️ Tempo (meta: 300 min)</span><span id="pb-mins-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-mins"></div></div>
+        <div class="prog-bar-label"><span>✅ Tarefas (meta: 10)</span><span id="pb-tar-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-tar"></div></div>
+        <div class="prog-bar-label"><span>📚 Aulas (meta: 7)</span><span id="pb-aul-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-aul"></div></div>
+        <div class="prog-bar-label"><span>🌱 Hábitos hoje (meta: 5)</span><span id="pb-hab-val">0%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" id="pb-hab"></div></div>
       </div>
     </div>
 
     <div id="tab-financeiro" class="tab-panel finance-only" style="display:none">
       <div class="card">
         <div class="card-title">Financeiro</div>
-
-        <div class="form-row">
-          <div class="form-field">
-            <label>Mês</label>
-            <input type="month" id="fin-mes" onchange="updateFinanceiro()">
-          </div>
-
-          <div class="form-field">
-            <label>Ano</label>
-            <input type="number" id="fin-ano" min="2020" max="2100" onchange="updateFinanceiro()">
-          </div>
-        </div>
-
-        <p style="font-size:12px;color:var(--cinza-texto);line-height:1.4">
-          A aba financeira aparece apenas para o perfil autorizado. Por enquanto, o autorizado é:
-          <strong>salles.paulo@hotmail.com</strong>.
-        </p>
+        <div class="form-row"><div class="form-field"><label>Mês</label><input type="month" id="fin-mes" onchange="updateFinanceiro()"></div><div class="form-field"><label>Ano</label><input type="number" id="fin-ano" min="2020" max="2100" onchange="updateFinanceiro()"></div></div>
+        <p style="font-size:12px;color:var(--cinza);line-height:1.4">A aba financeira aparece apenas para o perfil autorizado: <strong>salles.paulo@hotmail.com</strong>.</p>
       </div>
-
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon">📅</div>
-          <div class="stat-num" id="fin-mes-previsto">R$ 0,00</div>
-          <div class="stat-label">previsto no mês</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">✅</div>
-          <div class="stat-num" id="fin-mes-recebido">R$ 0,00</div>
-          <div class="stat-label">recebido no mês</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">📆</div>
-          <div class="stat-num" id="fin-ano-previsto">R$ 0,00</div>
-          <div class="stat-label">previsto no ano</div>
-        </div>
-
-        <div class="stat-card">
-          <div class="stat-icon">💰</div>
-          <div class="stat-num" id="fin-ano-recebido">R$ 0,00</div>
-          <div class="stat-label">recebido no ano</div>
-        </div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="fin-mes-previsto">R$ 0,00</div><div class="stat-label">previsto no mês</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="fin-mes-recebido">R$ 0,00</div><div class="stat-label">recebido no mês</div></div>
+        <div class="stat-card"><div class="stat-icon">📆</div><div class="stat-num" id="fin-ano-previsto">R$ 0,00</div><div class="stat-label">previsto no ano</div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-num" id="fin-ano-recebido">R$ 0,00</div><div class="stat-label">recebido no ano</div></div>
       </div>
-
-      <div class="card">
-        <div class="card-title">Lançamentos</div>
-        <div id="fin-lista"></div>
-      </div>
+      <div class="card"><div class="card-title">Lançamentos</div><div id="fin-lista"></div></div>
     </div>
-
   </div>
 
   <nav class="bottom-nav">
-    <button class="nav-item active" id="nav-painel" onclick="switchTab('painel')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/>
-      </svg>
-      Painel
-    </button>
-
-    <button class="nav-item" id="nav-timer" onclick="switchTab('timer')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <circle cx="12" cy="13" r="7"/>
-        <path d="M12 10v3l2 2"/>
-        <path d="M9 2h6"/>
-        <path d="M12 2v4"/>
-      </svg>
-      Timer
-    </button>
-
-    <button class="nav-item" id="nav-tarefas" onclick="switchTab('tarefas')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M9 11l3 3L22 4"/>
-        <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-      </svg>
-      Tarefas
-    </button>
-
-    <button class="nav-item" id="nav-aulas" onclick="switchTab('aulas')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M4 19.5A2.5 2.5 0 016.5 17H20"/>
-        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/>
-      </svg>
-      Aulas
-    </button>
-
-    <button class="nav-item" id="nav-habitos" onclick="switchTab('habitos')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/>
-        <path d="M12 6v6l4 2"/>
-      </svg>
-      Hábitos
-    </button>
-
-    <button class="nav-item" id="nav-progresso" onclick="switchTab('progresso')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <line x1="18" y1="20" x2="18" y2="10"/>
-        <line x1="12" y1="20" x2="12" y2="4"/>
-        <line x1="6" y1="20" x2="6" y2="14"/>
-      </svg>
-      Progresso
-    </button>
-
-    <button class="nav-item finance-only" id="nav-financeiro" onclick="switchTab('financeiro')" style="display:none">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
-        <path d="M12 1v22"/>
-        <path d="M17 5H9.5a3.5 3.5 0 000 7H14a3.5 3.5 0 010 7H6"/>
-      </svg>
-      Financeiro
-    </button>
+    <button class="nav-item active" id="nav-painel" onclick="switchTab('painel')">▦<span>Painel</span></button>
+    <button class="nav-item" id="nav-timer" onclick="switchTab('timer')">⏱<span>Timer</span></button>
+    <button class="nav-item" id="nav-tarefas" onclick="switchTab('tarefas')">✅<span>Tarefas</span></button>
+    <button class="nav-item" id="nav-aulas" onclick="switchTab('aulas')">📚<span>Aulas</span></button>
+    <button class="nav-item" id="nav-habitos" onclick="switchTab('habitos')">🌱<span>Hábitos</span></button>
+    <button class="nav-item" id="nav-progresso" onclick="switchTab('progresso')">📊<span>Progresso</span></button>
+    <button class="nav-item finance-only" id="nav-financeiro" onclick="switchTab('financeiro')" style="display:none">💰<span>Financ.</span></button>
   </nav>
-
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
 <script>
-const ls = {
-  get:(k,d)=>{
-    try{
-      const v=localStorage.getItem(k);
-      return v!==null?JSON.parse(v):d;
-    }catch{
-      return d;
-    }
-  },
-  set:(k,v)=>{
-    try{
-      localStorage.setItem(k,JSON.stringify(v));
-    }catch{}
-  }
+const firebaseConfig = {
+  apiKey: "AIzaSyDlxZpvhfRuy-7AX1_hNrWuDAfX4rArsoM",
+  authDomain: "umquartonew.firebaseapp.com",
+  databaseURL: "https://umquartonew-default-rtdb.firebaseio.com",
+  projectId: "umquartonew",
+  storageBucket: "umquartonew.firebasestorage.app",
+  messagingSenderId: "1057520002134",
+  appId: "1:1057520002134:web:c5e91e007bd6c2058ec7f7"
 };
 
-const today = ()=>new Date().toISOString().slice(0,10);
 
-const frases = [
+let auth=null, db=null, firebaseReady=false;
+function isFirebaseConfigured(){
+  return firebaseConfig.apiKey && firebaseConfig.databaseURL && !firebaseConfig.apiKey.includes("COLE_") && !firebaseConfig.databaseURL.includes("COLE_");
+}
+if(isFirebaseConfigured()){
+  firebase.initializeApp(firebaseConfig);
+  auth=firebase.auth();
+  db=firebase.database();
+  firebaseReady=true;
+}
+
+let currentUser=null,currentProfile=null,tarefas=[],aulas=[],allAulas=[],habitos=[],minsMap={},unsubscribers=[];
+const FINANCE_EMAILS=["salles.paulo@hotmail.com"];
+const today=()=>new Date().toISOString().slice(0,10);
+const frases=[
   '"O segredo do sucesso é a constância."',
   '"Comece onde você está. Use o que você tem. Faça o que você pode."',
   '"15 minutos por dia valem mais que uma hora só de vez em quando."',
@@ -1619,1121 +227,206 @@ const frases = [
   '"Foco no processo, e os resultados vêm naturalmente."'
 ];
 
-let currentUser = null;
-
-const FINANCE_EMAILS = [
-  'salles.paulo@hotmail.com'
-];
-
-function userEmail(){
-  return currentUser?.email?.toLowerCase().trim() || '';
-}
-
-function isFinanceUser(){
-  return FINANCE_EMAILS.includes(userEmail());
-}
-
+function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
+function isFinanceUser(){return FINANCE_EMAILS.includes(userEmail())||currentProfile?.financeiro===true}
 function applyPermissions(){
-  const finance = isFinanceUser();
-
-  document.querySelectorAll('.finance-only').forEach(el=>{
-    el.style.display = finance ? '' : 'none';
-  });
-
-  const navFin = document.getElementById('nav-financeiro');
-
-  if(navFin){
-    navFin.style.display = finance ? 'flex' : 'none';
-  }
+  const f=isFinanceUser();
+  document.querySelectorAll(".finance-only").forEach(el=>el.style.display=f?"":"none");
+  const nav=document.getElementById("nav-financeiro"); if(nav) nav.style.display=f?"flex":"none";
+}
+function formatDate(str){if(!str)return"";const [y,m,d]=str.split("-");return`${d}/${m}/${y}`}
+function formatMoney(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function safeText(t){return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function objToArray(obj){return obj?Object.entries(obj).map(([id,value])=>({id,...value})):[]}
+function clearFirebaseListeners(){unsubscribers.forEach(fn=>{try{fn()}catch(e){}});unsubscribers=[]}
+function requireFirebase(){
+  if(firebaseReady)return true;
+  showError("Firebase ainda não foi configurado. Preencha o firebaseConfig no final do arquivo.");
+  const a=document.getElementById("firebase-config-alert"); if(a)a.style.display="block";
+  return false;
 }
 
-function formatDate(str){
-  if(!str) return '';
-  const [y,m,d]=str.split('-');
-  return `${d}/${m}/${y}`;
+function showScreen(name,sub=""){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById("screen-"+name)?.classList.add("active");
+  if(name==="auth"&&sub)switchAuthTab(sub);
+  if(name==="app")initApp();
 }
-
-function formatMoney(v){
-  const n = Number(v || 0);
-
-  return n.toLocaleString('pt-BR',{
-    style:'currency',
-    currency:'BRL'
-  });
-}
-
-function safeText(text){
-  return String(text ?? '')
-    .replaceAll('&','&amp;')
-    .replaceAll('<','&lt;')
-    .replaceAll('>','&gt;')
-    .replaceAll('"','&quot;')
-    .replaceAll("'","&#039;");
-}
-
-/* TELAS */
-function showScreen(name, sub=''){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-
-  const el = document.getElementById('screen-'+name);
-  el.classList.add('active');
-
-  if(name==='auth'&&sub){
-    switchAuthTab(sub);
-  }
-
-  if(name==='app'){
-    initApp();
-  }
-}
-
 function switchAuthTab(tab){
-  document.getElementById('form-login').style.display = tab==='login'?'block':'none';
-  document.getElementById('form-register').style.display = tab==='register'?'block':'none';
+  document.getElementById("form-login").style.display=tab==="login"?"block":"none";
+  document.getElementById("form-register").style.display=tab==="register"?"block":"none";
+  document.getElementById("tab-login").classList.toggle("active",tab==="login");
+  document.getElementById("tab-register").classList.toggle("active",tab==="register");
+  document.getElementById("auth-title").textContent=tab==="login"?"Bem-vindo de volta!":"Criar sua conta";
+  document.getElementById("auth-subtitle").textContent=tab==="login"?"Entre para continuar estudando.":"Comece sua jornada agora.";
+  document.getElementById("auth-error").style.display="none";
+  const a=document.getElementById("firebase-config-alert"); if(a)a.style.display=firebaseReady?"none":"block";
+}
+function showError(msg){const el=document.getElementById("auth-error"); if(el){el.textContent=msg;el.style.display="block"}}
 
-  document.getElementById('tab-login').classList.toggle('active', tab==='login');
-  document.getElementById('tab-register').classList.toggle('active', tab==='register');
-
-  document.getElementById('auth-title').textContent = tab==='login'
-    ? 'Bem-vindo de volta!'
-    : 'Criar sua conta';
-
-  document.getElementById('auth-subtitle').textContent = tab==='login'
-    ? 'Entre para continuar estudando.'
-    : 'Comece sua jornada agora.';
-
-  document.getElementById('auth-error').style.display='none';
+async function doRegister(){
+  if(!requireFirebase())return;
+  const name=document.getElementById("reg-name").value.trim();
+  const email=document.getElementById("reg-email").value.trim().toLowerCase();
+  const pass=document.getElementById("reg-pass").value;
+  if(!name)return showError("Digite seu nome.");
+  if(!email||!email.includes("@"))return showError("E-mail inválido.");
+  if(pass.length<6)return showError("Senha: mínimo 6 caracteres.");
+  try{
+    const cred=await auth.createUserWithEmailAndPassword(email,pass);
+    const uid=cred.user.uid, isPaulo=email==="salles.paulo@hotmail.com";
+    await db.ref("users/"+uid).set({name,email,role:isPaulo?"teacher":"student",financeiro:isPaulo,createdAt:firebase.database.ServerValue.TIMESTAMP});
+  }catch(e){showError(firebaseErrorMessage(e))}
+}
+async function doLogin(){
+  if(!requireFirebase())return;
+  const email=document.getElementById("login-email").value.trim().toLowerCase();
+  const pass=document.getElementById("login-pass").value;
+  if(!email)return showError("Digite o e-mail.");
+  if(!pass)return showError("Digite a senha.");
+  try{await auth.signInWithEmailAndPassword(email,pass)}catch(e){showError(firebaseErrorMessage(e))}
+}
+function doLogout(){resetTimer();clearFirebaseListeners();auth?auth.signOut():showScreen("landing")}
+function firebaseErrorMessage(e){
+  const c=e?.code||"";
+  if(c.includes("invalid-email"))return"E-mail inválido.";
+  if(c.includes("user-not-found"))return"Usuário não encontrado.";
+  if(c.includes("wrong-password"))return"Senha incorreta.";
+  if(c.includes("invalid-credential"))return"E-mail ou senha incorretos.";
+  if(c.includes("email-already-in-use"))return"Este e-mail já está cadastrado.";
+  if(c.includes("weak-password"))return"Senha muito fraca. Use pelo menos 6 caracteres.";
+  if(c.includes("permission-denied"))return"Sem permissão no Realtime Database. Confira as Rules.";
+  return"Erro: "+(e?.message||"não foi possível concluir.");
 }
 
-function showError(msg){
-  const el = document.getElementById('auth-error');
-  el.textContent=msg;
-  el.style.display='block';
+if(firebaseReady){
+  auth.onAuthStateChanged(async user=>{
+    clearFirebaseListeners();
+    if(!user){
+      currentUser=null;currentProfile=null;tarefas=[];aulas=[];allAulas=[];habitos=[];minsMap={};
+      showScreen("landing");return;
+    }
+    currentUser=user;
+    await loadOrCreateUserProfile();
+    showScreen("app");
+  });
 }
 
-/* AUTH LOCAL */
-function doRegister(){
-  const name=document.getElementById('reg-name').value.trim();
-  const email=document.getElementById('reg-email').value.trim().toLowerCase();
-  const pass=document.getElementById('reg-pass').value;
-
-  if(!name){
-    showError('Digite seu nome.');
-    return;
-  }
-
-  if(!email||!email.includes('@')){
-    showError('E-mail inválido.');
-    return;
-  }
-
-  if(pass.length<6){
-    showError('Senha: mínimo 6 caracteres.');
-    return;
-  }
-
-  let users=ls.get('uq_users',{});
-
-  if(users[email]){
-    showError('E-mail já cadastrado.');
-    return;
-  }
-
-  users[email]={name,pass};
-  ls.set('uq_users',users);
-
-  currentUser={email,name};
-  ls.set('uq_session',currentUser);
-
-  showScreen('app');
+async function loadOrCreateUserProfile(){
+  const uid=currentUser.uid;
+  const snap=await db.ref("users/"+uid).once("value");
+  if(snap.exists()){currentProfile=snap.val();return}
+  const isPaulo=currentUser.email.toLowerCase()==="salles.paulo@hotmail.com";
+  const profile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isPaulo?"teacher":"student",financeiro:isPaulo,createdAt:firebase.database.ServerValue.TIMESTAMP};
+  await db.ref("users/"+uid).set(profile);
+  currentProfile=profile;
 }
 
-function doLogin(){
-  const email=document.getElementById('login-email').value.trim().toLowerCase();
-  const pass=document.getElementById('login-pass').value;
-
-  if(!email){
-    showError('Digite o e-mail.');
-    return;
-  }
-
-  if(!pass){
-    showError('Digite a senha.');
-    return;
-  }
-
-  let users=ls.get('uq_users',{});
-
-  if(!users[email]||users[email].pass!==pass){
-    showError('E-mail ou senha incorretos.');
-    return;
-  }
-
-  currentUser={
-    email,
-    name:users[email].name
-  };
-
-  ls.set('uq_session',currentUser);
-
-  showScreen('app');
-}
-
-function doLogout(){
-  ls.set('uq_session',null);
-  currentUser=null;
-  resetTimer();
-  showScreen('landing');
-}
-
-/* INIT APP */
 function initApp(){
-  const s=ls.get('uq_session',null);
-
-  if(s){
-    currentUser=s;
-  }
-
-  if(!currentUser){
-    showScreen('landing');
-    return;
-  }
-
+  if(!currentUser){showScreen("landing");return}
   applyPermissions();
-
-  const dias=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
-  const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
-  const d=new Date();
-
-  document.getElementById('painel-nome').textContent=`Olá, ${currentUser.name}! 👋`;
-  document.getElementById('painel-data').textContent=`${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
-  document.getElementById('frase-mot').textContent=frases[Math.floor(Math.random()*frases.length)];
-
-  renderTarefas();
-  renderAulas();
-  renderHabitos();
-  updateStats();
-  updateProgresso();
-  updateFinanceiro();
-  checkStreak();
+  const dias=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"], meses=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"], d=new Date();
+  document.getElementById("painel-nome").textContent=`Olá, ${currentProfile?.name||currentUser.email}! 👋`;
+  document.getElementById("painel-data").textContent=`${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
+  document.getElementById("frase-mot").textContent=frases[Math.floor(Math.random()*frases.length)];
+  attachRealtimeListeners();
+  renderTarefas();renderAulas();renderHabitos();updateStats();updateProgresso();updateFinanceiro();checkStreak();
 }
-
-/* TABS */
-function switchTab(tab){
-  if(tab === 'financeiro' && !isFinanceUser()){
-    alert('Acesso financeiro disponível apenas para o perfil autorizado.');
-    return;
-  }
-
-  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-
-  document.getElementById('tab-'+tab).classList.add('active');
-  document.getElementById('nav-'+tab).classList.add('active');
-
-  if(tab==='progresso'){
-    updateProgresso();
-  }
-
-  if(tab==='financeiro'){
-    updateFinanceiro();
-  }
-
-  if(tab==='aulas'){
-    renderAulas();
-  }
-
-  if(tab==='painel'){
-    updateStats();
-    renderPainelTarefas();
-  }
-}
-
-/* TIMER */
-const MODES={
-  quarto:{sec:900,label:'Um Quarto'},
-  pomo:{sec:1500,label:'Pomodoro'},
-  pausa:{sec:300,label:'Pausa'}
-};
-
-let timerMode='quarto';
-let timerTotal=900;
-let timerLeft=900;
-let timerRunning=false;
-let timerInterval=null;
-
-const CIRC=2*Math.PI*86;
-
-function setupTimerRing(){
-  const ring = document.getElementById('timer-prog');
-
-  if(!ring) return;
-
-  ring.style.strokeDasharray=CIRC;
-  ring.style.strokeDashoffset=0;
-}
-
-function setMode(m){
-  if(timerRunning) return;
-
-  timerMode=m;
-
-  document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('mode-'+m).classList.add('active');
-
-  timerTotal=MODES[m].sec;
-  timerLeft=timerTotal;
-
-  document.getElementById('timer-label').textContent=MODES[m].label;
-
-  updateTimerDisplay();
-}
-
-function updateTimerDisplay(){
-  const m=Math.floor(timerLeft/60);
-  const s=timerLeft%60;
-
-  document.getElementById('timer-display').textContent =
-    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-
-  const prog=1-(timerLeft/timerTotal);
-
-  document.getElementById('timer-prog').style.strokeDashoffset=CIRC*(1-prog);
-}
-
-function startTimer(){
-  if(timerRunning) return;
-
-  timerRunning=true;
-
-  document.getElementById('btn-start').style.display='none';
-  document.getElementById('btn-pause').style.display='inline-block';
-
-  timerInterval=setInterval(()=>{
-    timerLeft--;
-
-    updateTimerDisplay();
-
-    if(timerLeft<=0){
-      clearInterval(timerInterval);
-      timerRunning=false;
-
-      document.getElementById('btn-start').style.display='inline-block';
-      document.getElementById('btn-pause').style.display='none';
-
-      if(timerMode!=='pausa'){
-        const mins=Math.round(timerTotal/60);
-        const key='uq_mins_'+today();
-
-        ls.set(key,(ls.get(key,0)+mins));
-
-        updateStats();
-        updateProgresso();
-        checkStreak();
-      }
-
-      try{
-        const ctx=new(window.AudioContext||window.webkitAudioContext)();
-        const osc=ctx.createOscillator();
-        const g=ctx.createGain();
-
-        osc.connect(g);
-        g.connect(ctx.destination);
-
-        osc.frequency.value=880;
-        g.gain.setValueAtTime(0.3,ctx.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+0.8);
-
-        osc.start();
-        osc.stop(ctx.currentTime+0.8);
-      }catch(e){}
-    }
-  },1000);
-}
-
-function pauseTimer(){
-  if(!timerRunning) return;
-
-  clearInterval(timerInterval);
-  timerRunning=false;
-
-  document.getElementById('btn-start').style.display='inline-block';
-  document.getElementById('btn-pause').style.display='none';
-}
-
-function resetTimer(){
-  pauseTimer();
-  timerLeft=timerTotal;
-  updateTimerDisplay();
-}
-
-/* TAREFAS */
-function getTarefas(){
-  return ls.get('uq_tarefas_'+currentUser?.email,[]);
-}
-
-function saveTarefas(t){
-  ls.set('uq_tarefas_'+currentUser?.email,t);
-}
-
-function addTarefa(){
-  const nome=document.getElementById('t-nome').value.trim();
-
-  if(!nome){
-    alert('Digite o nome da tarefa.');
-    return;
-  }
-
-  const t=getTarefas();
-
-  t.unshift({
-    id:Date.now(),
-    nome,
-    materia:document.getElementById('t-materia').value.trim(),
-    prazo:document.getElementById('t-prazo').value,
-    done:false,
-    createdAt:today()
-  });
-
-  saveTarefas(t);
-
-  document.getElementById('t-nome').value='';
-  document.getElementById('t-materia').value='';
-  document.getElementById('t-prazo').value='';
-
-  renderTarefas();
-  updateStats();
-  updateProgresso();
-}
-
-function toggleTarefa(id){
-  const t=getTarefas();
-  const i=t.findIndex(x=>x.id===id);
-
-  if(i>-1){
-    t[i].done=!t[i].done;
-
-    saveTarefas(t);
-    renderTarefas();
-    renderPainelTarefas();
-    updateStats();
-    updateProgresso();
-  }
-}
-
-function delTarefa(id){
-  saveTarefas(getTarefas().filter(x=>x.id!==id));
-
-  renderTarefas();
-  updateStats();
-  updateProgresso();
-}
-
-function renderTarefas(){
-  const t=getTarefas();
-  const el=document.getElementById('lista-tarefas');
-
-  if(!t.length){
-    el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda. Adicione a primeira!</div>';
-    return;
-  }
-
-  el.innerHTML=t.map(x=>`
-    <div class="tarefa-item ${x.done?'done':''}">
-      <button class="check-btn ${x.done?'done':''}" onclick="toggleTarefa(${x.id})">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      </button>
-
-      <div class="tarefa-info">
-        <div class="tarefa-nome">${safeText(x.nome)}</div>
-
-        <div class="tarefa-meta">
-          ${x.materia?`<span class="badge materia">📌 ${safeText(x.materia)}</span>`:''}
-          ${x.prazo?`<span class="badge prazo">📅 ${formatDate(x.prazo)}</span>`:''}
-        </div>
-      </div>
-
-      <button class="btn-del" onclick="delTarefa(${x.id})" title="Excluir">×</button>
-    </div>
-  `).join('');
-}
-
-function renderPainelTarefas(){
-  const t=getTarefas().filter(x=>!x.done).slice(0,4);
-  const el=document.getElementById('painel-tarefas');
-
-  if(!el) return;
-
-  if(!t.length){
-    el.innerHTML='<p style="color:var(--cinza-texto);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';
-    return;
-  }
-
-  el.innerHTML=t.map(x=>`
-    <div class="tarefa-item">
-      <button class="check-btn" onclick="toggleTarefa(${x.id})">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      </button>
-
-      <div class="tarefa-info">
-        <div class="tarefa-nome">${safeText(x.nome)}</div>
-
-        <div class="tarefa-meta">
-          ${x.materia?`<span class="badge materia">${safeText(x.materia)}</span>`:''}
-        </div>
-      </div>
-    </div>
-  `).join('');
-}
-
-/* AULAS */
-function getAulas(email=currentUser?.email){
-  return ls.get('uq_aulas_'+email,[]);
-}
-
-function saveAulas(a,email=currentUser?.email){
-  ls.set('uq_aulas_'+email,a);
-}
-
-function getAllAulas(){
-  if(!isFinanceUser()) return getAulas();
-
-  let todas = [];
-
-  for(let i=0;i<localStorage.length;i++){
-    const k = localStorage.key(i);
-
-    if(k && k.startsWith('uq_aulas_')){
-      const email = k.replace('uq_aulas_','');
-      const lista = ls.get(k,[]);
-
-      lista.forEach(a=>{
-        todas.push({
-          ...a,
-          ownerEmail: email
-        });
-      });
-    }
-  }
-
-  return todas.sort((a,b)=>{
-    const dataB = `${b.data || ''} ${b.inicio || ''}`;
-    const dataA = `${a.data || ''} ${a.inicio || ''}`;
-
-    return dataB.localeCompare(dataA);
-  });
-}
-
-function calcularDuracao(inicio,fim){
-  if(!inicio || !fim) return 0;
-
-  const [hi,mi] = inicio.split(':').map(Number);
-  const [hf,mf] = fim.split(':').map(Number);
-
-  let ini = hi * 60 + mi;
-  let final = hf * 60 + mf;
-
-  if(final < ini){
-    final += 24 * 60;
-  }
-
-  return final - ini;
-}
-
-function formatDuracao(min){
-  const n = Number(min || 0);
-  const h = Math.floor(n/60);
-  const m = n%60;
-
-  if(h && m) return `${h}h${String(m).padStart(2,'0')}`;
-  if(h) return `${h}h`;
-
-  return `${m} min`;
-}
-
-function addAula(){
-  const mat=document.getElementById('a-materia').value.trim();
-  const data=document.getElementById('a-data').value||today();
-  const inicio=document.getElementById('a-inicio').value;
-  const fim=document.getElementById('a-fim').value;
-  const cont=document.getElementById('a-conteudo').value.trim();
-
-  if(!mat || !inicio || !fim || !cont){
-    alert('Preencha matéria, início, fim e conteúdo.');
-    return;
-  }
-
-  const dur = calcularDuracao(inicio,fim);
-
-  if(dur <= 0){
-    alert('O horário final precisa ser maior que o inicial.');
-    return;
-  }
-
-  const aula = {
-    id:Date.now(),
-    materia:mat,
-    data,
-    inicio,
-    fim,
-    dur,
-    conteudo:cont,
-    obs:document.getElementById('a-obs').value.trim()
-  };
-
+function attachRealtimeListeners(){
+  if(!firebaseReady||!currentUser)return;
+  clearFirebaseListeners();
+  const uid=currentUser.uid;
+  const tr=db.ref("tarefas/"+uid);tr.on("value",s=>{tarefas=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));renderTarefas();renderPainelTarefas();updateStats();updateProgresso()});unsubscribers.push(()=>tr.off());
+  const hr=db.ref("habitos/"+uid);hr.on("value",s=>{habitos=objToArray(s.val()).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));renderHabitos();updateStats();updateProgresso()});unsubscribers.push(()=>hr.off());
+  const mr=db.ref("mins/"+uid);mr.on("value",s=>{minsMap=s.val()||{};updateStats();updateProgresso();checkStreak()});unsubscribers.push(()=>mr.off());
   if(isFinanceUser()){
-    aula.valor = Number(document.getElementById('a-valor').value || 0);
-    aula.statusFinanceiro = document.getElementById('a-status').value || 'previsto';
-  }
-
-  const a=getAulas();
-
-  a.unshift(aula);
-
-  saveAulas(a);
-
-  ['a-materia','a-data','a-inicio','a-fim','a-conteudo','a-obs','a-valor'].forEach(id=>{
-    const el = document.getElementById(id);
-    if(el) el.value='';
-  });
-
-  const status = document.getElementById('a-status');
-
-  if(status){
-    status.value = 'previsto';
-  }
-
-  renderAulas();
-  updateStats();
-  updateProgresso();
-  updateFinanceiro();
-}
-
-function delAula(id, ownerEmail=currentUser?.email){
-  saveAulas(getAulas(ownerEmail).filter(x=>x.id!==id), ownerEmail);
-
-  renderAulas();
-  updateStats();
-  updateProgresso();
-  updateFinanceiro();
-}
-
-function updateAulaFinanceiro(ownerEmail,id,campo,valor){
-  const aulas = getAulas(ownerEmail);
-  const idx = aulas.findIndex(a=>a.id===id);
-
-  if(idx === -1) return;
-
-  if(campo === 'valor'){
-    aulas[idx].valor = Number(valor || 0);
-  }
-
-  if(campo === 'statusFinanceiro'){
-    aulas[idx].statusFinanceiro = valor;
-  }
-
-  saveAulas(aulas,ownerEmail);
-
-  updateFinanceiro();
-}
-
-function renderAulas(){
-  const a = getAllAulas();
-  const el=document.getElementById('lista-aulas');
-
-  if(!a.length){
-    el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada ainda.</div>';
-    return;
-  }
-
-  el.innerHTML=a.map(x=>{
-    const owner = x.ownerEmail || currentUser.email;
-    const financeiro = isFinanceUser();
-    const status = x.statusFinanceiro || 'previsto';
-
-    return `
-    <div class="aula-item">
-      <div class="aula-header">
-        <div class="aula-materia">📚 ${safeText(x.materia)}</div>
-
-        <div style="display:flex;gap:8px;align-items:center">
-          <span class="aula-dur">⏱ ${formatDuracao(x.dur || 0)}</span>
-          <button class="btn-del" onclick="delAula(${x.id}, '${safeText(owner)}')">×</button>
-        </div>
-      </div>
-
-      ${financeiro ? `<div class="aula-date">👤 ${safeText(owner)}</div>` : ''}
-
-      <div class="aula-conteudo">${safeText(x.conteudo)}</div>
-
-      <div class="aula-date">
-        📅 ${formatDate(x.data)} · 🕒 ${x.inicio || '--:--'} às ${x.fim || '--:--'}
-      </div>
-
-      ${x.obs?`<div class="aula-obs">💬 ${safeText(x.obs)}</div>`:''}
-
-      ${financeiro ? `
-        <div class="finance-aula-box">
-          <div class="form-row">
-            <div class="form-field">
-              <label>Valor</label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                value="${Number(x.valor || 0)}"
-                onchange="updateAulaFinanceiro('${safeText(owner)}', ${x.id}, 'valor', this.value)"
-              >
-            </div>
-
-            <div class="form-field">
-              <label>Status</label>
-
-              <select onchange="updateAulaFinanceiro('${safeText(owner)}', ${x.id}, 'statusFinanceiro', this.value)">
-                <option value="previsto" ${status !== 'recebido' ? 'selected' : ''}>Previsão</option>
-                <option value="recebido" ${status === 'recebido' ? 'selected' : ''}>Recebido</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      ` : ''}
-    </div>`;
-  }).join('');
-}
-
-/* HÁBITOS */
-function getHabitos(){
-  return ls.get('uq_habitos_'+currentUser?.email,[]);
-}
-
-function saveHabitos(h){
-  ls.set('uq_habitos_'+currentUser?.email,h);
-}
-
-function addHabito(){
-  const nome=document.getElementById('h-nome').value.trim();
-
-  if(!nome){
-    alert('Digite o nome do hábito.');
-    return;
-  }
-
-  const h=getHabitos();
-
-  h.push({
-    id:Date.now(),
-    nome,
-    checks:{}
-  });
-
-  saveHabitos(h);
-
-  document.getElementById('h-nome').value='';
-
-  renderHabitos();
-  updateStats();
-  updateProgresso();
-}
-
-function toggleHabito(id){
-  const h=getHabitos();
-  const i=h.findIndex(x=>x.id===id);
-
-  if(i>-1){
-    const d=today();
-
-    h[i].checks[d]=!h[i].checks[d];
-
-    saveHabitos(h);
-    renderHabitos();
-    updateStats();
-    updateProgresso();
+    const ar=db.ref("aulas");ar.on("value",s=>{
+      const data=s.val()||{};let lista=[];
+      Object.entries(data).forEach(([ownerUid,obj])=>Object.entries(obj||{}).forEach(([id,a])=>lista.push({id,ownerUid,...a})));
+      allAulas=lista.sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));
+      aulas=allAulas.filter(a=>a.ownerUid===uid);
+      renderAulas();updateStats();updateProgresso();updateFinanceiro();
+    },e=>alert("Erro ao carregar aulas. Confira as regras do Realtime Database."));unsubscribers.push(()=>ar.off());
+  }else{
+    const ar=db.ref("aulas/"+uid);ar.on("value",s=>{
+      aulas=objToArray(s.val()).map(a=>({...a,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));
+      allAulas=aulas;renderAulas();updateStats();updateProgresso();
+    });unsubscribers.push(()=>ar.off());
   }
 }
 
-function delHabito(id){
-  saveHabitos(getHabitos().filter(x=>x.id!==id));
-
-  renderHabitos();
-  updateStats();
-  updateProgresso();
+function switchTab(tab){
+  if(tab==="financeiro"&&!isFinanceUser())return alert("Acesso financeiro disponível apenas para o perfil autorizado.");
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+  document.getElementById("nav-"+tab).classList.add("active");
+  if(tab==="progresso")updateProgresso(); if(tab==="financeiro")updateFinanceiro(); if(tab==="aulas")renderAulas(); if(tab==="painel"){updateStats();renderPainelTarefas()}
 }
 
-function renderHabitos(){
-  const h=getHabitos();
-  const el=document.getElementById('lista-habitos');
-
-  if(!h.length){
-    el.innerHTML='<div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div>';
-    return;
-  }
-
-  const d=today();
-
-  el.innerHTML=h.map(x=>{
-    const done=x.checks[d]||false;
-    const streak=calcStreak(x.checks);
-
-    return `
-    <div class="habito-item ${done?'done':''}">
-      <div class="habito-check ${done?'done':''}" onclick="toggleHabito(${x.id})">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-          <polyline points="20 6 9 17 4 12"/>
-        </svg>
-      </div>
-
-      <div class="habito-nome">${safeText(x.nome)}</div>
-
-      ${streak>0?`<span class="habito-streak">🔥 ${streak}</span>`:''}
-
-      <button class="btn-del" onclick="delHabito(${x.id})">×</button>
-    </div>`;
-  }).join('');
+const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"}};
+let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null;
+const CIRC=2*Math.PI*86;
+function setupTimerRing(){const r=document.getElementById("timer-prog");if(r){r.style.strokeDasharray=CIRC;r.style.strokeDashoffset=0}}
+function setMode(m){if(timerRunning)return;timerMode=m;document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));document.getElementById("mode-"+m).classList.add("active");timerTotal=MODES[m].sec;timerLeft=timerTotal;document.getElementById("timer-label").textContent=MODES[m].label;updateTimerDisplay()}
+function updateTimerDisplay(){const m=Math.floor(timerLeft/60),s=timerLeft%60;document.getElementById("timer-display").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;document.getElementById("timer-prog").style.strokeDashoffset=CIRC*(timerLeft/timerTotal)}
+function startTimer(){
+  if(timerRunning)return;timerRunning=true;document.getElementById("btn-start").style.display="none";document.getElementById("btn-pause").style.display="inline-block";
+  timerInterval=setInterval(async()=>{timerLeft--;updateTimerDisplay();if(timerLeft<=0){clearInterval(timerInterval);timerRunning=false;document.getElementById("btn-start").style.display="inline-block";document.getElementById("btn-pause").style.display="none";if(timerMode!=="pausa"&&currentUser&&db){const mins=Math.round(timerTotal/60),key=today();await db.ref("mins/"+currentUser.uid+"/"+key).transaction(c=>Number(c||0)+mins)}try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),osc=ctx.createOscillator(),g=ctx.createGain();osc.connect(g);g.connect(ctx.destination);osc.frequency.value=880;g.gain.setValueAtTime(.3,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.8);osc.start();osc.stop(ctx.currentTime+.8)}catch(e){}}},1000)
 }
+function pauseTimer(){if(!timerRunning)return;clearInterval(timerInterval);timerRunning=false;document.getElementById("btn-start").style.display="inline-block";document.getElementById("btn-pause").style.display="none"}
+function resetTimer(){pauseTimer();timerLeft=timerTotal;updateTimerDisplay()}
 
-function calcStreak(checks){
-  let streak=0;
-  let d=new Date();
+async function addTarefa(){if(!currentUser||!db)return;const nome=document.getElementById("t-nome").value.trim();if(!nome)return alert("Digite o nome da tarefa.");await db.ref("tarefas/"+currentUser.uid).push({nome,materia:document.getElementById("t-materia").value.trim(),prazo:document.getElementById("t-prazo").value,done:false,createdAt:firebase.database.ServerValue.TIMESTAMP});["t-nome","t-materia","t-prazo"].forEach(id=>document.getElementById(id).value="")}
+async function toggleTarefa(id){if(!currentUser||!db)return;const t=tarefas.find(x=>x.id===id);if(t)await db.ref("tarefas/"+currentUser.uid+"/"+id).update({done:!t.done})}
+async function delTarefa(id){if(currentUser&&db)await db.ref("tarefas/"+currentUser.uid+"/"+id).remove()}
+function renderTarefas(){const el=document.getElementById("lista-tarefas");if(!el)return;if(!tarefas.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}el.innerHTML=tarefas.map(x=>`<div class="tarefa-item ${x.done?"done":""}"><button class="check-btn ${x.done?"done":""}" onclick="toggleTarefa('${x.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></button><div class="tarefa-info"><div class="tarefa-nome">${safeText(x.nome)}</div><div class="tarefa-meta">${x.materia?`<span class="badge materia">📌 ${safeText(x.materia)}</span>`:""}${x.prazo?`<span class="badge prazo">📅 ${formatDate(x.prazo)}</span>`:""}</div></div><button class="btn-del" onclick="delTarefa('${x.id}')">×</button></div>`).join("")}
+function renderPainelTarefas(){const el=document.getElementById("painel-tarefas");if(!el)return;const t=tarefas.filter(x=>!x.done).slice(0,4);if(!t.length){el.innerHTML='<p style="color:var(--cinza);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';return}el.innerHTML=t.map(x=>`<div class="tarefa-item"><button class="check-btn" onclick="toggleTarefa('${x.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></button><div class="tarefa-info"><div class="tarefa-nome">${safeText(x.nome)}</div>${x.materia?`<div class="tarefa-meta"><span class="badge materia">${safeText(x.materia)}</span></div>`:""}</div></div>`).join("")}
 
-  while(true){
-    const k=d.toISOString().slice(0,10);
-
-    if(checks[k]){
-      streak++;
-      d.setDate(d.getDate()-1);
-    }else{
-      break;
-    }
-  }
-
-  return streak;
+function getAulas(){return isFinanceUser()?allAulas:aulas}
+function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inicio.split(":").map(Number),[hf,mf]=fim.split(":").map(Number);let ini=hi*60+mi,fin=hf*60+mf;if(fin<ini)fin+=1440;return fin-ini}
+function formatDuracao(min){const n=Number(min||0),h=Math.floor(n/60),m=n%60;if(h&&m)return`${h}h${String(m).padStart(2,"0")}`;if(h)return`${h}h`;return`${m} min`}
+async function addAula(){
+  if(!currentUser||!db)return;
+  const mat=document.getElementById("a-materia").value.trim(),data=document.getElementById("a-data").value||today(),inicio=document.getElementById("a-inicio").value,fim=document.getElementById("a-fim").value,cont=document.getElementById("a-conteudo").value.trim();
+  if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria, início, fim e conteúdo.");
+  const dur=calcularDuracao(inicio,fim);if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
+  const aula={userId:currentUser.uid,userEmail:currentUser.email,userName:currentProfile?.name||currentUser.email,materia:mat,data,inicio,fim,dur,conteudo:cont,obs:document.getElementById("a-obs").value.trim(),valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",createdAt:firebase.database.ServerValue.TIMESTAMP};
+  await db.ref("aulas/"+currentUser.uid).push(aula);
+  ["a-materia","a-data","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});const st=document.getElementById("a-status");if(st)st.value="previsto";
 }
+async function delAula(id,ownerUid){if(!currentUser||!db)return;const uid=ownerUid||currentUser.uid;if(uid!==currentUser.uid&&!isFinanceUser())return alert("Você não tem permissão para excluir esta aula.");await db.ref("aulas/"+uid+"/"+id).remove()}
+async function updateAulaFinanceiro(ownerUid,id,campo,valor){if(!isFinanceUser()||!db)return;const up={};if(campo==="valor")up.valor=Number(valor||0);if(campo==="statusFinanceiro")up.statusFinanceiro=valor;await db.ref("aulas/"+ownerUid+"/"+id).update(up)}
+function renderAulas(){const lista=getAulas(),el=document.getElementById("lista-aulas");if(!el)return;if(!lista.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}el.innerHTML=lista.map(x=>{const f=isFinanceUser(),owner=x.ownerUid||x.userId||currentUser.uid,status=x.statusFinanceiro||"previsto";return`<div class="aula-item"><div class="aula-header"><div class="aula-materia">📚 ${safeText(x.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="aula-dur">⏱ ${formatDuracao(x.dur)}</span><button class="btn-del" onclick="delAula('${x.id}','${owner}')">×</button></div></div>${f?`<div class="aula-date">👤 ${safeText(x.userName||x.userEmail||owner)}</div>`:""}<div class="aula-conteudo">${safeText(x.conteudo)}</div><div class="aula-date">📅 ${formatDate(x.data)} · 🕒 ${x.inicio||"--:--"} às ${x.fim||"--:--"}</div>${x.obs?`<div class="aula-obs">💬 ${safeText(x.obs)}</div>`:""}${f?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(x.valor||0)}" onchange="updateAulaFinanceiro('${owner}','${x.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${owner}','${x.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Previsão</option><option value="recebido" ${status==="recebido"?"selected":""}>Recebido</option></select></div></div></div>`:""}</div>`}).join("")}
 
-/* STATS */
-function updateStats(){
-  const mins=ls.get('uq_mins_'+today(),0);
-  const tarefas=getTarefas();
-  const aulas=getAulas();
+async function addHabito(){if(!currentUser||!db)return;const nome=document.getElementById("h-nome").value.trim();if(!nome)return alert("Digite o nome do hábito.");await db.ref("habitos/"+currentUser.uid).push({nome,checks:{},createdAt:firebase.database.ServerValue.TIMESTAMP});document.getElementById("h-nome").value=""}
+async function toggleHabito(id){if(!currentUser||!db)return;const h=habitos.find(x=>x.id===id);if(!h)return;const d=today(),atual=h.checks?.[d]||false;await db.ref("habitos/"+currentUser.uid+"/"+id+"/checks/"+d).set(!atual)}
+async function delHabito(id){if(currentUser&&db)await db.ref("habitos/"+currentUser.uid+"/"+id).remove()}
+function calcStreak(checks){let s=0,d=new Date();while(true){const k=d.toISOString().slice(0,10);if(checks[k]){s++;d.setDate(d.getDate()-1)}else break}return s}
+function renderHabitos(){const el=document.getElementById("lista-habitos");if(!el)return;if(!habitos.length){el.innerHTML='<div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div>';return}const d=today();el.innerHTML=habitos.map(x=>{const checks=x.checks||{},done=checks[d]||false,st=calcStreak(checks);return`<div class="habito-item ${done?"done":""}"><div class="habito-check ${done?"done":""}" onclick="toggleHabito('${x.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="habito-nome">${safeText(x.nome)}</div>${st>0?`<span class="habito-streak">🔥 ${st}</span>`:""}<button class="btn-del" onclick="delHabito('${x.id}')">×</button></div>`}).join("")}
 
-  document.getElementById('stat-mins').textContent=mins;
-  document.getElementById('stat-pending').textContent=tarefas.filter(t=>!t.done).length;
-  document.getElementById('stat-aulas').textContent=aulas.length;
-
-  renderPainelTarefas();
-  updatePainelFinanceiro();
-}
-
-function checkStreak(){
-  let streak=0;
-  let d=new Date();
-
-  while(true){
-    const k=d.toISOString().slice(0,10);
-
-    if(ls.get('uq_mins_'+k,0)>0){
-      streak++;
-      d.setDate(d.getDate()-1);
-    }else{
-      break;
-    }
-  }
-
-  document.getElementById('stat-streak').textContent=streak;
-}
-
+function updateStats(){document.getElementById("stat-mins").textContent=Number(minsMap[today()]||0);document.getElementById("stat-pending").textContent=tarefas.filter(t=>!t.done).length;document.getElementById("stat-aulas").textContent=aulas.length;renderPainelTarefas();updatePainelFinanceiro()}
+function checkStreak(){let st=0,d=new Date();while(true){const k=d.toISOString().slice(0,10);if(Number(minsMap[k]||0)>0){st++;d.setDate(d.getDate()-1)}else break}const el=document.getElementById("stat-streak");if(el)el.textContent=st}
 function updateProgresso(){
-  if(!currentUser) return;
-
-  const tarefas=getTarefas();
-  const aulas=getAulas();
-  const habitos=getHabitos();
-  const hojeDone=habitos.filter(h=>h.checks[today()]).length;
-
-  let totalMins=0;
-
-  for(let i=0;i<localStorage.length;i++){
-    const k=localStorage.key(i);
-
-    if(k&&k.startsWith('uq_mins_')){
-      totalMins+=ls.get(k,0);
-    }
-  }
-
-  const tarDone=tarefas.filter(t=>t.done).length;
-
-  document.getElementById('prog-mins').textContent=totalMins;
-  document.getElementById('prog-tarefas').textContent=tarDone;
-  document.getElementById('prog-aulas').textContent=aulas.length;
-  document.getElementById('prog-habitos').textContent=hojeDone;
-
-  const setBar=(id,valId,val,max)=>{
-    const pct=Math.min(100,Math.round(val/max*100));
-    document.getElementById(id).style.width=pct+'%';
-    document.getElementById(valId).textContent=pct+'%';
-  };
-
-  let weekMins=0;
-  const weekDays=[];
-  const weekLabels=['D','S','T','Q','Q','S','S'];
-
-  for(let i=6;i>=0;i--){
-    const dt=new Date();
-
-    dt.setDate(dt.getDate()-i);
-
-    const k='uq_mins_'+dt.toISOString().slice(0,10);
-    const m=ls.get(k,0);
-
-    weekMins+=m;
-
-    weekDays.push({
-      m,
-      label:weekLabels[dt.getDay()]
-    });
-  }
-
-  setBar('pb-mins','pb-mins-val',weekMins,300);
-  setBar('pb-tar','pb-tar-val',tarDone,10);
-  setBar('pb-aul','pb-aul-val',aulas.length,7);
-  setBar('pb-hab','pb-hab-val',hojeDone,5);
-
-  const maxM=Math.max(...weekDays.map(d=>d.m),1);
-  const barsEl=document.getElementById('week-bars');
-  const labsEl=document.getElementById('week-days-labels');
-
-  barsEl.innerHTML=weekDays.map(d=>`
-    <div class="day-bar-wrap">
-      <div class="day-bar-bg">
-        <div class="day-bar-fill" style="height:${Math.round(d.m/maxM*100)}%"></div>
-      </div>
-    </div>
-  `).join('');
-
-  labsEl.innerHTML=weekDays.map(d=>`
-    <div style="flex:1;text-align:center;font-size:10px;font-weight:700;color:var(--cinza-texto)">
-      ${d.label}
-    </div>
-  `).join('');
+  if(!currentUser)return;const hojeDone=habitos.filter(h=>(h.checks||{})[today()]).length;let total=0;Object.values(minsMap||{}).forEach(v=>total+=Number(v||0));const tarDone=tarefas.filter(t=>t.done).length;
+  document.getElementById("prog-mins").textContent=total;document.getElementById("prog-tarefas").textContent=tarDone;document.getElementById("prog-aulas").textContent=aulas.length;document.getElementById("prog-habitos").textContent=hojeDone;
+  const setBar=(id,valId,val,max)=>{const pct=Math.min(100,Math.round(val/max*100));document.getElementById(id).style.width=pct+"%";document.getElementById(valId).textContent=pct+"%"};
+  let weekMins=0,days=[],labels=["D","S","T","Q","Q","S","S"];for(let i=6;i>=0;i--){const dt=new Date();dt.setDate(dt.getDate()-i);const k=dt.toISOString().slice(0,10),m=Number(minsMap[k]||0);weekMins+=m;days.push({m,label:labels[dt.getDay()]})}
+  setBar("pb-mins","pb-mins-val",weekMins,300);setBar("pb-tar","pb-tar-val",tarDone,10);setBar("pb-aul","pb-aul-val",aulas.length,7);setBar("pb-hab","pb-hab-val",hojeDone,5);
+  const max=Math.max(...days.map(d=>d.m),1);document.getElementById("week-bars").innerHTML=days.map(d=>`<div class="day-bar-wrap"><div class="day-bar-bg"><div class="day-bar-fill" style="height:${Math.round(d.m/max*100)}%"></div></div></div>`).join("");document.getElementById("week-days-labels").innerHTML=days.map(d=>`<div style="flex:1;text-align:center;font-size:10px;font-weight:800;color:var(--cinza)">${d.label}</div>`).join("");
 }
 
-/* FINANCEIRO */
-function initFinanceiroInputs(){
-  const mes = document.getElementById('fin-mes');
-  const ano = document.getElementById('fin-ano');
+function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano");if(!mes||!ano)return;const d=new Date(),mesAtual=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;if(!mes.value)mes.value=mesAtual;if(!ano.value)ano.value=d.getFullYear()}
+function calcFinanceiro(){const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7),ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());let mp=0,mr=0,ap=0,ar=0;allAulas.forEach(a=>{const val=Number(a.valor||0),status=a.statusFinanceiro||"previsto",data=a.data||"";if(!data)return;if(data.slice(0,7)===mes){mp+=val;if(status==="recebido")mr+=val}if(data.slice(0,4)===String(ano)){ap+=val;if(status==="recebido")ar+=val}});return{aulas:allAulas,mesPrevisto:mp,mesRecebido:mr,anoPrevisto:ap,anoRecebido:ar}}
+function updatePainelFinanceiro(){if(!isFinanceUser())return;const d=new Date(),mes=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;let p=0,r=0;allAulas.forEach(a=>{if((a.data||"").slice(0,7)!==mes)return;const v=Number(a.valor||0);p+=v;if((a.statusFinanceiro||"previsto")==="recebido")r+=v});document.getElementById("painel-fin-previsto").textContent=formatMoney(p);document.getElementById("painel-fin-recebido").textContent=formatMoney(r)}
+function updateFinanceiro(){if(!isFinanceUser())return;initFinanceiroInputs();const d=calcFinanceiro();document.getElementById("fin-mes-previsto").textContent=formatMoney(d.mesPrevisto);document.getElementById("fin-mes-recebido").textContent=formatMoney(d.mesRecebido);document.getElementById("fin-ano-previsto").textContent=formatMoney(d.anoPrevisto);document.getElementById("fin-ano-recebido").textContent=formatMoney(d.anoRecebido);renderFinanceiroLista(d.aulas);updatePainelFinanceiro()}
+function renderFinanceiroLista(lista){const el=document.getElementById("fin-lista");if(!el)return;if(!lista.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro ainda.</div>';return}const mes=document.getElementById("fin-mes")?.value,filtradas=mes?lista.filter(a=>(a.data||"").slice(0,7)===mes):lista;if(!filtradas.length){el.innerHTML='<div class="empty-state"><div>📭</div>Nenhum lançamento neste mês.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Valor</th><th>Status</th></tr></thead><tbody>${filtradas.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small><br><small>👤 ${safeText(a.userName||a.userEmail||a.ownerUid)}</small></td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Recebido":"Previsão"}</span></td></tr>`).join("")}</tbody></table>`}
 
-  if(!mes || !ano) return;
-
-  const d = new Date();
-  const mesAtual = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-
-  if(!mes.value){
-    mes.value = mesAtual;
-  }
-
-  if(!ano.value){
-    ano.value = d.getFullYear();
-  }
-}
-
-function calcFinanceiro(){
-  const aulas = getAllAulas();
-
-  const mesSelecionado = document.getElementById('fin-mes')?.value || new Date().toISOString().slice(0,7);
-  const anoSelecionado = document.getElementById('fin-ano')?.value || String(new Date().getFullYear());
-
-  let mesPrevisto = 0;
-  let mesRecebido = 0;
-  let anoPrevisto = 0;
-  let anoRecebido = 0;
-
-  aulas.forEach(a=>{
-    const valor = Number(a.valor || 0);
-    const status = a.statusFinanceiro || 'previsto';
-    const data = a.data || '';
-
-    if(!data) return;
-
-    const mesAula = data.slice(0,7);
-    const anoAula = data.slice(0,4);
-
-    if(mesAula === mesSelecionado){
-      mesPrevisto += valor;
-
-      if(status === 'recebido'){
-        mesRecebido += valor;
-      }
-    }
-
-    if(anoAula === String(anoSelecionado)){
-      anoPrevisto += valor;
-
-      if(status === 'recebido'){
-        anoRecebido += valor;
-      }
-    }
-  });
-
-  return {
-    aulas,
-    mesPrevisto,
-    mesRecebido,
-    anoPrevisto,
-    anoRecebido
-  };
-}
-
-function updatePainelFinanceiro(){
-  if(!isFinanceUser()) return;
-
-  const d = new Date();
-  const mesAtual = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-  const aulas = getAllAulas();
-
-  let previsto = 0;
-  let recebido = 0;
-
-  aulas.forEach(a=>{
-    if((a.data || '').slice(0,7) !== mesAtual) return;
-
-    const valor = Number(a.valor || 0);
-
-    previsto += valor;
-
-    if((a.statusFinanceiro || 'previsto') === 'recebido'){
-      recebido += valor;
-    }
-  });
-
-  const elPrev = document.getElementById('painel-fin-previsto');
-  const elRec = document.getElementById('painel-fin-recebido');
-
-  if(elPrev){
-    elPrev.textContent = formatMoney(previsto);
-  }
-
-  if(elRec){
-    elRec.textContent = formatMoney(recebido);
-  }
-}
-
-function updateFinanceiro(){
-  if(!isFinanceUser()) return;
-
-  initFinanceiroInputs();
-
-  const dados = calcFinanceiro();
-
-  const setText = (id,val)=>{
-    const el = document.getElementById(id);
-
-    if(el){
-      el.textContent = formatMoney(val);
-    }
-  };
-
-  setText('fin-mes-previsto', dados.mesPrevisto);
-  setText('fin-mes-recebido', dados.mesRecebido);
-  setText('fin-ano-previsto', dados.anoPrevisto);
-  setText('fin-ano-recebido', dados.anoRecebido);
-
-  renderFinanceiroLista(dados.aulas);
-  updatePainelFinanceiro();
-}
-
-function renderFinanceiroLista(aulas){
-  const el = document.getElementById('fin-lista');
-
-  if(!el) return;
-
-  if(!aulas.length){
-    el.innerHTML = '<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro ainda.</div>';
-    return;
-  }
-
-  const mesSelecionado = document.getElementById('fin-mes')?.value;
-
-  const filtradas = mesSelecionado
-    ? aulas.filter(a=>(a.data || '').slice(0,7) === mesSelecionado)
-    : aulas;
-
-  if(!filtradas.length){
-    el.innerHTML = '<div class="empty-state"><div>📭</div>Nenhum lançamento neste mês.</div>';
-    return;
-  }
-
-  el.innerHTML = `
-    <table class="finance-table">
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Aula</th>
-          <th>Valor</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        ${filtradas.map(a=>`
-          <tr>
-            <td>
-              ${formatDate(a.data)}
-              <br>
-              <small>${a.inicio || '--:--'} às ${a.fim || '--:--'}</small>
-            </td>
-
-            <td>
-              <strong>${safeText(a.materia)}</strong>
-              <br>
-              <small>${safeText(a.conteudo)}</small>
-              <br>
-              <small>👤 ${safeText(a.ownerEmail || currentUser.email)}</small>
-            </td>
-
-            <td>${formatMoney(a.valor || 0)}</td>
-
-            <td>
-              <span class="finance-pill ${(a.statusFinanceiro || 'previsto') === 'recebido' ? 'recebido' : ''}">
-                ${(a.statusFinanceiro || 'previsto') === 'recebido' ? 'Recebido' : 'Previsão'}
-              </span>
-            </td>
-          </tr>
-        `).join('')}
-      </tbody>
-    </table>
-  `;
-}
-
-/* INICIALIZAÇÃO */
-document.addEventListener('DOMContentLoaded',()=>{
-  setupTimerRing();
-  updateTimerDisplay();
-
-  const s=ls.get('uq_session',null);
-
-  if(s&&s.email){
-    currentUser=s;
-    showScreen('app');
-  }
-
-  ['login-email','login-pass'].forEach(id=>{
-    document.getElementById(id)?.addEventListener('keydown',e=>{
-      if(e.key==='Enter'){
-        doLogin();
-      }
-    });
-  });
-
-  ['reg-name','reg-email','reg-pass'].forEach(id=>{
-    document.getElementById(id)?.addEventListener('keydown',e=>{
-      if(e.key==='Enter'){
-        doRegister();
-      }
-    });
-  });
+document.addEventListener("DOMContentLoaded",()=>{
+  setupTimerRing();updateTimerDisplay();
+  const alertBox=document.getElementById("firebase-config-alert");if(alertBox)alertBox.style.display=firebaseReady?"none":"block";
+  ["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
+  ["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));
 });
 </script>
 </body>
