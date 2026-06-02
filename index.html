@@ -233,6 +233,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <div class="form-group"><label>Seu nome</label><input type="text" id="reg-name" placeholder="Como quer ser chamado?"></div>
       <div class="form-group"><label>E-mail</label><input type="email" id="reg-email" placeholder="seu@email.com"></div>
       <div class="form-group"><label>Senha</label><input type="password" id="reg-pass" placeholder="Mínimo 6 caracteres"></div>
+      <div class="form-group"><label>Código de acesso</label><input type="text" id="reg-code" placeholder="Código de aluno ou professor"></div>
       <button class="btn-full" onclick="doRegister()">Criar conta →</button>
       <p class="auth-link">Já tem conta? <span onclick="switchAuthTab('login')">Entrar</span></p>
     </div>
@@ -283,6 +284,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Alunos cadastrados</div>
         <div id="lista-alunos"></div>
+      </div>
+      <div class="card student-only">
+        <div class="card-title">Ativar modo professor</div>
+        <p style="font-size:13px;color:var(--cinza);line-height:1.4;margin-bottom:12px">
+          Já tem uma conta de aluno e recebeu o código de professor? Digite o código abaixo para liberar o modo professor.
+        </p>
+        <div class="form-row">
+          <div class="form-field"><label>Código de professor</label><input type="text" id="activate-teacher-code" placeholder="Código secreto"></div>
+          <div class="form-field" style="display:flex;align-items:end"><button class="btn-add" onclick="activateTeacherMode()">Ativar professor</button></div>
+        </div>
       </div>
       <div class="card finance-only" style="display:none">
         <div class="card-title">Resumo financeiro do mês</div>
@@ -343,11 +354,11 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
           <div class="form-field"><label>Data</label><input type="date" id="a-data"></div>
         </div>
         <div class="form-field teacher-only" style="display:none"><label>Escola do aluno</label><input type="text" id="a-escola" placeholder="Ex: Escola Estadual..., IFES, Salesiano..."></div>
-        <div class="form-field teacher-only" style="display:none"><label>Professor que deu a aula</label><input type="text" id="a-professor" placeholder="Ex: Paulo Salles, Prof. Ana, Prof. João..."></div>
+        <div class="form-field teacher-only" style="display:none"><label>Professor que deu a aula</label><select id="a-professor"></select></div>
         <div class="form-row"><div class="form-field"><label>Início</label><input type="time" id="a-inicio"></div><div class="form-field"><label>Fim</label><input type="time" id="a-fim"></div></div>
         <div class="form-field"><label>Conteúdo estudado</label><input type="text" id="a-conteudo" placeholder="Ex: Equações do 2º grau"></div>
         <div class="form-field"><label>Observações</label><input type="text" id="a-obs" placeholder="Opcional"></div>
-        <div class="form-row finance-only" style="display:none"><div class="form-field"><label>Valor da aula (R$)</label><input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01"></div><div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Previsão</option><option value="recebido">Recebido</option></select></div></div>
+        <div class="form-row finance-only" style="display:none"><div class="form-field"><label>Valor da aula (R$)</label><input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01"></div><div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Aula Prevista</option><option value="recebido">Aula Concluída</option></select></div></div>
         <button class="btn-add" onclick="addAula()">Registrar aula</button>
       </div>
       <div class="export-actions teacher-only" style="display:none">
@@ -495,12 +506,15 @@ let calendarCurrentDate = new Date();
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},unsubscribers=[];
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
+const STUDENT_CODE="1Q2026";
+const TEACHER_CODE="mcqueen2026";
 const today=()=>new Date().toISOString().slice(0,10);
 const frases=['"O segredo do sucesso é a constância."','"Comece onde você está. Use o que você tem. Faça o que você pode."','"15 minutos por dia valem mais que uma hora só de vez em quando."','"A disciplina é a ponte entre metas e realizações."','"Cada quartinho de hora conta. Você está no caminho certo! 🌱"'];
 
 function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
-function isPauloMaster(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.financeiro===true}
-function isTeacher(){return isPauloMaster() && currentAccessMode==="teacher"}
+function hasTeacherPermission(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.role==="teacher" || currentProfile?.financeiro===true}
+function isPauloMaster(){return hasTeacherPermission()}
+function isTeacher(){return hasTeacherPermission() && currentAccessMode==="teacher"}
 function isStudentMode(){return !isTeacher()}
 function isFinanceUser(){return isTeacher()}
 function ownUid(){return currentUser?.uid||""}
@@ -537,13 +551,21 @@ async function doRegister(){
   const name=document.getElementById("reg-name").value.trim();
   const email=document.getElementById("reg-email").value.trim().toLowerCase();
   const pass=document.getElementById("reg-pass").value;
+  const code=document.getElementById("reg-code").value.trim();
   if(!name)return showError("Digite seu nome.");
   if(!email||!email.includes("@"))return showError("E-mail inválido.");
   if(pass.length<6)return showError("Senha: mínimo 6 caracteres.");
+  if(code!==STUDENT_CODE && code!==TEACHER_CODE)return showError("Código de acesso inválido.");
   try{
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
-    const isProf=email===PROFESSOR_EMAIL;
-    await db.ref("users/"+cred.user.uid).set({name,email,role:isProf?"teacher":"student",financeiro:isProf,createdAt:firebase.database.ServerValue.TIMESTAMP});
+    const isProf=(code===TEACHER_CODE || email===PROFESSOR_EMAIL);
+    await db.ref("users/"+cred.user.uid).set({
+      name,
+      email,
+      role:isProf?"teacher":"student",
+      financeiro:isProf,
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    });
   }catch(e){showError(firebaseErrorMessage(e))}
 }
 async function doLogin(){
@@ -582,9 +604,29 @@ function chooseAccessMode(mode){
   sessionStorage.setItem("uq_access_mode",mode);
   showScreen("app");
 }
+async function activateTeacherMode(){
+  const code=document.getElementById("activate-teacher-code")?.value.trim();
+  if(code!==TEACHER_CODE)return alert("Código de professor inválido.");
+  try{
+    await db.ref("users/"+ownUid()).update({role:"teacher",financeiro:true,teacherActivatedAt:firebase.database.ServerValue.TIMESTAMP});
+    currentProfile={...currentProfile,role:"teacher",financeiro:true};
+    sessionStorage.removeItem("uq_access_mode");
+    currentAccessMode=null;
+    alert("Modo professor ativado! Escolha como deseja entrar.");
+    showScreen("role");
+  }catch(e){alert(firebaseErrorMessage(e));}
+}
 async function loadOrCreateUserProfile(){
   const snap=await db.ref("users/"+currentUser.uid).once("value");
-  if(snap.exists()){currentProfile=snap.val();return}
+  if(snap.exists()){
+    currentProfile=snap.val();
+    if(currentUser.email.toLowerCase()===PROFESSOR_EMAIL && currentProfile.role!=="teacher"){
+      currentProfile.role="teacher";
+      currentProfile.financeiro=true;
+      await db.ref("users/"+currentUser.uid).update({role:"teacher",financeiro:true});
+    }
+    return;
+  }
   const isProf=currentUser.email.toLowerCase()===PROFESSOR_EMAIL;
   currentProfile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isProf?"teacher":"student",financeiro:isProf,createdAt:firebase.database.ServerValue.TIMESTAMP};
   await db.ref("users/"+currentUser.uid).set(currentProfile);
@@ -603,6 +645,7 @@ function initApp(){
 function applyPermissions(){
   const teacher=isTeacher();
   document.querySelectorAll(".teacher-only").forEach(el=>el.style.display=teacher?"":"none");
+  document.querySelectorAll(".student-only").forEach(el=>el.style.display=hasTeacherPermission()?"none":"");
   document.querySelectorAll(".finance-only").forEach(el=>el.style.display=isFinanceUser()?"":"none");
   const badge=document.getElementById("teacher-badge"); if(badge){badge.style.display=isPauloMaster()?"inline-block":"none";badge.textContent=teacher?"Acesso professor completo":"Acesso aluno";}
   const info=document.getElementById("student-answer-info"); if(info)info.style.display=teacher?"none":"block";
@@ -664,8 +707,12 @@ function attachRealtimeListeners(){
 function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
   const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const teacherUsers=users.filter(u=>u.role==="teacher" || u.financeiro===true || u.email===PROFESSOR_EMAIL);
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email)}</option>`).join("");
+  const teacherOptions=teacherUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email)}</option>`).join("");
   ["t-student","a-student","av-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno cadastrado</option>'});
+  const prof=document.getElementById("a-professor");
+  if(prof) prof.innerHTML=teacherOptions || `<option value="${ownUid()}">${safeText(currentProfile?.name||currentUser?.email||"Professor")}</option>`;
 }
 function getUserName(uid){const u=users.find(x=>x.id===uid);return u?(u.name||u.email):uid}
 function getUserEmail(uid){const u=users.find(x=>x.id===uid);return u?.email||""}
@@ -808,7 +855,8 @@ async function addAula(){
     fim=document.getElementById("a-fim").value,
     cont=document.getElementById("a-conteudo").value.trim(),
     escola=document.getElementById("a-escola")?.value.trim() || "",
-    professorNome=document.getElementById("a-professor")?.value.trim() || (currentProfile?.name || currentUser?.email || "");
+    professorUid=document.getElementById("a-professor")?.value || ownUid(),
+    professorNome=getUserName(professorUid) || (currentProfile?.name || currentUser?.email || "");
   if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria/tema, início, fim e conteúdo.");
   const dur=calcularDuracao(inicio,fim); if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
   const aula={
@@ -816,6 +864,7 @@ async function addAula(){
     studentName:getUserName(studentUid),
     studentEmail:getUserEmail(studentUid),
     escola,
+    professorUid,
     professorNome,
     lancadoPorNome: currentProfile?.name || currentUser?.email || "",
     lancadoPorEmail: userEmail(),
@@ -837,7 +886,7 @@ async function addAula(){
   };
   try{
     await db.ref("aulas/"+studentUid).push(aula);
-    ["a-materia","a-data","a-escola","a-professor","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
+    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
     alert("Aula salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
@@ -846,7 +895,7 @@ async function updateAulaFinanceiro(studentUid,id,campo,valor){if(!isFinanceUser
 function renderAulas(){
   const list=isTeacher()?allAulas:aulas,el=document.getElementById("lista-aulas"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}
-  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}${a.professorNome?`<span class="badge ok">👨‍🏫 ${safeText(a.professorNome)}</span>`:""}${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Previsão</option><option value="recebido" ${status==="recebido"?"selected":""}>Recebido</option></select></div></div></div>`:""}</div>`}).join("");
+  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}${a.professorNome?`<span class="badge ok">👨‍🏫 ${safeText(a.professorNome)}</span>`:""}${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Concluída</option></select></div></div></div>`:""}</div>`}).join("");
 }
 function csvEscape(value){
   const s=String(value??"").replaceAll('"','""');
@@ -856,7 +905,7 @@ function exportAulasCSV(){
   if(!isTeacher())return alert("Exportação disponível apenas para professor.");
   const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Observacoes","Valor","Status_financeiro"];
   const rows=allAulas.map(a=>[
-    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),a.statusFinanceiro||"previsto"
+    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"
   ]);
   const csv=[header,...rows].map(row=>row.map(csvEscape).join(";")).join("\n");
   const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
@@ -1047,7 +1096,7 @@ function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano
 function calcFinanceiro(){const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7),ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());let mp=0,mr=0,ap=0,ar=0;allAulas.forEach(a=>{const val=Number(a.valor||0),status=a.statusFinanceiro||"previsto",data=a.data||"";if(!data)return;if(data.slice(0,7)===mes){mp+=val;if(status==="recebido")mr+=val}if(data.slice(0,4)===String(ano)){ap+=val;if(status==="recebido")ar+=val}});return{mesPrevisto:mp,mesRecebido:mr,anoPrevisto:ap,anoRecebido:ar}}
 function updatePainelFinanceiro(){if(!isFinanceUser())return;const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;let p=0,r=0;allAulas.forEach(a=>{if((a.data||"").slice(0,7)!==m)return;const v=Number(a.valor||0);p+=v;if((a.statusFinanceiro||"previsto")==="recebido")r+=v});document.getElementById("painel-fin-previsto").textContent=formatMoney(p);document.getElementById("painel-fin-recebido").textContent=formatMoney(r)}
 function updateFinanceiro(){if(!isFinanceUser())return;initFinanceiroInputs();const d=calcFinanceiro();document.getElementById("fin-mes-previsto").textContent=formatMoney(d.mesPrevisto);document.getElementById("fin-mes-recebido").textContent=formatMoney(d.mesRecebido);document.getElementById("fin-ano-previsto").textContent=formatMoney(d.anoPrevisto);document.getElementById("fin-ano-recebido").textContent=formatMoney(d.anoRecebido);renderFinanceiroLista();updatePainelFinanceiro()}
-function renderFinanceiroLista(){const el=document.getElementById("fin-lista"); if(!el)return; const mes=document.getElementById("fin-mes")?.value, list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Escola</th><th>Professor</th><th>Valor</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}</td><td>${safeText(a.escola||"")}</td><td>${safeText(a.professorNome||"")}</td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Recebido":"Previsão"}</span></td></tr>`).join("")}</tbody></table>`}
+function renderFinanceiroLista(){const el=document.getElementById("fin-lista"); if(!el)return; const mes=document.getElementById("fin-mes")?.value, list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Escola</th><th>Professor</th><th>Valor</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}</td><td>${safeText(a.escola||"")}</td><td>${safeText(a.professorNome||"")}</td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`}
 
 const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"},custom:{sec:900,label:"Personalizado"}};
 let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null,timerStartedAt=null,timerElapsedBeforePause=0;const CIRC=2*Math.PI*86;
