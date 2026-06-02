@@ -171,6 +171,22 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 .calendar-agenda-main p{font-size:12px;color:var(--cinza);line-height:1.35;margin-top:3px}
 .calendar-legend{display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;background:#fbfcfc;border-top:1px solid var(--borda)}
 .legend-item{font-size:11px;font-weight:800;color:var(--cinza);display:flex;align-items:center;gap:5px}.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.legend-dot.compromisso{background:#c8721a}.legend-dot.tarefa{background:#3a6275}.legend-dot.aula{background:#23B8A6}.legend-dot.prova{background:#7b61ff}
+
+.calendar-view-toggle{display:flex;gap:8px;align-items:center;justify-content:center;padding:10px 16px;background:#fbfcfc;border-bottom:1px solid var(--borda)}
+.calendar-view-btn{background:var(--bg);color:var(--azul);border-radius:999px;padding:8px 14px;font-size:13px;font-weight:800}
+.calendar-view-btn.active{background:var(--verde);color:#fff}
+.calendar-day-view{display:none;padding:16px;background:#fff}
+.calendar-day-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.calendar-day-header h3{font-size:18px;color:var(--azul);text-transform:capitalize;text-align:center}
+.calendar-day-list{display:grid;gap:10px}
+.calendar-day-empty{border:1.5px dashed var(--borda);border-radius:14px;padding:24px;text-align:center;color:var(--cinza);font-size:14px}
+.calendar-day-event{display:grid;grid-template-columns:82px 1fr auto;gap:10px;align-items:start;border:1px solid var(--borda);border-left:5px solid var(--verde);border-radius:12px;padding:12px;background:#fff}
+.calendar-day-event.compromisso{border-left-color:#c8721a}.calendar-day-event.tarefa{border-left-color:#3a6275}.calendar-day-event.aula{border-left-color:#23B8A6}.calendar-day-event.prova{border-left-color:#7b61ff}
+.calendar-day-event-time{font-size:12px;font-weight:800;color:var(--cinza)}
+.calendar-day-event-main strong{font-size:14px;color:var(--azul)}
+.calendar-day-event-main p{font-size:12px;color:var(--cinza);line-height:1.35;margin-top:3px}
+@media(max-width:720px){.calendar-day-event{grid-template-columns:1fr auto}.calendar-day-event-time{grid-column:1/-1}}
+
 @media(max-width:720px){.calendar-toolbar{align-items:stretch;flex-direction:column;position:static}.calendar-toolbar-left,.calendar-toolbar-right{justify-content:center}.calendar-title{min-width:auto}.calendar-cell{min-height:86px;padding:5px}.calendar-cell-number{width:22px;height:22px;font-size:11px}.calendar-chip{font-size:10px;padding:3px 4px}.calendar-agenda-item{grid-template-columns:1fr auto}.calendar-time{grid-column:1/-1}.calendar-weekday{font-size:10px;padding:8px 2px}}
 
 .bottom-nav{background:#fff;border-top:1.5px solid var(--borda);display:flex;align-items:center;justify-content:space-around;gap:4px;padding:8px 0 max(8px,env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:10;overflow-x:auto}
@@ -544,10 +560,24 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
             <button class="calendar-btn" onclick="toggleCalendarAgenda()" id="calendar-agenda-toggle">Agenda</button>
           </div>
         </div>
+        <div class="calendar-view-toggle">
+          <button class="calendar-view-btn active" id="calendar-view-month-btn" onclick="setCalendarView('month')">Mês</button>
+          <button class="calendar-view-btn" id="calendar-view-day-btn" onclick="setCalendarView('day')">Dia</button>
+        </div>
+        <div id="calendar-month-view">
         <div class="calendar-weekdays">
           <div class="calendar-weekday">Dom</div><div class="calendar-weekday">Seg</div><div class="calendar-weekday">Ter</div><div class="calendar-weekday">Qua</div><div class="calendar-weekday">Qui</div><div class="calendar-weekday">Sex</div><div class="calendar-weekday">Sáb</div>
         </div>
         <div class="calendar-month-grid" id="calendar-grid"></div>
+        </div>
+        <div class="calendar-day-view" id="calendar-day-view">
+          <div class="calendar-day-header">
+            <button class="calendar-btn" onclick="changeCalendarDay(-1)">‹ Dia anterior</button>
+            <h3 id="calendar-day-title">Dia</h3>
+            <button class="calendar-btn" onclick="changeCalendarDay(1)">Próximo dia ›</button>
+          </div>
+          <div class="calendar-day-list" id="calendar-day-list"></div>
+        </div>
         <div class="calendar-legend">
           <span class="legend-item"><span class="legend-dot compromisso"></span>Compromisso</span>
           <span class="legend-item"><span class="legend-dot tarefa"></span>Tarefa</span>
@@ -773,6 +803,8 @@ if(firebaseConfig.apiKey && firebaseConfig.databaseURL){
 
 let currentUser=null,currentProfile=null,currentAccessMode=null;
 let calendarCurrentDate = new Date();
+let calendarSelectedDate = new Date();
+let calendarViewMode = "month";
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],unsubscribers=[];
 let globalStudentFilter="all";
@@ -1502,15 +1534,45 @@ function renderCalendario(){
   const agendaTitle=document.getElementById("calendar-agenda-title");
   const agendaList=document.getElementById("calendar-agenda-list");
   const agendaBox=document.getElementById("calendar-agenda");
+  const monthView=document.getElementById("calendar-month-view");
+  const dayView=document.getElementById("calendar-day-view");
+  const dayTitle=document.getElementById("calendar-day-title");
+  const dayList=document.getElementById("calendar-day-list");
   if(!grid||!titleEl||!agendaList)return;
 
   const list=(isTeacher()?visibleByFilter(allCalendario):calendario).slice().sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));
   const year=calendarCurrentDate.getFullYear();
   const month=calendarCurrentDate.getMonth();
   const monthNames=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  const dayNames=["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
   titleEl.textContent=`${monthNames[month]} de ${year}`;
   agendaTitle.textContent=`Agenda de ${monthNames[month]} de ${year}`;
   if(agendaBox)agendaBox.style.display=calendarAgendaVisible?"block":"none";
+
+  document.getElementById("calendar-view-month-btn")?.classList.toggle("active",calendarViewMode==="month");
+  document.getElementById("calendar-view-day-btn")?.classList.toggle("active",calendarViewMode==="day");
+  if(monthView)monthView.style.display=calendarViewMode==="month"?"block":"none";
+  if(dayView)dayView.style.display=calendarViewMode==="day"?"block":"none";
+
+  const selectedKey=dateKeyLocal(calendarSelectedDate);
+  const selectedEvents=list.filter(item=>item.date===selectedKey).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+  if(dayTitle)dayTitle.textContent=`${dayNames[calendarSelectedDate.getDay()]}, ${calendarSelectedDate.getDate()} de ${monthNames[calendarSelectedDate.getMonth()]} de ${calendarSelectedDate.getFullYear()}`;
+  if(dayList){
+    dayList.innerHTML=selectedEvents.length?selectedEvents.map(item=>`
+      <div class="calendar-day-event ${safeText(item.type||"compromisso")}">
+        <div class="calendar-day-event-time">${safeText(item.start||"--:--")}${item.end?` às ${safeText(item.end)}`:""}</div>
+        <div class="calendar-day-event-main">
+          <strong>${iconForCalendar(item.type)} ${safeText(item.title)}</strong>
+          <p>${safeText(item.desc||"")}</p>
+          <div class="item-meta">
+            ${isTeacher()?`<span class="badge ok">👤 ${safeText(item.studentName||getUserName(item.studentUid))}</span>`:""}
+            <span class="badge">${labelForCalendar(item.type)}</span>
+          </div>
+        </div>
+        <button class="btn-del" onclick="delCalendarioItem('${item.id}','${item.studentUid}')">×</button>
+      </div>
+    `).join(""):`<div class="calendar-day-empty"><div style="font-size:28px;margin-bottom:6px">📭</div>Nenhum item neste dia.</div>`;
+  }
 
   const first=new Date(year,month,1);
   const startDate=new Date(first);
@@ -1525,56 +1587,33 @@ function renderCalendario(){
     const shown=dayEvents.slice(0,3);
     const other=d.getMonth()!==month;
     cells.push(`
-      <div class="calendar-cell ${other?"other-month":""} ${key===todayKey?"today":""}" onclick="prefillCalendarDate('${key}')">
+      <div class="calendar-cell ${other?"other-month":""} ${key===todayKey?"today":""} ${key===selectedKey?"today":""}" onclick="prefillCalendarDate('${key}');calendarViewMode='day';renderCalendario();">
         <div class="calendar-cell-number">${d.getDate()}</div>
         <div class="calendar-cell-events">
           ${shown.map(item=>`<button class="calendar-chip ${safeText(item.type||"compromisso")}" title="${safeText(item.title)}" onclick="event.stopPropagation();focusCalendarAgenda('${item.id}','${safeText(item.studentUid||ownUid())}')">${item.start?safeText(item.start)+" ":""}${iconForCalendar(item.type)} ${safeText(item.title)}</button>`).join("")}
           ${dayEvents.length>3?`<span class="calendar-chip more">+${dayEvents.length-3} mais</span>`:""}
         </div>
-      </div>`);
+      </div>
+    `);
   }
   grid.innerHTML=cells.join("");
 
   const monthItems=list.filter(item=>{
     if(!item.date)return false;
-    const [y,m]=item.date.split("-").map(Number);
-    return y===year && m===(month+1);
+    const d=new Date(item.date+"T12:00:00");
+    return d.getMonth()===month && d.getFullYear()===year;
   });
-  if(!monthItems.length){
-    agendaList.innerHTML='<div class="empty-state"><div>📅</div>Nenhum item neste mês.</div>';
-    return;
-  }
-  agendaList.innerHTML=monthItems.map(item=>renderCalendarAgendaItem(item)).join("");
-}
-
-function renderCalendarAgendaItem(item){
-  const uid=item.studentUid||ownUid();
-  const time=item.start?`${safeText(item.start)}${item.end?` às ${safeText(item.end)}`:""}`:"Dia todo";
-  return `<div class="calendar-agenda-item ${safeText(item.type||"compromisso")}" id="cal-agenda-${safeText(item.id)}">
-    <div class="calendar-time">${formatDate(item.date)}<br>${time}</div>
-    <div class="calendar-agenda-main">
-      <strong>${iconForCalendar(item.type)} ${safeText(item.title)}</strong>
-      <p>${safeText(labelForCalendar(item.type))}${isTeacher()?` · 👤 ${safeText(item.studentName||getUserName(uid))}`:""}</p>
-      ${item.desc?`<p>${safeText(item.desc)}</p>`:""}
+  agendaList.innerHTML=monthItems.length?monthItems.map(item=>`
+    <div class="calendar-agenda-item ${safeText(item.type||"compromisso")}" id="cal-agenda-${item.id}">
+      <div class="calendar-time">${formatDate(item.date)}<br>${safeText(item.start||"--:--")}${item.end?` às ${safeText(item.end)}`:""}</div>
+      <div class="calendar-agenda-main">
+        <strong>${iconForCalendar(item.type)} ${safeText(item.title)}</strong>
+        <p>${safeText(item.desc||"")}</p>
+        <div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(item.studentName||getUserName(item.studentUid))}</span>`:""}<span class="badge">${labelForCalendar(item.type)}</span></div>
+      </div>
+      <button class="btn-del" onclick="delCalendarioItem('${item.id}','${item.studentUid}')">×</button>
     </div>
-    <button class="btn-del" onclick="delCalendarioItem('${safeText(item.id)}','${safeText(uid)}')">×</button>
-  </div>`;
-}
-
-function dateKeyLocal(d){
-  const y=d.getFullYear();
-  const m=String(d.getMonth()+1).padStart(2,"0");
-  const day=String(d.getDate()).padStart(2,"0");
-  return `${y}-${m}-${day}`;
-}
-function changeCalendarMonth(delta){calendarCurrentDate.setMonth(calendarCurrentDate.getMonth()+delta);renderCalendario()}
-function goCalendarToday(){calendarCurrentDate=new Date();const el=document.getElementById("cal-date");if(el)el.value=today();renderCalendario()}
-function toggleCalendarAgenda(){calendarAgendaVisible=!calendarAgendaVisible;const btn=document.getElementById("calendar-agenda-toggle");if(btn)btn.textContent=calendarAgendaVisible?"Ocultar agenda":"Mostrar agenda";renderCalendario()}
-function prefillCalendarDate(key){const el=document.getElementById("cal-date");if(el)el.value=key}
-function focusCalendarAgenda(id,uid){
-  calendarAgendaVisible=true;
-  renderCalendario();
-  setTimeout(()=>{const el=document.getElementById("cal-agenda-"+id); if(el){el.scrollIntoView({behavior:"smooth",block:"center"}); el.style.boxShadow="0 0 0 3px rgba(35,184,166,.22)"; setTimeout(()=>el.style.boxShadow="",1200)}},50);
+  `).join(""):'<div class="empty-state"><div>📭</div>Nenhum item neste mês.</div>';
 }
 
 function iconForCalendar(type){return type==="aula"?"📚":type==="tarefa"?"✅":type==="prova"?"📝":"📌"}
