@@ -813,6 +813,12 @@ const STUDENT_CODE="1Q2026";
 const TEACHER_CODE="mcqueen2026";
 const STUDENT_LOGIN_DOMAIN="aluno.umquarto.local";
 const today=()=>new Date().toISOString().slice(0,10);
+function dateKeyLocal(d){
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,"0");
+  const day=String(d.getDate()).padStart(2,"0");
+  return `${y}-${m}-${day}`;
+}
 const curiosidades=[
   "🧠 Curiosidade: dormir bem ajuda o cérebro a consolidar o que você estudou. Por isso, revisar e descansar funciona melhor do que virar a noite.",
   "📚 Curiosidade: explicar um conteúdo em voz alta, como se estivesse ensinando alguém, ajuda a encontrar o que você ainda não entendeu.",
@@ -1529,6 +1535,7 @@ async function addCalendarioItem(){
 }
 async function delCalendarioItem(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("calendario/"+uid+"/"+id).remove()}
 function renderCalendario(){
+  try{
   const grid=document.getElementById("calendar-grid");
   const titleEl=document.getElementById("calendar-title");
   const agendaTitle=document.getElementById("calendar-agenda-title");
@@ -1614,6 +1621,7 @@ function renderCalendario(){
       <button class="btn-del" onclick="delCalendarioItem('${item.id}','${item.studentUid}')">×</button>
     </div>
   `).join(""):'<div class="empty-state"><div>📭</div>Nenhum item neste mês.</div>';
+  }catch(e){console.error(e); alert("Erro ao carregar calendário: "+(e.message||e));}
 }
 
 function iconForCalendar(type){return type==="aula"?"📚":type==="tarefa"?"✅":type==="prova"?"📝":"📌"}
