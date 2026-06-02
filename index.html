@@ -224,7 +224,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Criar conta</button>
     </div>
     <div id="form-login">
-      <div class="form-group"><label>E-mail</label><input type="email" id="login-email" placeholder="seu@email.com"></div>
+      <div class="form-group"><label>E-mail ou login</label><input type="text" id="login-email" placeholder="seu@email.com ou login do aluno"></div>
       <div class="form-group"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••"></div>
       <button class="btn-full" onclick="doLogin()">Entrar →</button>
       <p class="auth-link">Não tem conta? <span onclick="switchAuthTab('register')">Criar agora</span></p>
@@ -261,6 +261,19 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
   </div>
 </div>
 
+<div id="screen-change-password" class="screen">
+  <div class="auth-card">
+    <div class="auth-brand"><div class="logo-mark">¼</div><strong>Trocar senha</strong></div>
+    <h2>Primeiro acesso</h2>
+    <p class="subtitle">Por segurança, crie uma nova senha antes de continuar.</p>
+    <div class="form-group"><label>Nova senha</label><input type="password" id="first-pass-1" placeholder="Mínimo 6 caracteres"></div>
+    <div class="form-group"><label>Confirmar nova senha</label><input type="password" id="first-pass-2" placeholder="Repita a senha"></div>
+    <button class="btn-full" onclick="changeFirstPassword()">Salvar nova senha</button>
+    <p id="first-pass-error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none"></p>
+    <button class="btn-small" style="margin-top:14px;width:100%" onclick="doLogout()">Sair</button>
+  </div>
+</div>
+
 <div id="screen-app" class="screen">
   <div class="topbar">
     <div class="topbar-logo"><div class="logo-mark">¼</div><span>Um Quarto</span></div>
@@ -281,6 +294,22 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="stat-aulas">0</div><div class="stat-label">aulas registradas</div></div>
         <div class="stat-card"><div class="stat-icon">📝</div><div class="stat-num" id="stat-avaliacoes">0</div><div class="stat-label">avaliações abertas</div></div>
       </div>
+      <div class="card teacher-only" style="display:none">
+        <div class="card-title">Criar acesso de aluno</div>
+        <p style="font-size:13px;color:var(--cinza);line-height:1.4;margin-bottom:12px">
+          Crie um login simples para o aluno. No primeiro acesso, ele será obrigado a trocar a senha.
+        </p>
+        <div class="form-row">
+          <div class="form-field"><label>Nome do aluno</label><input type="text" id="new-student-name" placeholder="Ex: João Silva"></div>
+          <div class="form-field"><label>Login do aluno</label><input type="text" id="new-student-login" placeholder="Ex: joao.silva"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Senha provisória</label><input type="text" id="new-student-pass" placeholder="Mínimo 6 caracteres"></div>
+          <div class="form-field"><label>Escola</label><input type="text" id="new-student-school" placeholder="Opcional"></div>
+        </div>
+        <button class="btn-add" onclick="createStudentLogin()">Criar login do aluno</button>
+      </div>
+
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Alunos cadastrados</div>
         <div id="lista-alunos"></div>
@@ -508,10 +537,13 @@ let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAval
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
 const TEACHER_CODE="mcqueen2026";
+const STUDENT_LOGIN_DOMAIN="aluno.umquarto.local";
 const today=()=>new Date().toISOString().slice(0,10);
 const frases=['"O segredo do sucesso é a constância."','"Comece onde você está. Use o que você tem. Faça o que você pode."','"15 minutos por dia valem mais que uma hora só de vez em quando."','"A disciplina é a ponte entre metas e realizações."','"Cada quartinho de hora conta. Você está no caminho certo! 🌱"'];
 
 function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
+function normalizeLogin(login){return String(login||"").trim().toLowerCase().replace(/\s+/g,"")}
+function loginToEmail(login){return `${normalizeLogin(login)}@${STUDENT_LOGIN_DOMAIN}`}
 function hasTeacherPermission(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.role==="teacher" || currentProfile?.financeiro===true}
 function isPauloMaster(){return hasTeacherPermission()}
 function isTeacher(){return hasTeacherPermission() && currentAccessMode==="teacher"}
@@ -526,11 +558,11 @@ function clearFirebaseListeners(){unsubscribers.forEach(fn=>{try{fn()}catch(e){}
 function requireFirebase(){if(firebaseReady)return true;showError("Firebase não configurado.");return false}
 
 function showScreen(name, sub=""){
-  const screens={landing:document.getElementById("screen-landing"),auth:document.getElementById("screen-auth"),role:document.getElementById("screen-role"),app:document.getElementById("screen-app")};
+  const screens={landing:document.getElementById("screen-landing"),auth:document.getElementById("screen-auth"),role:document.getElementById("screen-role"),changePassword:document.getElementById("screen-change-password"),app:document.getElementById("screen-app")};
   Object.values(screens).forEach(s=>{if(!s)return;s.classList.remove("active");s.style.display="none"});
   const target=screens[name]; if(!target)return;
   target.classList.add("active");
-  target.style.display=name==="auth"||name==="app"||name==="role"?"flex":"block";
+  target.style.display=name==="auth"||name==="app"||name==="role"||name==="changePassword"?"flex":"block";
   window.scrollTo({top:0,behavior:"instant"});
   if(name==="auth"&&sub)switchAuthTab(sub);
   if(name==="app")initApp();
@@ -570,10 +602,11 @@ async function doRegister(){
 }
 async function doLogin(){
   if(!requireFirebase())return;
-  const email=document.getElementById("login-email").value.trim().toLowerCase();
+  const loginRaw=document.getElementById("login-email").value.trim().toLowerCase();
   const pass=document.getElementById("login-pass").value;
-  if(!email)return showError("Digite o e-mail.");
+  if(!loginRaw)return showError("Digite o e-mail ou login.");
   if(!pass)return showError("Digite a senha.");
+  const email=loginRaw.includes("@") ? loginRaw : loginToEmail(loginRaw);
   try{await auth.signInWithEmailAndPassword(email,pass)}catch(e){showError(firebaseErrorMessage(e))}
 }
 function doLogout(){resetTimer();clearFirebaseListeners();sessionStorage.removeItem("uq_access_mode");currentAccessMode=null;auth?auth.signOut():showScreen("landing")}
@@ -593,9 +626,13 @@ if(firebaseReady){
     if(!user){currentUser=null;currentProfile=null;currentAccessMode=null;users=[];tarefas=[];allTarefas=[];aulas=[];allAulas=[];avaliacoes=[];allAvaliacoes=[];calendario=[];allCalendario=[];habitos=[];minsMap={};showScreen("landing");return}
     currentUser=user;
     await loadOrCreateUserProfile();
+    if(currentProfile?.mustChangePassword === true){
+      showScreen("changePassword");
+      return;
+    }
     const savedMode=sessionStorage.getItem("uq_access_mode");
-    if(isPauloMaster() && !savedMode){showScreen("role");return}
-    currentAccessMode=isPauloMaster()?(savedMode||"teacher"):"student";
+    if(hasTeacherPermission() && !savedMode){showScreen("role");return}
+    currentAccessMode=hasTeacherPermission()?(savedMode||"teacher"):"student";
     showScreen("app");
   });
 }
@@ -615,6 +652,69 @@ async function activateTeacherMode(){
     alert("Modo professor ativado! Escolha como deseja entrar.");
     showScreen("role");
   }catch(e){alert(firebaseErrorMessage(e));}
+}
+async function changeFirstPassword(){
+  const p1=document.getElementById("first-pass-1").value;
+  const p2=document.getElementById("first-pass-2").value;
+  const err=document.getElementById("first-pass-error");
+  if(err)err.style.display="none";
+  if(!p1 || p1.length<6){
+    if(err){err.textContent="A nova senha precisa ter pelo menos 6 caracteres.";err.style.display="block";}
+    return;
+  }
+  if(p1!==p2){
+    if(err){err.textContent="As senhas não conferem.";err.style.display="block";}
+    return;
+  }
+  try{
+    await currentUser.updatePassword(p1);
+    await db.ref("users/"+ownUid()).update({mustChangePassword:false,passwordChangedAt:firebase.database.ServerValue.TIMESTAMP});
+    currentProfile={...currentProfile,mustChangePassword:false};
+    alert("Senha alterada com sucesso!");
+    showScreen("app");
+  }catch(e){
+    if(err){err.textContent=firebaseErrorMessage(e);err.style.display="block";}
+  }
+}
+async function createStudentLogin(){
+  if(!isTeacher())return alert("Apenas professor pode criar login de aluno.");
+  const name=document.getElementById("new-student-name").value.trim();
+  const login=normalizeLogin(document.getElementById("new-student-login").value);
+  const pass=document.getElementById("new-student-pass").value.trim();
+  const escola=document.getElementById("new-student-school").value.trim();
+  if(!name)return alert("Digite o nome do aluno.");
+  if(!/^[a-z0-9._-]{3,30}$/.test(login))return alert("Login inválido. Use 3 a 30 caracteres: letras, números, ponto, hífen ou underline.");
+  if(pass.length<6)return alert("A senha provisória precisa ter pelo menos 6 caracteres.");
+  const email=loginToEmail(login);
+  try{
+    const resp=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email,password:pass,returnSecureToken:true})
+    });
+    const data=await resp.json();
+    if(!resp.ok)throw {code:data?.error?.message || "auth/create-student-failed", message:data?.error?.message || "Erro ao criar aluno."};
+    const uid=data.localId;
+    await db.ref("users/"+uid).set({
+      name,
+      email,
+      username:login,
+      loginEmail:email,
+      escola,
+      role:"student",
+      financeiro:false,
+      mustChangePassword:true,
+      createdBy:ownUid(),
+      createdByEmail:userEmail(),
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    });
+    ["new-student-name","new-student-login","new-student-pass","new-student-school"].forEach(id=>document.getElementById(id).value="");
+    alert(`Aluno criado!\n\nLogin: ${login}\nSenha provisória: ${pass}\n\nNo primeiro acesso ele deverá trocar a senha.`);
+  }catch(e){
+    const msg=String(e?.code||e?.message||"");
+    if(msg.includes("EMAIL_EXISTS")) alert("Esse login já existe. Escolha outro.");
+    else alert(firebaseErrorMessage(e));
+  }
 }
 async function loadOrCreateUserProfile(){
   const snap=await db.ref("users/"+currentUser.uid).once("value");
@@ -655,9 +755,14 @@ function attachRealtimeListeners(){
   clearFirebaseListeners();
   const uid=ownUid();
 
-  const usersRef=db.ref("users");
-  usersRef.on("value",s=>{users=objToArray(s.val()).sort((a,b)=>(a.name||"").localeCompare(b.name||""));populateStudentSelects();renderAlunos()},e=>{console.error(e);alert("Erro ao carregar usuários. Confira as regras do Realtime Database.")});
-  unsubscribers.push(()=>usersRef.off());
+  if(isTeacher()){
+    const usersRef=db.ref("users");
+    usersRef.on("value",s=>{users=objToArray(s.val()).sort((a,b)=>(a.name||"").localeCompare(b.name||""));populateStudentSelects();renderAlunos()},e=>{console.error(e);users=[{id:uid,...currentProfile}];populateStudentSelects();renderAlunos();});
+    unsubscribers.push(()=>usersRef.off());
+  }else{
+    users=[{id:uid,...currentProfile}];
+    populateStudentSelects();
+  }
 
   const tarefasRef=isTeacher()?db.ref("tarefas"):db.ref("tarefas/"+uid);
   tarefasRef.on("value",s=>{
@@ -708,7 +813,7 @@ function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();ren
 function populateStudentSelects(){
   const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=users.filter(u=>u.role==="teacher" || u.financeiro===true || u.email===PROFESSOR_EMAIL);
-  const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email)}</option>`).join("");
+  const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.username||u.email)}</option>`).join("");
   const teacherOptions=teacherUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email)}</option>`).join("");
   ["t-student","a-student","av-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno cadastrado</option>'});
   const prof=document.getElementById("a-professor");
@@ -720,7 +825,7 @@ function renderAlunos(){
   const el=document.getElementById("lista-alunos"); if(!el)return;
   const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
   if(!studentUsers.length){el.innerHTML='<div class="empty-state"><div>👥</div>Nenhum aluno cadastrado ainda.</div>';return}
-  el.innerHTML=studentUsers.map(u=>`<div class="item"><div class="item-title">${safeText(u.name||u.email)}</div><div class="item-text">${safeText(u.email)} · ${countByStudent(allAulas,u.id)} aulas · ${countByStudent(allTarefas,u.id)} tarefas · ${countByStudent(allAvaliacoes,u.id)} avaliações</div></div>`).join("");
+  el.innerHTML=studentUsers.map(u=>`<div class="item"><div class="item-title">${safeText(u.name||u.email)}</div><div class="item-text">${u.username?`Login: ${safeText(u.username)} · `:""}${safeText(u.email)} · ${countByStudent(allAulas,u.id)} aulas · ${countByStudent(allTarefas,u.id)} tarefas · ${countByStudent(allAvaliacoes,u.id)} avaliações</div></div>`).join("");
 }
 function countByStudent(list,uid){return list.filter(x=>x.studentUid===uid||x.ownerUid===uid).length}
 function selectedStudentOrSelf(selectId){return isTeacher()?(document.getElementById(selectId)?.value || ""):ownUid()}
@@ -779,7 +884,17 @@ async function addTarefa(){
       payload.anexoTipo=uploaded.tipo;
       payload.anexoPath=uploaded.path;
     }
-    await db.ref("tarefas/"+studentUid).push(payload);
+    const ref=await db.ref("tarefas/"+studentUid).push(payload);
+    const localTask={id:ref.key,...payload};
+    if(isTeacher()){
+      allTarefas=[localTask,...allTarefas.filter(t=>t.id!==ref.key)];
+    }
+    if(studentUid===ownUid()){
+      tarefas=[localTask,...tarefas.filter(t=>t.id!==ref.key)];
+    }
+    renderTarefas();
+    renderPainelTarefas();
+    updateStats();
     ["t-nome","t-materia","t-prazo","t-anexo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     alert("Tarefa salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
