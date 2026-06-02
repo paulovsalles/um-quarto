@@ -185,6 +185,21 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 .calendar-day-event-time{font-size:12px;font-weight:800;color:var(--cinza)}
 .calendar-day-event-main strong{font-size:14px;color:var(--azul)}
 .calendar-day-event-main p{font-size:12px;color:var(--cinza);line-height:1.35;margin-top:3px}
+
+.calendar-week-view{display:none;padding:16px;background:#fff}
+.calendar-week-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.calendar-week-header h3{font-size:18px;color:var(--azul);text-align:center}
+.calendar-week-grid-view{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.calendar-week-day-view{border:1.5px solid var(--borda);border-radius:12px;background:#fff;min-height:150px;padding:10px}
+.calendar-week-day-view.today{box-shadow:inset 0 0 0 2px var(--verde)}
+.calendar-week-day-view.selected{box-shadow:inset 0 0 0 2px var(--azul-light)}
+.calendar-week-day-head{font-size:12px;font-weight:800;color:var(--azul);text-align:center;margin-bottom:8px;text-transform:capitalize}
+.calendar-week-day-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;background:var(--bg);margin-top:4px}
+.calendar-week-item{display:block;width:100%;border-radius:7px;padding:6px;margin-bottom:5px;font-size:11px;font-weight:800;color:#fff;text-align:left;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.calendar-week-item.compromisso{background:#c8721a}.calendar-week-item.tarefa{background:#3a6275}.calendar-week-item.aula{background:#23B8A6}.calendar-week-item.prova{background:#7b61ff}
+@media(max-width:900px){.calendar-week-grid-view{grid-template-columns:1fr 1fr}.calendar-week-day-view{min-height:120px}}
+@media(max-width:520px){.calendar-week-grid-view{grid-template-columns:1fr}}
+
 @media(max-width:720px){.calendar-day-event{grid-template-columns:1fr auto}.calendar-day-event-time{grid-column:1/-1}}
 
 @media(max-width:720px){.calendar-toolbar{align-items:stretch;flex-direction:column;position:static}.calendar-toolbar-left,.calendar-toolbar-right{justify-content:center}.calendar-title{min-width:auto}.calendar-cell{min-height:86px;padding:5px}.calendar-cell-number{width:22px;height:22px;font-size:11px}.calendar-chip{font-size:10px;padding:3px 4px}.calendar-agenda-item{grid-template-columns:1fr auto}.calendar-time{grid-column:1/-1}.calendar-weekday{font-size:10px;padding:8px 2px}}
@@ -562,6 +577,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         </div>
         <div class="calendar-view-toggle">
           <button class="calendar-view-btn active" id="calendar-view-month-btn" type="button">Mês</button>
+          <button class="calendar-view-btn" id="calendar-view-week-btn" type="button">Semana</button>
           <button class="calendar-view-btn" id="calendar-view-day-btn" type="button">Dia</button>
         </div>
         <div id="calendar-month-view">
@@ -569,6 +585,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
           <div class="calendar-weekday">Dom</div><div class="calendar-weekday">Seg</div><div class="calendar-weekday">Ter</div><div class="calendar-weekday">Qua</div><div class="calendar-weekday">Qui</div><div class="calendar-weekday">Sex</div><div class="calendar-weekday">Sáb</div>
         </div>
         <div class="calendar-month-grid" id="calendar-grid"></div>
+        </div>
+        <div class="calendar-week-view" id="calendar-week-view">
+          <div class="calendar-week-header">
+            <button class="calendar-btn" id="cal-prev-week">‹ Semana anterior</button>
+            <h3 id="calendar-week-title">Semana</h3>
+            <button class="calendar-btn" id="cal-next-week">Próxima semana ›</button>
+          </div>
+          <div class="calendar-week-grid-view" id="calendar-week-grid-view"></div>
         </div>
         <div class="calendar-day-view" id="calendar-day-view">
           <div class="calendar-day-header">
@@ -1564,11 +1588,17 @@ function changeCalendarDay(delta){
   calendarCurrentDate=new Date(calendarSelectedDate.getFullYear(),calendarSelectedDate.getMonth(),1);
   renderCalendario();
 }
+function changeCalendarWeek(delta){
+  calendarSelectedDate.setDate(calendarSelectedDate.getDate()+(delta*7));
+  calendarCurrentDate=new Date(calendarSelectedDate.getFullYear(),calendarSelectedDate.getMonth(),1);
+  renderCalendario();
+}
 window.changeCalendarMonth=changeCalendarMonth;
 window.goCalendarToday=goCalendarToday;
 window.toggleCalendarAgenda=toggleCalendarAgenda;
 window.setCalendarView=setCalendarView;
 window.changeCalendarDay=changeCalendarDay;
+window.changeCalendarWeek=changeCalendarWeek;
 
 function renderCalendario(){
   try{
@@ -1578,6 +1608,9 @@ function renderCalendario(){
   const agendaList=document.getElementById("calendar-agenda-list");
   const agendaBox=document.getElementById("calendar-agenda");
   const monthView=document.getElementById("calendar-month-view");
+  const weekView=document.getElementById("calendar-week-view");
+  const weekTitle=document.getElementById("calendar-week-title");
+  const weekGrid=document.getElementById("calendar-week-grid-view");
   const dayView=document.getElementById("calendar-day-view");
   const dayTitle=document.getElementById("calendar-day-title");
   const dayList=document.getElementById("calendar-day-list");
@@ -1593,8 +1626,10 @@ function renderCalendario(){
   if(agendaBox)agendaBox.style.display=calendarAgendaVisible?"block":"none";
 
   document.getElementById("calendar-view-month-btn")?.classList.toggle("active",calendarViewMode==="month");
+  document.getElementById("calendar-view-week-btn")?.classList.toggle("active",calendarViewMode==="week");
   document.getElementById("calendar-view-day-btn")?.classList.toggle("active",calendarViewMode==="day");
   if(monthView)monthView.style.display=calendarViewMode==="month"?"block":"none";
+  if(weekView)weekView.style.display=calendarViewMode==="week"?"block":"none";
   if(dayView)dayView.style.display=calendarViewMode==="day"?"block":"none";
 
   const selectedKey=dateKeyLocal(calendarSelectedDate);
@@ -1615,6 +1650,25 @@ function renderCalendario(){
         <button class="btn-del" onclick="delCalendarioItem('${item.id}','${item.studentUid}')">×</button>
       </div>
     `).join(""):`<div class="calendar-day-empty"><div style="font-size:28px;margin-bottom:6px">📭</div>Nenhum item neste dia.</div>`;
+  }
+
+  if(weekTitle&&weekGrid){
+    const weekStart=new Date(calendarSelectedDate);
+    weekStart.setDate(calendarSelectedDate.getDate()-calendarSelectedDate.getDay());
+    const weekEnd=new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate()+6);
+    weekTitle.textContent=`Semana de ${weekStart.getDate()} a ${weekEnd.getDate()} de ${monthNames[weekEnd.getMonth()]} de ${weekEnd.getFullYear()}`;
+    const todayKey=today();
+    weekGrid.innerHTML=Array.from({length:7}).map((_,i)=>{
+      const d=new Date(weekStart);
+      d.setDate(weekStart.getDate()+i);
+      const key=dateKeyLocal(d);
+      const dayEvents=list.filter(item=>item.date===key).sort((a,b)=>(a.start||"").localeCompare(b.start||""));
+      return `<div class="calendar-week-day-view ${key===todayKey?"today":""} ${key===selectedKey?"selected":""}" onclick="prefillCalendarDate('${key}');calendarSelectedDate=new Date('${key}T12:00:00');calendarViewMode='day';renderCalendario();">
+        <div class="calendar-week-day-head">${dayNames[d.getDay()]}<br><span class="calendar-week-day-num">${d.getDate()}</span></div>
+        ${dayEvents.length?dayEvents.map(item=>`<button class="calendar-week-item ${safeText(item.type||"compromisso")}" title="${safeText(item.title)}" onclick="event.stopPropagation();focusCalendarAgenda('${item.id}','${safeText(item.studentUid||ownUid())}')">${item.start?safeText(item.start)+" ":""}${iconForCalendar(item.type)} ${safeText(item.title)}</button>`).join(""):'<div style="font-size:11px;color:var(--cinza);text-align:center">Livre</div>'}
+      </div>`;
+    }).join("");
   }
 
   const first=new Date(year,month,1);
@@ -1911,7 +1965,10 @@ document.addEventListener("DOMContentLoaded",()=>{
   bind("cal-next-month",()=>changeCalendarMonth(1));
   bind("calendar-agenda-toggle",()=>toggleCalendarAgenda());
   bind("calendar-view-month-btn",()=>setCalendarView("month"));
+  bind("calendar-view-week-btn",()=>setCalendarView("week"));
   bind("calendar-view-day-btn",()=>setCalendarView("day"));
+  bind("cal-prev-week",()=>changeCalendarWeek(-1));
+  bind("cal-next-week",()=>changeCalendarWeek(1));
   bind("cal-prev-day",()=>changeCalendarDay(-1));
   bind("cal-next-day",()=>changeCalendarDay(1));
 
