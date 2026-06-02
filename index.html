@@ -145,12 +145,12 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 
 /* CALENDÁRIO VISUAL */
 .calendar-shell{background:#fff;border:1.5px solid var(--borda);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px}
-.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--borda);background:#fff;position:sticky;top:65px;z-index:4}
+.calendar-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--borda);background:#fff;position:static;top:auto;z-index:1}
 .calendar-toolbar-left,.calendar-toolbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .calendar-title{font-size:18px;font-weight:800;color:var(--azul);text-transform:capitalize;min-width:170px;text-align:center}
 .calendar-btn{background:var(--bg);color:var(--azul);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:800;white-space:nowrap}
 .calendar-btn.primary{background:var(--verde);color:#fff}
-.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--borda);background:#fbfcfc}
+.calendar-weekdays{display:grid;grid-template-columns:repeat(7,1fr);border-bottom:1px solid var(--borda);background:#fbfcfc;position:relative;z-index:1}
 .calendar-weekday{text-align:center;font-size:12px;font-weight:800;color:var(--cinza);padding:10px 4px;text-transform:uppercase}
 .calendar-month-grid{display:grid;grid-template-columns:repeat(7,1fr);background:var(--borda);gap:1px}
 .calendar-cell{min-height:118px;background:#fff;padding:8px;position:relative;overflow:hidden}
