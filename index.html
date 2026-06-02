@@ -310,6 +310,22 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <button class="btn-add" onclick="createStudentLogin()">Criar login do aluno</button>
       </div>
 
+      <div class="card master-only" style="display:none">
+        <div class="card-title">Criar acesso de professor</div>
+        <p style="font-size:13px;color:var(--cinza);line-height:1.4;margin-bottom:12px">
+          Acesso exclusivo do mestre. Crie um login simples para outro professor. No primeiro acesso, ele será obrigado a trocar a senha.
+        </p>
+        <div class="form-row">
+          <div class="form-field"><label>Nome do professor</label><input type="text" id="new-teacher-name" placeholder="Ex: Prof. Ana"></div>
+          <div class="form-field"><label>Login do professor</label><input type="text" id="new-teacher-login" placeholder="Ex: prof.ana"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Senha provisória</label><input type="text" id="new-teacher-pass" placeholder="Mínimo 6 caracteres"></div>
+          <div class="form-field"><label>Observação</label><input type="text" id="new-teacher-note" placeholder="Opcional"></div>
+        </div>
+        <button class="btn-add" onclick="createTeacherLogin()">Criar login do professor</button>
+      </div>
+
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Alunos cadastrados</div>
         <div id="lista-alunos"></div>
@@ -545,7 +561,7 @@ function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
 function normalizeLogin(login){return String(login||"").trim().toLowerCase().replace(/\s+/g,"")}
 function loginToEmail(login){return `${normalizeLogin(login)}@${STUDENT_LOGIN_DOMAIN}`}
 function hasTeacherPermission(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.role==="teacher" || currentProfile?.financeiro===true}
-function isPauloMaster(){return hasTeacherPermission()}
+function isPauloMaster(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.admin===true}
 function isTeacher(){return hasTeacherPermission() && currentAccessMode==="teacher"}
 function isStudentMode(){return !isTeacher()}
 function isFinanceUser(){return isTeacher()}
@@ -722,6 +738,49 @@ async function createStudentLogin(){
     else alert(firebaseErrorMessage(e));
   }
 }
+
+async function createTeacherLogin(){
+  if(!isPauloMaster())return alert("Apenas o acesso mestre pode criar professor.");
+  const name=document.getElementById("new-teacher-name").value.trim();
+  const login=normalizeLogin(document.getElementById("new-teacher-login").value);
+  const pass=document.getElementById("new-teacher-pass").value.trim();
+  const note=document.getElementById("new-teacher-note").value.trim();
+  if(!name)return alert("Digite o nome do professor.");
+  if(!/^[a-z0-9._-]{3,30}$/.test(login))return alert("Login inválido. Use 3 a 30 caracteres: letras, números, ponto, hífen ou underline.");
+  if(pass.length<6)return alert("A senha provisória precisa ter pelo menos 6 caracteres.");
+  const email=loginToEmail(login);
+  try{
+    const resp=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email,password:pass,returnSecureToken:true})
+    });
+    const data=await resp.json();
+    if(!resp.ok)throw {code:data?.error?.message || "auth/create-teacher-failed", message:data?.error?.message || "Erro ao criar professor."};
+    const uid=data.localId;
+    await db.ref("users/"+uid).set({
+      name,
+      email,
+      username:login,
+      loginEmail:email,
+      note,
+      role:"teacher",
+      financeiro:true,
+      admin:false,
+      mustChangePassword:true,
+      createdBy:ownUid(),
+      createdByEmail:userEmail(),
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    });
+    ["new-teacher-name","new-teacher-login","new-teacher-pass","new-teacher-note"].forEach(id=>document.getElementById(id).value="");
+    alert(`Professor criado!\n\nLogin: ${login}\nSenha provisória: ${pass}\n\nNo primeiro acesso ele deverá trocar a senha.`);
+  }catch(e){
+    const msg=String(e?.code||e?.message||"");
+    if(msg.includes("EMAIL_EXISTS")) alert("Esse login já existe. Escolha outro.");
+    else alert(firebaseErrorMessage(e));
+  }
+}
+
 async function loadOrCreateUserProfile(){
   const snap=await db.ref("users/"+currentUser.uid).once("value");
   if(snap.exists()){
@@ -729,12 +788,12 @@ async function loadOrCreateUserProfile(){
     if(currentUser.email.toLowerCase()===PROFESSOR_EMAIL && currentProfile.role!=="teacher"){
       currentProfile.role="teacher";
       currentProfile.financeiro=true;
-      await db.ref("users/"+currentUser.uid).update({role:"teacher",financeiro:true});
+      await db.ref("users/"+currentUser.uid).update({role:"teacher",financeiro:true,admin:true});
     }
     return;
   }
   const isProf=currentUser.email.toLowerCase()===PROFESSOR_EMAIL;
-  currentProfile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isProf?"teacher":"student",financeiro:isProf,createdAt:firebase.database.ServerValue.TIMESTAMP};
+  currentProfile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isProf?"teacher":"student",financeiro:isProf,admin:isProf,createdAt:firebase.database.ServerValue.TIMESTAMP};
   await db.ref("users/"+currentUser.uid).set(currentProfile);
 }
 
@@ -751,9 +810,10 @@ function initApp(){
 function applyPermissions(){
   const teacher=isTeacher();
   document.querySelectorAll(".teacher-only").forEach(el=>el.style.display=teacher?"":"none");
+  document.querySelectorAll(".master-only").forEach(el=>el.style.display=(teacher && isPauloMaster())?"":"none");
   document.querySelectorAll(".student-only").forEach(el=>el.style.display=hasTeacherPermission()?"none":"");
   document.querySelectorAll(".finance-only").forEach(el=>el.style.display=isFinanceUser()?"":"none");
-  const badge=document.getElementById("teacher-badge"); if(badge){badge.style.display=isPauloMaster()?"inline-block":"none";badge.textContent=teacher?"Acesso professor completo":"Acesso aluno";}
+  const badge=document.getElementById("teacher-badge"); if(badge){badge.style.display=hasTeacherPermission()?"inline-block":"none";badge.textContent=teacher?(isPauloMaster()?"Acesso mestre/professor":"Acesso professor"):"Acesso aluno";}
   const info=document.getElementById("student-answer-info"); if(info)info.style.display=teacher?"none":"block";
 }
 function attachRealtimeListeners(){
