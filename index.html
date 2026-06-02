@@ -551,6 +551,12 @@ function isStudentMode(){return !isTeacher()}
 function isFinanceUser(){return isTeacher()}
 function ownUid(){return currentUser?.uid||""}
 function safeText(t){return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function attachmentBadge(url,nome,label="Anexo"){
+  if(!url)return "";
+  const safeUrl=safeText(url);
+  const safeName=safeText(nome||label||"Anexo");
+  return `<a class="badge ok" href="${safeUrl}" target="_blank" rel="noopener">📎 ${safeName}</a>`;
+}
 function formatDate(str){if(!str)return"";const [y,m,d]=str.split("-");return`${d}/${m}/${y}`}
 function formatMoney(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
 function objToArray(obj){return obj?Object.entries(obj).map(([id,value])=>({id,...value})):[]}
@@ -920,19 +926,24 @@ async function delTarefa(id,studentUid){
 }
 function renderTarefas(){
   const list=isTeacher()?allTarefas:tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
-  if(!list.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}
-  const cols=[
-    {key:"pendente",title:"A fazer",icon:"📌"},
-    {key:"andamento",title:"Em andamento",icon:"🚧"},
-    {key:"concluida",title:"Concluídas",icon:"✅"}
-  ];
-  el.innerHTML=`<div class="kanban-board">${cols.map(col=>{
-    const items=list.filter(t=>normalizeTaskStatus(t)===col.key);
-    return `<div class="kanban-col">
-      <div class="kanban-title"><span>${col.icon} ${col.title}</span><span class="kanban-count">${items.length}</span></div>
-      ${items.length?items.map(t=>renderTaskCard(t)).join(""):'<div class="empty-state" style="padding:18px;font-size:13px"><div>—</div>Sem tarefas</div>'}
-    </div>`;
-  }).join("")}</div>`;
+  try{
+    if(!list.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}
+    const cols=[
+      {key:"pendente",title:"A fazer",icon:"📌"},
+      {key:"andamento",title:"Em andamento",icon:"🚧"},
+      {key:"concluida",title:"Concluídas",icon:"✅"}
+    ];
+    el.innerHTML=`<div class="kanban-board">${cols.map(col=>{
+      const items=list.filter(t=>normalizeTaskStatus(t)===col.key);
+      return `<div class="kanban-col">
+        <div class="kanban-title"><span>${col.icon} ${col.title}</span><span class="kanban-count">${items.length}</span></div>
+        ${items.length?items.map(t=>renderTaskCard(t)).join(""):'<div class="empty-state" style="padding:18px;font-size:13px"><div>—</div>Sem tarefas</div>'}
+      </div>`;
+    }).join("")}</div>`;
+  }catch(e){
+    console.error(e);
+    el.innerHTML='<div class="empty-state"><div>⚠️</div>Erro ao renderizar tarefas. Atualize a página.</div>';
+  }
 }
 function renderTaskCard(t){
   const status=normalizeTaskStatus(t);
@@ -955,9 +966,14 @@ function renderTaskCard(t){
 }
 function renderPainelTarefas(){
   const el=document.getElementById("painel-tarefas"); if(!el)return;
-  const list=(isTeacher()?allTarefas:tarefas).filter(t=>normalizeTaskStatus(t)!=="concluida").slice(0,5);
-  if(!list.length){el.innerHTML='<p style="color:var(--cinza);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';return}
-  el.innerHTML=list.map(t=>`<div class="item"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge">${safeText(t.materia)}</span>`:""}<span class="badge ${taskStatusBadgeClass(normalizeTaskStatus(t))}">${taskStatusLabel(normalizeTaskStatus(t))}</span>${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}</div></div>`).join("");
+  try{
+    const list=(isTeacher()?allTarefas:tarefas).filter(t=>normalizeTaskStatus(t)!=="concluida").slice(0,5);
+    if(!list.length){el.innerHTML='<p style="color:var(--cinza);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';return}
+    el.innerHTML=list.map(t=>`<div class="item"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge">${safeText(t.materia)}</span>`:""}<span class="badge ${taskStatusBadgeClass(normalizeTaskStatus(t))}">${taskStatusLabel(normalizeTaskStatus(t))}</span>${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}</div></div>`).join("");
+  }catch(e){
+    console.error(e);
+    el.innerHTML='<p style="color:var(--danger);font-size:13px">Erro ao carregar tarefas pendentes.</p>';
+  }
 }
 
 function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inicio.split(":").map(Number),[hf,mf]=fim.split(":").map(Number);let i=hi*60+mi,f=hf*60+mf;if(f<i)f+=1440;return f-i}
