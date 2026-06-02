@@ -61,7 +61,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 .topbar-logo .logo-mark{width:36px;height:36px;border-radius:10px;font-size:14px}
 .topbar-logo span{font-size:17px;font-weight:800}
 .btn-logout{background:var(--bg);color:var(--cinza);padding:8px 14px;border-radius:50px;font-size:12px;font-weight:800}
-.app-content{flex:1;padding:16px;max-width:860px;width:100%;margin:auto}
+.app-content{flex:1;padding:16px 16px calc(78px + env(safe-area-inset-bottom));max-width:860px;width:100%;margin:0 auto}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 .card,.stat-card,.prog-stat{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;margin-bottom:14px}
@@ -273,6 +273,34 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 
 @media(min-width:680px){.stats-grid,.prog-stats{grid-template-columns:repeat(4,1fr)}.app-content{padding:24px}}
 @media(max-width:520px){.form-row{grid-template-columns:1fr}.bottom-nav{justify-content:flex-start}.stat-num{font-size:20px}}
+
+/* Ajuste de layout: remove espaços grandes e melhora navegador/celular */
+#screen-app.active{display:flex;align-items:stretch}
+.screen.active{min-height:100vh}
+.topbar{min-height:58px}
+.card,.stat-card,.prog-stat{margin-bottom:12px}
+.painel-saudacao{margin-top:0}
+.tab-panel.active{animation:none}
+.global-filter-bar{display:none!important;height:0!important;padding:0!important;margin:0!important;border:0!important;overflow:hidden!important}
+@media(max-width:720px){
+  .app-content{padding:12px 10px calc(82px + env(safe-area-inset-bottom));max-width:100%}
+  .topbar{padding:10px 12px}
+  .topbar-logo span{font-size:15px}
+  .topbar-logo .logo-mark{width:34px;height:34px}
+  .btn-small{padding:7px 10px;font-size:11px}
+  .btn-logout{padding:7px 11px}
+  .card{padding:14px}
+  .painel-saudacao{padding:18px 16px}
+  .painel-saudacao h2{font-size:20px}
+  .stats-grid,.prog-stats{gap:8px}
+  .stat-card,.prog-stat{padding:14px 10px}
+  .bottom-nav{padding:6px 0 max(6px,env(safe-area-inset-bottom))}
+  .nav-item{min-width:56px;padding:5px 6px}
+}
+@media(min-width:721px){
+  .app-content{padding-top:18px}
+}
+
 </style>
 </head>
 <body>
