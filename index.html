@@ -230,6 +230,16 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 .plan-pill{display:inline-block;background:#e8f5f3;color:var(--verde-dark);border-radius:50px;padding:4px 9px;font-size:11px;font-weight:800;margin:2px}
 @media(max-width:680px){.plan-grid{grid-template-columns:1fr}}
 
+.week-schedule-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:10px}
+.week-day-card{background:#fff;border:1.5px solid var(--borda);border-radius:12px;padding:10px;min-height:110px}
+.week-day-title{font-size:12px;font-weight:800;color:var(--azul);margin-bottom:8px;text-align:center}
+.week-schedule-item{background:var(--bg);border-radius:8px;padding:7px;margin-bottom:6px;font-size:11px;color:var(--azul);line-height:1.25}
+.week-schedule-item strong{display:block;font-size:11px;color:var(--verde-dark)}
+.week-schedule-item button{margin-top:5px;font-size:10px;background:transparent;color:var(--danger);font-weight:800}
+@media(max-width:780px){.week-schedule-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.week-schedule-grid{grid-template-columns:1fr}}
+
+
 @media(min-width:680px){.stats-grid,.prog-stats{grid-template-columns:repeat(4,1fr)}.app-content{padding:24px}}
 @media(max-width:520px){.form-row{grid-template-columns:1fr}.bottom-nav{justify-content:flex-start}.stat-num{font-size:20px}}
 </style>
@@ -614,6 +624,43 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
             <div class="form-field"><label>Meta de estudo</label><input type="text" id="pl-sem-meta" placeholder="Ex: 300 min, 10 tarefas, 2 simulados"></div>
           </div>
           <div class="form-field"><label>O que não pode faltar esta semana</label><textarea id="pl-sem-essencial"></textarea></div>
+
+          <div class="card-title" style="margin-top:12px">Cronograma fácil da semana</div>
+          <p style="font-size:13px;color:var(--cinza);line-height:1.4;margin-bottom:12px">
+            Monte o que fazer em cada dia. Pode ser estudo, aula, revisão, tarefa, descanso ou compromisso.
+          </p>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Dia</label>
+              <select id="pl-cron-dia">
+                <option value="Segunda">Segunda</option>
+                <option value="Terça">Terça</option>
+                <option value="Quarta">Quarta</option>
+                <option value="Quinta">Quinta</option>
+                <option value="Sexta">Sexta</option>
+                <option value="Sábado">Sábado</option>
+                <option value="Domingo">Domingo</option>
+              </select>
+            </div>
+            <div class="form-field"><label>Início</label><input type="time" id="pl-cron-inicio"></div>
+            <div class="form-field"><label>Fim</label><input type="time" id="pl-cron-fim"></div>
+            <div class="form-field">
+              <label>Tipo</label>
+              <select id="pl-cron-tipo">
+                <option value="Estudo">Estudo</option>
+                <option value="Aula">Aula</option>
+                <option value="Revisão">Revisão</option>
+                <option value="Questões">Questões</option>
+                <option value="Tarefa">Tarefa</option>
+                <option value="Compromisso">Compromisso</option>
+                <option value="Descanso">Descanso</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-field"><label>O que fazer</label><input type="text" id="pl-cron-atividade" placeholder="Ex: resolver 10 questões de matemática"></div>
+          <button class="btn-small primary" onclick="addCronogramaSemana()" style="margin-bottom:12px">Adicionar ao cronograma</button>
+          <div id="cronograma-semana-lista" class="week-schedule-grid"></div>
+
           <div class="card-title" style="margin-top:12px">Checklist semanal</div>
           <div class="plan-checklist">
             <label class="plan-check-item"><input type="checkbox" id="pl-sem-c1"> Estudar pelo menos 5 dias</label>
@@ -727,7 +774,7 @@ if(firebaseConfig.apiKey && firebaseConfig.databaseURL){
 let currentUser=null,currentProfile=null,currentAccessMode=null;
 let calendarCurrentDate = new Date();
 let calendarAgendaVisible = true;
-let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},unsubscribers=[];
+let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],unsubscribers=[];
 let globalStudentFilter="all";
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
@@ -1544,6 +1591,38 @@ function renderHabitos(){
 }
 
 
+
+function addCronogramaSemana(){
+  const dia=document.getElementById("pl-cron-dia")?.value||"Segunda";
+  const inicio=document.getElementById("pl-cron-inicio")?.value||"";
+  const fim=document.getElementById("pl-cron-fim")?.value||"";
+  const tipo=document.getElementById("pl-cron-tipo")?.value||"Estudo";
+  const atividade=document.getElementById("pl-cron-atividade")?.value.trim()||"";
+  if(!atividade)return alert("Digite o que será feito no cronograma.");
+  cronogramaSemana.push({id:Date.now(),dia,inicio,fim,tipo,atividade});
+  ["pl-cron-inicio","pl-cron-fim","pl-cron-atividade"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+  renderCronogramaSemana();
+}
+function delCronogramaSemana(id){
+  cronogramaSemana=cronogramaSemana.filter(x=>String(x.id)!==String(id));
+  renderCronogramaSemana();
+}
+function renderCronogramaSemana(){
+  const el=document.getElementById("cronograma-semana-lista");if(!el)return;
+  const dias=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+  el.innerHTML=dias.map(dia=>{
+    const itens=cronogramaSemana.filter(x=>x.dia===dia).sort((a,b)=>(a.inicio||"").localeCompare(b.inicio||""));
+    return `<div class="week-day-card">
+      <div class="week-day-title">${dia}</div>
+      ${itens.length?itens.map(x=>`<div class="week-schedule-item">
+        <strong>${safeText(x.inicio||"--:--")} ${x.fim?`às ${safeText(x.fim)}`:""} · ${safeText(x.tipo)}</strong>
+        ${safeText(x.atividade)}
+        <button onclick="delCronogramaSemana('${x.id}')">remover</button>
+      </div>`).join(""):'<div style="font-size:11px;color:var(--cinza);text-align:center">Livre</div>'}
+    </div>`;
+  }).join("");
+}
+
 function switchPlanTab(tab){
   document.querySelectorAll(".plan-tab").forEach(b=>b.classList.remove("active"));
   document.querySelectorAll(".plan-panel").forEach(p=>p.style.display="none");
@@ -1582,7 +1661,8 @@ function getPlanejamentoFromForm(){
       c2:document.getElementById("pl-sem-c2")?.checked||false,
       c3:document.getElementById("pl-sem-c3")?.checked||false,
       c4:document.getElementById("pl-sem-c4")?.checked||false,
-      c5:document.getElementById("pl-sem-c5")?.checked||false
+      c5:document.getElementById("pl-sem-c5")?.checked||false,
+      cronograma:cronogramaSemana
     },
     revisao:{
       certo:document.getElementById("pl-rev-certo")?.value||"",
@@ -1612,6 +1692,8 @@ function fillPlanejamento(){
   setVal("pl-mes-objetivo",p.mes?.objetivo);setVal("pl-mes-p1",p.mes?.p1);setVal("pl-mes-p2",p.mes?.p2);setVal("pl-mes-p3",p.mes?.p3);setVal("pl-mes-meta",p.mes?.meta);setVal("pl-mes-conteudos",p.mes?.conteudos);setVal("pl-mes-eventos",p.mes?.eventos);
   setVal("pl-sem-foco",p.semana?.foco);setVal("pl-sem-p1",p.semana?.p1);setVal("pl-sem-p2",p.semana?.p2);setVal("pl-sem-p3",p.semana?.p3);setVal("pl-sem-meta",p.semana?.meta);setVal("pl-sem-essencial",p.semana?.essencial);
   setChecked("pl-sem-c1",p.semana?.c1);setChecked("pl-sem-c2",p.semana?.c2);setChecked("pl-sem-c3",p.semana?.c3);setChecked("pl-sem-c4",p.semana?.c4);setChecked("pl-sem-c5",p.semana?.c5);
+  cronogramaSemana=Array.isArray(p.semana?.cronograma)?p.semana.cronograma:[];
+  renderCronogramaSemana();
   setVal("pl-rev-certo",p.revisao?.certo);setVal("pl-rev-errado",p.revisao?.errado);setVal("pl-rev-aprendi",p.revisao?.aprendi);setVal("pl-rev-melhorar",p.revisao?.melhorar);setVal("pl-rev-nota",p.revisao?.nota||"7");
   const lab=document.getElementById("pl-rev-nota-label");if(lab)lab.textContent=p.revisao?.nota||"7";
 }
@@ -1620,11 +1702,12 @@ function renderPlanejamentoResumo(){
   const p=planejamento||{};
   const metas=[p.trimestre?.meta1,p.trimestre?.meta2,p.trimestre?.meta3].filter(Boolean).map(x=>`<span class="plan-pill">${safeText(x)}</span>`).join("");
   const prioridades=[p.semana?.p1,p.semana?.p2,p.semana?.p3].filter(Boolean).map(x=>`<span class="plan-pill">${safeText(x)}</span>`).join("");
+  const qtdCronograma=Array.isArray(p.semana?.cronograma)?p.semana.cronograma.length:0;
   if(!p.trimestre&&!p.mes&&!p.semana&&!p.revisao){el.innerHTML='<div class="empty-state"><div>🧭</div>Nenhum planejamento salvo ainda.</div>';return}
   el.innerHTML=`
     <div class="plan-summary"><h4>🎯 Trimestre</h4><p>${safeText(p.trimestre?.objetivo||"Sem objetivo definido.")}</p>${metas||""}</div>
     <div class="plan-summary"><h4>📌 Mês</h4><p>${safeText(p.mes?.objetivo||"Sem foco mensal definido.")}</p>${p.mes?.meta?`<span class="plan-pill">Meta: ${safeText(p.mes.meta)}</span>`:""}</div>
-    <div class="plan-summary"><h4>⚡ Semana</h4><p>${safeText(p.semana?.foco||"Sem foco semanal definido.")}</p>${prioridades||""}</div>
+    <div class="plan-summary"><h4>⚡ Semana</h4><p>${safeText(p.semana?.foco||"Sem foco semanal definido.")}</p>${prioridades||""}${qtdCronograma?`<span class="plan-pill">${qtdCronograma} itens no cronograma</span>`:""}</div>
     <div class="plan-summary"><h4>🔁 Revisão</h4><p>${safeText(p.revisao?.melhorar||"Sem revisão salva.")}</p>${p.revisao?.nota?`<span class="plan-pill">Nota da semana: ${safeText(p.revisao.nota)}/10</span>`:""}</div>
   `;
 }
