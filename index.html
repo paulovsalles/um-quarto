@@ -176,6 +176,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 .bottom-nav{background:#fff;border-top:1.5px solid var(--borda);display:flex;align-items:center;justify-content:space-around;gap:4px;padding:8px 0 max(8px,env(safe-area-inset-bottom));position:sticky;bottom:0;z-index:10;overflow-x:auto}
 .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:58px;color:var(--cinza);background:transparent;font-size:10px;font-weight:800;padding:6px 7px;border-radius:10px}
 .nav-item.active{color:var(--verde)}
+
+.kanban-board{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+.kanban-col{background:var(--bg);border:1.5px solid var(--borda);border-radius:14px;padding:12px;min-height:180px}
+.kanban-title{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:800;color:var(--azul);margin-bottom:10px}
+.kanban-count{background:#fff;border:1px solid var(--borda);border-radius:50px;padding:2px 8px;font-size:11px;color:var(--cinza)}
+.kanban-card{background:#fff;border:1.5px solid var(--borda);border-radius:12px;padding:12px;margin-bottom:10px;box-shadow:0 1px 5px rgba(40,71,84,.05)}
+.kanban-card-title{font-size:14px;font-weight:800;color:var(--azul);line-height:1.25}
+.kanban-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.kanban-actions .btn-small{padding:6px 9px;font-size:11px}
+.export-actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+@media(max-width:760px){.kanban-board{grid-template-columns:1fr}.kanban-col{min-height:auto}}
+
 @media(min-width:680px){.stats-grid,.prog-stats{grid-template-columns:repeat(4,1fr)}.app-content{padding:24px}}
 @media(max-width:520px){.form-row{grid-template-columns:1fr}.bottom-nav{justify-content:flex-start}.stat-num{font-size:20px}}
 </style>
@@ -306,25 +318,39 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 
     <div id="tab-tarefas" class="tab-panel">
       <div class="add-form">
-        <h3>+ Nova tarefa</h3>
+        <h3>+ Nova tarefa geral</h3>
         <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="t-student"></select></div>
-        <div class="form-field"><label>Tarefa</label><input type="text" id="t-nome" placeholder="O que precisa fazer?"></div>
-        <div class="form-row"><div class="form-field"><label>Matéria</label><input type="text" id="t-materia" placeholder="Ex: Matemática"></div><div class="form-field"><label>Prazo</label><input type="date" id="t-prazo"></div></div>
+        <div class="form-field"><label>Tarefa</label><input type="text" id="t-nome" placeholder="Ex: Fazer lista, entregar trabalho, estudar capítulo..."></div>
+        <div class="form-row">
+          <div class="form-field"><label>Categoria/observação (opcional)</label><input type="text" id="t-materia" placeholder="Ex: Casa, escola, revisão, simulado..."></div>
+          <div class="form-field"><label>Prazo</label><input type="date" id="t-prazo"></div>
+        </div>
+        <div class="form-field"><label>Anexar PDF ou Word (opcional)</label><input type="file" id="t-anexo" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
         <button class="btn-add" onclick="addTarefa()">Adicionar tarefa</button>
       </div>
-      <div id="lista-tarefas"><div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div></div>
+      <div class="card">
+        <div class="card-title">Kanban de tarefas</div>
+        <div id="lista-tarefas"><div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div></div>
+      </div>
     </div>
 
     <div id="tab-aulas" class="tab-panel">
       <div class="add-form">
         <h3>+ Registrar aula</h3>
         <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="a-student"></select></div>
-        <div class="form-row"><div class="form-field"><label>Matéria</label><input type="text" id="a-materia" placeholder="Ex: Biologia"></div><div class="form-field"><label>Data</label><input type="date" id="a-data"></div></div>
+        <div class="form-row">
+          <div class="form-field"><label>Matéria/tema</label><input type="text" id="a-materia" placeholder="Ex: Matemática, Redação, Física..."></div>
+          <div class="form-field"><label>Data</label><input type="date" id="a-data"></div>
+        </div>
+        <div class="form-field teacher-only" style="display:none"><label>Escola do aluno</label><input type="text" id="a-escola" placeholder="Ex: Escola Estadual..., IFES, Salesiano..."></div>
         <div class="form-row"><div class="form-field"><label>Início</label><input type="time" id="a-inicio"></div><div class="form-field"><label>Fim</label><input type="time" id="a-fim"></div></div>
         <div class="form-field"><label>Conteúdo estudado</label><input type="text" id="a-conteudo" placeholder="Ex: Equações do 2º grau"></div>
         <div class="form-field"><label>Observações</label><input type="text" id="a-obs" placeholder="Opcional"></div>
         <div class="form-row finance-only" style="display:none"><div class="form-field"><label>Valor da aula (R$)</label><input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01"></div><div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Previsão</option><option value="recebido">Recebido</option></select></div></div>
         <button class="btn-add" onclick="addAula()">Registrar aula</button>
+      </div>
+      <div class="export-actions teacher-only" style="display:none">
+        <button class="btn-small primary" onclick="exportAulasCSV()">📥 Exportar aulas para planilha</button>
       </div>
       <div id="lista-aulas"><div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div></div>
     </div>
@@ -336,6 +362,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <div class="form-row"><div class="form-field"><label>Título</label><input type="text" id="av-title" placeholder="Ex: Lista de Matemática"></div><div class="form-field"><label>Matéria</label><input type="text" id="av-materia" placeholder="Ex: Matemática"></div></div>
         <div class="form-field"><label>Prazo</label><input type="date" id="av-prazo"></div>
         <div class="form-field"><label>Descrição</label><textarea id="av-desc" placeholder="Explique a avaliação, páginas, questões ou orientações..."></textarea></div>
+        <div class="form-field"><label>Anexar PDF ou Word (opcional)</label><input type="file" id="av-anexo-file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
         <div class="form-field"><label>Link do anexo/arquivo (opcional)</label><input type="url" id="av-anexo" placeholder="https://..."></div>
         <button class="btn-add" onclick="addAvaliacao()">Enviar avaliação</button>
       </div>
@@ -440,6 +467,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -452,11 +480,12 @@ const firebaseConfig = {
   appId: "1:1057520002134:web:c5e91e007bd6c2058ec7f7"
 };
 
-let auth=null, db=null, firebaseReady=false;
+let auth=null, db=null, storage=null, firebaseReady=false;
 if(firebaseConfig.apiKey && firebaseConfig.databaseURL){
   firebase.initializeApp(firebaseConfig);
   auth=firebase.auth();
   db=firebase.database();
+  storage=firebase.storage();
   firebaseReady=true;
 }
 
@@ -531,7 +560,8 @@ function firebaseErrorMessage(e){
   if(c.includes("invalid-credential"))return"E-mail ou senha incorretos.";
   if(c.includes("email-already-in-use"))return"Este e-mail já está cadastrado.";
   if(c.includes("weak-password"))return"Senha muito fraca. Use pelo menos 6 caracteres.";
-  if(c.includes("permission-denied"))return"Sem permissão no Realtime Database. Confira as Rules.";
+  if(c.includes("permission-denied"))return"Sem permissão. Confira as Rules do Realtime Database e do Storage.";
+  if(c.includes("storage/unauthorized"))return"Sem permissão para enviar arquivo. Confira as Rules do Storage.";
   return"Erro: "+(e?.message||"não foi possível concluir.");
 }
 if(firebaseReady){
@@ -647,6 +677,21 @@ function renderAlunos(){
 function countByStudent(list,uid){return list.filter(x=>x.studentUid===uid||x.ownerUid===uid).length}
 function selectedStudentOrSelf(selectId){return isTeacher()?(document.getElementById(selectId)?.value || ""):ownUid()}
 
+function normalizeTaskStatus(t){
+  if(t.status) return t.status;
+  return t.done ? "concluida" : "pendente";
+}
+function taskStatusLabel(status){
+  if(status==="andamento") return "Em andamento";
+  if(status==="concluida") return "Concluída";
+  return "A fazer";
+}
+function taskStatusBadgeClass(status){
+  if(status==="andamento") return "warn";
+  if(status==="concluida") return "ok";
+  return "";
+}
+
 function switchTab(tab){
   if(tab==="financeiro"&&!isFinanceUser())return alert("Acesso financeiro disponível apenas para o perfil autorizado.");
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
@@ -663,43 +708,131 @@ async function addTarefa(){
   if(!studentUid)return alert("Selecione um aluno.");
   const nome=document.getElementById("t-nome").value.trim();
   if(!nome)return alert("Digite o nome da tarefa.");
-  const payload={nome,materia:document.getElementById("t-materia").value.trim(),prazo:document.getElementById("t-prazo").value,done:false,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
+  const file=document.getElementById("t-anexo")?.files?.[0] || null;
+  if(file && !validateAttachment(file)) return;
   try{
+    const uploaded=file ? await uploadAttachment(file,studentUid,"tarefas") : null;
+    const payload={
+      nome,
+      materia:document.getElementById("t-materia").value.trim(),
+      prazo:document.getElementById("t-prazo").value,
+      status:"pendente",
+      done:false,
+      studentUid,
+      studentName:getUserName(studentUid),
+      studentEmail:getUserEmail(studentUid),
+      createdBy:ownUid(),
+      createdByEmail:userEmail(),
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    };
+    if(uploaded){
+      payload.anexoUrl=uploaded.url;
+      payload.anexoNome=uploaded.nome;
+      payload.anexoTipo=uploaded.tipo;
+      payload.anexoPath=uploaded.path;
+    }
     await db.ref("tarefas/"+studentUid).push(payload);
-    ["t-nome","t-materia","t-prazo"].forEach(id=>document.getElementById(id).value="");
-    alert("Tarefa enviada com sucesso!");
+    ["t-nome","t-materia","t-prazo","t-anexo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    alert("Tarefa salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
+}
+async function updateTarefaStatus(id,studentUid,status){
+  const uid=studentUid||ownUid();
+  if(uid!==ownUid()&&!isTeacher())return alert("Você não tem permissão para alterar esta tarefa.");
+  await db.ref("tarefas/"+uid+"/"+id).update({status,done:status==="concluida"});
 }
 async function toggleTarefa(id,studentUid){
   const uid=studentUid||ownUid();
   const list=isTeacher()?allTarefas:tarefas;
   const t=list.find(x=>x.id===id&&x.studentUid===uid);
-  if(t)await db.ref("tarefas/"+uid+"/"+id).update({done:!t.done});
+  if(!t)return;
+  const current=normalizeTaskStatus(t);
+  const next=current==="concluida"?"pendente":"concluida";
+  await updateTarefaStatus(id,uid,next);
 }
-async function delTarefa(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("tarefas/"+uid+"/"+id).remove()}
+async function delTarefa(id,studentUid){
+  const uid=studentUid||ownUid();
+  if(uid!==ownUid()&&!isTeacher())return;
+  await db.ref("tarefas/"+uid+"/"+id).remove();
+}
 function renderTarefas(){
   const list=isTeacher()?allTarefas:tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}
-  el.innerHTML=list.map(t=>`<div class="item tarefa-item ${t.done?"done":""}"><button class="check-btn ${t.done?"done":""}" onclick="toggleTarefa('${t.id}','${t.studentUid}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></button><div class="item-body"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge ok">📌 ${safeText(t.materia)}</span>`:""}${t.prazo?`<span class="badge warn">📅 ${formatDate(t.prazo)}</span>`:""}<span class="badge ${t.done?"ok":"warn"}">${t.done?"Concluída":"Pendente"}</span></div></div><button class="btn-del" onclick="delTarefa('${t.id}','${t.studentUid}')">×</button></div>`).join("");
+  const cols=[
+    {key:"pendente",title:"A fazer",icon:"📌"},
+    {key:"andamento",title:"Em andamento",icon:"🚧"},
+    {key:"concluida",title:"Concluídas",icon:"✅"}
+  ];
+  el.innerHTML=`<div class="kanban-board">${cols.map(col=>{
+    const items=list.filter(t=>normalizeTaskStatus(t)===col.key);
+    return `<div class="kanban-col">
+      <div class="kanban-title"><span>${col.icon} ${col.title}</span><span class="kanban-count">${items.length}</span></div>
+      ${items.length?items.map(t=>renderTaskCard(t)).join(""):'<div class="empty-state" style="padding:18px;font-size:13px"><div>—</div>Sem tarefas</div>'}
+    </div>`;
+  }).join("")}</div>`;
+}
+function renderTaskCard(t){
+  const status=normalizeTaskStatus(t);
+  return `<div class="kanban-card">
+    <div class="kanban-card-title">${safeText(t.nome)}</div>
+    <div class="item-meta">
+      ${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}
+      ${t.materia?`<span class="badge">🏷️ ${safeText(t.materia)}</span>`:""}
+      ${t.prazo?`<span class="badge warn">📅 ${formatDate(t.prazo)}</span>`:""}
+      <span class="badge ${taskStatusBadgeClass(status)}">${taskStatusLabel(status)}</span>
+      ${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}
+    </div>
+    <div class="kanban-actions">
+      ${status!=="pendente"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','pendente')">A fazer</button>`:""}
+      ${status!=="andamento"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','andamento')">Andamento</button>`:""}
+      ${status!=="concluida"?`<button class="btn-small primary" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','concluida')">Concluir</button>`:""}
+      <button class="btn-small" onclick="delTarefa('${t.id}','${t.studentUid}')">Excluir</button>
+    </div>
+  </div>`;
 }
 function renderPainelTarefas(){
   const el=document.getElementById("painel-tarefas"); if(!el)return;
-  const list=(isTeacher()?allTarefas:tarefas).filter(t=>!t.done).slice(0,5);
+  const list=(isTeacher()?allTarefas:tarefas).filter(t=>normalizeTaskStatus(t)!=="concluida").slice(0,5);
   if(!list.length){el.innerHTML='<p style="color:var(--cinza);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';return}
-  el.innerHTML=list.map(t=>`<div class="item"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge ok">${safeText(t.materia)}</span>`:""}</div></div>`).join("");
+  el.innerHTML=list.map(t=>`<div class="item"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge">${safeText(t.materia)}</span>`:""}<span class="badge ${taskStatusBadgeClass(normalizeTaskStatus(t))}">${taskStatusLabel(normalizeTaskStatus(t))}</span>${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}</div></div>`).join("");
 }
 
 function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inicio.split(":").map(Number),[hf,mf]=fim.split(":").map(Number);let i=hi*60+mi,f=hf*60+mf;if(f<i)f+=1440;return f-i}
 function formatDuracao(min){const n=Number(min||0),h=Math.floor(n/60),m=n%60;if(h&&m)return`${h}h${String(m).padStart(2,"0")}`;if(h)return`${h}h`;return`${m} min`}
 async function addAula(){
   const studentUid=selectedStudentOrSelf("a-student"); if(!studentUid)return alert("Selecione um aluno.");
-  const mat=document.getElementById("a-materia").value.trim(),data=document.getElementById("a-data").value||today(),inicio=document.getElementById("a-inicio").value,fim=document.getElementById("a-fim").value,cont=document.getElementById("a-conteudo").value.trim();
-  if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria, início, fim e conteúdo.");
+  const mat=document.getElementById("a-materia").value.trim(),
+    data=document.getElementById("a-data").value||today(),
+    inicio=document.getElementById("a-inicio").value,
+    fim=document.getElementById("a-fim").value,
+    cont=document.getElementById("a-conteudo").value.trim(),
+    escola=document.getElementById("a-escola")?.value.trim() || "";
+  if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria/tema, início, fim e conteúdo.");
   const dur=calcularDuracao(inicio,fim); if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
-  const aula={studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),userId:studentUid,userEmail:getUserEmail(studentUid),userName:getUserName(studentUid),materia:mat,data,inicio,fim,dur,conteudo:cont,obs:document.getElementById("a-obs").value.trim(),valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
+  const aula={
+    studentUid,
+    studentName:getUserName(studentUid),
+    studentEmail:getUserEmail(studentUid),
+    escola,
+    userId:studentUid,
+    userEmail:getUserEmail(studentUid),
+    userName:getUserName(studentUid),
+    materia:mat,
+    data,
+    inicio,
+    fim,
+    dur,
+    conteudo:cont,
+    obs:document.getElementById("a-obs").value.trim(),
+    valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,
+    statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",
+    createdBy:ownUid(),
+    createdByEmail:userEmail(),
+    createdAt:firebase.database.ServerValue.TIMESTAMP
+  };
   try{
     await db.ref("aulas/"+studentUid).push(aula);
-    ["a-materia","a-data","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
+    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
     alert("Aula salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
@@ -708,29 +841,73 @@ async function updateAulaFinanceiro(studentUid,id,campo,valor){if(!isFinanceUser
 function renderAulas(){
   const list=isTeacher()?allAulas:aulas,el=document.getElementById("lista-aulas"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}
-  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Previsão</option><option value="recebido" ${status==="recebido"?"selected":""}>Recebido</option></select></div></div></div>`:""}</div>`}).join("");
+  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Previsão</option><option value="recebido" ${status==="recebido"?"selected":""}>Recebido</option></select></div></div></div>`:""}</div>`}).join("");
+}
+function csvEscape(value){
+  const s=String(value??"").replaceAll('"','""');
+  return `"${s}"`;
+}
+function exportAulasCSV(){
+  if(!isTeacher())return alert("Exportação disponível apenas para professor.");
+  const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Materia_Tema","Conteudo","Observacoes","Valor","Status_financeiro"];
+  const rows=allAulas.map(a=>[
+    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),a.statusFinanceiro||"previsto"
+  ]);
+  const csv=[header,...rows].map(row=>row.map(csvEscape).join(";")).join("\n");
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=`aulas-um-quarto-${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 async function addAvaliacao(){
   const studentUid=selectedStudentOrSelf("av-student"); if(!studentUid)return alert("Selecione um aluno.");
   const title=document.getElementById("av-title").value.trim(),materia=document.getElementById("av-materia").value.trim(),prazo=document.getElementById("av-prazo").value,desc=document.getElementById("av-desc").value.trim(),anexo=document.getElementById("av-anexo").value.trim();
+  const file=document.getElementById("av-anexo-file")?.files?.[0] || null;
   if(!title||!materia||!desc)return alert("Preencha título, matéria e descrição.");
+  if(file && !validateAttachment(file)) return;
   try{
-    await db.ref("avaliacoes/"+studentUid).push({title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP});
-    ["av-title","av-materia","av-prazo","av-desc","av-anexo"].forEach(id=>document.getElementById(id).value="");
+    const uploaded=file ? await uploadAttachment(file,studentUid,"avaliacoes") : null;
+    const payload={title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
+    if(uploaded){
+      payload.anexoUrl=uploaded.url;
+      payload.anexoNome=uploaded.nome;
+      payload.anexoTipo=uploaded.tipo;
+      payload.anexoPath=uploaded.path;
+    }
+    await db.ref("avaliacoes/"+studentUid).push(payload);
+    ["av-title","av-materia","av-prazo","av-desc","av-anexo","av-anexo-file"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     alert("Avaliação enviada com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
 async function delAvaliacao(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("avaliacoes/"+uid+"/"+id).remove()}
 async function submitAvaliacao(id,studentUid){
   const texto=document.getElementById("resp-text-"+id)?.value.trim()||"", link=document.getElementById("resp-link-"+id)?.value.trim()||"";
-  if(!texto&&!link)return alert("Escreva uma resposta ou envie um link.");
-  await db.ref("avaliacoes/"+studentUid+"/"+id).update({respostaTexto:texto,respostaLink:link,status:"respondida",respondedAt:firebase.database.ServerValue.TIMESTAMP});
+  const file=document.getElementById("resp-file-"+id)?.files?.[0] || null;
+  if(file && !validateAttachment(file)) return;
+  if(!texto&&!link&&!file)return alert("Escreva uma resposta, envie um link ou anexe um arquivo.");
+  try{
+    const uploaded=file ? await uploadAttachment(file,studentUid,"respostas") : null;
+    const payload={respostaTexto:texto,respostaLink:link,status:"respondida",respondedAt:firebase.database.ServerValue.TIMESTAMP};
+    if(uploaded){
+      payload.respostaAnexoUrl=uploaded.url;
+      payload.respostaAnexoNome=uploaded.nome;
+      payload.respostaAnexoTipo=uploaded.tipo;
+      payload.respostaAnexoPath=uploaded.path;
+    }
+    await db.ref("avaliacoes/"+studentUid+"/"+id).update(payload);
+    alert("Resposta enviada com sucesso!");
+  }catch(e){alert(firebaseErrorMessage(e));}
 }
 function renderAvaliacoes(){
   const list=isTeacher()?allAvaliacoes:avaliacoes,el=document.getElementById("lista-avaliacoes"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📝</div>Nenhuma avaliação ainda.</div>';return}
-  el.innerHTML=list.map(av=>{const uid=av.studentUid||ownUid(),respondida=av.status==="respondida";return`<div class="item"><div class="aula-header"><div class="item-title">📝 ${safeText(av.title)}</div><button class="btn-del" onclick="delAvaliacao('${av.id}','${uid}')">×</button></div><div class="item-text">${safeText(av.desc)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(av.studentName||getUserName(uid))}</span>`:""}<span class="badge ok">${safeText(av.materia)}</span>${av.prazo?`<span class="badge warn">Prazo: ${formatDate(av.prazo)}</span>`:""}<span class="badge ${respondida?"ok":"warn"}">${respondida?"Respondida":"Aberta"}</span>${av.anexo?`<a class="badge" href="${safeText(av.anexo)}" target="_blank">📎 Anexo</a>`:""}</div>${isTeacher()?`<div class="answer-box"><strong>Resposta do aluno:</strong><div class="item-text">${safeText(av.respostaTexto||"Ainda sem resposta.")}</div>${av.respostaLink?`<a class="badge ok" href="${safeText(av.respostaLink)}" target="_blank">Abrir resposta/anexo</a>`:""}</div>`:`<div class="answer-box"><div class="form-field"><label>Sua resposta</label><textarea id="resp-text-${av.id}" placeholder="Digite sua resposta...">${safeText(av.respostaTexto||"")}</textarea></div><div class="form-field"><label>Link da resposta/anexo</label><input type="url" id="resp-link-${av.id}" value="${safeText(av.respostaLink||"")}" placeholder="https://..."></div><button class="btn-small primary" onclick="submitAvaliacao('${av.id}','${uid}')">Enviar resposta</button></div>`}</div>`}).join("");
+  el.innerHTML=list.map(av=>{const uid=av.studentUid||ownUid(),respondida=av.status==="respondida";return`<div class="item"><div class="aula-header"><div class="item-title">📝 ${safeText(av.title)}</div><button class="btn-del" onclick="delAvaliacao('${av.id}','${uid}')">×</button></div><div class="item-text">${safeText(av.desc)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(av.studentName||getUserName(uid))}</span>`:""}<span class="badge ok">${safeText(av.materia)}</span>${av.prazo?`<span class="badge warn">Prazo: ${formatDate(av.prazo)}</span>`:""}<span class="badge ${respondida?"ok":"warn"}">${respondida?"Respondida":"Aberta"}</span>${av.anexo?`<a class="badge" href="${safeText(av.anexo)}" target="_blank" rel="noopener">🔗 Link</a>`:""}${attachmentBadge(av.anexoUrl,av.anexoNome,"Anexo")}</div>${isTeacher()?`<div class="answer-box"><strong>Resposta do aluno:</strong><div class="item-text">${safeText(av.respostaTexto||"Ainda sem resposta.")}</div>${av.respostaLink?`<a class="badge ok" href="${safeText(av.respostaLink)}" target="_blank" rel="noopener">Abrir link da resposta</a>`:""}${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta")}</div>`:`<div class="answer-box"><div class="form-field"><label>Sua resposta</label><textarea id="resp-text-${av.id}" placeholder="Digite sua resposta...">${safeText(av.respostaTexto||"")}</textarea></div><div class="form-field"><label>Link da resposta/anexo</label><input type="url" id="resp-link-${av.id}" value="${safeText(av.respostaLink||"")}" placeholder="https://..."></div><div class="form-field"><label>Anexar resposta em PDF ou Word</label><input type="file" id="resp-file-${av.id}" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta enviada")}<button class="btn-small primary" onclick="submitAvaliacao('${av.id}','${uid}')">Enviar resposta</button></div>`}</div>`}).join("");
 }
 
 
@@ -845,7 +1022,7 @@ function renderHabitos(){
 function updateStats(){
   const taskList=isTeacher()?allTarefas:tarefas, aulaList=isTeacher()?allAulas:aulas, avList=isTeacher()?allAvaliacoes:avaliacoes;
   document.getElementById("stat-mins").textContent=Number(minsMap[today()]||0);
-  document.getElementById("stat-pending").textContent=taskList.filter(t=>!t.done).length;
+  document.getElementById("stat-pending").textContent=taskList.filter(t=>normalizeTaskStatus(t)!=="concluida").length;
   document.getElementById("stat-aulas").textContent=aulaList.length;
   document.getElementById("stat-avaliacoes").textContent=avList.filter(a=>a.status!=="respondida").length;
   renderPainelTarefas();updatePainelFinanceiro();
@@ -854,7 +1031,7 @@ function updateProgresso(){
   if(!currentUser)return;
   const taskList=isTeacher()?allTarefas:tarefas, aulaList=isTeacher()?allAulas:aulas, avList=isTeacher()?allAvaliacoes:avaliacoes;
   let total=0;Object.values(minsMap||{}).forEach(v=>total+=Number(v||0));
-  const tarDone=taskList.filter(t=>t.done).length, avDone=avList.filter(a=>a.status==="respondida").length;
+  const tarDone=taskList.filter(t=>normalizeTaskStatus(t)==="concluida").length, avDone=avList.filter(a=>a.status==="respondida").length;
   document.getElementById("prog-mins").textContent=total;document.getElementById("prog-tarefas").textContent=tarDone;document.getElementById("prog-aulas").textContent=aulaList.length;document.getElementById("prog-avaliacoes").textContent=avDone;
   const setBar=(id,valId,val,max)=>{const pct=Math.min(100,Math.round(val/max*100));document.getElementById(id).style.width=pct+"%";document.getElementById(valId).textContent=pct+"%"};
   let weekMins=0,days=[],labels=["D","S","T","Q","Q","S","S"];for(let i=6;i>=0;i--){const dt=new Date();dt.setDate(dt.getDate()-i);const k=dt.toISOString().slice(0,10),m=Number(minsMap[k]||0);weekMins+=m;days.push({m,label:labels[dt.getDay()]})}
@@ -865,7 +1042,7 @@ function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano
 function calcFinanceiro(){const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7),ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());let mp=0,mr=0,ap=0,ar=0;allAulas.forEach(a=>{const val=Number(a.valor||0),status=a.statusFinanceiro||"previsto",data=a.data||"";if(!data)return;if(data.slice(0,7)===mes){mp+=val;if(status==="recebido")mr+=val}if(data.slice(0,4)===String(ano)){ap+=val;if(status==="recebido")ar+=val}});return{mesPrevisto:mp,mesRecebido:mr,anoPrevisto:ap,anoRecebido:ar}}
 function updatePainelFinanceiro(){if(!isFinanceUser())return;const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;let p=0,r=0;allAulas.forEach(a=>{if((a.data||"").slice(0,7)!==m)return;const v=Number(a.valor||0);p+=v;if((a.statusFinanceiro||"previsto")==="recebido")r+=v});document.getElementById("painel-fin-previsto").textContent=formatMoney(p);document.getElementById("painel-fin-recebido").textContent=formatMoney(r)}
 function updateFinanceiro(){if(!isFinanceUser())return;initFinanceiroInputs();const d=calcFinanceiro();document.getElementById("fin-mes-previsto").textContent=formatMoney(d.mesPrevisto);document.getElementById("fin-mes-recebido").textContent=formatMoney(d.mesRecebido);document.getElementById("fin-ano-previsto").textContent=formatMoney(d.anoPrevisto);document.getElementById("fin-ano-recebido").textContent=formatMoney(d.anoRecebido);renderFinanceiroLista();updatePainelFinanceiro()}
-function renderFinanceiroLista(){const el=document.getElementById("fin-lista"); if(!el)return; const mes=document.getElementById("fin-mes")?.value, list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Valor</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}</td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Recebido":"Previsão"}</span></td></tr>`).join("")}</tbody></table>`}
+function renderFinanceiroLista(){const el=document.getElementById("fin-lista"); if(!el)return; const mes=document.getElementById("fin-mes")?.value, list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Escola</th><th>Valor</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}</td><td>${safeText(a.escola||"")}</td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Recebido":"Previsão"}</span></td></tr>`).join("")}</tbody></table>`}
 
 const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"},custom:{sec:900,label:"Personalizado"}};
 let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null,timerStartedAt=null,timerElapsedBeforePause=0;const CIRC=2*Math.PI*86;
