@@ -291,6 +291,23 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <span id="teacher-badge" class="teacher-badge" style="display:none">Perfil professor completo</span>
       </div>
       <div class="frase-motivacional" id="frase-mot"></div>
+      <div class="card teacher-only" style="display:none">
+        <div class="card-title">Filtro de visualização</div>
+        <div class="form-row">
+          <div class="form-field">
+            <label>Ver dados de</label>
+            <select id="global-student-filter" onchange="setGlobalStudentFilter(this.value)">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <div class="form-field" style="display:flex;align-items:end">
+            <button class="btn-small primary" onclick="setGlobalStudentFilter(ownUid())" style="width:100%">Ver apenas o meu</button>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--cinza);line-height:1.4">
+          Esse filtro afeta tarefas, aulas, avaliações, calendário, progresso e financeiro.
+        </p>
+      </div>
       <div class="stats-grid">
         <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num" id="stat-mins">0</div><div class="stat-label">min estudados hoje</div></div>
         <div class="stat-card"><div class="stat-icon">📌</div><div class="stat-num" id="stat-pending">0</div><div class="stat-label">tarefas pendentes</div></div>
@@ -569,6 +586,7 @@ let currentUser=null,currentProfile=null,currentAccessMode=null;
 let calendarCurrentDate = new Date();
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},unsubscribers=[];
+let globalStudentFilter="all";
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
 const TEACHER_CODE="mcqueen2026";
@@ -918,6 +936,12 @@ function populateStudentSelects(){
   ["t-student","a-student","av-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno cadastrado</option>'});
   const prof=document.getElementById("a-professor");
   if(prof) prof.innerHTML=teacherOptions || `<option value="${ownUid()}">${safeText(currentProfile?.name||currentUser?.email||"Professor")}</option>`;
+  const filter=document.getElementById("global-student-filter");
+  if(filter){
+    const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
+    filter.innerHTML=`<option value="all">Todos os alunos</option><option value="${ownUid()}">Meu acesso — ${myName}</option>`+options;
+    filter.value=globalStudentFilter;
+  }
 }
 function getUserName(uid){const u=users.find(x=>x.id===uid);return u?(u.name||u.email):uid}
 function getUserEmail(uid){const u=users.find(x=>x.id===uid);return u?.email||""}
@@ -928,6 +952,23 @@ function renderAlunos(){
   el.innerHTML=studentUsers.map(u=>`<div class="item"><div class="item-title">${safeText(u.name||u.email)}</div><div class="item-text">${u.username?`Login: ${safeText(u.username)} · `:""}${safeText(u.email)} · ${countByStudent(allAulas,u.id)} aulas · ${countByStudent(allTarefas,u.id)} tarefas · ${countByStudent(allAvaliacoes,u.id)} avaliações</div></div>`).join("");
 }
 function countByStudent(list,uid){return list.filter(x=>x.studentUid===uid||x.ownerUid===uid).length}
+function visibleByFilter(list){
+  if(!isTeacher() || globalStudentFilter==="all") return list;
+  return list.filter(x=>(x.studentUid||x.ownerUid||x.userId)===globalStudentFilter);
+}
+function setGlobalStudentFilter(uid){
+  globalStudentFilter=uid||"all";
+  const el=document.getElementById("global-student-filter");
+  if(el)el.value=globalStudentFilter;
+  renderTarefas();
+  renderPainelTarefas();
+  renderAulas();
+  renderAvaliacoes();
+  renderCalendario();
+  updateStats();
+  updateProgresso();
+  updateFinanceiro();
+}
 function selectedStudentOrSelf(selectId){return isTeacher()?(document.getElementById(selectId)?.value || ""):ownUid()}
 
 function normalizeTaskStatus(t){
@@ -1019,7 +1060,7 @@ async function delTarefa(id,studentUid){
   await db.ref("tarefas/"+uid+"/"+id).remove();
 }
 function renderTarefas(){
-  const list=isTeacher()?allTarefas:tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
+  const list=isTeacher()?visibleByFilter(allTarefas):tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
   try{
     if(!list.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}
     const cols=[
@@ -1061,7 +1102,7 @@ function renderTaskCard(t){
 function renderPainelTarefas(){
   const el=document.getElementById("painel-tarefas"); if(!el)return;
   try{
-    const list=(isTeacher()?allTarefas:tarefas).filter(t=>normalizeTaskStatus(t)!=="concluida").slice(0,5);
+    const list=(isTeacher()?visibleByFilter(allTarefas):tarefas).filter(t=>normalizeTaskStatus(t)!=="concluida").slice(0,5);
     if(!list.length){el.innerHTML='<p style="color:var(--cinza);font-size:13px">Nenhuma tarefa pendente. 🎉</p>';return}
     el.innerHTML=list.map(t=>`<div class="item"><div class="item-title">${safeText(t.nome)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}${t.materia?`<span class="badge">${safeText(t.materia)}</span>`:""}<span class="badge ${taskStatusBadgeClass(normalizeTaskStatus(t))}">${taskStatusLabel(normalizeTaskStatus(t))}</span>${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}</div></div>`).join("");
   }catch(e){
@@ -1133,7 +1174,7 @@ async function updateAulaFinanceiro(studentUid,id,campo,valor){
   await ref.update(up);
 }
 function renderAulas(){
-  const list=isTeacher()?allAulas:aulas,el=document.getElementById("lista-aulas"); if(!el)return;
+  const list=isTeacher()?visibleByFilter(allAulas):aulas,el=document.getElementById("lista-aulas"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}
   el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}${a.professorNome?`<span class="badge ok">👨‍🏫 ${safeText(a.professorNome)}</span>`:""}${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box">
     <div class="form-row">
@@ -1153,7 +1194,7 @@ function csvEscape(value){
 function exportAulasCSV(){
   if(!isTeacher())return alert("Exportação disponível apenas para professor.");
   const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Observacoes","Faturamento","Repasse_Professor","Valor_Liquido","Status_financeiro"];
-  const rows=allAulas.map(a=>[
+  const rows=visibleByFilter(allAulas).map(a=>[
     a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),Number(a.repasseProfessor||0).toFixed(2).replace(".",","),aulaLiquido(a).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"
   ]);
   const csv=[header,...rows].map(row=>row.map(csvEscape).join(";")).join("\n");
@@ -1208,7 +1249,7 @@ async function submitAvaliacao(id,studentUid){
   }catch(e){alert(firebaseErrorMessage(e));}
 }
 function renderAvaliacoes(){
-  const list=isTeacher()?allAvaliacoes:avaliacoes,el=document.getElementById("lista-avaliacoes"); if(!el)return;
+  const list=isTeacher()?visibleByFilter(allAvaliacoes):avaliacoes,el=document.getElementById("lista-avaliacoes"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📝</div>Nenhuma avaliação ainda.</div>';return}
   el.innerHTML=list.map(av=>{const uid=av.studentUid||ownUid(),respondida=av.status==="respondida";return`<div class="item"><div class="aula-header"><div class="item-title">📝 ${safeText(av.title)}</div><button class="btn-del" onclick="delAvaliacao('${av.id}','${uid}')">×</button></div><div class="item-text">${safeText(av.desc)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(av.studentName||getUserName(uid))}</span>`:""}<span class="badge ok">${safeText(av.materia)}</span>${av.prazo?`<span class="badge warn">Prazo: ${formatDate(av.prazo)}</span>`:""}<span class="badge ${respondida?"ok":"warn"}">${respondida?"Respondida":"Aberta"}</span>${av.anexo?`<a class="badge" href="${safeText(av.anexo)}" target="_blank" rel="noopener">🔗 Link</a>`:""}${attachmentBadge(av.anexoUrl,av.anexoNome,"Anexo")}</div>${isTeacher()?`<div class="answer-box"><strong>Resposta do aluno:</strong><div class="item-text">${safeText(av.respostaTexto||"Ainda sem resposta.")}</div>${av.respostaLink?`<a class="badge ok" href="${safeText(av.respostaLink)}" target="_blank" rel="noopener">Abrir link da resposta</a>`:""}${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta")}</div>`:`<div class="answer-box"><div class="form-field"><label>Sua resposta</label><textarea id="resp-text-${av.id}" placeholder="Digite sua resposta...">${safeText(av.respostaTexto||"")}</textarea></div><div class="form-field"><label>Link da resposta/anexo</label><input type="url" id="resp-link-${av.id}" value="${safeText(av.respostaLink||"")}" placeholder="https://..."></div><div class="form-field"><label>Anexar resposta em PDF ou Word</label><input type="file" id="resp-file-${av.id}" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta enviada")}<button class="btn-small primary" onclick="submitAvaliacao('${av.id}','${uid}')">Enviar resposta</button></div>`}</div>`}).join("");
 }
@@ -1236,7 +1277,7 @@ function renderCalendario(){
   const agendaBox=document.getElementById("calendar-agenda");
   if(!grid||!titleEl||!agendaList)return;
 
-  const list=(isTeacher()?allCalendario:calendario).slice().sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));
+  const list=(isTeacher()?visibleByFilter(allCalendario):calendario).slice().sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));
   const year=calendarCurrentDate.getFullYear();
   const month=calendarCurrentDate.getMonth();
   const monthNames=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -1323,7 +1364,7 @@ function renderHabitos(){
 }
 
 function updateStats(){
-  const taskList=isTeacher()?allTarefas:tarefas, aulaList=isTeacher()?allAulas:aulas, avList=isTeacher()?allAvaliacoes:avaliacoes;
+  const taskList=isTeacher()?visibleByFilter(allTarefas):tarefas, aulaList=isTeacher()?visibleByFilter(allAulas):aulas, avList=isTeacher()?visibleByFilter(allAvaliacoes):avaliacoes;
   document.getElementById("stat-mins").textContent=Number(minsMap[today()]||0);
   document.getElementById("stat-pending").textContent=taskList.filter(t=>normalizeTaskStatus(t)!=="concluida").length;
   document.getElementById("stat-aulas").textContent=aulaList.length;
@@ -1332,7 +1373,7 @@ function updateStats(){
 }
 function updateProgresso(){
   if(!currentUser)return;
-  const taskList=isTeacher()?allTarefas:tarefas, aulaList=isTeacher()?allAulas:aulas, avList=isTeacher()?allAvaliacoes:avaliacoes;
+  const taskList=isTeacher()?visibleByFilter(allTarefas):tarefas, aulaList=isTeacher()?visibleByFilter(allAulas):aulas, avList=isTeacher()?visibleByFilter(allAvaliacoes):avaliacoes;
   let total=0;Object.values(minsMap||{}).forEach(v=>total+=Number(v||0));
   const tarDone=taskList.filter(t=>normalizeTaskStatus(t)==="concluida").length, avDone=avList.filter(a=>a.status==="respondida").length;
   document.getElementById("prog-mins").textContent=total;document.getElementById("prog-tarefas").textContent=tarDone;document.getElementById("prog-aulas").textContent=aulaList.length;document.getElementById("prog-avaliacoes").textContent=avDone;
@@ -1348,7 +1389,7 @@ function calcFinanceiro(){
   const ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());
   let mesFaturamento=0,mesRepasse=0,mesLiquido=0,mesConcluido=0,mesPrevisto=0;
   let anoFaturamento=0,anoRepasse=0,anoLiquido=0;
-  allAulas.forEach(a=>{
+  visibleByFilter(allAulas).forEach(a=>{
     const valor=Number(a.valor||0);
     const repasse=Number(a.repasseProfessor||0);
     const liquido=valor-repasse;
@@ -1374,7 +1415,7 @@ function updatePainelFinanceiro(){
   if(!isFinanceUser())return;
   const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
   let faturamento=0,liquido=0;
-  allAulas.forEach(a=>{
+  visibleByFilter(allAulas).forEach(a=>{
     if((a.data||"").slice(0,7)!==m)return;
     faturamento+=Number(a.valor||0);
     liquido+=aulaLiquido(a);
@@ -1400,7 +1441,7 @@ function updateFinanceiro(){
 function renderFinanceiroLista(){
   const el=document.getElementById("fin-lista"); if(!el)return;
   const mes=document.getElementById("fin-mes")?.value;
-  const list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;
+  const base=visibleByFilter(allAulas); const list=mes?base.filter(a=>(a.data||"").slice(0,7)===mes):base;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}
   el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Professor</th><th>Faturamento</th><th>Repasse</th><th>Líquido</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}<br><small>${safeText(a.escola||"")}</small></td><td>${safeText(a.professorNome||"")}</td><td>${formatMoney(a.valor||0)}</td><td>${formatMoney(a.repasseProfessor||0)}</td><td>${formatMoney(aulaLiquido(a))}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`;
 }
