@@ -551,18 +551,18 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <div class="calendar-shell">
         <div class="calendar-toolbar">
           <div class="calendar-toolbar-left">
-            <button class="calendar-btn" onclick="changeCalendarMonth(-1)">‹ Mês anterior</button>
-            <button class="calendar-btn primary" onclick="goCalendarToday()">Hoje</button>
-            <button class="calendar-btn" onclick="changeCalendarMonth(1)">Próximo mês ›</button>
+            <button class="calendar-btn" id="cal-prev-month">‹ Mês anterior</button>
+            <button class="calendar-btn primary" id="cal-today">Hoje</button>
+            <button class="calendar-btn" id="cal-next-month">Próximo mês ›</button>
           </div>
           <div class="calendar-title" id="calendar-title">Calendário</div>
           <div class="calendar-toolbar-right">
-            <button class="calendar-btn" onclick="toggleCalendarAgenda()" id="calendar-agenda-toggle">Agenda</button>
+            <button class="calendar-btn" id="calendar-agenda-toggle">Agenda</button>
           </div>
         </div>
         <div class="calendar-view-toggle">
-          <button class="calendar-view-btn active" id="calendar-view-month-btn" onclick="setCalendarView('month')">Mês</button>
-          <button class="calendar-view-btn" id="calendar-view-day-btn" onclick="setCalendarView('day')">Dia</button>
+          <button class="calendar-view-btn active" id="calendar-view-month-btn" type="button">Mês</button>
+          <button class="calendar-view-btn" id="calendar-view-day-btn" type="button">Dia</button>
         </div>
         <div id="calendar-month-view">
         <div class="calendar-weekdays">
@@ -572,9 +572,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         </div>
         <div class="calendar-day-view" id="calendar-day-view">
           <div class="calendar-day-header">
-            <button class="calendar-btn" onclick="changeCalendarDay(-1)">‹ Dia anterior</button>
+            <button class="calendar-btn" id="cal-prev-day">‹ Dia anterior</button>
             <h3 id="calendar-day-title">Dia</h3>
-            <button class="calendar-btn" onclick="changeCalendarDay(1)">Próximo dia ›</button>
+            <button class="calendar-btn" id="cal-next-day">Próximo dia ›</button>
           </div>
           <div class="calendar-day-list" id="calendar-day-list"></div>
         </div>
@@ -1564,6 +1564,11 @@ function changeCalendarDay(delta){
   calendarCurrentDate=new Date(calendarSelectedDate.getFullYear(),calendarSelectedDate.getMonth(),1);
   renderCalendario();
 }
+window.changeCalendarMonth=changeCalendarMonth;
+window.goCalendarToday=goCalendarToday;
+window.toggleCalendarAgenda=toggleCalendarAgenda;
+window.setCalendarView=setCalendarView;
+window.changeCalendarDay=changeCalendarDay;
 
 function renderCalendario(){
   try{
@@ -1896,7 +1901,24 @@ function updateAulaLiquidoPreview(){
   if(out)out.value=formatMoney(valor-repasse);
 }
 
-document.addEventListener("DOMContentLoaded",()=>{setupTimerRing();updateTimerDisplay();["a-valor","a-repasse"].forEach(id=>document.getElementById(id)?.addEventListener("input",updateAulaLiquidoPreview));["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));});
+document.addEventListener("DOMContentLoaded",()=>{
+  setupTimerRing();
+  updateTimerDisplay();
+
+  const bind=(id,fn)=>{const el=document.getElementById(id); if(el){el.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();fn();});}};
+  bind("cal-prev-month",()=>changeCalendarMonth(-1));
+  bind("cal-today",()=>goCalendarToday());
+  bind("cal-next-month",()=>changeCalendarMonth(1));
+  bind("calendar-agenda-toggle",()=>toggleCalendarAgenda());
+  bind("calendar-view-month-btn",()=>setCalendarView("month"));
+  bind("calendar-view-day-btn",()=>setCalendarView("day"));
+  bind("cal-prev-day",()=>changeCalendarDay(-1));
+  bind("cal-next-day",()=>changeCalendarDay(1));
+
+  ["a-valor","a-repasse"].forEach(id=>document.getElementById(id)?.addEventListener("input",updateAulaLiquidoPreview));
+  ["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
+  ["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));
+});
 </script>
 </body>
 </html>
