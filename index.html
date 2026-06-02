@@ -213,6 +213,23 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
   .global-filter-inner{grid-template-columns:1fr}
 }
 
+
+.plan-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.plan-tab{padding:10px 14px;border-radius:50px;background:var(--bg);color:var(--cinza);font-size:13px;font-weight:800}
+.plan-tab.active{background:var(--verde);color:#fff}
+.plan-hero{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:var(--radius);padding:22px;margin-bottom:14px}
+.plan-hero h2{font-size:22px;margin-bottom:6px}
+.plan-hero p{font-size:13px;opacity:.86;line-height:1.45}
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.plan-checklist{display:grid;gap:8px;margin-top:8px}
+.plan-check-item{display:flex;gap:8px;align-items:center;background:#fff;border:1.5px solid var(--borda);border-radius:10px;padding:10px;font-size:13px;font-weight:700;color:var(--azul)}
+.plan-check-item input{width:auto}
+.plan-summary{background:#fff;border:1.5px solid var(--borda);border-radius:12px;padding:14px;margin-top:10px}
+.plan-summary h4{font-size:14px;margin-bottom:8px;color:var(--azul)}
+.plan-summary p{font-size:13px;color:var(--cinza);line-height:1.45;white-space:pre-wrap}
+.plan-pill{display:inline-block;background:#e8f5f3;color:var(--verde-dark);border-radius:50px;padding:4px 9px;font-size:11px;font-weight:800;margin:2px}
+@media(max-width:680px){.plan-grid{grid-template-columns:1fr}}
+
 @media(min-width:680px){.stats-grid,.prog-stats{grid-template-columns:repeat(4,1fr)}.app-content{padding:24px}}
 @media(max-width:520px){.form-row{grid-template-columns:1fr}.bottom-nav{justify-content:flex-start}.stat-num{font-size:20px}}
 </style>
@@ -327,7 +344,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <p id="painel-data">Hoje é um ótimo dia para aprender.</p>
         <span id="teacher-badge" class="teacher-badge" style="display:none">Perfil professor completo</span>
       </div>
-      <div class="frase-motivacional" id="frase-mot"></div>
+      <div class="frase-motivacional" id="curiosidade-dia"></div>
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Filtro de visualização</div>
         <div class="form-row">
@@ -540,6 +557,93 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <div id="lista-habitos"><div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div></div>
     </div>
 
+
+    <div id="tab-planejamento" class="tab-panel">
+      <div class="plan-hero">
+        <h2>Planejamento Inteligente 📅</h2>
+        <p>Organize o trimestre, o mês e a semana. A ideia é transformar metas grandes em ações pequenas e possíveis.</p>
+      </div>
+
+      <div class="plan-tabs">
+        <button class="plan-tab active" id="plan-tab-trimestre" onclick="switchPlanTab('trimestre')">Trimestre</button>
+        <button class="plan-tab" id="plan-tab-mes" onclick="switchPlanTab('mes')">Mês</button>
+        <button class="plan-tab" id="plan-tab-semana" onclick="switchPlanTab('semana')">Semana</button>
+        <button class="plan-tab" id="plan-tab-revisao" onclick="switchPlanTab('revisao')">Revisão</button>
+      </div>
+
+      <div id="plan-panel-trimestre" class="plan-panel">
+        <div class="card">
+          <div class="card-title">Direção do trimestre</div>
+          <div class="form-field"><label>Grande objetivo do trimestre</label><input type="text" id="pl-tri-objetivo" placeholder="Ex: melhorar matemática e redação"></div>
+          <div class="plan-grid">
+            <div class="form-field"><label>Meta 1</label><input type="text" id="pl-tri-meta1" placeholder="Ex: fechar funções"></div>
+            <div class="form-field"><label>Meta 2</label><input type="text" id="pl-tri-meta2" placeholder="Ex: fazer 2 redações por semana"></div>
+            <div class="form-field"><label>Meta 3</label><input type="text" id="pl-tri-meta3" placeholder="Ex: estudar 5 dias por semana"></div>
+            <div class="form-field"><label>Matérias prioritárias</label><input type="text" id="pl-tri-materias" placeholder="Ex: Matemática, Física, Redação"></div>
+          </div>
+          <div class="form-field"><label>Maior dificuldade hoje</label><input type="text" id="pl-tri-dificuldade" placeholder="Ex: constância, interpretação, organização"></div>
+          <div class="form-field"><label>Hábitos que quero construir</label><textarea id="pl-tri-habitos" placeholder="Ex: revisar 15 min por dia, dormir melhor, fazer questões..."></textarea></div>
+          <button class="btn-add" onclick="savePlanejamento()">Salvar trimestre</button>
+        </div>
+      </div>
+
+      <div id="plan-panel-mes" class="plan-panel" style="display:none">
+        <div class="card">
+          <div class="card-title">Foco do mês</div>
+          <div class="form-field"><label>Objetivo do mês</label><input type="text" id="pl-mes-objetivo" placeholder="Ex: revisar funções e começar geometria"></div>
+          <div class="plan-grid">
+            <div class="form-field"><label>Prioridade 1</label><input type="text" id="pl-mes-p1"></div>
+            <div class="form-field"><label>Prioridade 2</label><input type="text" id="pl-mes-p2"></div>
+            <div class="form-field"><label>Prioridade 3</label><input type="text" id="pl-mes-p3"></div>
+            <div class="form-field"><label>Meta do mês</label><input type="text" id="pl-mes-meta" placeholder="Ex: 20 aulas, 15 horas ou 40 questões"></div>
+          </div>
+          <div class="form-field"><label>Conteúdos principais</label><textarea id="pl-mes-conteudos" placeholder="Liste os conteúdos que precisam aparecer no mês."></textarea></div>
+          <div class="form-field"><label>Avaliações/compromissos importantes</label><textarea id="pl-mes-eventos" placeholder="Ex: prova dia 18, simulado dia 26..."></textarea></div>
+          <button class="btn-add" onclick="savePlanejamento()">Salvar mês</button>
+        </div>
+      </div>
+
+      <div id="plan-panel-semana" class="plan-panel" style="display:none">
+        <div class="card">
+          <div class="card-title">Execução da semana</div>
+          <div class="form-field"><label>Foco da semana</label><input type="text" id="pl-sem-foco" placeholder="Ex: avançar em matemática e revisar biologia"></div>
+          <div class="plan-grid">
+            <div class="form-field"><label>Prioridade 1</label><input type="text" id="pl-sem-p1"></div>
+            <div class="form-field"><label>Prioridade 2</label><input type="text" id="pl-sem-p2"></div>
+            <div class="form-field"><label>Prioridade 3</label><input type="text" id="pl-sem-p3"></div>
+            <div class="form-field"><label>Meta de estudo</label><input type="text" id="pl-sem-meta" placeholder="Ex: 300 min, 10 tarefas, 2 simulados"></div>
+          </div>
+          <div class="form-field"><label>O que não pode faltar esta semana</label><textarea id="pl-sem-essencial"></textarea></div>
+          <div class="card-title" style="margin-top:12px">Checklist semanal</div>
+          <div class="plan-checklist">
+            <label class="plan-check-item"><input type="checkbox" id="pl-sem-c1"> Estudar pelo menos 5 dias</label>
+            <label class="plan-check-item"><input type="checkbox" id="pl-sem-c2"> Fazer blocos de foco</label>
+            <label class="plan-check-item"><input type="checkbox" id="pl-sem-c3"> Resolver questões</label>
+            <label class="plan-check-item"><input type="checkbox" id="pl-sem-c4"> Revisar anotações</label>
+            <label class="plan-check-item"><input type="checkbox" id="pl-sem-c5"> Concluir pendências</label>
+          </div>
+          <button class="btn-add" onclick="savePlanejamento()" style="margin-top:14px">Salvar semana</button>
+        </div>
+      </div>
+
+      <div id="plan-panel-revisao" class="plan-panel" style="display:none">
+        <div class="card">
+          <div class="card-title">Revisão e ajuste de rota</div>
+          <div class="form-field"><label>O que deu certo?</label><textarea id="pl-rev-certo"></textarea></div>
+          <div class="form-field"><label>O que não deu certo?</label><textarea id="pl-rev-errado"></textarea></div>
+          <div class="form-field"><label>O que aprendi?</label><textarea id="pl-rev-aprendi"></textarea></div>
+          <div class="form-field"><label>O que vou melhorar na próxima semana?</label><textarea id="pl-rev-melhorar"></textarea></div>
+          <div class="form-field"><label>Nota da semana: <span id="pl-rev-nota-label">7</span>/10</label><input type="range" id="pl-rev-nota" min="0" max="10" value="7" oninput="document.getElementById('pl-rev-nota-label').textContent=this.value"></div>
+          <button class="btn-add" onclick="savePlanejamento()">Salvar revisão</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Resumo do planejamento</div>
+        <div id="planejamento-resumo"></div>
+      </div>
+    </div>
+
     <div id="tab-progresso" class="tab-panel">
       <div class="prog-stats">
         <div class="prog-stat"><div class="num" id="prog-mins">0</div><div class="label">min totais</div></div>
@@ -589,6 +693,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
     <button class="nav-item" id="nav-avaliacoes" onclick="switchTab('avaliacoes')">📝<span>Avaliações</span></button>
     <button class="nav-item" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
     <button class="nav-item" id="nav-habitos" onclick="switchTab('habitos')">🌱<span>Hábitos</span></button>
+    <button class="nav-item" id="nav-planejamento" onclick="switchTab('planejamento')">🧭<span>Plano</span></button>
     <button class="nav-item" id="nav-progresso" onclick="switchTab('progresso')">📊<span>Progresso</span></button>
     <button class="nav-item finance-only" id="nav-financeiro" onclick="switchTab('financeiro')" style="display:none">💰<span>Financ.</span></button>
   </nav>
@@ -622,14 +727,35 @@ if(firebaseConfig.apiKey && firebaseConfig.databaseURL){
 let currentUser=null,currentProfile=null,currentAccessMode=null;
 let calendarCurrentDate = new Date();
 let calendarAgendaVisible = true;
-let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},unsubscribers=[];
+let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},unsubscribers=[];
 let globalStudentFilter="all";
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
 const TEACHER_CODE="mcqueen2026";
 const STUDENT_LOGIN_DOMAIN="aluno.umquarto.local";
 const today=()=>new Date().toISOString().slice(0,10);
-const frases=['"O segredo do sucesso é a constância."','"Comece onde você está. Use o que você tem. Faça o que você pode."','"15 minutos por dia valem mais que uma hora só de vez em quando."','"A disciplina é a ponte entre metas e realizações."','"Cada quartinho de hora conta. Você está no caminho certo! 🌱"'];
+const curiosidades=[
+  "🧠 Curiosidade: dormir bem ajuda o cérebro a consolidar o que você estudou. Por isso, revisar e descansar funciona melhor do que virar a noite.",
+  "📚 Curiosidade: explicar um conteúdo em voz alta, como se estivesse ensinando alguém, ajuda a encontrar o que você ainda não entendeu.",
+  "⏱️ Curiosidade: estudar em blocos curtos pode ser mais eficiente do que estudar por horas sem pausa, porque o cérebro perde foco com o tempo.",
+  "✍️ Curiosidade: escrever à mão pode ajudar na memorização, porque obriga o cérebro a resumir e organizar melhor as ideias.",
+  "🔁 Curiosidade: revisar o conteúdo no mesmo dia em que aprendeu reduz bastante o esquecimento nos dias seguintes.",
+  "🎯 Curiosidade: começar por uma tarefa pequena diminui a procrastinação, porque o cérebro entende que a atividade já começou.",
+  "🧩 Curiosidade: errar uma questão e corrigir com atenção costuma ensinar mais do que apenas acertar várias no automático.",
+  "📖 Curiosidade: ler a pergunta antes do texto pode ajudar a encontrar informações importantes com mais foco.",
+  "🧠 Curiosidade: alternar matérias diferentes no estudo pode melhorar a retenção, porque o cérebro aprende a comparar assuntos.",
+  "🚶 Curiosidade: uma caminhada curta pode melhorar a concentração antes de estudar, porque aumenta a oxigenação e reduz tensão.",
+  "🎧 Curiosidade: música instrumental pode ajudar algumas pessoas a focar, mas músicas com letra podem atrapalhar leitura e escrita.",
+  "💧 Curiosidade: até uma leve desidratação pode piorar a atenção. Água também faz parte do estudo.",
+  "📝 Curiosidade: fazer um resumo muito bonito não garante aprendizado. O mais importante é conseguir lembrar e aplicar depois.",
+  "🔍 Curiosidade: estudar por questões ajuda a revelar exatamente onde estão suas dúvidas.",
+  "📅 Curiosidade: estudar um pouco por vários dias costuma funcionar melhor do que estudar tudo de uma vez na véspera.",
+  "🧠 Curiosidade: o cérebro gosta de padrões. Ter um horário fixo para estudar ajuda a criar hábito com menos esforço.",
+  "🗣️ Curiosidade: quando você ensina alguém, seu cérebro organiza o conteúdo de forma mais clara.",
+  "🌱 Curiosidade: progresso pequeno ainda é progresso. Quinze minutos bem feitos podem mudar o ritmo da semana.",
+  "📌 Curiosidade: metas específicas, como ‘resolver 5 questões’, funcionam melhor do que metas vagas, como ‘estudar matemática’.",
+  "🧪 Curiosidade: fazer pausas curtas evita fadiga mental e pode melhorar a qualidade do próximo bloco de estudo."
+];
 
 function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
 function normalizeLogin(login){return String(login||"").trim().toLowerCase().replace(/\s+/g,"")}
@@ -652,6 +778,15 @@ function formatMoney(v){return Number(v||0).toLocaleString("pt-BR",{style:"curre
 function objToArray(obj){return obj?Object.entries(obj).map(([id,value])=>({id,...value})):[]}
 function clearFirebaseListeners(){unsubscribers.forEach(fn=>{try{fn()}catch(e){}});unsubscribers=[]}
 function requireFirebase(){if(firebaseReady)return true;showError("Firebase não configurado.");return false}
+
+function mostrarCuriosidadeDoDia(){
+  const el=document.getElementById("curiosidade-dia");
+  if(!el)return;
+  const base=(today()+":"+(currentUser?.uid||"")).split("").reduce((acc,ch)=>acc+ch.charCodeAt(0),0);
+  const index=base % curiosidades.length;
+  el.textContent=curiosidades[index];
+}
+
 
 function showScreen(name, sub=""){
   const screens={landing:document.getElementById("screen-landing"),auth:document.getElementById("screen-auth"),role:document.getElementById("screen-role"),changePassword:document.getElementById("screen-change-password"),app:document.getElementById("screen-app")};
@@ -888,7 +1023,7 @@ function initApp(){
   const dias=["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"], meses=["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"], d=new Date();
   document.getElementById("painel-nome").textContent=`Olá, ${currentProfile?.name||currentUser.email}! 👋`;
   document.getElementById("painel-data").textContent=`${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]}`;
-  document.getElementById("frase-mot").textContent=frases[Math.floor(Math.random()*frases.length)];
+  mostrarCuriosidadeDoDia();
   attachRealtimeListeners();
   renderAll();
 }
@@ -963,6 +1098,10 @@ function attachRealtimeListeners(){
   const minsRef=db.ref("mins/"+uid);
   minsRef.on("value",s=>{minsMap=s.val()||{};updateStats();updateProgresso()});
   unsubscribers.push(()=>minsRef.off());
+
+  const planRef=db.ref("planejamento/"+uid);
+  planRef.on("value",s=>{planejamento=s.val()||{};fillPlanejamento();renderPlanejamentoResumo();});
+  unsubscribers.push(()=>planRef.off());
 }
 function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
@@ -1402,6 +1541,92 @@ function renderHabitos(){
   const el=document.getElementById("lista-habitos"); if(!el)return;
   if(!habitos.length){el.innerHTML='<div class="empty-state"><div>🌱</div>Crie seus primeiros hábitos!</div>';return}
   const d=today(); el.innerHTML=habitos.map(h=>{const checks=h.checks||{},done=checks[d]||false,st=calcStreak(checks);return`<div class="item habito-item ${done?"done":""}"><div class="habito-check ${done?"done":""}" onclick="toggleHabito('${h.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><div class="habito-title">${safeText(h.nome)}</div>${st>0?`<span class="habito-streak">🔥 ${st}</span>`:""}<button class="btn-del" onclick="delHabito('${h.id}')">×</button></div>`}).join("");
+}
+
+
+function switchPlanTab(tab){
+  document.querySelectorAll(".plan-tab").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".plan-panel").forEach(p=>p.style.display="none");
+  document.getElementById("plan-tab-"+tab)?.classList.add("active");
+  const panel=document.getElementById("plan-panel-"+tab);
+  if(panel)panel.style.display="block";
+}
+function getPlanejamentoFromForm(){
+  return {
+    trimestre:{
+      objetivo:document.getElementById("pl-tri-objetivo")?.value||"",
+      meta1:document.getElementById("pl-tri-meta1")?.value||"",
+      meta2:document.getElementById("pl-tri-meta2")?.value||"",
+      meta3:document.getElementById("pl-tri-meta3")?.value||"",
+      materias:document.getElementById("pl-tri-materias")?.value||"",
+      dificuldade:document.getElementById("pl-tri-dificuldade")?.value||"",
+      habitos:document.getElementById("pl-tri-habitos")?.value||""
+    },
+    mes:{
+      objetivo:document.getElementById("pl-mes-objetivo")?.value||"",
+      p1:document.getElementById("pl-mes-p1")?.value||"",
+      p2:document.getElementById("pl-mes-p2")?.value||"",
+      p3:document.getElementById("pl-mes-p3")?.value||"",
+      meta:document.getElementById("pl-mes-meta")?.value||"",
+      conteudos:document.getElementById("pl-mes-conteudos")?.value||"",
+      eventos:document.getElementById("pl-mes-eventos")?.value||""
+    },
+    semana:{
+      foco:document.getElementById("pl-sem-foco")?.value||"",
+      p1:document.getElementById("pl-sem-p1")?.value||"",
+      p2:document.getElementById("pl-sem-p2")?.value||"",
+      p3:document.getElementById("pl-sem-p3")?.value||"",
+      meta:document.getElementById("pl-sem-meta")?.value||"",
+      essencial:document.getElementById("pl-sem-essencial")?.value||"",
+      c1:document.getElementById("pl-sem-c1")?.checked||false,
+      c2:document.getElementById("pl-sem-c2")?.checked||false,
+      c3:document.getElementById("pl-sem-c3")?.checked||false,
+      c4:document.getElementById("pl-sem-c4")?.checked||false,
+      c5:document.getElementById("pl-sem-c5")?.checked||false
+    },
+    revisao:{
+      certo:document.getElementById("pl-rev-certo")?.value||"",
+      errado:document.getElementById("pl-rev-errado")?.value||"",
+      aprendi:document.getElementById("pl-rev-aprendi")?.value||"",
+      melhorar:document.getElementById("pl-rev-melhorar")?.value||"",
+      nota:document.getElementById("pl-rev-nota")?.value||"7"
+    },
+    updatedAt:firebase.database.ServerValue.TIMESTAMP
+  };
+}
+async function savePlanejamento(){
+  if(!currentUser||!db)return;
+  try{
+    const data=getPlanejamentoFromForm();
+    await db.ref("planejamento/"+ownUid()).set(data);
+    planejamento=data;
+    renderPlanejamentoResumo();
+    alert("Planejamento salvo com sucesso!");
+  }catch(e){alert(firebaseErrorMessage(e))}
+}
+function setVal(id,value){const el=document.getElementById(id);if(el)el.value=value||""}
+function setChecked(id,value){const el=document.getElementById(id);if(el)el.checked=!!value}
+function fillPlanejamento(){
+  const p=planejamento||{};
+  setVal("pl-tri-objetivo",p.trimestre?.objetivo);setVal("pl-tri-meta1",p.trimestre?.meta1);setVal("pl-tri-meta2",p.trimestre?.meta2);setVal("pl-tri-meta3",p.trimestre?.meta3);setVal("pl-tri-materias",p.trimestre?.materias);setVal("pl-tri-dificuldade",p.trimestre?.dificuldade);setVal("pl-tri-habitos",p.trimestre?.habitos);
+  setVal("pl-mes-objetivo",p.mes?.objetivo);setVal("pl-mes-p1",p.mes?.p1);setVal("pl-mes-p2",p.mes?.p2);setVal("pl-mes-p3",p.mes?.p3);setVal("pl-mes-meta",p.mes?.meta);setVal("pl-mes-conteudos",p.mes?.conteudos);setVal("pl-mes-eventos",p.mes?.eventos);
+  setVal("pl-sem-foco",p.semana?.foco);setVal("pl-sem-p1",p.semana?.p1);setVal("pl-sem-p2",p.semana?.p2);setVal("pl-sem-p3",p.semana?.p3);setVal("pl-sem-meta",p.semana?.meta);setVal("pl-sem-essencial",p.semana?.essencial);
+  setChecked("pl-sem-c1",p.semana?.c1);setChecked("pl-sem-c2",p.semana?.c2);setChecked("pl-sem-c3",p.semana?.c3);setChecked("pl-sem-c4",p.semana?.c4);setChecked("pl-sem-c5",p.semana?.c5);
+  setVal("pl-rev-certo",p.revisao?.certo);setVal("pl-rev-errado",p.revisao?.errado);setVal("pl-rev-aprendi",p.revisao?.aprendi);setVal("pl-rev-melhorar",p.revisao?.melhorar);setVal("pl-rev-nota",p.revisao?.nota||"7");
+  const lab=document.getElementById("pl-rev-nota-label");if(lab)lab.textContent=p.revisao?.nota||"7";
+}
+function renderPlanejamentoResumo(){
+  const el=document.getElementById("planejamento-resumo");if(!el)return;
+  const p=planejamento||{};
+  const metas=[p.trimestre?.meta1,p.trimestre?.meta2,p.trimestre?.meta3].filter(Boolean).map(x=>`<span class="plan-pill">${safeText(x)}</span>`).join("");
+  const prioridades=[p.semana?.p1,p.semana?.p2,p.semana?.p3].filter(Boolean).map(x=>`<span class="plan-pill">${safeText(x)}</span>`).join("");
+  if(!p.trimestre&&!p.mes&&!p.semana&&!p.revisao){el.innerHTML='<div class="empty-state"><div>🧭</div>Nenhum planejamento salvo ainda.</div>';return}
+  el.innerHTML=`
+    <div class="plan-summary"><h4>🎯 Trimestre</h4><p>${safeText(p.trimestre?.objetivo||"Sem objetivo definido.")}</p>${metas||""}</div>
+    <div class="plan-summary"><h4>📌 Mês</h4><p>${safeText(p.mes?.objetivo||"Sem foco mensal definido.")}</p>${p.mes?.meta?`<span class="plan-pill">Meta: ${safeText(p.mes.meta)}</span>`:""}</div>
+    <div class="plan-summary"><h4>⚡ Semana</h4><p>${safeText(p.semana?.foco||"Sem foco semanal definido.")}</p>${prioridades||""}</div>
+    <div class="plan-summary"><h4>🔁 Revisão</h4><p>${safeText(p.revisao?.melhorar||"Sem revisão salva.")}</p>${p.revisao?.nota?`<span class="plan-pill">Nota da semana: ${safeText(p.revisao.nota)}/10</span>`:""}</div>
+  `;
 }
 
 function updateStats(){
