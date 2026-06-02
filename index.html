@@ -277,7 +277,10 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 <div id="screen-app" class="screen">
   <div class="topbar">
     <div class="topbar-logo"><div class="logo-mark">¼</div><span>Um Quarto</span></div>
-    <button class="btn-logout" onclick="doLogout()">Sair</button>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn-small switch-mode-btn" onclick="toggleAccessMode()" style="display:none">Trocar modo</button>
+      <button class="btn-logout" onclick="doLogout()">Sair</button>
+    </div>
   </div>
 
   <div class="app-content">
@@ -343,8 +346,8 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <div class="card finance-only" style="display:none">
         <div class="card-title">Resumo financeiro do mês</div>
         <div class="stats-grid">
-          <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="painel-fin-previsto">R$ 0,00</div><div class="stat-label">previsto</div></div>
-          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="painel-fin-recebido">R$ 0,00</div><div class="stat-label">recebido</div></div>
+          <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="painel-fin-previsto">R$ 0,00</div><div class="stat-label">faturamento</div></div>
+          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="painel-fin-recebido">R$ 0,00</div><div class="stat-label">líquido</div></div>
         </div>
       </div>
       <div class="card"><div class="card-title">Tarefas pendentes</div><div id="painel-tarefas"></div></div>
@@ -403,7 +406,14 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <div class="form-row"><div class="form-field"><label>Início</label><input type="time" id="a-inicio"></div><div class="form-field"><label>Fim</label><input type="time" id="a-fim"></div></div>
         <div class="form-field"><label>Conteúdo estudado</label><input type="text" id="a-conteudo" placeholder="Ex: Equações do 2º grau"></div>
         <div class="form-field"><label>Observações</label><input type="text" id="a-obs" placeholder="Opcional"></div>
-        <div class="form-row finance-only" style="display:none"><div class="form-field"><label>Valor da aula (R$)</label><input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01"></div><div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Aula Prevista</option><option value="recebido">Aula Concluída</option></select></div></div>
+        <div class="form-row finance-only" style="display:none">
+          <div class="form-field"><label>Valor da aula / faturamento (R$)</label><input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01"></div>
+          <div class="form-field"><label>Valor repassado ao professor (R$)</label><input type="number" id="a-repasse" placeholder="Ex: 40" min="0" step="0.01"></div>
+        </div>
+        <div class="form-row finance-only" style="display:none">
+          <div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Aula Prevista</option><option value="recebido">Aula Concluída</option></select></div>
+          <div class="form-field"><label>Valor líquido</label><input type="text" id="a-liquido-preview" placeholder="Calculado automaticamente" readonly></div>
+        </div>
         <button class="btn-add" onclick="addAula()">Registrar aula</button>
       </div>
       <div class="export-actions teacher-only" style="display:none">
@@ -499,10 +509,19 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
         <div class="form-row"><div class="form-field"><label>Mês</label><input type="month" id="fin-mes" onchange="updateFinanceiro()"></div><div class="form-field"><label>Ano</label><input type="number" id="fin-ano" min="2020" max="2100" onchange="updateFinanceiro()"></div></div>
       </div>
       <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="fin-mes-previsto">R$ 0,00</div><div class="stat-label">previsto no mês</div></div>
-        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="fin-mes-recebido">R$ 0,00</div><div class="stat-label">recebido no mês</div></div>
-        <div class="stat-card"><div class="stat-icon">📆</div><div class="stat-num" id="fin-ano-previsto">R$ 0,00</div><div class="stat-label">previsto no ano</div></div>
-        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-num" id="fin-ano-recebido">R$ 0,00</div><div class="stat-label">recebido no ano</div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="fin-mes-faturamento">R$ 0,00</div><div class="stat-label">faturamento do mês</div></div>
+        <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-num" id="fin-mes-repasse">R$ 0,00</div><div class="stat-label">repasse do mês</div></div>
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-num" id="fin-mes-liquido">R$ 0,00</div><div class="stat-label">líquido do mês</div></div>
+        <div class="stat-card"><div class="stat-icon">📆</div><div class="stat-num" id="fin-ano-liquido">R$ 0,00</div><div class="stat-label">líquido no ano</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Resumo anual</div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-num" id="fin-ano-faturamento">R$ 0,00</div><div class="stat-label">faturamento no ano</div></div>
+          <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-num" id="fin-ano-repasse">R$ 0,00</div><div class="stat-label">repasse no ano</div></div>
+          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="fin-mes-concluido">R$ 0,00</div><div class="stat-label">aulas concluídas no mês</div></div>
+          <div class="stat-card"><div class="stat-icon">🗓️</div><div class="stat-num" id="fin-mes-previsto">R$ 0,00</div><div class="stat-label">aulas previstas no mês</div></div>
+        </div>
       </div>
       <div class="card"><div class="card-title">Lançamentos</div><div id="fin-lista"></div></div>
     </div>
@@ -564,7 +583,7 @@ function hasTeacherPermission(){return userEmail()===PROFESSOR_EMAIL || currentP
 function isPauloMaster(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.admin===true}
 function isTeacher(){return hasTeacherPermission() && currentAccessMode==="teacher"}
 function isStudentMode(){return !isTeacher()}
-function isFinanceUser(){return isTeacher()}
+function isFinanceUser(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.admin===true}
 function ownUid(){return currentUser?.uid||""}
 function safeText(t){return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function attachmentBadge(url,nome,label="Anexo"){
@@ -617,7 +636,7 @@ async function doRegister(){
       name,
       email,
       role:isProf?"teacher":"student",
-      financeiro:isProf,
+      financeiro:email===PROFESSOR_EMAIL,
       createdAt:firebase.database.ServerValue.TIMESTAMP
     });
   }catch(e){showError(firebaseErrorMessage(e))}
@@ -663,12 +682,22 @@ function chooseAccessMode(mode){
   sessionStorage.setItem("uq_access_mode",mode);
   showScreen("app");
 }
+function toggleAccessMode(){
+  if(!hasTeacherPermission())return;
+  const next=currentAccessMode==="teacher" ? "student" : "teacher";
+  currentAccessMode=next;
+  sessionStorage.setItem("uq_access_mode",next);
+  applyPermissions();
+  attachRealtimeListeners();
+  switchTab("painel");
+  alert(next==="teacher" ? "Você está no modo professor." : "Você está no modo aluno.");
+}
 async function activateTeacherMode(){
   const code=document.getElementById("activate-teacher-code")?.value.trim();
   if(code!==TEACHER_CODE)return alert("Código de professor inválido.");
   try{
-    await db.ref("users/"+ownUid()).update({role:"teacher",financeiro:true,teacherActivatedAt:firebase.database.ServerValue.TIMESTAMP});
-    currentProfile={...currentProfile,role:"teacher",financeiro:true};
+    await db.ref("users/"+ownUid()).update({role:"teacher",financeiro:false,teacherActivatedAt:firebase.database.ServerValue.TIMESTAMP});
+    currentProfile={...currentProfile,role:"teacher",financeiro:false};
     sessionStorage.removeItem("uq_access_mode");
     currentAccessMode=null;
     alert("Modo professor ativado! Escolha como deseja entrar.");
@@ -765,7 +794,7 @@ async function createTeacherLogin(){
       loginEmail:email,
       note,
       role:"teacher",
-      financeiro:true,
+      financeiro:false,
       admin:false,
       mustChangePassword:true,
       createdBy:ownUid(),
@@ -785,9 +814,10 @@ async function loadOrCreateUserProfile(){
   const snap=await db.ref("users/"+currentUser.uid).once("value");
   if(snap.exists()){
     currentProfile=snap.val();
-    if(currentUser.email.toLowerCase()===PROFESSOR_EMAIL && currentProfile.role!=="teacher"){
+    if(currentUser.email.toLowerCase()===PROFESSOR_EMAIL && (currentProfile.role!=="teacher" || currentProfile.financeiro!==true || currentProfile.admin!==true)){
       currentProfile.role="teacher";
       currentProfile.financeiro=true;
+      currentProfile.admin=true;
       await db.ref("users/"+currentUser.uid).update({role:"teacher",financeiro:true,admin:true});
     }
     return;
@@ -812,7 +842,11 @@ function applyPermissions(){
   document.querySelectorAll(".teacher-only").forEach(el=>el.style.display=teacher?"":"none");
   document.querySelectorAll(".master-only").forEach(el=>el.style.display=(teacher && isPauloMaster())?"":"none");
   document.querySelectorAll(".student-only").forEach(el=>el.style.display=hasTeacherPermission()?"none":"");
-  document.querySelectorAll(".finance-only").forEach(el=>el.style.display=isFinanceUser()?"":"none");
+  document.querySelectorAll(".finance-only").forEach(el=>el.style.display=(teacher && isFinanceUser())?"":"none");
+  document.querySelectorAll(".switch-mode-btn").forEach(btn=>{
+    btn.style.display=hasTeacherPermission()?"inline-block":"none";
+    btn.textContent=teacher?"Modo aluno":"Modo professor";
+  });
   const badge=document.getElementById("teacher-badge"); if(badge){badge.style.display=hasTeacherPermission()?"inline-block":"none";badge.textContent=teacher?(isPauloMaster()?"Acesso mestre/professor":"Acesso professor"):"Acesso aluno";}
   const info=document.getElementById("student-answer-info"); if(info)info.style.display=teacher?"none":"block";
 }
@@ -912,7 +946,7 @@ function taskStatusBadgeClass(status){
 }
 
 function switchTab(tab){
-  if(tab==="financeiro"&&!isFinanceUser())return alert("Acesso financeiro disponível apenas para o perfil autorizado.");
+  if(tab==="financeiro"&&!(isFinanceUser()&&currentAccessMode==="teacher"))return alert("Acesso financeiro disponível apenas para o salles.paulo no modo professor.");
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   document.getElementById("tab-"+tab)?.classList.add("active");
@@ -1070,6 +1104,8 @@ async function addAula(){
     conteudo:cont,
     obs:document.getElementById("a-obs").value.trim(),
     valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,
+    repasseProfessor:isFinanceUser()?Number(document.getElementById("a-repasse").value||0):0,
+    valorLiquido:isFinanceUser()?(Number(document.getElementById("a-valor").value||0)-Number(document.getElementById("a-repasse").value||0)):0,
     statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",
     createdBy:ownUid(),
     createdByEmail:userEmail(),
@@ -1077,16 +1113,38 @@ async function addAula(){
   };
   try{
     await db.ref("aulas/"+studentUid).push(aula);
-    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-valor"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
+    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-valor","a-repasse","a-liquido-preview"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
     alert("Aula salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
 async function delAula(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("aulas/"+uid+"/"+id).remove()}
-async function updateAulaFinanceiro(studentUid,id,campo,valor){if(!isFinanceUser())return;const up={};if(campo==="valor")up.valor=Number(valor||0);if(campo==="statusFinanceiro")up.statusFinanceiro=valor;await db.ref("aulas/"+studentUid+"/"+id).update(up)}
+async function updateAulaFinanceiro(studentUid,id,campo,valor){
+  if(!isFinanceUser())return;
+  const ref=db.ref("aulas/"+studentUid+"/"+id);
+  const snap=await ref.once("value");
+  const aula=snap.val()||{};
+  const up={};
+  if(campo==="valor")up.valor=Number(valor||0);
+  if(campo==="repasseProfessor")up.repasseProfessor=Number(valor||0);
+  if(campo==="statusFinanceiro")up.statusFinanceiro=valor;
+  const novoValor = campo==="valor" ? Number(valor||0) : Number(aula.valor||0);
+  const novoRepasse = campo==="repasseProfessor" ? Number(valor||0) : Number(aula.repasseProfessor||0);
+  if(campo==="valor" || campo==="repasseProfessor")up.valorLiquido=novoValor-novoRepasse;
+  await ref.update(up);
+}
 function renderAulas(){
   const list=isTeacher()?allAulas:aulas,el=document.getElementById("lista-aulas"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}
-  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}${a.professorNome?`<span class="badge ok">👨‍🏫 ${safeText(a.professorNome)}</span>`:""}${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box"><div class="form-row"><div class="form-field"><label>Valor</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div><div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Concluída</option></select></div></div></div>`:""}</div>`}).join("");
+  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}${a.professorNome?`<span class="badge ok">👨‍🏫 ${safeText(a.professorNome)}</span>`:""}${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${isFinanceUser()?`<div class="finance-aula-box">
+    <div class="form-row">
+      <div class="form-field"><label>Valor da aula / faturamento</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div>
+      <div class="form-field"><label>Repasse ao professor</label><input type="number" min="0" step="0.01" value="${Number(a.repasseProfessor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','repasseProfessor',this.value)"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Valor líquido</label><input type="text" readonly value="${formatMoney(Number(a.valor||0)-Number(a.repasseProfessor||0))}"></div>
+      <div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Concluída</option></select></div>
+    </div>
+  </div>`:""}</div>`}).join("");
 }
 function csvEscape(value){
   const s=String(value??"").replaceAll('"','""');
@@ -1094,9 +1152,9 @@ function csvEscape(value){
 }
 function exportAulasCSV(){
   if(!isTeacher())return alert("Exportação disponível apenas para professor.");
-  const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Observacoes","Valor","Status_financeiro"];
+  const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Observacoes","Faturamento","Repasse_Professor","Valor_Liquido","Status_financeiro"];
   const rows=allAulas.map(a=>[
-    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"
+    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),Number(a.repasseProfessor||0).toFixed(2).replace(".",","),aulaLiquido(a).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"
   ]);
   const csv=[header,...rows].map(row=>row.map(csvEscape).join(";")).join("\n");
   const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
@@ -1284,10 +1342,68 @@ function updateProgresso(){
   const max=Math.max(...days.map(d=>d.m),1);document.getElementById("week-bars").innerHTML=days.map(d=>`<div class="day-bar-wrap"><div class="day-bar-bg"><div class="day-bar-fill" style="height:${Math.round(d.m/max*100)}%"></div></div></div>`).join("");document.getElementById("week-days-labels").innerHTML=days.map(d=>`<div style="flex:1;text-align:center;font-size:10px;font-weight:800;color:var(--cinza)">${d.label}</div>`).join("");
 }
 function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
-function calcFinanceiro(){const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7),ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());let mp=0,mr=0,ap=0,ar=0;allAulas.forEach(a=>{const val=Number(a.valor||0),status=a.statusFinanceiro||"previsto",data=a.data||"";if(!data)return;if(data.slice(0,7)===mes){mp+=val;if(status==="recebido")mr+=val}if(data.slice(0,4)===String(ano)){ap+=val;if(status==="recebido")ar+=val}});return{mesPrevisto:mp,mesRecebido:mr,anoPrevisto:ap,anoRecebido:ar}}
-function updatePainelFinanceiro(){if(!isFinanceUser())return;const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;let p=0,r=0;allAulas.forEach(a=>{if((a.data||"").slice(0,7)!==m)return;const v=Number(a.valor||0);p+=v;if((a.statusFinanceiro||"previsto")==="recebido")r+=v});document.getElementById("painel-fin-previsto").textContent=formatMoney(p);document.getElementById("painel-fin-recebido").textContent=formatMoney(r)}
-function updateFinanceiro(){if(!isFinanceUser())return;initFinanceiroInputs();const d=calcFinanceiro();document.getElementById("fin-mes-previsto").textContent=formatMoney(d.mesPrevisto);document.getElementById("fin-mes-recebido").textContent=formatMoney(d.mesRecebido);document.getElementById("fin-ano-previsto").textContent=formatMoney(d.anoPrevisto);document.getElementById("fin-ano-recebido").textContent=formatMoney(d.anoRecebido);renderFinanceiroLista();updatePainelFinanceiro()}
-function renderFinanceiroLista(){const el=document.getElementById("fin-lista"); if(!el)return; const mes=document.getElementById("fin-mes")?.value, list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Escola</th><th>Professor</th><th>Valor</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}</td><td>${safeText(a.escola||"")}</td><td>${safeText(a.professorNome||"")}</td><td>${formatMoney(a.valor||0)}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`}
+function aulaLiquido(a){return Number(a.valor||0)-Number(a.repasseProfessor||0)}
+function calcFinanceiro(){
+  const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7);
+  const ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());
+  let mesFaturamento=0,mesRepasse=0,mesLiquido=0,mesConcluido=0,mesPrevisto=0;
+  let anoFaturamento=0,anoRepasse=0,anoLiquido=0;
+  allAulas.forEach(a=>{
+    const valor=Number(a.valor||0);
+    const repasse=Number(a.repasseProfessor||0);
+    const liquido=valor-repasse;
+    const status=a.statusFinanceiro||"previsto";
+    const data=a.data||"";
+    if(!data)return;
+    if(data.slice(0,7)===mes){
+      mesFaturamento+=valor;
+      mesRepasse+=repasse;
+      mesLiquido+=liquido;
+      if(status==="recebido")mesConcluido+=valor;
+      else mesPrevisto+=valor;
+    }
+    if(data.slice(0,4)===String(ano)){
+      anoFaturamento+=valor;
+      anoRepasse+=repasse;
+      anoLiquido+=liquido;
+    }
+  });
+  return{mesFaturamento,mesRepasse,mesLiquido,mesConcluido,mesPrevisto,anoFaturamento,anoRepasse,anoLiquido};
+}
+function updatePainelFinanceiro(){
+  if(!isFinanceUser())return;
+  const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
+  let faturamento=0,liquido=0;
+  allAulas.forEach(a=>{
+    if((a.data||"").slice(0,7)!==m)return;
+    faturamento+=Number(a.valor||0);
+    liquido+=aulaLiquido(a);
+  });
+  document.getElementById("painel-fin-previsto").textContent=formatMoney(faturamento);
+  document.getElementById("painel-fin-recebido").textContent=formatMoney(liquido);
+}
+function updateFinanceiro(){
+  if(!isFinanceUser())return;
+  initFinanceiroInputs();
+  const d=calcFinanceiro();
+  document.getElementById("fin-mes-faturamento").textContent=formatMoney(d.mesFaturamento);
+  document.getElementById("fin-mes-repasse").textContent=formatMoney(d.mesRepasse);
+  document.getElementById("fin-mes-liquido").textContent=formatMoney(d.mesLiquido);
+  document.getElementById("fin-ano-faturamento").textContent=formatMoney(d.anoFaturamento);
+  document.getElementById("fin-ano-repasse").textContent=formatMoney(d.anoRepasse);
+  document.getElementById("fin-ano-liquido").textContent=formatMoney(d.anoLiquido);
+  document.getElementById("fin-mes-concluido").textContent=formatMoney(d.mesConcluido);
+  document.getElementById("fin-mes-previsto").textContent=formatMoney(d.mesPrevisto);
+  renderFinanceiroLista();
+  updatePainelFinanceiro();
+}
+function renderFinanceiroLista(){
+  const el=document.getElementById("fin-lista"); if(!el)return;
+  const mes=document.getElementById("fin-mes")?.value;
+  const list=mes?allAulas.filter(a=>(a.data||"").slice(0,7)===mes):allAulas;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}
+  el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Professor</th><th>Faturamento</th><th>Repasse</th><th>Líquido</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}<br><small>${safeText(a.escola||"")}</small></td><td>${safeText(a.professorNome||"")}</td><td>${formatMoney(a.valor||0)}</td><td>${formatMoney(a.repasseProfessor||0)}</td><td>${formatMoney(aulaLiquido(a))}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`;
+}
 
 const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"},custom:{sec:900,label:"Personalizado"}};
 let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null,timerStartedAt=null,timerElapsedBeforePause=0;const CIRC=2*Math.PI*86;
@@ -1303,7 +1419,15 @@ async function stopAndRegisterTimer(){const elapsed=getTimerElapsedSeconds();if(
 async function registerStudySession(mins,focus,produced,completed){await db.ref("mins/"+ownUid()+"/"+today()).transaction(c=>Number(c||0)+mins);await db.ref("sessoes/"+ownUid()).push({date:today(),minutes:mins,focus,produced,completed,mode:timerMode,createdAt:firebase.database.ServerValue.TIMESTAMP});document.getElementById("timer-produced").value="";document.getElementById("timer-task").value=""}
 function resetTimer(){pauseTimer();timerElapsedBeforePause=0;timerStartedAt=null;timerLeft=timerTotal;updateTimerDisplay()}
 
-document.addEventListener("DOMContentLoaded",()=>{setupTimerRing();updateTimerDisplay();["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));});
+
+function updateAulaLiquidoPreview(){
+  const valor=Number(document.getElementById("a-valor")?.value||0);
+  const repasse=Number(document.getElementById("a-repasse")?.value||0);
+  const out=document.getElementById("a-liquido-preview");
+  if(out)out.value=formatMoney(valor-repasse);
+}
+
+document.addEventListener("DOMContentLoaded",()=>{setupTimerRing();updateTimerDisplay();["a-valor","a-repasse"].forEach(id=>document.getElementById(id)?.addEventListener("input",updateAulaLiquidoPreview));["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));});
 </script>
 </body>
 </html>
