@@ -1534,6 +1534,37 @@ async function addCalendarioItem(){
   document.getElementById("cal-type").value="compromisso";
 }
 async function delCalendarioItem(id,studentUid){const uid=studentUid||ownUid(); if(uid!==ownUid()&&!isTeacher())return; await db.ref("calendario/"+uid+"/"+id).remove()}
+
+function changeCalendarMonth(delta){
+  calendarCurrentDate.setMonth(calendarCurrentDate.getMonth()+delta);
+  calendarSelectedDate=new Date(calendarCurrentDate.getFullYear(),calendarCurrentDate.getMonth(),1);
+  renderCalendario();
+}
+function goCalendarToday(){
+  calendarCurrentDate=new Date();
+  calendarSelectedDate=new Date();
+  renderCalendario();
+}
+function toggleCalendarAgenda(){
+  calendarAgendaVisible=!calendarAgendaVisible;
+  const btn=document.getElementById("calendar-agenda-toggle");
+  if(btn)btn.textContent=calendarAgendaVisible?"Agenda":"Mostrar agenda";
+  renderCalendario();
+}
+function setCalendarView(mode){
+  calendarViewMode=mode;
+  const monthBtn=document.getElementById("calendar-view-month-btn");
+  const dayBtn=document.getElementById("calendar-view-day-btn");
+  if(monthBtn)monthBtn.classList.toggle("active",mode==="month");
+  if(dayBtn)dayBtn.classList.toggle("active",mode==="day");
+  renderCalendario();
+}
+function changeCalendarDay(delta){
+  calendarSelectedDate.setDate(calendarSelectedDate.getDate()+delta);
+  calendarCurrentDate=new Date(calendarSelectedDate.getFullYear(),calendarSelectedDate.getMonth(),1);
+  renderCalendario();
+}
+
 function renderCalendario(){
   try{
   const grid=document.getElementById("calendar-grid");
@@ -1624,6 +1655,7 @@ function renderCalendario(){
   }catch(e){console.error(e); alert("Erro ao carregar calendário: "+(e.message||e));}
 }
 
+function prefillCalendarDate(key){const el=document.getElementById("cal-date");if(el)el.value=key;if(key)calendarSelectedDate=new Date(key+"T12:00:00");}
 function iconForCalendar(type){return type==="aula"?"📚":type==="tarefa"?"✅":type==="prova"?"📝":"📌"}
 function labelForCalendar(type){return type==="aula"?"Aula":type==="tarefa"?"Tarefa":type==="prova"?"Prova/Avaliação":"Compromisso"}
 
