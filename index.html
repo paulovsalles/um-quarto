@@ -220,7 +220,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
 @media(max-width:760px){.kanban-board{grid-template-columns:1fr}.kanban-col{min-height:auto}}
 
 
-.global-filter-bar{
+.global-filter-bar{display:none!important;
   background:#fff;
   border-bottom:1.5px solid var(--borda);
   padding:10px 16px;
@@ -364,8 +364,6 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <button class="btn-small switch-mode-btn" onclick="toggleAccessMode()" style="display:none">Trocar modo</button>
       <button class="btn-logout" onclick="doLogout()">Sair</button>
     </div>
-  </div>
-
   </div>
 
   <div class="app-content">
@@ -1212,7 +1210,7 @@ function populateStudentSelects(){
   const prof=document.getElementById("a-professor");
   if(prof) prof.innerHTML=teacherOptions || `<option value="${ownUid()}">${safeText(currentProfile?.name||currentUser?.email||"Professor")}</option>`;
   const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
-  ["global-student-filter","global-student-filter-top"].forEach(id=>{
+  ["global-student-filter"].forEach(id=>{
     const filter=document.getElementById(id);
     if(filter){
       filter.innerHTML=`<option value="all">Todos os alunos</option><option value="${ownUid()}">Meu acesso — ${myName}</option>`+options;
@@ -1235,7 +1233,7 @@ function visibleByFilter(list){
 }
 function setGlobalStudentFilter(uid){
   globalStudentFilter=uid||"all";
-  ["global-student-filter","global-student-filter-top"].forEach(id=>{
+  ["global-student-filter"].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.value=globalStudentFilter;
   });
