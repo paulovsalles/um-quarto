@@ -301,6 +301,29 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
   .app-content{padding-top:18px}
 }
 
+
+.result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+.result-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;text-align:center}
+.result-card .num{font-size:26px;font-weight:900;color:var(--azul)}
+.result-card .label{font-size:12px;color:var(--cinza);font-weight:800;margin-top:4px}
+.rating-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rating-field label{font-size:12px;font-weight:800;color:var(--cinza);display:block;margin-bottom:5px}
+.rating-field select{width:100%;padding:10px;border:1.5px solid var(--borda);border-radius:10px;background:#fff;color:var(--azul);font-weight:800}
+.result-section-title{font-size:15px;font-weight:900;color:var(--azul);margin:8px 0 12px}
+.grade-table{width:100%;border-collapse:collapse;font-size:13px}
+.grade-table th,.grade-table td{padding:10px;border-bottom:1px solid var(--borda);text-align:left;vertical-align:top}
+.grade-table th{color:var(--cinza);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+.grade-pill{display:inline-block;border-radius:999px;padding:4px 9px;font-size:11px;font-weight:900;background:#e8f5f3;color:var(--verde-dark)}
+.grade-pill.warn{background:#fff3e8;color:#c8721a}
+.grade-pill.bad{background:#ffecec;color:#d33}
+.task-progress-wrap{background:var(--bg);border-radius:999px;height:12px;overflow:hidden;margin-top:6px}
+.task-progress-fill{height:100%;background:var(--verde);border-radius:999px;transition:width .3s}
+.result-list{display:grid;gap:8px}
+.result-list-item{border:1.5px solid var(--borda);border-radius:12px;padding:12px;background:#fff}
+.result-list-item strong{color:var(--azul)}
+.result-list-item small{color:var(--cinza);font-weight:700}
+@media(max-width:720px){.result-grid{grid-template-columns:1fr 1fr}.rating-grid{grid-template-columns:1fr}.grade-table{font-size:12px}.grade-table th,.grade-table td{padding:8px}}
+
 </style>
 </head>
 <body>
@@ -568,6 +591,71 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
       <div id="lista-avaliacoes"><div class="empty-state"><div>📝</div>Nenhuma avaliação ainda.</div></div>
     </div>
 
+    
+    <div id="tab-resultados" class="tab-panel">
+      <div class="painel-saudacao" style="margin-bottom:14px">
+        <h2>Resultados e evolução 📈</h2>
+        <p>Acompanhe desempenho nas aulas, notas das provas e avanço nas tarefas/deveres.</p>
+      </div>
+
+      <div class="add-form teacher-only" style="display:none">
+        <h3>+ Avaliar desempenho na aula</h3>
+        <div class="form-row">
+          <div class="form-field"><label>Aluno</label><select id="res-student"></select></div>
+          <div class="form-field"><label>Aula vinculada</label><select id="res-aula"></select></div>
+          <div class="form-field"><label>Data</label><input type="date" id="res-data"></div>
+        </div>
+        <div class="rating-grid">
+          <div class="rating-field"><label>Interesse</label><select id="res-interesse"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>
+          <div class="rating-field"><label>Participação</label><select id="res-participacao"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>
+          <div class="rating-field"><label>Foco</label><select id="res-foco"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>
+          <div class="rating-field"><label>Compreensão</label><select id="res-compreensao"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>
+          <div class="rating-field"><label>Organização</label><select id="res-organizacao"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>
+          <div class="rating-field"><label>Dever/Tarefa</label><select id="res-dever"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>
+        </div>
+        <div class="form-field" style="margin-top:10px"><label>Observação do professor</label><textarea id="res-obs" placeholder="Ex: participou bem, precisa revisar frações, trouxe dúvidas..."></textarea></div>
+        <button class="btn-add" onclick="addResultadoAula()">Salvar avaliação da aula</button>
+      </div>
+
+      <div class="add-form teacher-only" style="display:none">
+        <h3>+ Lançar nota de prova/trabalho</h3>
+        <div class="form-row">
+          <div class="form-field"><label>Aluno</label><select id="nota-student"></select></div>
+          <div class="form-field"><label>Matéria</label><input type="text" id="nota-materia" placeholder="Ex: Matemática"></div>
+          <div class="form-field"><label>Prova/atividade</label><input type="text" id="nota-titulo" placeholder="Ex: Prova 1, Simulado, Trabalho"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Nota</label><input type="number" id="nota-valor" min="0" step="0.1" placeholder="Ex: 8.5"></div>
+          <div class="form-field"><label>Valor máximo</label><input type="number" id="nota-max" min="1" step="0.1" value="10"></div>
+          <div class="form-field"><label>Data</label><input type="date" id="nota-data"></div>
+        </div>
+        <div class="form-field"><label>Comentário/análise</label><textarea id="nota-obs" placeholder="Ex: melhorou em interpretação, precisa praticar geometria..."></textarea></div>
+        <button class="btn-add" onclick="addNotaAluno()">Salvar nota</button>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-card"><div class="num" id="res-media-aula">0</div><div class="label">média desempenho</div></div>
+        <div class="result-card"><div class="num" id="res-media-notas">0%</div><div class="label">média das notas</div></div>
+        <div class="result-card"><div class="num" id="res-tarefas">0%</div><div class="label">tarefas concluídas</div></div>
+        <div class="result-card"><div class="num" id="res-melhora">—</div><div class="label">tendência notas</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Tarefas/deveres vinculados</div>
+        <div id="result-tarefas"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Análise das notas por matéria</div>
+        <div id="result-notas"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Histórico de desempenho nas aulas</div>
+        <div id="result-desempenho"></div>
+      </div>
+    </div>
+
     <div id="tab-calendario" class="tab-panel">
       <div class="add-form">
         <h3>+ Novo item no calendário</h3>
@@ -808,6 +896,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--verde)}
     <button class="nav-item" id="nav-tarefas" onclick="switchTab('tarefas')">✅<span>Tarefas</span></button>
     <button class="nav-item" id="nav-aulas" onclick="switchTab('aulas')">📚<span>Aulas</span></button>
     <button class="nav-item" id="nav-avaliacoes" onclick="switchTab('avaliacoes')">📝<span>Avaliações</span></button>
+    <button class="nav-item" id="nav-resultados" onclick="switchTab('resultados')">📈<span>Resultados</span></button>
     <button class="nav-item" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
     <button class="nav-item" id="nav-habitos" onclick="switchTab('habitos')">🌱<span>Hábitos</span></button>
     <button class="nav-item" id="nav-planejamento" onclick="switchTab('planejamento')">🧭<span>Plano</span></button>
@@ -846,7 +935,7 @@ let calendarCurrentDate = new Date();
 let calendarSelectedDate = new Date();
 let calendarViewMode = "month";
 let calendarAgendaVisible = true;
-let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],unsubscribers=[];
+let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],unsubscribers=[];
 let globalStudentFilter="all";
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
@@ -979,7 +1068,7 @@ function firebaseErrorMessage(e){
 if(firebaseReady){
   auth.onAuthStateChanged(async user=>{
     clearFirebaseListeners();
-    if(!user){currentUser=null;currentProfile=null;currentAccessMode=null;users=[];tarefas=[];allTarefas=[];aulas=[];allAulas=[];avaliacoes=[];allAvaliacoes=[];calendario=[];allCalendario=[];habitos=[];minsMap={};showScreen("landing");return}
+    if(!user){currentUser=null;currentProfile=null;currentAccessMode=null;users=[];tarefas=[];allTarefas=[];aulas=[];allAulas=[];avaliacoes=[];allAvaliacoes=[];resultados=[];allResultados=[];notas=[];allNotas=[];calendario=[];allCalendario=[];habitos=[];minsMap={};showScreen("landing");return}
     currentUser=user;
     await loadOrCreateUserProfile();
     if(currentProfile?.mustChangePassword === true){
@@ -1207,6 +1296,26 @@ function attachRealtimeListeners(){
   },e=>{console.error(e);alert("Erro ao carregar avaliações. Confira as regras do Realtime Database.")});unsubscribers.push(()=>avRef.off());
 
 
+  const resRef=isTeacher()?db.ref("resultados"):db.ref("resultados/"+uid);
+  resRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,r])=>list.push({id,studentUid,...r})));
+      allResultados=list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));resultados=allResultados.filter(r=>r.studentUid===uid);
+    }else{resultados=objToArray(s.val()).map(r=>({...r,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allResultados=resultados}
+    renderResultados();
+  },e=>{console.error(e);alert("Erro ao carregar resultados. Confira as regras do Realtime Database.")});unsubscribers.push(()=>resRef.off());
+
+  const notasRef=isTeacher()?db.ref("notas"):db.ref("notas/"+uid);
+  notasRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,n])=>list.push({id,studentUid,...n})));
+      allNotas=list.sort((a,b)=>(b.date||"").localeCompare(a.date||""));notas=allNotas.filter(n=>n.studentUid===uid);
+    }else{notas=objToArray(s.val()).map(n=>({...n,studentUid:uid})).sort((a,b)=>(b.date||"").localeCompare(a.date||""));allNotas=notas}
+    renderResultados();
+  },e=>{console.error(e);alert("Erro ao carregar notas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>notasRef.off());
+
+
+
   const calRef=isTeacher()?db.ref("calendario"):db.ref("calendario/"+uid);
   calRef.on("value",s=>{
     if(isTeacher()){
@@ -1234,9 +1343,10 @@ function populateStudentSelects(){
   const teacherUsers=users.filter(u=>u.role==="teacher" || u.financeiro===true || u.email===PROFESSOR_EMAIL);
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.username||u.email)}</option>`).join("");
   const teacherOptions=teacherUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email)}</option>`).join("");
-  ["t-student","a-student","av-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno cadastrado</option>'});
+  ["t-student","a-student","av-student","res-student","nota-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno cadastrado</option>'});
   const prof=document.getElementById("a-professor");
   if(prof) prof.innerHTML=teacherOptions || `<option value="${ownUid()}">${safeText(currentProfile?.name||currentUser?.email||"Professor")}</option>`;
+  populateAulaResultadoSelect();
   const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
   ["global-student-filter"].forEach(id=>{
     const filter=document.getElementById(id);
@@ -1297,7 +1407,7 @@ function switchTab(tab){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   document.getElementById("tab-"+tab)?.classList.add("active");
   document.getElementById("nav-"+tab)?.classList.add("active");
-  if(tab==="progresso")updateProgresso(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  if(tab==="progresso")updateProgresso(); if(tab==="resultados")renderResultados(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
   window.scrollTo({top:0,behavior:"instant"});
 }
 
@@ -1615,6 +1725,115 @@ window.toggleCalendarAgenda=toggleCalendarAgenda;
 window.setCalendarView=setCalendarView;
 window.changeCalendarDay=changeCalendarDay;
 window.changeCalendarWeek=changeCalendarWeek;
+
+
+function populateAulaResultadoSelect(){
+  const sel=document.getElementById("res-aula"); if(!sel)return;
+  const studentUid=document.getElementById("res-student")?.value;
+  const base=isTeacher()?allAulas:aulas;
+  const list=(studentUid?base.filter(a=>(a.studentUid||a.ownerUid)===studentUid):base).slice().sort((a,b)=>(b.data||"").localeCompare(a.data||""));
+  sel.innerHTML='<option value="">Sem aula específica</option>'+list.map(a=>`<option value="${a.id}">${formatDate(a.data)} · ${safeText(a.materia||"Aula")} · ${safeText(a.professorNome||"")}</option>`).join("");
+}
+function resultadoBase(){
+  return {
+    res:isTeacher()?visibleByFilter(allResultados):resultados,
+    notasList:isTeacher()?visibleByFilter(allNotas):notas,
+    taskList:isTeacher()?visibleByFilter(allTarefas):tarefas
+  };
+}
+async function addResultadoAula(){
+  if(!isTeacher())return alert("Apenas professor pode lançar resultados.");
+  const studentUid=document.getElementById("res-student")?.value; if(!studentUid)return alert("Selecione um aluno.");
+  const data=document.getElementById("res-data")?.value||today();
+  const aulaId=document.getElementById("res-aula")?.value||"";
+  const aula=allAulas.find(a=>a.id===aulaId&&a.studentUid===studentUid)||{};
+  const criterios={
+    interesse:Number(document.getElementById("res-interesse").value||0),
+    participacao:Number(document.getElementById("res-participacao").value||0),
+    foco:Number(document.getElementById("res-foco").value||0),
+    compreensao:Number(document.getElementById("res-compreensao").value||0),
+    organizacao:Number(document.getElementById("res-organizacao").value||0),
+    dever:Number(document.getElementById("res-dever").value||0)
+  };
+  const media=Object.values(criterios).reduce((a,b)=>a+b,0)/Object.values(criterios).length;
+  await db.ref("resultados/"+studentUid).push({
+    date:data,aulaId,aulaTitulo:aula.materia||"",criterios,media,
+    obs:document.getElementById("res-obs")?.value.trim()||"",
+    studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
+    createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP
+  });
+  ["res-obs"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+  alert("Resultado da aula salvo!");
+}
+async function addNotaAluno(){
+  if(!isTeacher())return alert("Apenas professor pode lançar notas.");
+  const studentUid=document.getElementById("nota-student")?.value; if(!studentUid)return alert("Selecione um aluno.");
+  const materia=document.getElementById("nota-materia")?.value.trim(); if(!materia)return alert("Informe a matéria.");
+  const valor=Number(document.getElementById("nota-valor")?.value||0);
+  const max=Number(document.getElementById("nota-max")?.value||10);
+  if(max<=0)return alert("Valor máximo inválido.");
+  await db.ref("notas/"+studentUid).push({
+    date:document.getElementById("nota-data")?.value||today(),
+    materia,
+    titulo:document.getElementById("nota-titulo")?.value.trim()||"Avaliação",
+    valor,max,percentual:Math.round((valor/max)*100),
+    obs:document.getElementById("nota-obs")?.value.trim()||"",
+    studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
+    createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP
+  });
+  ["nota-materia","nota-titulo","nota-valor","nota-obs"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+  alert("Nota salva!");
+}
+function tendenciaNotas(list){
+  if(list.length<2)return "—";
+  const ordered=list.slice().sort((a,b)=>(a.date||"").localeCompare(b.date||""));
+  const first=Number(ordered[0].percentual||0), last=Number(ordered[ordered.length-1].percentual||0);
+  const diff=last-first;
+  if(diff>5)return "Subindo";
+  if(diff<-5)return "Atenção";
+  return "Estável";
+}
+function renderResultados(){
+  populateAulaResultadoSelect();
+  const {res,notasList,taskList}=resultadoBase();
+  const mediaAula=res.length?(res.reduce((a,b)=>a+Number(b.media||0),0)/res.length):0;
+  const mediaNotas=notasList.length?Math.round(notasList.reduce((a,b)=>a+Number(b.percentual||0),0)/notasList.length):0;
+  const done=taskList.filter(t=>normalizeTaskStatus(t)==="concluida").length;
+  const total=taskList.length;
+  const pctTarefas=total?Math.round(done/total*100):0;
+  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  setText("res-media-aula",mediaAula?mediaAula.toFixed(1):"0");
+  setText("res-media-notas",mediaNotas+"%");
+  setText("res-tarefas",pctTarefas+"%");
+  setText("res-melhora",tendenciaNotas(notasList));
+
+  const tarEl=document.getElementById("result-tarefas");
+  if(tarEl){
+    tarEl.innerHTML=`<div><strong>${done} de ${total}</strong> tarefas/deveres concluídos</div><div class="task-progress-wrap"><div class="task-progress-fill" style="width:${pctTarefas}%"></div></div>`+
+    (taskList.length?`<div class="result-list" style="margin-top:12px">${taskList.slice(0,8).map(t=>`<div class="result-list-item"><strong>${safeText(t.nome)}</strong><br><small>${taskStatusLabel(normalizeTaskStatus(t))}${t.prazo?` · prazo ${formatDate(t.prazo)}`:""}${isTeacher()?` · ${safeText(t.studentName||getUserName(t.studentUid))}`:""}</small></div>`).join("")}</div>`:'<div class="empty-state"><div>✅</div>Nenhuma tarefa registrada.</div>');
+  }
+
+  const notaEl=document.getElementById("result-notas");
+  if(notaEl){
+    if(!notasList.length){notaEl.innerHTML='<div class="empty-state"><div>📝</div>Nenhuma nota lançada.</div>'}
+    else{
+      const porMateria={};
+      notasList.forEach(n=>{const m=n.materia||"Sem matéria";(porMateria[m] ||= []).push(n)});
+      notaEl.innerHTML=`<table class="grade-table"><thead><tr><th>Matéria</th><th>Média</th><th>Evolução</th><th>Últimas notas</th></tr></thead><tbody>${Object.entries(porMateria).map(([mat,arr])=>{
+        const avg=Math.round(arr.reduce((a,b)=>a+Number(b.percentual||0),0)/arr.length);
+        const tend=tendenciaNotas(arr);
+        const cls=avg>=70?"":avg>=50?"warn":"bad";
+        return `<tr><td><strong>${safeText(mat)}</strong></td><td><span class="grade-pill ${cls}">${avg}%</span></td><td>${tend}</td><td>${arr.slice(0,4).map(n=>`${formatDate(n.date)}: ${safeText(n.titulo)} (${n.valor}/${n.max})`).join("<br>")}</td></tr>`;
+      }).join("")}</tbody></table>`;
+    }
+  }
+
+  const resEl=document.getElementById("result-desempenho");
+  if(resEl){
+    if(!res.length){resEl.innerHTML='<div class="empty-state"><div>📈</div>Nenhuma avaliação de aula registrada.</div>'}
+    else resEl.innerHTML=`<div class="result-list">${res.slice(0,10).map(r=>`<div class="result-list-item"><strong>${formatDate(r.date)} · média ${Number(r.media||0).toFixed(1)}/5</strong><br><small>${isTeacher()?safeText(r.studentName||getUserName(r.studentUid))+" · ":""}${safeText(r.aulaTitulo||"Aula")}</small><div class="item-meta" style="margin-top:6px">${Object.entries(r.criterios||{}).map(([k,v])=>`<span class="badge">${safeText(k)}: ${v}/5</span>`).join("")}</div>${r.obs?`<p class="item-text" style="margin-top:8px">${safeText(r.obs)}</p>`:""}</div>`).join("")}</div>`;
+  }
+}
 
 function renderCalendario(){
   try{
@@ -1950,191 +2169,156 @@ function renderFinanceiroLista(){
 }
 
 const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"},custom:{sec:900,label:"Personalizado"}};
-let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null,timerStartedAt=null,timerEndAt=null,timerElapsedBeforePause=0;const CIRC=2*Math.PI*86;
+let timerMode="quarto",timerTotal=900,timerLeft=900,timerRunning=false,timerInterval=null,timerEndAt=null,timerStartedAt=null,timerElapsedBeforePause=0,timerFinishing=false;
+const CIRC=2*Math.PI*86;
 
-function setupTimerRing(){
-  const r=document.getElementById("timer-prog");
-  if(r){r.style.strokeDasharray=CIRC;r.style.strokeDashoffset=0}
-}
-
+function timerStorageKey(){return currentUser?.uid?`uq_timer_${currentUser.uid}`:"uq_timer_guest"}
+function setupTimerRing(){const r=document.getElementById("timer-prog");if(r){r.style.strokeDasharray=CIRC;r.style.strokeDashoffset=0}}
 function saveTimerState(){
   try{
-    if(!timerRunning){sessionStorage.removeItem("uq_timer_state");return}
-    sessionStorage.setItem("uq_timer_state",JSON.stringify({
-      timerMode,timerTotal,timerLeft,timerEndAt,timerStartedAt,timerElapsedBeforePause,
-      label:MODES[timerMode]?.label||"Timer"
+    localStorage.setItem(timerStorageKey(),JSON.stringify({
+      timerMode,timerTotal,timerLeft,timerRunning,timerEndAt,timerStartedAt,timerElapsedBeforePause,
+      label:MODES[timerMode]?.label||"Timer",
+      savedAt:Date.now()
     }));
   }catch(e){}
 }
-
+function clearTimerState(){try{localStorage.removeItem(timerStorageKey())}catch(e){}}
+function syncTimerFromClock(){
+  if(timerRunning&&timerEndAt){
+    timerLeft=Math.max(0,Math.ceil((timerEndAt-Date.now())/1000));
+  }
+  updateTimerDisplay();
+  if(timerRunning&&timerLeft<=0&&!timerFinishing){finishTimer(true);}
+}
 function restoreTimerState(){
   try{
-    const raw=sessionStorage.getItem("uq_timer_state");
+    const raw=localStorage.getItem(timerStorageKey());
     if(!raw)return;
-    const st=JSON.parse(raw);
-    if(!st||!st.timerEndAt)return;
-    timerMode=st.timerMode||"quarto";
-    timerTotal=Number(st.timerTotal||900);
-    timerEndAt=Number(st.timerEndAt);
-    timerStartedAt=Number(st.timerStartedAt||Date.now());
-    timerElapsedBeforePause=Number(st.timerElapsedBeforePause||0);
-    timerLeft=Math.max(0,Math.ceil((timerEndAt-Date.now())/1000));
+    const s=JSON.parse(raw);
+    timerMode=s.timerMode||"quarto";
+    timerTotal=Number(s.timerTotal||MODES[timerMode]?.sec||900);
+    timerRunning=!!s.timerRunning;
+    timerEndAt=s.timerEndAt||null;
+    timerStartedAt=s.timerStartedAt||null;
+    timerElapsedBeforePause=Number(s.timerElapsedBeforePause||0);
+    if(timerMode==="custom"){MODES.custom.sec=timerTotal;MODES.custom.label=s.label||"Personalizado";}
     document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
     document.getElementById("mode-"+timerMode)?.classList.add("active");
-    document.getElementById("timer-label").textContent=MODES[timerMode]?.label||st.label||"Timer";
-    if(timerLeft>0){
-      timerRunning=true;
+    document.getElementById("timer-label").textContent=MODES[timerMode]?.label||s.label||"Timer";
+    if(timerRunning&&timerEndAt){
+      timerLeft=Math.max(0,Math.ceil((timerEndAt-Date.now())/1000));
       document.getElementById("btn-start").style.display="none";
       document.getElementById("btn-pause").style.display="inline-block";
-      startTimerInterval();
+      startTimerTicker();
+      syncTimerFromClock();
     }else{
-      sessionStorage.removeItem("uq_timer_state");
-      timerRunning=false;
-      timerLeft=timerTotal;
+      timerLeft=Number(s.timerLeft||timerTotal);
+      document.getElementById("btn-start").style.display="inline-block";
+      document.getElementById("btn-pause").style.display="none";
+      updateTimerDisplay();
     }
-    updateTimerDisplay();
-  }catch(e){sessionStorage.removeItem("uq_timer_state")}
+  }catch(e){console.error(e)}
 }
-
 function setMode(m){
   if(timerRunning)return;
-  timerMode=m;timerTotal=MODES[m].sec;timerLeft=timerTotal;timerEndAt=null;timerElapsedBeforePause=0;
+  timerMode=m;timerTotal=MODES[m].sec;timerLeft=timerTotal;timerEndAt=null;timerStartedAt=null;timerElapsedBeforePause=0;
   document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
   document.getElementById("mode-"+m)?.classList.add("active");
   document.getElementById("timer-label").textContent=MODES[m].label;
-  updateTimerDisplay();
+  updateTimerDisplay();saveTimerState();
 }
-
 function setCustomTimer(){
   if(timerRunning)return;
   const min=Number(document.getElementById("timer-custom-min").value||0);
   if(!min||min<1)return alert("Digite um tempo em minutos.");
   timerMode="custom";MODES.custom.sec=Math.round(min*60);MODES.custom.label=`Personalizado (${min}min)`;
   document.querySelectorAll(".mode-btn").forEach(b=>b.classList.remove("active"));
-  timerTotal=MODES.custom.sec;timerLeft=timerTotal;timerEndAt=null;timerElapsedBeforePause=0;
+  timerTotal=MODES.custom.sec;timerLeft=timerTotal;timerEndAt=null;timerStartedAt=null;timerElapsedBeforePause=0;
   document.getElementById("timer-label").textContent=MODES.custom.label;
-  updateTimerDisplay();
+  updateTimerDisplay();saveTimerState();
 }
-
-function syncTimerFromClock(){
-  if(timerRunning&&timerEndAt){
-    timerLeft=Math.max(0,Math.ceil((timerEndAt-Date.now())/1000));
-  }
-}
-
 function updateTimerDisplay(){
-  syncTimerFromClock();
-  const safeLeft=Math.max(0,Math.floor(timerLeft));
-  const m=Math.floor(safeLeft/60),s=safeLeft%60;
-  const display=document.getElementById("timer-display");
-  if(display)display.textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-  const ring=document.getElementById("timer-prog");
-  if(ring)ring.style.strokeDashoffset=CIRC*(safeLeft/timerTotal);
+  timerLeft=Math.max(0,Math.min(timerTotal,Number(timerLeft||0)));
+  const m=Math.floor(timerLeft/60),s=timerLeft%60;
+  document.getElementById("timer-display").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+  const r=document.getElementById("timer-prog");
+  if(r)r.style.strokeDashoffset=CIRC*(timerLeft/timerTotal);
 }
-
-function startTimerInterval(){
+function startTimerTicker(){
   clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{tickTimer()},500);
+  timerInterval=setInterval(()=>syncTimerFromClock(),500);
 }
-
-async function tickTimer(){
-  if(!timerRunning)return;
-  syncTimerFromClock();
-  updateTimerDisplay();
-  saveTimerState();
-  if(timerLeft<=0){
-    await finishTimer(true);
-  }
-}
-
 function startTimer(){
   if(timerRunning)return;
   timerRunning=true;
   timerStartedAt=Date.now();
-  timerEndAt=Date.now()+timerLeft*1000;
+  timerEndAt=Date.now()+(timerLeft*1000);
   document.getElementById("btn-start").style.display="none";
   document.getElementById("btn-pause").style.display="inline-block";
-  startTimerInterval();
   saveTimerState();
-  updateTimerDisplay();
+  startTimerTicker();
+  syncTimerFromClock();
 }
-
 function pauseTimer(){
   if(!timerRunning)return;
   syncTimerFromClock();
   clearInterval(timerInterval);
   timerRunning=false;
-  timerElapsedBeforePause+=Math.max(0,Math.floor((Date.now()-(timerStartedAt||Date.now()))/1000));
-  timerStartedAt=null;
+  timerElapsedBeforePause=timerTotal-timerLeft;
   timerEndAt=null;
-  sessionStorage.removeItem("uq_timer_state");
+  timerStartedAt=null;
   document.getElementById("btn-start").style.display="inline-block";
   document.getElementById("btn-pause").style.display="none";
-  updateTimerDisplay();
+  saveTimerState();
 }
-
 function getTimerElapsedSeconds(){
-  let elapsed=timerElapsedBeforePause;
-  if(timerRunning&&timerStartedAt)elapsed+=Math.max(0,Math.floor((Date.now()-timerStartedAt)/1000));
-  return Math.min(timerTotal,elapsed);
+  if(timerRunning&&timerEndAt){
+    return Math.min(timerTotal,Math.max(0,Math.round((Date.now()-(timerEndAt-timerTotal*1000))/1000)));
+  }
+  return Math.min(timerTotal,Math.max(0,timerTotal-timerLeft));
 }
-
 async function finishTimer(completed=false){
-  syncTimerFromClock();
+  if(timerFinishing)return;
+  timerFinishing=true;
   clearInterval(timerInterval);
+  if(timerRunning)syncTimerFromClock();
+  const elapsedSec=completed?timerTotal:getTimerElapsedSeconds();
   timerRunning=false;
   document.getElementById("btn-start").style.display="inline-block";
   document.getElementById("btn-pause").style.display="none";
-  const elapsedSec=completed?timerTotal:getTimerElapsedSeconds();
   const mins=Math.max(1,Math.round(elapsedSec/60));
   if(timerMode!=="pausa"&&currentUser&&db){
     const produced=(document.getElementById("timer-produced")?.value||"").trim();
     const focus=(document.getElementById("timer-task")?.value||"").trim();
     await registerStudySession(mins,focus,produced,completed);
   }
-  timerElapsedBeforePause=0;
-  timerStartedAt=null;
-  timerEndAt=null;
-  timerLeft=timerTotal;
-  sessionStorage.removeItem("uq_timer_state");
-  updateTimerDisplay();
+  timerElapsedBeforePause=0;timerStartedAt=null;timerEndAt=null;timerLeft=timerTotal;
+  updateTimerDisplay();clearTimerState();timerFinishing=false;
 }
-
 async function stopAndRegisterTimer(){
+  syncTimerFromClock();
   const elapsed=getTimerElapsedSeconds();
   if(elapsed<10)return alert("Estude pelo menos alguns segundos antes de registrar.");
   let produced=(document.getElementById("timer-produced")?.value||"").trim();
-  if(!produced){
-    produced=prompt("O que você produziu nesse tempo?","")||"";
-    document.getElementById("timer-produced").value=produced;
-  }
+  if(!produced){produced=prompt("O que você produziu nesse tempo?","")||"";document.getElementById("timer-produced").value=produced}
   await finishTimer(false);
 }
-
 async function registerStudySession(mins,focus,produced,completed){
   await db.ref("mins/"+ownUid()+"/"+today()).transaction(c=>Number(c||0)+mins);
   await db.ref("sessoes/"+ownUid()).push({date:today(),minutes:mins,focus,produced,completed,mode:timerMode,createdAt:firebase.database.ServerValue.TIMESTAMP});
   document.getElementById("timer-produced").value="";
   document.getElementById("timer-task").value="";
 }
-
 function resetTimer(){
-  if(timerRunning){
-    clearInterval(timerInterval);
-  }
-  timerRunning=false;
-  timerElapsedBeforePause=0;
-  timerStartedAt=null;
-  timerEndAt=null;
-  timerLeft=timerTotal;
-  sessionStorage.removeItem("uq_timer_state");
+  clearInterval(timerInterval);
+  timerRunning=false;timerElapsedBeforePause=0;timerStartedAt=null;timerEndAt=null;timerLeft=timerTotal;
   document.getElementById("btn-start").style.display="inline-block";
   document.getElementById("btn-pause").style.display="none";
-  updateTimerDisplay();
+  updateTimerDisplay();clearTimerState();
 }
-
-document.addEventListener("visibilitychange",()=>{if(!document.hidden)tickTimer()});
-window.addEventListener("focus",()=>tickTimer());
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)syncTimerFromClock()});
+window.addEventListener("focus",syncTimerFromClock);
 
 
 function updateAulaLiquidoPreview(){
@@ -2146,7 +2330,6 @@ function updateAulaLiquidoPreview(){
 
 document.addEventListener("DOMContentLoaded",()=>{
   setupTimerRing();
-  restoreTimerState();
   updateTimerDisplay();
 
   const bind=(id,fn)=>{const el=document.getElementById(id); if(el){el.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();fn();});}};
@@ -2161,6 +2344,7 @@ document.addEventListener("DOMContentLoaded",()=>{
   bind("cal-next-week",()=>changeCalendarWeek(1));
   bind("cal-prev-day",()=>changeCalendarDay(-1));
   bind("cal-next-day",()=>changeCalendarDay(1));
+  document.getElementById("res-student")?.addEventListener("change",populateAulaResultadoSelect);
 
   ["a-valor","a-repasse"].forEach(id=>document.getElementById(id)?.addEventListener("input",updateAulaLiquidoPreview));
   ["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
