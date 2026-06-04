@@ -918,6 +918,195 @@ html, body{
   }
 }
 
+
+/* ===== FIX TOPO/SIDEBAR: remove corte e deixa tudo alinhado ===== */
+:root{
+  --uq-sidebar-open:244px;
+  --uq-sidebar-closed:84px;
+  --uq-gap:18px;
+  --uq-topbar-h:64px;
+}
+
+html, body{
+  min-height:100%;
+  overflow-x:hidden;
+}
+
+/* Desktop: a barra superior começa depois do menu lateral.
+   Assim ela não passa por cima da sidebar nem corta o conteúdo. */
+@media (min-width:1024px){
+  #screen-app.active{
+    display:block!important;
+    min-height:100vh!important;
+  }
+
+  .bottom-nav{
+    position:fixed!important;
+    left:12px!important;
+    top:12px!important;
+    bottom:12px!important;
+    width:var(--uq-sidebar-open)!important;
+    z-index:80!important;
+    box-sizing:border-box!important;
+  }
+
+  body.sidebar-collapsed .bottom-nav{
+    width:var(--uq-sidebar-closed)!important;
+  }
+
+  .topbar{
+    position:sticky!important;
+    top:0!important;
+    z-index:60!important;
+    height:var(--uq-topbar-h)!important;
+    min-height:var(--uq-topbar-h)!important;
+    width:calc(100vw - var(--uq-sidebar-open) - (var(--uq-gap) * 2))!important;
+    margin-left:calc(var(--uq-sidebar-open) + var(--uq-gap))!important;
+    padding:10px 18px!important;
+    box-sizing:border-box!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    border-bottom:1px solid var(--borda)!important;
+    background:rgba(255,255,255,.94)!important;
+    backdrop-filter:blur(12px)!important;
+  }
+
+  body.sidebar-collapsed .topbar{
+    width:calc(100vw - var(--uq-sidebar-closed) - (var(--uq-gap) * 2))!important;
+    margin-left:calc(var(--uq-sidebar-closed) + var(--uq-gap))!important;
+  }
+
+  /* No desktop, a marca já está na sidebar. Esconder no topo evita logo cortado/desalinhado. */
+  .topbar-logo{
+    display:none!important;
+  }
+
+  .app-content{
+    margin-left:calc(var(--uq-sidebar-open) + var(--uq-gap))!important;
+    width:calc(100vw - var(--uq-sidebar-open) - (var(--uq-gap) * 2))!important;
+    max-width:none!important;
+    padding:18px 0 52px!important;
+    box-sizing:border-box!important;
+  }
+
+  body.sidebar-collapsed .app-content{
+    margin-left:calc(var(--uq-sidebar-closed) + var(--uq-gap))!important;
+    width:calc(100vw - var(--uq-sidebar-closed) - (var(--uq-gap) * 2))!important;
+    max-width:none!important;
+  }
+
+  .tab-panel.active{
+    width:100%!important;
+    max-width:none!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+  }
+
+  .tab-panel.active > *,
+  .tab-panel.active > .card,
+  .tab-panel.active > .add-form,
+  .tab-panel.active > .stats-grid,
+  .tab-panel.active > .prog-stats,
+  .tab-panel.active > .result-grid,
+  .tab-panel.active > .painel-saudacao,
+  .tab-panel.active > .frase-motivacional,
+  .tab-panel.active > .plan-hero,
+  .tab-panel.active > .plan-tabs,
+  .tab-panel.active > .habit-hero,
+  .tab-panel.active > .habit-stats-grid,
+  .tab-panel.active > .habit-layout{
+    width:100%!important;
+    max-width:none!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    box-sizing:border-box!important;
+  }
+
+  .stats-grid,
+  .prog-stats,
+  .result-grid,
+  .habit-stats-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:14px!important;
+  }
+
+  .form-row,
+  .plan-grid,
+  .rating-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+
+  .card,
+  .stat-card,
+  .prog-stat,
+  .result-card,
+  .add-form,
+  .painel-saudacao,
+  .plan-hero,
+  .habit-hero{
+    min-width:0!important;
+  }
+}
+
+/* Celular/tablet: mantém topo normal e menu inferior. */
+@media (max-width:1023px){
+  .topbar{
+    position:sticky!important;
+    top:0!important;
+    min-height:58px!important;
+    height:auto!important;
+    width:100%!important;
+    margin-left:0!important;
+    padding:10px 12px!important;
+    z-index:70!important;
+  }
+
+  .topbar-logo{
+    display:flex!important;
+  }
+
+  .app-content{
+    width:100%!important;
+    max-width:100%!important;
+    margin:0!important;
+    padding:12px 10px calc(84px + env(safe-area-inset-bottom))!important;
+    box-sizing:border-box!important;
+  }
+
+  .tab-panel.active,
+  .tab-panel.active > *{
+    width:100%!important;
+    max-width:none!important;
+    box-sizing:border-box!important;
+  }
+}
+
+@media (max-width:720px){
+  .stats-grid,
+  .prog-stats,
+  .result-grid,
+  .habit-stats-grid{
+    grid-template-columns:1fr 1fr!important;
+  }
+
+  .form-row,
+  .plan-grid,
+  .rating-grid,
+  .habit-layout{
+    grid-template-columns:1fr!important;
+  }
+}
+
+@media (max-width:460px){
+  .stats-grid,
+  .prog-stats,
+  .result-grid,
+  .habit-stats-grid{
+    grid-template-columns:1fr!important;
+  }
+}
+
 </style>
 </head>
 <body>
