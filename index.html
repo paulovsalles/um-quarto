@@ -1131,6 +1131,38 @@ html, body{
   }
 }
 
+
+/* ===== Aulas editáveis + guia IFES/ENEM + navegação mobile lateral opcional ===== */
+.aula-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.aula-edit-box{margin-top:12px;border:1.5px solid var(--borda);background:#fbfdfc;border-radius:16px;padding:16px;box-shadow:0 8px 22px rgba(40,71,84,.04)}
+.aula-edit-title{font-weight:900;color:var(--azul);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.aula-view-card{display:grid;gap:8px}
+.item-meta .badge{white-space:nowrap}
+.program-hero{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:var(--radius);padding:22px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.program-hero h2{font-size:24px;margin-bottom:6px}.program-hero p{font-size:13px;opacity:.9;line-height:1.45}
+.program-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.program-card{background:#fff;border:1.5px solid var(--borda);border-radius:18px;padding:18px;box-shadow:var(--shadow);display:grid;gap:12px}
+.program-card.locked{opacity:.92}.program-card h3{font-size:20px;color:var(--azul);display:flex;align-items:center;gap:8px}.program-card p{font-size:13px;color:var(--cinza);line-height:1.5}
+.program-lock-row{display:grid;grid-template-columns:1fr auto;gap:8px}.program-lock-row input{width:100%;padding:11px 12px;border:1.5px solid var(--borda);border-radius:12px}
+.program-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:900;background:#e8f5f3;color:var(--verde-dark);width:max-content}
+.program-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.program-tab{padding:10px 14px;border-radius:999px;background:var(--bg);color:var(--cinza);font-size:13px;font-weight:900}.program-tab.active{background:var(--verde);color:#fff}
+.program-topic-list{display:grid;gap:10px}.program-topic{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;box-shadow:0 8px 20px rgba(40,71,84,.035)}
+.program-check{width:28px;height:28px;border-radius:9px;border:2px solid var(--borda);display:flex;align-items:center;justify-content:center;font-weight:900;color:#fff;cursor:pointer;background:#fff}.program-check.done{background:var(--verde);border-color:var(--verde)}
+.program-topic-main strong{color:var(--azul);font-size:15px}.program-topic-main p{font-size:13px;color:var(--cinza);line-height:1.45;margin-top:4px}.program-topic-main small{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.program-progress{height:10px;background:var(--bg);border-radius:999px;overflow:hidden;margin-top:8px}.program-progress span{display:block;height:100%;background:var(--verde);border-radius:999px}
+.program-subject-title{font-size:15px;font-weight:900;color:var(--azul);margin:18px 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px}.program-subject-title span{font-size:12px;color:var(--cinza);font-weight:800}
+@media(max-width:720px){.program-hero{flex-direction:column;align-items:flex-start}.program-cards{grid-template-columns:1fr}.program-lock-row{grid-template-columns:1fr}.program-topic{grid-template-columns:auto 1fr}.program-topic .btn-del{grid-column:2;justify-self:end}.aula-actions{justify-content:flex-start}}
+
+/* No celular, mantém barra inferior por padrão. Ao tocar no botão de menu lateral, abre como gaveta. */
+.mobile-side-toggle{display:none}
+@media(max-width:1023px){
+  .mobile-side-toggle{display:inline-flex!important;align-items:center;justify-content:center;width:38px;height:38px;border-radius:12px;background:var(--bg);color:var(--azul);font-weight:900;font-size:20px;margin-right:8px}
+  body.mobile-sidebar-open .bottom-nav{position:fixed!important;left:10px!important;top:10px!important;bottom:10px!important;width:240px!important;z-index:200!important;border:1.5px solid var(--borda);border-radius:24px;background:#fff;box-shadow:0 18px 45px rgba(40,71,84,.18);display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;gap:8px!important;padding:16px 12px!important;overflow-y:auto!important}
+  body.mobile-sidebar-open .bottom-nav .nav-item{flex-direction:row!important;justify-content:flex-start!important;gap:12px!important;font-size:13px!important;width:100%!important;padding:11px 12px!important}
+  body.mobile-sidebar-open .bottom-nav .nav-item span{display:inline!important}
+  body.mobile-sidebar-open::after{content:"";position:fixed;inset:0;background:rgba(20,40,50,.28);z-index:190}.bottom-nav{z-index:201}
+}
+
 </style>
 </head>
 <body>
@@ -1245,6 +1277,7 @@ html, body{
 
 <div id="screen-app" class="screen">
   <div class="topbar">
+    <button class="mobile-side-toggle" onclick="toggleMobileSidebar()">☰</button>
     <div class="topbar-logo"><img class="brand-icon brand-icon-topbar" src="data:image/png;base64,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" alt="Um Quarto"></div>
     <div style="display:flex;gap:8px;align-items:center">
       <button class="btn-small switch-mode-btn" onclick="toggleAccessMode()" style="display:none">Trocar modo</button>
@@ -1613,6 +1646,53 @@ html, body{
     </div>
 
 
+
+    <div id="tab-programas" class="tab-panel">
+      <div class="program-hero">
+        <div>
+          <h2>IFES e ENEM 🎯</h2>
+          <p>Guias com conteúdos por matéria e checklist de progresso. Cada aluno libera o acesso com o código correto.</p>
+        </div>
+        <span class="program-badge">Checklist de evolução</span>
+      </div>
+
+      <div class="program-cards">
+        <div class="program-card" id="program-card-ifes">
+          <span class="program-badge">IFES</span>
+          <h3>🏫 Guia IFES</h3>
+          <p>Conteúdos direcionados para estudos do IFES, com progresso por tópico.</p>
+          <div class="program-lock-row" id="unlock-ifes-row"><input id="code-ifes" placeholder="Código de acesso IFES"><button class="btn-small primary" onclick="unlockProgram('ifes')">Liberar</button></div>
+        </div>
+        <div class="program-card" id="program-card-enem">
+          <span class="program-badge">ENEM</span>
+          <h3>🧠 Guia ENEM</h3>
+          <p>Checklist de matérias e conteúdos para evolução contínua rumo ao ENEM.</p>
+          <div class="program-lock-row" id="unlock-enem-row"><input id="code-enem" placeholder="Código de acesso ENEM"><button class="btn-small primary" onclick="unlockProgram('enem')">Liberar</button></div>
+        </div>
+      </div>
+
+      <div class="add-form teacher-only" style="display:none">
+        <h3>+ Adicionar conteúdo ao guia</h3>
+        <div class="form-row">
+          <div class="form-field"><label>Guia</label><select id="prog-tipo"><option value="ifes">IFES</option><option value="enem">ENEM</option></select></div>
+          <div class="form-field"><label>Matéria</label><input id="prog-materia" placeholder="Ex: Matemática, Português, Física"></div>
+        </div>
+        <div class="form-field"><label>Conteúdo/tópico</label><input id="prog-titulo" placeholder="Ex: Função do 1º grau"></div>
+        <div class="form-field"><label>Descrição/dica</label><textarea id="prog-desc" placeholder="Ex: estudar conceito, resolver exercícios e revisar erros."></textarea></div>
+        <button class="btn-add" onclick="addProgramTopic()">Adicionar conteúdo</button>
+      </div>
+
+      <div class="program-tabs">
+        <button class="program-tab active" id="program-tab-ifes" onclick="setProgramView('ifes')">IFES</button>
+        <button class="program-tab" id="program-tab-enem" onclick="setProgramView('enem')">ENEM</button>
+      </div>
+      <div class="card">
+        <div class="card-title" id="program-title">Conteúdos</div>
+        <div id="program-progress-summary"></div>
+        <div id="program-topic-list" class="program-topic-list"></div>
+      </div>
+    </div>
+
     <div id="tab-planejamento" class="tab-panel">
       <div class="plan-hero">
         <h2>Planejamento Inteligente 📅</h2>
@@ -1792,6 +1872,7 @@ html, body{
     <button class="nav-item" id="nav-avaliacoes" onclick="switchTab('avaliacoes')">📝<span>Avaliações</span></button>
     <button class="nav-item" id="nav-resultados" onclick="switchTab('resultados')">📈<span>Resultados</span></button>
     <button class="nav-item" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
+    <button class="nav-item" id="nav-programas" onclick="switchTab('programas')">🎯<span>IFES/ENEM</span></button>
     <button class="nav-item" id="nav-habitos" onclick="switchTab('habitos')">🌱<span>Hábitos</span></button>
     <button class="nav-item" id="nav-planejamento" onclick="switchTab('planejamento')">🧭<span>Plano</span></button>
     <button class="nav-item" id="nav-progresso" onclick="switchTab('progresso')">📊<span>Progresso</span></button>
@@ -1829,11 +1910,13 @@ let calendarCurrentDate = new Date();
 let calendarSelectedDate = new Date();
 let calendarViewMode = "month";
 let calendarAgendaVisible = true;
-let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],unsubscribers=[];
+let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",unsubscribers=[];
 let globalStudentFilter="all";
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
 const TEACHER_CODE="mcqueen2026";
+const IFES_CODE="IFES2026";
+const ENEM_CODE="ENEM2026";
 const STUDENT_LOGIN_DOMAIN="aluno.umquarto.local";
 const today=()=>new Date().toISOString().slice(0,10);
 function dateKeyLocal(d){
@@ -2226,8 +2309,24 @@ function attachRealtimeListeners(){
   const planRef=db.ref("planejamento/"+uid);
   planRef.on("value",s=>{planejamento=s.val()||{};fillPlanejamento();renderPlanejamentoResumo();});
   unsubscribers.push(()=>planRef.off());
+
+  const guideRef=db.ref("studyGuides");
+  guideRef.on("value",s=>{
+    const data=s.val()||{};
+    programTopics={ifes:objToArray(data.ifes||{}).sort((a,b)=>(a.materia||"").localeCompare(b.materia||"") || (a.ordem||0)-(b.ordem||0)),enem:objToArray(data.enem||{}).sort((a,b)=>(a.materia||"").localeCompare(b.materia||"") || (a.ordem||0)-(b.ordem||0))};
+    renderPrograms();
+  });
+  unsubscribers.push(()=>guideRef.off());
+
+  const accessRef=db.ref("programAccess/"+uid);
+  accessRef.on("value",s=>{programAccess={ifes:false,enem:false,...(s.val()||{})};renderPrograms();});
+  unsubscribers.push(()=>accessRef.off());
+
+  const progressRef=db.ref("studyProgress/"+uid);
+  progressRef.on("value",s=>{programProgress={ifes:{},enem:{},...(s.val()||{})};renderPrograms();});
+  unsubscribers.push(()=>progressRef.off());
 }
-function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
   const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=users.filter(u=>u.role==="teacher" || u.financeiro===true || u.email===PROFESSOR_EMAIL);
@@ -2297,7 +2396,8 @@ function switchTab(tab){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   document.getElementById("tab-"+tab)?.classList.add("active");
   document.getElementById("nav-"+tab)?.classList.add("active");
-  if(tab==="progresso")updateProgresso(); if(tab==="resultados")renderResultados(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  if(tab==="progresso")updateProgresso(); if(tab==="resultados")renderResultados(); if(tab==="programas")renderPrograms(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  document.body.classList.remove("mobile-sidebar-open");
   window.scrollTo({top:0,behavior:"instant"});
 }
 
@@ -2481,17 +2581,85 @@ async function updateAulaFinanceiro(studentUid,id,campo,valor){
 function renderAulas(){
   const list=isTeacher()?visibleByFilter(allAulas):aulas,el=document.getElementById("lista-aulas"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}
-  el.innerHTML=list.map(a=>{const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";return`<div class="item"><div class="aula-header"><div class="item-title">📚 ${safeText(a.materia)}</div><div style="display:flex;gap:8px;align-items:center"><span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span><button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button></div></div><div class="item-text">${safeText(a.conteudo)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}${a.professorNome?`<span class="badge ok">👨‍🏫 ${safeText(a.professorNome)}</span>`:""}${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}<span class="badge warn">📅 ${formatDate(a.data)}</span><span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}</div>${(currentAccessMode==="teacher"&&isFinanceUser())?`<div class="finance-aula-box">
-    <div class="form-row">
-      <div class="form-field"><label>Valor da aula / faturamento</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div>
-      <div class="form-field"><label>Repasse ao professor</label><input type="number" min="0" step="0.01" value="${Number(a.repasseProfessor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','repasseProfessor',this.value)"></div>
-    </div>
-    <div class="form-row">
-      <div class="form-field"><label>Valor líquido</label><input type="text" readonly value="${formatMoney(Number(a.valor||0)-Number(a.repasseProfessor||0))}"></div>
-      <div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Concluída</option></select></div>
-    </div>
-  </div>`:""}</div>`}).join("");
+  el.innerHTML=list.map(a=>{
+    const uid=a.studentUid||a.ownerUid||ownUid(),status=a.statusFinanceiro||"previsto";
+    const canEdit=isTeacher();
+    return `<div class="item aula-view-card" id="aula-card-${a.id}">
+      <div class="aula-header">
+        <div class="item-title">📚 ${safeText(a.materia)}</div>
+        <div class="aula-actions">
+          <span class="badge ok aula-dur">⏱ ${formatDuracao(a.dur)}</span>
+          ${canEdit?`<button class="btn-small" onclick="toggleAulaEdit('${a.id}','${uid}')">✏️ Editar</button>`:""}
+          ${canEdit?`<button class="btn-del" onclick="delAula('${a.id}','${uid}')">×</button>`:""}
+        </div>
+      </div>
+      <div class="item-text">${safeText(a.conteudo)}</div>
+      <div class="item-meta">
+        ${isTeacher()?`<span class="badge ok">👤 ${safeText(a.studentName||getUserName(uid))}</span>`:""}
+        ${a.professorNome?`<span class="badge ok">👨‍🏫 ${safeText(a.professorNome)}</span>`:""}
+        ${a.escola?`<span class="badge">🏫 ${safeText(a.escola)}</span>`:""}
+        <span class="badge warn">📅 ${formatDate(a.data)}</span>
+        <span class="badge">🕒 ${a.inicio||"--:--"} às ${a.fim||"--:--"}</span>
+        ${a.obs?`<span class="badge">${safeText(a.obs)}</span>`:""}
+      </div>
+      ${canEdit?renderAulaEditBox(a,uid):""}
+      ${(currentAccessMode==="teacher"&&isFinanceUser())?`<div class="finance-aula-box">
+        <div class="form-row">
+          <div class="form-field"><label>Valor da aula / faturamento</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div>
+          <div class="form-field"><label>Repasse ao professor</label><input type="number" min="0" step="0.01" value="${Number(a.repasseProfessor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','repasseProfessor',this.value)"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Valor líquido</label><input type="text" readonly value="${formatMoney(Number(a.valor||0)-Number(a.repasseProfessor||0))}"></div>
+          <div class="form-field"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Concluída</option></select></div>
+        </div>
+      </div>`:""}
+    </div>`
+  }).join("");
 }
+function renderAulaEditBox(a,uid){
+  const teachers=users.filter(u=>(u.role||"")==="teacher" || u.email===PROFESSOR_EMAIL);
+  const opts=teachers.length?teachers.map(u=>`<option value="${u.id}" ${u.id===(a.professorUid||"")?"selected":""}>${safeText(u.name||u.email||"Professor")}</option>`).join(""):`<option value="${a.professorUid||ownUid()}">${safeText(a.professorNome||currentProfile?.name||"Professor")}</option>`;
+  return `<div class="aula-edit-box" id="aula-edit-${a.id}" style="display:none">
+    <div class="aula-edit-title">✏️ Editar aula</div>
+    <div class="form-row">
+      <div class="form-field"><label>Matéria/tema</label><input id="edit-aula-materia-${a.id}" value="${safeText(a.materia||"")}"></div>
+      <div class="form-field"><label>Data</label><input type="date" id="edit-aula-data-${a.id}" value="${safeText(a.data||"")}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Início</label><input type="time" id="edit-aula-inicio-${a.id}" value="${safeText(a.inicio||"")}"></div>
+      <div class="form-field"><label>Fim</label><input type="time" id="edit-aula-fim-${a.id}" value="${safeText(a.fim||"")}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-field"><label>Professor que deu a aula</label><select id="edit-aula-professor-${a.id}">${opts}</select></div>
+      <div class="form-field"><label>Escola</label><input id="edit-aula-escola-${a.id}" value="${safeText(a.escola||"")}"></div>
+    </div>
+    <div class="form-field"><label>Conteúdo estudado</label><textarea id="edit-aula-conteudo-${a.id}">${safeText(a.conteudo||"")}</textarea></div>
+    <div class="form-field"><label>Observações</label><input id="edit-aula-obs-${a.id}" value="${safeText(a.obs||"")}"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-small primary" onclick="saveAulaEdit('${uid}','${a.id}')">Salvar alterações</button><button class="btn-small" onclick="toggleAulaEdit('${a.id}','${uid}')">Cancelar</button></div>
+  </div>`;
+}
+function toggleAulaEdit(id,uid){
+  if(!isTeacher())return;
+  const el=document.getElementById("aula-edit-"+id); if(!el)return;
+  el.style.display=el.style.display==="none"||!el.style.display?"block":"none";
+}
+async function saveAulaEdit(studentUid,id){
+  if(!isTeacher())return alert("Apenas professor pode editar aulas.");
+  const materia=document.getElementById(`edit-aula-materia-${id}`)?.value.trim();
+  const data=document.getElementById(`edit-aula-data-${id}`)?.value||today();
+  const inicio=document.getElementById(`edit-aula-inicio-${id}`)?.value;
+  const fim=document.getElementById(`edit-aula-fim-${id}`)?.value;
+  const conteudo=document.getElementById(`edit-aula-conteudo-${id}`)?.value.trim();
+  const escola=document.getElementById(`edit-aula-escola-${id}`)?.value.trim()||"";
+  const obs=document.getElementById(`edit-aula-obs-${id}`)?.value.trim()||"";
+  const professorUid=document.getElementById(`edit-aula-professor-${id}`)?.value||ownUid();
+  const professorNome=getUserName(professorUid)||currentProfile?.name||currentUser?.email||"";
+  if(!materia||!inicio||!fim||!conteudo)return alert("Preencha matéria, horário e conteúdo.");
+  const dur=calcularDuracao(inicio,fim); if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
+  await db.ref(`aulas/${studentUid}/${id}`).update({materia,data,inicio,fim,dur,conteudo,escola,obs,professorUid,professorNome,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedBy:ownUid(),updatedByEmail:userEmail()});
+  alert("Aula atualizada com sucesso!");
+}
+
 function csvEscape(value){
   const s=String(value??"").replaceAll('"','""');
   return `"${s}"`;
@@ -2723,6 +2891,56 @@ function renderResultados(){
     if(!res.length){resEl.innerHTML='<div class="empty-state"><div>📈</div>Nenhuma avaliação de aula registrada.</div>'}
     else resEl.innerHTML=`<div class="result-list">${res.slice(0,10).map(r=>`<div class="result-list-item"><strong>${formatDate(r.date)} · média ${Number(r.media||0).toFixed(1)}/5</strong><br><small>${isTeacher()?safeText(r.studentName||getUserName(r.studentUid))+" · ":""}${safeText(r.aulaTitulo||"Aula")}</small><div class="item-meta" style="margin-top:6px">${Object.entries(r.criterios||{}).map(([k,v])=>`<span class="badge">${safeText(k)}: ${v}/5</span>`).join("")}</div>${r.obs?`<p class="item-text" style="margin-top:8px">${safeText(r.obs)}</p>`:""}</div>`).join("")}</div>`;
   }
+}
+
+
+function toggleMobileSidebar(){document.body.classList.toggle("mobile-sidebar-open")}
+document.addEventListener("click",e=>{if(document.body.classList.contains("mobile-sidebar-open")&&!e.target.closest(".bottom-nav")&&!e.target.closest(".mobile-side-toggle"))document.body.classList.remove("mobile-sidebar-open")});
+function setProgramView(program){currentProgramView=program;renderPrograms()}
+async function unlockProgram(program){
+  const input=document.getElementById("code-"+program);
+  const code=(input?.value||"").trim();
+  const expected=program==="ifes"?IFES_CODE:ENEM_CODE;
+  if(code!==expected)return alert("Código incorreto.");
+  await db.ref(`programAccess/${ownUid()}/${program}`).set(true);
+  if(input)input.value="";
+  alert(`Acesso ${program.toUpperCase()} liberado!`);
+}
+async function addProgramTopic(){
+  if(!isTeacher())return alert("Apenas professor pode adicionar conteúdos.");
+  const program=document.getElementById("prog-tipo")?.value||"ifes";
+  const materia=document.getElementById("prog-materia")?.value.trim();
+  const titulo=document.getElementById("prog-titulo")?.value.trim();
+  const desc=document.getElementById("prog-desc")?.value.trim()||"";
+  if(!materia||!titulo)return alert("Preencha matéria e conteúdo.");
+  await db.ref(`studyGuides/${program}`).push({materia,titulo,desc,ordem:Date.now(),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP});
+  ["prog-materia","prog-titulo","prog-desc"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+}
+async function delProgramTopic(program,id){if(!isTeacher())return; if(confirm("Remover este conteúdo do guia?")) await db.ref(`studyGuides/${program}/${id}`).remove()}
+async function toggleProgramTopic(program,id){
+  if(!programAccess[program]&&!isTeacher())return alert("Libere o guia com o código de acesso.");
+  const current=!!programProgress?.[program]?.[id];
+  await db.ref(`studyProgress/${ownUid()}/${program}/${id}`).set(!current);
+}
+function renderPrograms(){
+  const ifesUnlocked=!!programAccess.ifes||isTeacher(), enemUnlocked=!!programAccess.enem||isTeacher();
+  const ifesRow=document.getElementById("unlock-ifes-row"), enemRow=document.getElementById("unlock-enem-row");
+  if(ifesRow)ifesRow.style.display=ifesUnlocked?"none":"grid"; if(enemRow)enemRow.style.display=enemUnlocked?"none":"grid";
+  document.getElementById("program-card-ifes")?.classList.toggle("locked",!ifesUnlocked);
+  document.getElementById("program-card-enem")?.classList.toggle("locked",!enemUnlocked);
+  document.getElementById("program-tab-ifes")?.classList.toggle("active",currentProgramView==="ifes");
+  document.getElementById("program-tab-enem")?.classList.toggle("active",currentProgramView==="enem");
+  const title=document.getElementById("program-title"), summary=document.getElementById("program-progress-summary"), listEl=document.getElementById("program-topic-list");
+  if(!listEl)return;
+  const unlocked=currentProgramView==="ifes"?ifesUnlocked:enemUnlocked;
+  if(title)title.textContent=`Conteúdos ${currentProgramView.toUpperCase()}`;
+  if(!unlocked){summary.innerHTML="";listEl.innerHTML='<div class="empty-state"><div>🔒</div>Digite o código para liberar este guia.</div>';return;}
+  const topics=programTopics[currentProgramView]||[], prog=programProgress[currentProgramView]||{};
+  const done=topics.filter(t=>prog[t.id]).length, pct=topics.length?Math.round(done/topics.length*100):0;
+  if(summary)summary.innerHTML=`<div style="margin-bottom:14px"><strong>${done}/${topics.length}</strong> conteúdos concluídos · ${pct}%<div class="program-progress"><span style="width:${pct}%"></span></div></div>`;
+  if(!topics.length){listEl.innerHTML='<div class="empty-state"><div>🎯</div>Nenhum conteúdo cadastrado ainda.</div>';return;}
+  const groups={};topics.forEach(t=>{(groups[t.materia||"Geral"] ||= []).push(t)});
+  listEl.innerHTML=Object.entries(groups).map(([materia,items])=>`<div><div class="program-subject-title">${safeText(materia)} <span>${items.filter(t=>prog[t.id]).length}/${items.length}</span></div>${items.map(t=>`<div class="program-topic"><button class="program-check ${prog[t.id]?"done":""}" onclick="toggleProgramTopic('${currentProgramView}','${t.id}')">${prog[t.id]?"✓":""}</button><div class="program-topic-main"><strong>${safeText(t.titulo)}</strong><p>${safeText(t.desc||"")}</p><small><span class="badge">${safeText(materia)}</span><span class="badge ${prog[t.id]?"ok":"warn"}">${prog[t.id]?"Concluído":"Pendente"}</span></small></div>${isTeacher()?`<button class="btn-del" onclick="delProgramTopic('${currentProgramView}','${t.id}')">×</button>`:""}</div>`).join("")}</div>`).join("");
 }
 
 function renderCalendario(){
