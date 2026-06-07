@@ -1926,26 +1926,28 @@ function dateKeyLocal(d){
   return `${y}-${m}-${day}`;
 }
 const curiosidades=[
-  "🧠 Curiosidade: dormir bem ajuda o cérebro a consolidar o que você estudou. Por isso, revisar e descansar funciona melhor do que virar a noite.",
-  "📚 Curiosidade: explicar um conteúdo em voz alta, como se estivesse ensinando alguém, ajuda a encontrar o que você ainda não entendeu.",
-  "⏱️ Curiosidade: estudar em blocos curtos pode ser mais eficiente do que estudar por horas sem pausa, porque o cérebro perde foco com o tempo.",
-  "✍️ Curiosidade: escrever à mão pode ajudar na memorização, porque obriga o cérebro a resumir e organizar melhor as ideias.",
-  "🔁 Curiosidade: revisar o conteúdo no mesmo dia em que aprendeu reduz bastante o esquecimento nos dias seguintes.",
-  "🎯 Curiosidade: começar por uma tarefa pequena diminui a procrastinação, porque o cérebro entende que a atividade já começou.",
-  "🧩 Curiosidade: errar uma questão e corrigir com atenção costuma ensinar mais do que apenas acertar várias no automático.",
-  "📖 Curiosidade: ler a pergunta antes do texto pode ajudar a encontrar informações importantes com mais foco.",
-  "🧠 Curiosidade: alternar matérias diferentes no estudo pode melhorar a retenção, porque o cérebro aprende a comparar assuntos.",
-  "🚶 Curiosidade: uma caminhada curta pode melhorar a concentração antes de estudar, porque aumenta a oxigenação e reduz tensão.",
-  "🎧 Curiosidade: música instrumental pode ajudar algumas pessoas a focar, mas músicas com letra podem atrapalhar leitura e escrita.",
-  "💧 Curiosidade: até uma leve desidratação pode piorar a atenção. Água também faz parte do estudo.",
-  "📝 Curiosidade: fazer um resumo muito bonito não garante aprendizado. O mais importante é conseguir lembrar e aplicar depois.",
-  "🔍 Curiosidade: estudar por questões ajuda a revelar exatamente onde estão suas dúvidas.",
-  "📅 Curiosidade: estudar um pouco por vários dias costuma funcionar melhor do que estudar tudo de uma vez na véspera.",
-  "🧠 Curiosidade: o cérebro gosta de padrões. Ter um horário fixo para estudar ajuda a criar hábito com menos esforço.",
-  "🗣️ Curiosidade: quando você ensina alguém, seu cérebro organiza o conteúdo de forma mais clara.",
-  "🌱 Curiosidade: progresso pequeno ainda é progresso. Quinze minutos bem feitos podem mudar o ritmo da semana.",
-  "📌 Curiosidade: metas específicas, como ‘resolver 5 questões’, funcionam melhor do que metas vagas, como ‘estudar matemática’.",
-  "🧪 Curiosidade: fazer pausas curtas evita fadiga mental e pode melhorar a qualidade do próximo bloco de estudo."
+const curiosidades = [
+  "🧠 Curiosidade real: a prática de lembrar sem olhar, chamada retrieval practice, costuma ser mais eficiente do que apenas reler o conteúdo. Fonte: Dunlosky et al., 2013.",
+  "📅 Curiosidade real: distribuir o estudo em vários dias, em vez de concentrar tudo na véspera, é uma das estratégias com melhor evidência na psicologia cognitiva. Fonte: Dunlosky et al., 2013.",
+  "🧪 Curiosidade real: fazer testes práticos ajuda não só a medir o que você sabe, mas também a aprender melhor. Fonte: Dunlosky et al., 2013.",
+  "🔁 Curiosidade real: revisar com intervalos, técnica conhecida como spaced practice, ajuda a memória a durar mais tempo. Fonte: The Learning Scientists.",
+  "🧩 Curiosidade real: misturar tipos diferentes de exercícios, técnica chamada interleaving, pode melhorar a capacidade de escolher a estratégia certa na prova. Fonte: The Learning Scientists.",
+  "🗣️ Curiosidade real: explicar o conteúdo com suas próprias palavras é uma forma de elaboração, estratégia que ajuda a criar conexões mais fortes. Fonte: The Learning Scientists.",
+  "🖼️ Curiosidade real: combinar palavras e imagens, técnica chamada dual coding, pode facilitar a compreensão de alguns conteúdos. Fonte: The Learning Scientists.",
+  "📌 Curiosidade real: exemplos concretos ajudam o cérebro a entender ideias abstratas com mais clareza. Fonte: The Learning Scientists.",
+  "💤 Curiosidade real: o sono participa da consolidação da memória, ajudando o cérebro a estabilizar aprendizados importantes. Fonte: Klinzing, Niethard e Born, 2019.",
+  "🌙 Curiosidade real: estudar e dormir bem tende a funcionar melhor do que virar a noite tentando memorizar tudo. Fonte: pesquisas sobre sono e consolidação da memória.",
+  "🎯 Frase inspiradora: 'A educação é a arma mais poderosa que você pode usar para mudar o mundo.' — Nelson Mandela.",
+  "📚 Frase inspiradora: 'Viva como se fosse morrer amanhã. Aprenda como se fosse viver para sempre.' — Mahatma Gandhi.",
+  "🌱 Frase inspiradora: 'Não é que eu seja tão inteligente; é que eu fico mais tempo com os problemas.' — Albert Einstein.",
+  "🔥 Frase inspiradora: 'Eu não falhei. Apenas descobri 10.000 maneiras que não funcionam.' — Thomas Edison.",
+  "🚀 Frase inspiradora: 'O sucesso é a soma de pequenos esforços repetidos dia após dia.' — Robert Collier.",
+  "⏳ Frase inspiradora: 'Você não precisa ser grande para começar, mas precisa começar para ser grande.' — Zig Ziglar.",
+  "🧭 Frase inspiradora: 'A jornada de mil milhas começa com um único passo.' — Lao Tsé.",
+  "💡 Frase inspiradora: 'A mente que se abre a uma nova ideia jamais volta ao seu tamanho original.' — atribuída a Albert Einstein.",
+  "🏆 Frase inspiradora: 'Disciplina é escolher entre o que você quer agora e o que você mais quer.' — atribuída a Abraham Lincoln.",
+  "🌟 Frase inspiradora: 'Cada ação que você realiza é um voto para o tipo de pessoa que deseja se tornar.' — James Clear."
+];
 ];
 
 function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
