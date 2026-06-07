@@ -1925,7 +1925,6 @@ function dateKeyLocal(d){
   const day=String(d.getDate()).padStart(2,"0");
   return `${y}-${m}-${day}`;
 }
-const curiosidades=[
 const curiosidades = [
   "🧠 Curiosidade real: a prática de lembrar sem olhar, chamada retrieval practice, costuma ser mais eficiente do que apenas reler o conteúdo. Fonte: Dunlosky et al., 2013.",
   "📅 Curiosidade real: distribuir o estudo em vários dias, em vez de concentrar tudo na véspera, é uma das estratégias com melhor evidência na psicologia cognitiva. Fonte: Dunlosky et al., 2013.",
@@ -1947,7 +1946,6 @@ const curiosidades = [
   "💡 Frase inspiradora: 'A mente que se abre a uma nova ideia jamais volta ao seu tamanho original.' — atribuída a Albert Einstein.",
   "🏆 Frase inspiradora: 'Disciplina é escolher entre o que você quer agora e o que você mais quer.' — atribuída a Abraham Lincoln.",
   "🌟 Frase inspiradora: 'Cada ação que você realiza é um voto para o tipo de pessoa que deseja se tornar.' — James Clear."
-];
 ];
 
 function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
@@ -3552,7 +3550,6 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
   ["a-valor","a-repasse"].forEach(id=>document.getElementById(id)?.addEventListener("input",updateAulaLiquidoPreview));
   ["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
   ["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));
-});
-</script>
+});</script>
 </body>
 </html>
