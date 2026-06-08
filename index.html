@@ -1535,6 +1535,190 @@ html, body{
   .linked-student-filter-grid{grid-template-columns:1fr}
 }
 
+
+/* ===== BATE-PAPO / FÓRUM DE APRENDIZADO ===== */
+.forum-hero{
+  background:linear-gradient(135deg,var(--azul),var(--azul-light));
+  color:#fff;
+  border-radius:var(--radius);
+  padding:22px;
+  margin-bottom:14px;
+  box-shadow:0 18px 40px rgba(40,71,84,.10);
+}
+.forum-hero h2{font-size:24px;margin-bottom:6px}
+.forum-hero p{font-size:13px;opacity:.9;line-height:1.45}
+.forum-layout{
+  display:grid;
+  grid-template-columns:minmax(280px,.75fr) minmax(420px,1.25fr);
+  gap:14px;
+  align-items:start;
+}
+.forum-composer{
+  position:sticky;
+  top:86px;
+}
+.forum-tabs{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.forum-tab{
+  border:0;
+  border-radius:999px;
+  background:var(--bg);
+  color:var(--cinza);
+  padding:9px 12px;
+  font-size:12px;
+  font-weight:900;
+}
+.forum-tab.active{
+  background:var(--verde);
+  color:#fff;
+}
+.forum-feed{
+  display:grid;
+  gap:12px;
+}
+.forum-post{
+  background:#fff;
+  border:1.5px solid var(--borda);
+  border-radius:20px;
+  padding:16px;
+  box-shadow:var(--shadow);
+}
+.forum-post-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.forum-author{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.forum-avatar{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:#e8f5f3;
+  color:var(--verde-dark);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+}
+.forum-author strong{
+  display:block;
+  font-size:14px;
+  color:var(--azul);
+}
+.forum-author small{
+  display:block;
+  font-size:11px;
+  color:var(--cinza);
+  font-weight:800;
+  margin-top:2px;
+}
+.forum-post-title{
+  font-size:17px;
+  font-weight:900;
+  color:var(--azul);
+  margin-bottom:6px;
+  line-height:1.25;
+}
+.forum-post-text{
+  font-size:13px;
+  color:var(--azul-light);
+  line-height:1.5;
+  white-space:pre-wrap;
+}
+.forum-tags{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:10px;
+}
+.forum-tag{
+  display:inline-flex;
+  border-radius:999px;
+  background:#e8f5f3;
+  color:var(--verde-dark);
+  padding:4px 8px;
+  font-size:10px;
+  font-weight:900;
+}
+.forum-actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.forum-actions .btn-small{
+  padding:7px 10px;
+}
+.forum-answer-box{
+  margin-top:12px;
+  border-top:1px solid var(--borda);
+  padding-top:12px;
+  display:grid;
+  gap:8px;
+}
+.forum-answer{
+  background:#f8fbfa;
+  border:1px solid var(--borda);
+  border-radius:14px;
+  padding:10px;
+}
+.forum-answer strong{
+  font-size:12px;
+  color:var(--azul);
+}
+.forum-answer p{
+  font-size:12px;
+  color:var(--cinza);
+  font-weight:700;
+  line-height:1.45;
+  margin-top:4px;
+  white-space:pre-wrap;
+}
+.forum-answer-input{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+}
+.forum-empty{
+  background:#fff;
+  border:1.5px dashed var(--borda);
+  border-radius:20px;
+  padding:28px 16px;
+  text-align:center;
+  color:var(--cinza);
+  font-weight:800;
+}
+.forum-badge{
+  border-radius:999px;
+  padding:4px 8px;
+  font-size:10px;
+  font-weight:900;
+  background:#eef4f3;
+  color:var(--cinza);
+}
+.forum-badge.duvida{background:#fff3e8;color:#c8721a}
+.forum-badge.post{background:#e8f5f3;color:var(--verde-dark)}
+.forum-badge.material{background:#eef3ff;color:#5168b8}
+@media(max-width:900px){
+  .forum-layout{grid-template-columns:1fr}
+  .forum-composer{position:static}
+}
+@media(max-width:720px){
+  .forum-hero{padding:18px 16px}
+  .forum-hero h2{font-size:21px}
+  .forum-answer-input{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -1964,6 +2148,62 @@ html, body{
       </div>
     </div>
 
+
+    <div id="tab-forum" class="tab-panel">
+      <div class="forum-hero">
+        <h2>Bate-papo de estudos 💬</h2>
+        <p>Um espaço para alunos e professores trocarem dúvidas, explicações, materiais e ideias de estudo. Use com respeito e foco no aprendizado.</p>
+      </div>
+
+      <div class="forum-layout">
+        <div class="add-form forum-composer">
+          <h3>+ Criar publicação</h3>
+          <div class="form-field">
+            <label>Tipo</label>
+            <select id="forum-type">
+              <option value="duvida">Dúvida</option>
+              <option value="post">Post/explicação</option>
+              <option value="material">Material/dica</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label>Título</label>
+            <input type="text" id="forum-title" placeholder="Ex: Dúvida sobre função afim">
+          </div>
+          <div class="form-field">
+            <label>Texto</label>
+            <textarea id="forum-text" placeholder="Explique sua dúvida, compartilhe uma dica ou poste um resumo..."></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Matéria</label>
+              <input type="text" id="forum-subject" placeholder="Ex: Matemática">
+            </div>
+            <div class="form-field">
+              <label>Tags</label>
+              <input type="text" id="forum-tags" placeholder="Ex: IFES, função afim, dúvida">
+            </div>
+          </div>
+          <button class="btn-add" onclick="addForumPost()">Publicar</button>
+          <p style="font-size:12px;color:var(--cinza);line-height:1.4;margin-top:10px;font-weight:700">
+            Dica: escreva títulos claros e evite expor dados pessoais. O foco é estudo, dúvidas e troca de informação.
+          </p>
+        </div>
+
+        <div>
+          <div class="forum-tabs">
+            <button class="forum-tab active" id="forum-tab-all" onclick="setForumFilter('all')">Tudo</button>
+            <button class="forum-tab" id="forum-tab-duvida" onclick="setForumFilter('duvida')">Dúvidas</button>
+            <button class="forum-tab" id="forum-tab-post" onclick="setForumFilter('post')">Posts</button>
+            <button class="forum-tab" id="forum-tab-material" onclick="setForumFilter('material')">Materiais</button>
+          </div>
+          <div class="forum-feed" id="forum-feed">
+            <div class="forum-empty">💬 Nenhuma publicação ainda.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div id="tab-calendario" class="tab-panel">
       <div class="linked-student-filter teacher-only" style="display:none">
         <div class="filter-head">
@@ -2327,6 +2567,7 @@ html, body{
     <button class="nav-item" id="nav-aulas" onclick="switchTab('aulas')">📚<span>Aulas</span></button>
     <button class="nav-item" id="nav-avaliacoes" onclick="switchTab('avaliacoes')">📝<span>Avaliações</span></button>
     <button class="nav-item" id="nav-resultados" onclick="switchTab('resultados')">📈<span>Resultados</span></button>
+    <button class="nav-item" id="nav-forum" onclick="switchTab('forum')">💬<span>Bate-papo</span></button>
     <button class="nav-item" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
     <button class="nav-item" id="nav-programas" onclick="switchTab('programas')">🎯<span>IFES/ENEM</span></button>
     <button class="nav-item" id="nav-habitos" onclick="switchTab('habitos')">🌱<span>Hábitos</span></button>
@@ -2366,7 +2607,7 @@ let calendarCurrentDate = new Date();
 let calendarSelectedDate = new Date();
 let calendarViewMode = "month";
 let calendarAgendaVisible = true;
-let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",unsubscribers=[];
+let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
 let globalStudentFilter="all";
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
@@ -2796,6 +3037,14 @@ function attachRealtimeListeners(){
     renderCalendario();
   },e=>{console.error(e);alert("Erro ao carregar calendário. Confira as regras do Realtime Database.")});unsubscribers.push(()=>calRef.off());
 
+
+  const forumRef=db.ref("forumPosts");
+  forumRef.on("value",s=>{
+    forumPosts=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    renderForum();
+  },e=>{console.error(e);alert("Erro ao carregar bate-papo. Confira as regras do Realtime Database.")});
+  unsubscribers.push(()=>forumRef.off());
+
   const habitosRef=db.ref("habitos/"+uid);
   habitosRef.on("value",s=>{habitos=objToArray(s.val()).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));renderHabitos();updateStats();updateProgresso()});
   unsubscribers.push(()=>habitosRef.off());
@@ -2824,7 +3073,7 @@ function attachRealtimeListeners(){
   progressRef.on("value",s=>{programProgress={ifes:{},enem:{},...(s.val()||{})};renderPrograms();});
   unsubscribers.push(()=>progressRef.off());
 }
-function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
   const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=isPauloMaster()
@@ -3071,7 +3320,8 @@ function switchTab(tab){
   document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
   document.getElementById("tab-"+tab)?.classList.add("active");
   document.getElementById("nav-"+tab)?.classList.add("active");
-  if(tab==="progresso")updateProgresso(); if(tab==="resultados")renderResultados(); if(tab==="programas")renderPrograms(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  if(tab==="progresso")updateProgresso(); if(tab==="resultados")renderResultados(); if(tab==="programas")renderPrograms();
+  if(tab==="forum")renderForum(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
   document.body.classList.remove("mobile-sidebar-open");
   window.scrollTo({top:0,behavior:"instant"});
 }
@@ -3780,6 +4030,134 @@ function renderPrograms(){
   listEl.innerHTML=Object.entries(groups).map(([materia,items])=>`<div><div class="program-subject-title">${safeText(materia)} <span>${items.filter(t=>prog[t.id]).length}/${items.length}</span></div>${items.map(t=>`<div class="program-topic"><button class="program-check ${prog[t.id]?"done":""}" onclick="toggleProgramTopic('${currentProgramView}','${t.id}')">${prog[t.id]?"✓":""}</button><div class="program-topic-main"><strong>${safeText(t.titulo)}</strong><p>${safeText(t.desc||"")}</p><small><span class="badge">${safeText(materia)}</span><span class="badge ${prog[t.id]?"ok":"warn"}">${prog[t.id]?"Concluído":"Pendente"}</span></small></div>${isTeacher()?`<button class="btn-del" onclick="delProgramTopic('${currentProgramView}','${t.id}')">×</button>`:""}</div>`).join("")}</div>`).join("");
 }
 
+
+
+function forumTypeLabel(type){
+  if(type==="duvida")return "Dúvida";
+  if(type==="material")return "Material";
+  return "Post";
+}
+function forumAuthorInitial(name){
+  return safeText(String(name||"?").trim().slice(0,1).toUpperCase()||"?");
+}
+function forumTagsArray(v){
+  return String(v||"").split(",").map(x=>x.trim()).filter(Boolean).slice(0,8);
+}
+function setForumFilter(type){
+  forumFilter=type||"all";
+  ["all","duvida","post","material"].forEach(t=>{
+    document.getElementById("forum-tab-"+t)?.classList.toggle("active",forumFilter===t);
+  });
+  renderForum();
+}
+async function addForumPost(){
+  if(!currentUser||!db)return alert("Faça login para publicar.");
+  const title=document.getElementById("forum-title")?.value.trim();
+  const textValue=document.getElementById("forum-text")?.value.trim();
+  const type=document.getElementById("forum-type")?.value||"duvida";
+  const subject=document.getElementById("forum-subject")?.value.trim();
+  const tags=forumTagsArray(document.getElementById("forum-tags")?.value);
+  if(!title)return alert("Digite um título para a publicação.");
+  if(!textValue)return alert("Digite o texto da publicação.");
+  const payload={
+    type,
+    title,
+    text:textValue,
+    subject,
+    tags,
+    authorUid:ownUid(),
+    authorName:currentProfile?.name||currentUser.email||"Usuário",
+    authorEmail:userEmail(),
+    authorRole:isTeacher()?"teacher":"student",
+    createdAt:firebase.database.ServerValue.TIMESTAMP,
+    answers:{}
+  };
+  try{
+    await db.ref("forumPosts").push(payload);
+    ["forum-title","forum-text","forum-subject","forum-tags"].forEach(id=>{const el=document.getElementById(id); if(el)el.value=""});
+    const typeEl=document.getElementById("forum-type"); if(typeEl)typeEl.value="duvida";
+  }catch(e){alert(firebaseErrorMessage(e));}
+}
+async function addForumAnswer(postId){
+  const input=document.getElementById("forum-answer-"+postId);
+  const textValue=input?.value.trim();
+  if(!textValue)return alert("Digite uma resposta.");
+  const payload={
+    text:textValue,
+    authorUid:ownUid(),
+    authorName:currentProfile?.name||currentUser.email||"Usuário",
+    authorEmail:userEmail(),
+    authorRole:isTeacher()?"teacher":"student",
+    createdAt:firebase.database.ServerValue.TIMESTAMP
+  };
+  try{
+    await db.ref("forumPosts/"+postId+"/answers").push(payload);
+    input.value="";
+  }catch(e){alert(firebaseErrorMessage(e));}
+}
+async function toggleForumLike(postId){
+  if(!currentUser||!db)return;
+  const post=forumPosts.find(p=>p.id===postId);
+  const liked=post?.likes?.[ownUid()]===true;
+  try{
+    await db.ref("forumPosts/"+postId+"/likes/"+ownUid()).set(liked?null:true);
+  }catch(e){alert(firebaseErrorMessage(e));}
+}
+async function delForumPost(postId){
+  const post=forumPosts.find(p=>p.id===postId);
+  if(!post)return;
+  if(!isPauloMaster() && post.authorUid!==ownUid())return alert("Você só pode excluir publicações feitas por você.");
+  if(!confirm("Excluir esta publicação?"))return;
+  try{await db.ref("forumPosts/"+postId).remove()}catch(e){alert(firebaseErrorMessage(e));}
+}
+function renderForum(){
+  const el=document.getElementById("forum-feed");
+  if(!el)return;
+  ["all","duvida","post","material"].forEach(t=>{
+    document.getElementById("forum-tab-"+t)?.classList.toggle("active",forumFilter===t);
+  });
+  const list=forumPosts.filter(p=>forumFilter==="all"||p.type===forumFilter).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  if(!list.length){
+    el.innerHTML='<div class="forum-empty">💬 Nenhuma publicação ainda. Seja o primeiro a postar uma dúvida ou dica.</div>';
+    return;
+  }
+  el.innerHTML=list.map(p=>{
+    const tags=Array.isArray(p.tags)?p.tags:forumTagsArray(p.tags);
+    const answers=objToArray(p.answers||{}).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    const likesCount=p.likes?Object.keys(p.likes).length:0;
+    const liked=p.likes?.[ownUid()]===true;
+    const canDelete=isPauloMaster()||p.authorUid===ownUid();
+    return `<div class="forum-post">
+      <div class="forum-post-head">
+        <div class="forum-author">
+          <div class="forum-avatar">${forumAuthorInitial(p.authorName)}</div>
+          <div>
+            <strong>${safeText(p.authorName||"Usuário")}</strong>
+            <small>${p.authorRole==="teacher"?"Professor":"Aluno"} · ${p.createdAt?new Date(p.createdAt).toLocaleDateString("pt-BR"):"agora"}</small>
+          </div>
+        </div>
+        <span class="forum-badge ${safeText(p.type||"post")}">${forumTypeLabel(p.type)}</span>
+      </div>
+      <div class="forum-post-title">${safeText(p.title)}</div>
+      <div class="forum-post-text">${safeText(p.text)}</div>
+      <div class="forum-tags">
+        ${p.subject?`<span class="forum-tag">📚 ${safeText(p.subject)}</span>`:""}
+        ${tags.map(t=>`<span class="forum-tag">#${safeText(t)}</span>`).join("")}
+      </div>
+      <div class="forum-actions">
+        <button class="btn-small ${liked?"primary":""}" onclick="toggleForumLike('${p.id}')">👍 ${likesCount}</button>
+        ${canDelete?`<button class="btn-small" onclick="delForumPost('${p.id}')">Excluir</button>`:""}
+      </div>
+      <div class="forum-answer-box">
+        ${answers.length?answers.map(a=>`<div class="forum-answer"><strong>${safeText(a.authorName||"Usuário")} ${a.authorRole==="teacher"?"· Professor":""}</strong><p>${safeText(a.text)}</p></div>`).join(""):""}
+        <div class="forum-answer-input">
+          <input id="forum-answer-${p.id}" placeholder="Responder ou complementar...">
+          <button class="btn-small primary" onclick="addForumAnswer('${p.id}')">Responder</button>
+        </div>
+      </div>
+    </div>`;
+  }).join("");
+}
 
 function aulaToCalendarItem(a){
   const concluida=(a.statusFinanceiro==="recebido"||a.statusAula==="concluida"||a.concluida===true);
