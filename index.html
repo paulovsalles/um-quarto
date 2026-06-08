@@ -1341,6 +1341,100 @@ html, body{
   .kanban-card:hover{transform:none}
 }
 
+
+/* ===== EDITAR TAREFA CLICANDO NO CARD ===== */
+.kanban-card{
+  cursor:pointer!important;
+}
+.kanban-card .kanban-actions,
+.kanban-card button,
+.kanban-card a{
+  cursor:pointer!important;
+}
+.kanban-edit-overlay{
+  position:fixed;
+  inset:0;
+  background:rgba(20,40,50,.34);
+  z-index:9990;
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  padding:16px;
+}
+.kanban-edit-overlay.open{
+  display:flex;
+}
+.kanban-edit-modal{
+  width:min(560px,100%);
+  max-height:min(86vh,760px);
+  overflow:auto;
+  background:#fff;
+  border:1.5px solid var(--borda);
+  border-radius:26px 26px 18px 18px;
+  box-shadow:0 -18px 50px rgba(40,71,84,.22);
+  padding:18px;
+  animation:kanbanSheetIn .18s ease;
+}
+@keyframes kanbanSheetIn{
+  from{opacity:.7;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.kanban-edit-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+}
+.kanban-edit-head h3{
+  font-size:20px;
+  color:var(--azul);
+  margin:0 0 4px;
+}
+.kanban-edit-head p{
+  font-size:12px;
+  color:var(--cinza);
+  font-weight:800;
+  line-height:1.35;
+}
+.kanban-edit-close{
+  width:38px;
+  height:38px;
+  border-radius:13px;
+  background:var(--bg);
+  color:var(--azul);
+  font-size:22px;
+  font-weight:900;
+}
+.kanban-edit-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:12px;
+}
+.kanban-card-open-tip{
+  font-size:10px;
+  color:var(--cinza);
+  font-weight:900;
+  margin-top:9px;
+  display:flex;
+  align-items:center;
+  gap:5px;
+}
+@media(max-width:720px){
+  .kanban-edit-overlay{padding:0;align-items:flex-end}
+  .kanban-edit-modal{
+    width:100%;
+    max-height:88vh;
+    border-radius:26px 26px 0 0;
+    border-left:0;
+    border-right:0;
+    border-bottom:0;
+    padding:16px;
+  }
+  .kanban-edit-actions{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -2676,7 +2770,7 @@ function setupKanbanDnD(){
       e.dataTransfer.setData("text/student-uid",card.dataset.studentUid);
       e.dataTransfer.effectAllowed="move";
     });
-    card.addEventListener("dragend",()=>card.classList.remove("dragging"));
+    card.addEventListener("dragend",()=>{card.classList.remove("dragging"); kanbanSuppressClick=true; setTimeout(()=>kanbanSuppressClick=false,180);});
     enablePointerKanbanDrag(card);
   });
 }
@@ -2716,6 +2810,7 @@ function enablePointerKanbanDrag(card){
     if(kanbanPointerDrag.ghost)kanbanPointerDrag.ghost.remove();
     card.classList.remove("dragging");
     kanbanPointerDrag=null;
+    if(wasMoved){kanbanSuppressClick=true; setTimeout(()=>kanbanSuppressClick=false,180);}
     if(wasMoved && col?.dataset?.status){
       await updateTarefaStatus(card.dataset.id,card.dataset.studentUid,col.dataset.status);
     }
@@ -2771,6 +2866,7 @@ async function addTarefa(){
       prazo:document.getElementById("t-prazo").value,
       labels:parseLabels(document.getElementById("t-labels")?.value),
       prioridade:document.getElementById("t-prioridade")?.value || "media",
+      obs:"",
       status:"pendente",
       done:false,
       studentUid,
@@ -2802,6 +2898,64 @@ async function addTarefa(){
     alert("Tarefa salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
+
+let kanbanSuppressClick=false;
+function getTarefaById(id,studentUid){
+  const uid=studentUid||ownUid();
+  const list=isTeacher()?allTarefas:tarefas;
+  return list.find(t=>String(t.id)===String(id)&&String(t.studentUid||uid)===String(uid));
+}
+function openTarefaEdit(id,studentUid){
+  if(kanbanSuppressClick)return;
+  const uid=studentUid||ownUid();
+  const task=getTarefaById(id,uid);
+  if(!task)return alert("Não encontrei essa tarefa para editar.");
+  if(uid!==ownUid()&&!teacherCanManageItem(task))return alert("Você só pode editar tarefas criadas/vinculadas a você.");
+  document.getElementById("edit-task-id").value=task.id;
+  document.getElementById("edit-task-student-uid").value=uid;
+  document.getElementById("edit-task-nome").value=task.nome||"";
+  document.getElementById("edit-task-materia").value=task.materia||"";
+  document.getElementById("edit-task-prazo").value=task.prazo||"";
+  document.getElementById("edit-task-labels").value=(Array.isArray(task.labels)?task.labels:parseLabels(task.labels||task.materia||"")).join(", ");
+  document.getElementById("edit-task-prioridade").value=task.prioridade||"media";
+  document.getElementById("edit-task-status").value=normalizeTaskStatus(task);
+  document.getElementById("edit-task-student-name").value=task.studentName||getUserName(uid)||"Aluno";
+  document.getElementById("edit-task-obs").value=task.obs||task.descricao||"";
+  document.getElementById("kanban-edit-overlay").classList.add("open");
+}
+function closeTarefaEdit(){
+  document.getElementById("kanban-edit-overlay")?.classList.remove("open");
+}
+async function saveTarefaEdit(){
+  const id=document.getElementById("edit-task-id")?.value;
+  const uid=document.getElementById("edit-task-student-uid")?.value||ownUid();
+  if(!id||!uid)return alert("Não foi possível identificar a tarefa.");
+  const task=getTarefaById(id,uid);
+  if(uid!==ownUid()&&!teacherCanManageItem(task))return alert("Você só pode editar tarefas criadas/vinculadas a você.");
+  const nome=document.getElementById("edit-task-nome").value.trim();
+  if(!nome)return alert("Digite o nome da tarefa.");
+  const status=document.getElementById("edit-task-status").value||"pendente";
+  const payload={
+    nome,
+    materia:document.getElementById("edit-task-materia").value.trim(),
+    prazo:document.getElementById("edit-task-prazo").value,
+    labels:parseLabels(document.getElementById("edit-task-labels").value),
+    prioridade:document.getElementById("edit-task-prioridade").value||"media",
+    status,
+    done:status==="concluida",
+    obs:document.getElementById("edit-task-obs").value.trim(),
+    updatedBy:ownUid(),
+    updatedByEmail:userEmail(),
+    updatedAt:firebase.database.ServerValue.TIMESTAMP
+  };
+  try{
+    await db.ref("tarefas/"+uid+"/"+id).update(payload);
+    closeTarefaEdit();
+  }catch(e){
+    alert(firebaseErrorMessage(e));
+  }
+}
+
 async function updateTarefaStatus(id,studentUid,status){
   const uid=studentUid||ownUid();
   const item=allTarefas.find(t=>t.id===id&&t.studentUid===uid);
@@ -2874,7 +3028,7 @@ function renderTaskCard(t){
   const status=normalizeTaskStatus(t);
   const labels=Array.isArray(t.labels)?t.labels:parseLabels(t.labels||t.materia||"");
   const prioridade=t.prioridade||"media";
-  return `<div class="kanban-card priority-${safeText(prioridade)}" draggable="true" data-id="${safeText(t.id)}" data-student-uid="${safeText(t.studentUid)}">
+  return `<div class="kanban-card priority-${safeText(prioridade)}" draggable="true" data-id="${safeText(t.id)}" data-student-uid="${safeText(t.studentUid)}" onclick="openTarefaEdit(\'${safeText(t.id)}\',\'${safeText(t.studentUid)}\')">
     <div class="kanban-card-top">
       <div class="kanban-card-title">${safeText(t.nome)}</div>
       <span class="kanban-priority ${safeText(prioridade)}">${priorityLabel(prioridade)}</span>
@@ -2887,7 +3041,9 @@ function renderTaskCard(t){
       ${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}
     </div>
     ${labels.length?`<div class="kanban-labels">${labels.map(l=>`<span class="kanban-label">#${safeText(l)}</span>`).join("")}</div>`:""}
-    <div class="kanban-actions">
+    ${t.obs?`<div class="item-text">${safeText(t.obs)}</div>`:""}
+    <div class="kanban-card-open-tip">✏️ Clique no card para editar</div>
+    <div class="kanban-actions" onclick="event.stopPropagation()">
       ${status!=="pendente"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','pendente')">A fazer</button>`:""}
       ${status!=="andamento"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','andamento')">Andamento</button>`:""}
       ${status!=="concluida"?`<button class="btn-small primary" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','concluida')">Concluir</button>`:""}
@@ -3953,5 +4109,70 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
   ["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));
 });
 </script>
+
+<div class="kanban-edit-overlay" id="kanban-edit-overlay" onclick="if(event.target.id==='kanban-edit-overlay')closeTarefaEdit()">
+  <div class="kanban-edit-modal">
+    <div class="kanban-edit-head">
+      <div>
+        <h3>Editar tarefa</h3>
+        <p>Clique no card para abrir, ajuste os campos e salve. Funciona como um card do Trello.</p>
+      </div>
+      <button class="kanban-edit-close" onclick="closeTarefaEdit()">×</button>
+    </div>
+    <input type="hidden" id="edit-task-id">
+    <input type="hidden" id="edit-task-student-uid">
+    <div class="form-field">
+      <label>Tarefa</label>
+      <input type="text" id="edit-task-nome" placeholder="Nome da tarefa">
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Categoria/Matéria</label>
+        <input type="text" id="edit-task-materia" placeholder="Ex: Matemática, Física...">
+      </div>
+      <div class="form-field">
+        <label>Prazo</label>
+        <input type="date" id="edit-task-prazo">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Labels / etiquetas</label>
+        <input type="text" id="edit-task-labels" placeholder="Ex: urgente, IFES, revisão">
+      </div>
+      <div class="form-field">
+        <label>Prioridade</label>
+        <select id="edit-task-prioridade">
+          <option value="baixa">Baixa</option>
+          <option value="media">Média</option>
+          <option value="alta">Alta</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Status</label>
+        <select id="edit-task-status">
+          <option value="pendente">A fazer</option>
+          <option value="andamento">Em andamento</option>
+          <option value="concluida">Concluída</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Aluno vinculado</label>
+        <input type="text" id="edit-task-student-name" readonly>
+      </div>
+    </div>
+    <div class="form-field">
+      <label>Observações</label>
+      <textarea id="edit-task-obs" placeholder="Detalhes, links, páginas, instruções..."></textarea>
+    </div>
+    <div class="kanban-edit-actions">
+      <button class="btn-small" onclick="closeTarefaEdit()">Cancelar</button>
+      <button class="btn-small primary" onclick="saveTarefaEdit()">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
