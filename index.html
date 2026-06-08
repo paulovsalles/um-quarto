@@ -1349,7 +1349,7 @@ html, body{
       </div>
 
       <div class="card teacher-only" style="display:none">
-        <div class="card-title">Alunos cadastrados</div>
+        <div class="card-title">Alunos da Um Quarto</div>
         <div id="lista-alunos"></div>
       </div>
       <div class="card student-only">
@@ -1966,6 +1966,16 @@ function teacherLinkedStudent(u){
   if(!uid||!u)return false;
   return u.id===uid || u.createdBy===uid || u.teacherUid===uid || u.ownerTeacherUid===uid || u.professorUid===uid || u.linkedTeacherUid===uid || u.linkedTeachers?.[uid]===true || u.teacherIds?.[uid]===true;
 }
+async function ensureTeacherStudentLink(studentUid){
+  if(!isTeacher() || isPauloMaster() || !studentUid || studentUid===ownUid())return;
+  try{
+    await db.ref("users/"+studentUid+"/linkedTeachers/"+ownUid()).set(true);
+    await db.ref("users/"+studentUid+"/lastLinkedTeacherUid").set(ownUid());
+    await db.ref("users/"+studentUid+"/lastLinkedTeacherEmail").set(userEmail());
+  }catch(e){
+    console.warn("Não foi possível vincular aluno ao professor automaticamente:", e);
+  }
+}
 function teacherCanManageItem(x){return isTeacher() && teacherOwnsItem(x)}
 function isTeacher(){return hasTeacherPermission() && currentAccessMode==="teacher"}
 function isStudentMode(){return !isTeacher()}
@@ -2268,7 +2278,7 @@ function attachRealtimeListeners(){
 
   if(isTeacher()){
     const usersRef=db.ref("users");
-    usersRef.on("value",s=>{users=objToArray(s.val()).filter(u=>isPauloMaster()||teacherLinkedStudent(u)).sort((a,b)=>(a.name||"").localeCompare(b.name||""));populateStudentSelects();renderAlunos()},e=>{console.error(e);users=[{id:uid,...currentProfile}];populateStudentSelects();renderAlunos();});
+    usersRef.on("value",s=>{users=objToArray(s.val()).sort((a,b)=>(a.name||"").localeCompare(b.name||""));populateStudentSelects();renderAlunos()},e=>{console.error(e);users=[{id:uid,...currentProfile}];populateStudentSelects();renderAlunos();});
     unsubscribers.push(()=>usersRef.off());
   }else{
     users=[{id:uid,...currentProfile}];
@@ -2342,7 +2352,7 @@ function attachRealtimeListeners(){
 }
 function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
-  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL && (isPauloMaster()||teacherLinkedStudent(u)));
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=isPauloMaster()
     ? users.filter(u=>u.role==="teacher" || u.financeiro===true || u.email===PROFESSOR_EMAIL)
     : [{id:ownUid(),name:currentProfile?.name||currentUser?.email,email:currentUser?.email,role:"teacher"}];
@@ -2360,7 +2370,7 @@ function populateStudentSelects(){
   ["global-student-filter"].forEach(id=>{
     const filter=document.getElementById(id);
     if(filter){
-      filter.innerHTML=(isPauloMaster()?`<option value="all">Todos os alunos</option>`:`<option value="all">Meus alunos/vínculos</option>`)+`<option value="${ownUid()}">Meu acesso — ${myName}</option>`+options;
+      filter.innerHTML=(isPauloMaster()?`<option value="all">Todos os alunos</option>`:`<option value="all">Meus registros</option>`)+`<option value="${ownUid()}">Meu acesso — ${myName}</option>`+options;
       filter.value=globalStudentFilter;
     }
   });
@@ -2427,6 +2437,7 @@ async function addTarefa(){
   if(!currentUser||!db)return;
   const studentUid=selectedStudentOrSelf("t-student");
   if(!studentUid)return alert("Selecione um aluno.");
+  await ensureTeacherStudentLink(studentUid);
   const nome=document.getElementById("t-nome").value.trim();
   if(!nome)return alert("Digite o nome da tarefa.");
   const file=document.getElementById("t-anexo")?.files?.[0] || null;
@@ -2544,6 +2555,7 @@ function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inic
 function formatDuracao(min){const n=Number(min||0),h=Math.floor(n/60),m=n%60;if(h&&m)return`${h}h${String(m).padStart(2,"0")}`;if(h)return`${h}h`;return`${m} min`}
 async function addAula(){
   const studentUid=selectedStudentOrSelf("a-student"); if(!studentUid)return alert("Selecione um aluno.");
+  await ensureTeacherStudentLink(studentUid);
   const mat=document.getElementById("a-materia").value.trim(),
     data=document.getElementById("a-data").value||today(),
     inicio=document.getElementById("a-inicio").value,
@@ -2713,6 +2725,7 @@ function exportAulasCSV(){
 
 async function addAvaliacao(){
   const studentUid=selectedStudentOrSelf("av-student"); if(!studentUid)return alert("Selecione um aluno.");
+  await ensureTeacherStudentLink(studentUid);
   const title=document.getElementById("av-title").value.trim(),materia=document.getElementById("av-materia").value.trim(),prazo=document.getElementById("av-prazo").value,desc=document.getElementById("av-desc").value.trim(),anexo=document.getElementById("av-anexo").value.trim();
   const file=document.getElementById("av-anexo-file")?.files?.[0] || null;
   if(!title||!materia||!desc)return alert("Preencha título, matéria e descrição.");
@@ -2759,6 +2772,7 @@ function renderAvaliacoes(){
 
 async function addCalendarioItem(){
   const studentUid=selectedStudentOrSelf("cal-student"); if(!studentUid)return alert("Selecione um aluno.");
+  await ensureTeacherStudentLink(studentUid);
   const type=document.getElementById("cal-type").value;
   const date=document.getElementById("cal-date").value;
   const start=document.getElementById("cal-start").value;
@@ -2831,6 +2845,7 @@ function resultadoBase(){
 async function addResultadoAula(){
   if(!isTeacher())return alert("Apenas professor pode lançar resultados.");
   const studentUid=document.getElementById("res-student")?.value; if(!studentUid)return alert("Selecione um aluno.");
+  await ensureTeacherStudentLink(studentUid);
   const data=document.getElementById("res-data")?.value||today();
   const aulaId=document.getElementById("res-aula")?.value||"";
   const aula=allAulas.find(a=>a.id===aulaId&&a.studentUid===studentUid)||{};
@@ -2855,6 +2870,7 @@ async function addResultadoAula(){
 async function addNotaAluno(){
   if(!isTeacher())return alert("Apenas professor pode lançar notas.");
   const studentUid=document.getElementById("nota-student")?.value; if(!studentUid)return alert("Selecione um aluno.");
+  await ensureTeacherStudentLink(studentUid);
   const materia=document.getElementById("nota-materia")?.value.trim(); if(!materia)return alert("Informe a matéria.");
   const valor=Number(document.getElementById("nota-valor")?.value||0);
   const max=Number(document.getElementById("nota-max")?.value||10);
