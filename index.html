@@ -1415,7 +1415,7 @@ html, body{
     <div id="tab-aulas" class="tab-panel">
       <div class="add-form">
         <h3>+ Registrar aula</h3>
-        <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="a-student"></select></div>
+        <div class="form-field teacher-only" style="display:none"><label>Aluno vinculado <span style="color:var(--danger)">*</span></label><select id="a-student" required></select><p style="font-size:12px;color:var(--cinza);margin-top:5px;font-weight:800">Obrigatório: toda aula precisa estar vinculada a um aluno.</p></div>
         <div class="form-row">
           <div class="form-field"><label>Matéria/tema</label><input type="text" id="a-materia" placeholder="Ex: Matemática, Redação, Física..."></div>
           <div class="form-field"><label>Data</label><input type="date" id="a-data"></div>
@@ -1976,6 +1976,24 @@ async function ensureTeacherStudentLink(studentUid){
     console.warn("Não foi possível vincular aluno ao professor automaticamente:", e);
   }
 }
+function requireAulaStudentLink(){
+  const sel=document.getElementById("a-student");
+  if(isTeacher()){
+    const studentUid=sel?.value||"";
+    if(!studentUid){
+      alert("Para registrar aula, é obrigatório vincular um aluno.");
+      sel?.focus();
+      return "";
+    }
+    if(studentUid===ownUid()){
+      alert("Selecione um aluno válido. Aula de professor não pode ficar vinculada ao próprio professor.");
+      sel?.focus();
+      return "";
+    }
+    return studentUid;
+  }
+  return ownUid();
+}
 function teacherCanManageItem(x){return isTeacher() && teacherOwnsItem(x)}
 function isTeacher(){return hasTeacherPermission() && currentAccessMode==="teacher"}
 function isStudentMode(){return !isTeacher()}
@@ -2405,6 +2423,24 @@ function setGlobalStudentFilter(uid){
   updateProgresso();
   updateFinanceiro();
 }
+
+const __originalPopulateStudentSelectsObrigatorioAula = populateStudentSelects;
+populateStudentSelects = function(){
+  __originalPopulateStudentSelectsObrigatorioAula();
+  const aulaSel=document.getElementById("a-student");
+  if(aulaSel && isTeacher()){
+    const current=aulaSel.value;
+    const hasPlaceholder=[...aulaSel.options].some(o=>o.value==="");
+    if(!hasPlaceholder){
+      const opt=document.createElement("option");
+      opt.value="";
+      opt.textContent="Selecione o aluno da aula";
+      aulaSel.insertBefore(opt,aulaSel.firstChild);
+    }
+    if(!current || current===ownUid()) aulaSel.value="";
+  }
+};
+
 function selectedStudentOrSelf(selectId){return isTeacher()?(document.getElementById(selectId)?.value || ""):ownUid()}
 
 function normalizeTaskStatus(t){
@@ -2554,7 +2590,7 @@ function renderPainelTarefas(){
 function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inicio.split(":").map(Number),[hf,mf]=fim.split(":").map(Number);let i=hi*60+mi,f=hf*60+mf;if(f<i)f+=1440;return f-i}
 function formatDuracao(min){const n=Number(min||0),h=Math.floor(n/60),m=n%60;if(h&&m)return`${h}h${String(m).padStart(2,"0")}`;if(h)return`${h}h`;return`${m} min`}
 async function addAula(){
-  const studentUid=selectedStudentOrSelf("a-student"); if(!studentUid)return alert("Selecione um aluno.");
+  const studentUid=requireAulaStudentLink(); if(!studentUid)return;
   await ensureTeacherStudentLink(studentUid);
   const mat=document.getElementById("a-materia").value.trim(),
     data=document.getElementById("a-data").value||today(),
