@@ -1163,6 +1163,184 @@ html, body{
   body.mobile-sidebar-open::after{content:"";position:fixed;inset:0;background:rgba(20,40,50,.28);z-index:190}.bottom-nav{z-index:201}
 }
 
+
+/* ===== KANBAN 2.0 - Trello-like: labels, prioridade e drag/drop desktop + celular ===== */
+.kanban-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom:12px;
+}
+.kanban-toolbar-left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.kanban-filter{
+  display:grid;
+  grid-template-columns:1fr 140px;
+  gap:8px;
+  width:min(100%,520px);
+}
+.kanban-filter input,.kanban-filter select{min-height:42px}
+.kanban-board{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(260px,1fr))!important;
+  gap:14px!important;
+  margin-top:12px!important;
+  align-items:start!important;
+}
+.kanban-col{
+  background:linear-gradient(180deg,#f8fbfa,#edf5f4)!important;
+  border:1.5px solid var(--borda)!important;
+  border-radius:20px!important;
+  padding:12px!important;
+  min-height:260px!important;
+  transition:background .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+.kanban-col.drag-over{
+  background:#e8f5f3!important;
+  box-shadow:inset 0 0 0 2px rgba(35,184,166,.45),0 14px 28px rgba(35,184,166,.12)!important;
+  transform:translateY(-1px);
+}
+.kanban-title{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  font-size:13px!important;
+  font-weight:900!important;
+  color:var(--azul)!important;
+  margin-bottom:10px!important;
+  position:sticky;
+  top:0;
+  z-index:1;
+  background:linear-gradient(180deg,#f8fbfa,#edf5f4);
+  padding-bottom:8px;
+}
+.kanban-title-main{display:flex;flex-direction:column;gap:2px}
+.kanban-title-main small{color:var(--cinza);font-size:11px;font-weight:800;line-height:1.25}
+.kanban-count{
+  background:#fff!important;
+  border:1px solid var(--borda)!important;
+  border-radius:999px!important;
+  padding:3px 9px!important;
+  font-size:11px!important;
+  color:var(--cinza)!important;
+  font-weight:900!important;
+}
+.kanban-drop-hint{
+  border:1.5px dashed rgba(35,184,166,.45);
+  border-radius:14px;
+  padding:12px;
+  text-align:center;
+  color:var(--verde-dark);
+  font-size:12px;
+  font-weight:900;
+  background:rgba(232,245,243,.55);
+  margin-bottom:10px;
+}
+.kanban-card{
+  background:#fff!important;
+  border:1.5px solid rgba(232,237,237,.95)!important;
+  border-radius:16px!important;
+  padding:13px!important;
+  margin-bottom:10px!important;
+  box-shadow:0 8px 20px rgba(40,71,84,.06)!important;
+  cursor:grab!important;
+  user-select:none!important;
+  touch-action:pan-y!important;
+  position:relative!important;
+  overflow:hidden!important;
+  transition:transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+}
+.kanban-card:active{cursor:grabbing!important}
+.kanban-card:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(40,71,84,.10)!important}
+.kanban-card.dragging{opacity:.38!important}
+.kanban-card::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;width:5px;
+  background:var(--verde);
+  opacity:.76;
+}
+.kanban-card.priority-alta::before{background:#e84040}
+.kanban-card.priority-media::before{background:#c8721a}
+.kanban-card.priority-baixa::before{background:#23B8A6}
+.kanban-card-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.kanban-card-title{font-size:15px!important;font-weight:900!important;color:var(--azul)!important;line-height:1.25!important;padding-left:4px}
+.kanban-priority{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:3px 8px;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+  background:#eef4f3;
+  color:var(--cinza);
+}
+.kanban-priority.alta{background:#ffecec;color:#d83232}
+.kanban-priority.media{background:#fff3e8;color:#c8721a}
+.kanban-priority.baixa{background:#e8f5f3;color:var(--verde-dark)}
+.kanban-labels{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.kanban-label{
+  display:inline-flex;
+  align-items:center;
+  border-radius:999px;
+  padding:4px 8px;
+  font-size:10px;
+  font-weight:900;
+  background:#eef4f3;
+  color:var(--azul-light);
+  max-width:126px;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.kanban-label:nth-child(3n+1){background:#e8f5f3;color:var(--verde-dark)}
+.kanban-label:nth-child(3n+2){background:#eef3ff;color:#5168b8}
+.kanban-label:nth-child(3n+3){background:#fff3e8;color:#c8721a}
+.kanban-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px!important}
+.kanban-actions .btn-small{padding:6px 9px!important;font-size:11px!important}
+.kanban-empty{
+  padding:20px 10px;
+  text-align:center;
+  color:var(--cinza);
+  font-size:13px;
+  font-weight:800;
+}
+.kanban-ghost{
+  position:fixed;
+  z-index:9999;
+  pointer-events:none;
+  width:280px;
+  max-width:78vw;
+  opacity:.96;
+  transform:rotate(2deg);
+  box-shadow:0 18px 45px rgba(40,71,84,.22)!important;
+}
+@media(max-width:760px){
+  .kanban-filter{grid-template-columns:1fr!important;width:100%!important}
+  .kanban-board{
+    display:grid!important;
+    grid-auto-flow:column!important;
+    grid-auto-columns:minmax(282px,86vw)!important;
+    grid-template-columns:none!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    scroll-snap-type:x mandatory!important;
+    padding-bottom:10px!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  .kanban-board::-webkit-scrollbar{display:none}
+  .kanban-col{scroll-snap-align:start!important;min-height:360px!important}
+  .kanban-card:hover{transform:none}
+}
+
 </style>
 </head>
 <body>
@@ -1402,6 +1580,10 @@ html, body{
         <div class="form-row">
           <div class="form-field"><label>Categoria/observação (opcional)</label><input type="text" id="t-materia" placeholder="Ex: Casa, escola, revisão, simulado..."></div>
           <div class="form-field"><label>Prazo</label><input type="date" id="t-prazo"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Labels / etiquetas</label><input type="text" id="t-labels" placeholder="Ex: Matemática, urgente, IFES"></div>
+          <div class="form-field"><label>Prioridade</label><select id="t-prioridade"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></div>
         </div>
         <div class="form-field"><label>Anexar PDF ou Word (opcional)</label><input type="file" id="t-anexo" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
         <button class="btn-add" onclick="addTarefa()">Adicionar tarefa</button>
@@ -2443,6 +2625,109 @@ populateStudentSelects = function(){
 
 function selectedStudentOrSelf(selectId){return isTeacher()?(document.getElementById(selectId)?.value || ""):ownUid()}
 
+
+function parseLabels(value){
+  return String(value||"")
+    .split(",")
+    .map(x=>x.trim())
+    .filter(Boolean)
+    .slice(0,6);
+}
+function priorityLabel(p){
+  if(p==="alta")return "Alta";
+  if(p==="baixa")return "Baixa";
+  return "Média";
+}
+function visibleKanbanTasks(list){
+  const q=(document.getElementById("kanban-search")?.value||"").trim().toLowerCase();
+  const label=(document.getElementById("kanban-label-filter")?.value||"").trim().toLowerCase();
+  return (list||[]).filter(t=>{
+    const labels=Array.isArray(t.labels)?t.labels:parseLabels(t.labels||t.materia||"");
+    const hay=[t.nome,t.materia,t.studentName,t.studentEmail,t.prioridade,...labels].join(" ").toLowerCase();
+    const okQ=!q||hay.includes(q);
+    const okLabel=!label||labels.map(x=>String(x).toLowerCase()).includes(label);
+    return okQ&&okLabel;
+  });
+}
+function kanbanAllLabels(list){
+  const set=new Set();
+  (list||[]).forEach(t=>{
+    (Array.isArray(t.labels)?t.labels:parseLabels(t.labels||t.materia||"")).forEach(l=>set.add(l));
+  });
+  return [...set].sort((a,b)=>a.localeCompare(b));
+}
+function setupKanbanDnD(){
+  document.querySelectorAll(".kanban-col").forEach(col=>{
+    col.addEventListener("dragover",e=>{e.preventDefault();col.classList.add("drag-over")});
+    col.addEventListener("dragleave",()=>col.classList.remove("drag-over"));
+    col.addEventListener("drop",async e=>{
+      e.preventDefault();
+      col.classList.remove("drag-over");
+      const id=e.dataTransfer?.getData("text/task-id");
+      const uid=e.dataTransfer?.getData("text/student-uid");
+      const status=col.dataset.status;
+      if(id&&uid&&status) await updateTarefaStatus(id,uid,status);
+    });
+  });
+  document.querySelectorAll(".kanban-card").forEach(card=>{
+    card.addEventListener("dragstart",e=>{
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/task-id",card.dataset.id);
+      e.dataTransfer.setData("text/student-uid",card.dataset.studentUid);
+      e.dataTransfer.effectAllowed="move";
+    });
+    card.addEventListener("dragend",()=>card.classList.remove("dragging"));
+    enablePointerKanbanDrag(card);
+  });
+}
+let kanbanPointerDrag=null;
+function enablePointerKanbanDrag(card){
+  card.addEventListener("pointerdown",e=>{
+    if(e.button!==0)return;
+    if(e.target.closest("button,a"))return;
+    kanbanPointerDrag={card,startX:e.clientX,startY:e.clientY,ghost:null,moved:false};
+  });
+  card.addEventListener("pointermove",e=>{
+    if(!kanbanPointerDrag||kanbanPointerDrag.card!==card)return;
+    const dx=e.clientX-kanbanPointerDrag.startX,dy=e.clientY-kanbanPointerDrag.startY;
+    if(!kanbanPointerDrag.moved && Math.hypot(dx,dy)<12)return;
+    if(!kanbanPointerDrag.ghost){
+      kanbanPointerDrag.ghost=card.cloneNode(true);
+      kanbanPointerDrag.ghost.classList.add("kanban-ghost");
+      kanbanPointerDrag.ghost.style.left=e.clientX+"px";
+      kanbanPointerDrag.ghost.style.top=e.clientY+"px";
+      document.body.appendChild(kanbanPointerDrag.ghost);
+      card.classList.add("dragging");
+    }
+    kanbanPointerDrag.moved=true;
+    kanbanPointerDrag.ghost.style.left=(e.clientX-24)+"px";
+    kanbanPointerDrag.ghost.style.top=(e.clientY-24)+"px";
+    document.querySelectorAll(".kanban-col").forEach(c=>c.classList.remove("drag-over"));
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    const col=el?.closest?.(".kanban-col");
+    if(col)col.classList.add("drag-over");
+  });
+  card.addEventListener("pointerup",async e=>{
+    if(!kanbanPointerDrag||kanbanPointerDrag.card!==card)return;
+    const wasMoved=kanbanPointerDrag.moved;
+    const el=document.elementFromPoint(e.clientX,e.clientY);
+    const col=el?.closest?.(".kanban-col");
+    document.querySelectorAll(".kanban-col").forEach(c=>c.classList.remove("drag-over"));
+    if(kanbanPointerDrag.ghost)kanbanPointerDrag.ghost.remove();
+    card.classList.remove("dragging");
+    kanbanPointerDrag=null;
+    if(wasMoved && col?.dataset?.status){
+      await updateTarefaStatus(card.dataset.id,card.dataset.studentUid,col.dataset.status);
+    }
+  });
+  card.addEventListener("pointercancel",()=>{
+    if(kanbanPointerDrag?.ghost)kanbanPointerDrag.ghost.remove();
+    card.classList.remove("dragging");
+    document.querySelectorAll(".kanban-col").forEach(c=>c.classList.remove("drag-over"));
+    kanbanPointerDrag=null;
+  });
+}
+
 function normalizeTaskStatus(t){
   if(t.status) return t.status;
   return t.done ? "concluida" : "pendente";
@@ -2484,6 +2769,8 @@ async function addTarefa(){
       nome,
       materia:document.getElementById("t-materia").value.trim(),
       prazo:document.getElementById("t-prazo").value,
+      labels:parseLabels(document.getElementById("t-labels")?.value),
+      prioridade:document.getElementById("t-prioridade")?.value || "media",
       status:"pendente",
       done:false,
       studentUid,
@@ -2510,7 +2797,8 @@ async function addTarefa(){
     renderTarefas();
     renderPainelTarefas();
     updateStats();
-    ["t-nome","t-materia","t-prazo","t-anexo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    ["t-nome","t-materia","t-prazo","t-labels","t-anexo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    const pr=document.getElementById("t-prioridade"); if(pr)pr.value="media";
     alert("Tarefa salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
@@ -2536,21 +2824,47 @@ async function delTarefa(id,studentUid){
   await db.ref("tarefas/"+uid+"/"+id).remove();
 }
 function renderTarefas(){
-  const list=isTeacher()?visibleByFilter(allTarefas):tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
+  const baseList=isTeacher()?visibleByFilter(allTarefas):tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
   try{
-    if(!list.length){el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';return}
+    const list=visibleKanbanTasks(baseList);
+    const allLabels=kanbanAllLabels(baseList);
+    const selectedLabel=document.getElementById("kanban-label-filter")?.value || "";
+    const searchValue=document.getElementById("kanban-search")?.value || "";
+    if(!baseList.length){
+      el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';
+      return;
+    }
     const cols=[
-      {key:"pendente",title:"A fazer",icon:"📌"},
-      {key:"andamento",title:"Em andamento",icon:"🚧"},
-      {key:"concluida",title:"Concluídas",icon:"✅"}
+      {key:"pendente",title:"A fazer",icon:"📌",hint:"Ideias e tarefas novas"},
+      {key:"andamento",title:"Em andamento",icon:"🚧",hint:"O que está sendo feito agora"},
+      {key:"concluida",title:"Concluídas",icon:"✅",hint:"Finalizadas e acompanhadas"}
     ];
-    el.innerHTML=`<div class="kanban-board">${cols.map(col=>{
-      const items=list.filter(t=>normalizeTaskStatus(t)===col.key);
-      return `<div class="kanban-col">
-        <div class="kanban-title"><span>${col.icon} ${col.title}</span><span class="kanban-count">${items.length}</span></div>
-        ${items.length?items.map(t=>renderTaskCard(t)).join(""):'<div class="empty-state" style="padding:18px;font-size:13px"><div>—</div>Sem tarefas</div>'}
-      </div>`;
-    }).join("")}</div>`;
+    el.innerHTML=`
+      <div class="kanban-toolbar">
+        <div class="kanban-toolbar-left">
+          <button class="btn-small primary" onclick="document.getElementById('t-nome')?.focus()">+ Nova tarefa</button>
+          <button class="btn-small" onclick="renderTarefas()">Atualizar</button>
+        </div>
+        <div class="kanban-filter">
+          <input id="kanban-search" value="${safeText(searchValue)}" placeholder="Buscar tarefa, aluno, label..." oninput="renderTarefas()">
+          <select id="kanban-label-filter" onchange="renderTarefas()">
+            <option value="">Todas as labels</option>
+            ${allLabels.map(l=>`<option value="${safeText(l)}" ${l===selectedLabel?"selected":""}>${safeText(l)}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+      <div class="kanban-board">${cols.map(col=>{
+        const items=list.filter(t=>normalizeTaskStatus(t)===col.key);
+        return `<div class="kanban-col" data-status="${col.key}">
+          <div class="kanban-title">
+            <div class="kanban-title-main"><span>${col.icon} ${col.title}</span><small>${col.hint}</small></div>
+            <span class="kanban-count">${items.length}</span>
+          </div>
+          <div class="kanban-drop-hint">Arraste cards para cá</div>
+          ${items.length?items.map(t=>renderTaskCard(t)).join(""):`<div class="kanban-empty">Sem tarefas nesta coluna</div>`}
+        </div>`;
+      }).join("")}</div>`;
+    setupKanbanDnD();
   }catch(e){
     console.error(e);
     el.innerHTML='<div class="empty-state"><div>⚠️</div>Erro ao renderizar tarefas. Atualize a página.</div>';
@@ -2558,15 +2872,21 @@ function renderTarefas(){
 }
 function renderTaskCard(t){
   const status=normalizeTaskStatus(t);
-  return `<div class="kanban-card">
-    <div class="kanban-card-title">${safeText(t.nome)}</div>
+  const labels=Array.isArray(t.labels)?t.labels:parseLabels(t.labels||t.materia||"");
+  const prioridade=t.prioridade||"media";
+  return `<div class="kanban-card priority-${safeText(prioridade)}" draggable="true" data-id="${safeText(t.id)}" data-student-uid="${safeText(t.studentUid)}">
+    <div class="kanban-card-top">
+      <div class="kanban-card-title">${safeText(t.nome)}</div>
+      <span class="kanban-priority ${safeText(prioridade)}">${priorityLabel(prioridade)}</span>
+    </div>
     <div class="item-meta">
       ${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}
-      ${t.materia?`<span class="badge">🏷️ ${safeText(t.materia)}</span>`:""}
+      ${t.materia?`<span class="badge">📁 ${safeText(t.materia)}</span>`:""}
       ${t.prazo?`<span class="badge warn">📅 ${formatDate(t.prazo)}</span>`:""}
       <span class="badge ${taskStatusBadgeClass(status)}">${taskStatusLabel(status)}</span>
       ${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}
     </div>
+    ${labels.length?`<div class="kanban-labels">${labels.map(l=>`<span class="kanban-label">#${safeText(l)}</span>`).join("")}</div>`:""}
     <div class="kanban-actions">
       ${status!=="pendente"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','pendente')">A fazer</button>`:""}
       ${status!=="andamento"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','andamento')">Andamento</button>`:""}
