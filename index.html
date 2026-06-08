@@ -1435,6 +1435,106 @@ html, body{
   .kanban-edit-actions{grid-template-columns:1fr}
 }
 
+
+/* ===== FILTRO DE TAREFAS POR ALUNO - MODO PROFESSOR ===== */
+.teacher-task-filter{
+  background:#fff;
+  border:1.5px solid var(--borda);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.teacher-task-filter .filter-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.teacher-task-filter .filter-head strong{
+  font-size:13px;
+  color:var(--azul);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.teacher-task-filter .filter-head span{
+  font-size:12px;
+  font-weight:900;
+  color:var(--verde-dark);
+  background:#e8f5f3;
+  padding:4px 9px;
+  border-radius:999px;
+}
+.teacher-task-filter-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:end;
+}
+.teacher-task-filter p{
+  font-size:12px;
+  color:var(--cinza);
+  line-height:1.4;
+  font-weight:700;
+  margin-top:8px;
+}
+@media(max-width:720px){
+  .teacher-task-filter-grid{grid-template-columns:1fr}
+}
+
+
+/* ===== FILTROS POR ALUNO NAS GUIAS ===== */
+.linked-student-filter{
+  background:#fff;
+  border:1.5px solid var(--borda);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.linked-student-filter .filter-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.linked-student-filter .filter-head strong{
+  font-size:13px;
+  color:var(--azul);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.linked-student-filter .filter-head span{
+  font-size:12px;
+  font-weight:900;
+  color:var(--verde-dark);
+  background:#e8f5f3;
+  padding:4px 9px;
+  border-radius:999px;
+}
+.linked-student-filter-grid{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:end;
+}
+.linked-student-filter p{
+  font-size:12px;
+  color:var(--cinza);
+  line-height:1.4;
+  font-weight:700;
+  margin-top:8px;
+}
+.badge.prazo-ok{background:#e8f5f3;color:var(--verde-dark)}
+.badge.prazo-proximo{background:#fff3e8;color:#c8721a}
+.badge.prazo-atrasado{background:#ffecec;color:#d83232}
+.badge.prazo-sem{background:#eef4f3;color:var(--cinza)}
+@media(max-width:720px){
+  .linked-student-filter-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
@@ -1667,6 +1767,22 @@ html, body{
     </div>
 
     <div id="tab-tarefas" class="tab-panel">
+      <div class="teacher-task-filter teacher-only" style="display:none">
+        <div class="filter-head">
+          <strong>Filtro de tarefas por aluno</strong>
+          <span id="task-filter-count">0 tarefas</span>
+        </div>
+        <div class="teacher-task-filter-grid">
+          <div class="form-field" style="margin-bottom:0">
+            <label>Ver tarefas de</label>
+            <select id="task-student-filter" onchange="setTaskStudentFilter(this.value)">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <button class="btn-small primary" onclick="syncTaskAddStudentWithFilter()" style="min-height:42px">Adicionar para este aluno</button>
+        </div>
+        <p>Use esse filtro para acompanhar o Kanban de um aluno específico. Ao adicionar uma tarefa, o campo de aluno já fica alinhado com o filtro selecionado.</p>
+      </div>
       <div class="add-form">
         <h3>+ Nova tarefa geral</h3>
         <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="t-student"></select></div>
@@ -1689,6 +1805,22 @@ html, body{
     </div>
 
     <div id="tab-aulas" class="tab-panel">
+      <div class="linked-student-filter teacher-only" style="display:none">
+        <div class="filter-head">
+          <strong>Filtro de aulas por aluno</strong>
+          <span id="aulas-filter-count">Filtro por aluno</span>
+        </div>
+        <div class="linked-student-filter-grid">
+          <div class="form-field" style="margin-bottom:0">
+            <label>Ver dados de</label>
+            <select id="aulas-student-filter" onchange="setGlobalStudentFilter(this.value)">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <button class="btn-small primary" onclick="syncStudentSelectWithGlobalFilter('a-student','a-materia')" style="min-height:42px">Usar este aluno no formulário</button>
+        </div>
+        <p>Filtre as aulas por aluno. Se escolher um aluno aqui, o formulário de registrar aula já pode usar o mesmo aluno.</p>
+      </div>
       <div class="add-form">
         <h3>+ Registrar aula</h3>
         <div class="form-field teacher-only" style="display:none"><label>Aluno vinculado <span style="color:var(--danger)">*</span></label><select id="a-student" required></select><p style="font-size:12px;color:var(--cinza);margin-top:5px;font-weight:800">Obrigatório: toda aula precisa estar vinculada a um aluno.</p></div>
@@ -1718,6 +1850,22 @@ html, body{
     </div>
 
     <div id="tab-avaliacoes" class="tab-panel">
+      <div class="linked-student-filter teacher-only" style="display:none">
+        <div class="filter-head">
+          <strong>Filtro de avaliações por aluno</strong>
+          <span id="avaliacoes-filter-count">Filtro por aluno</span>
+        </div>
+        <div class="linked-student-filter-grid">
+          <div class="form-field" style="margin-bottom:0">
+            <label>Ver dados de</label>
+            <select id="avaliacoes-student-filter" onchange="setGlobalStudentFilter(this.value)">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <button class="btn-small primary" onclick="syncStudentSelectWithGlobalFilter('av-student','av-title')" style="min-height:42px">Usar este aluno no formulário</button>
+        </div>
+        <p>Filtre as avaliações por aluno e use o mesmo aluno ao criar uma nova avaliação.</p>
+      </div>
       <div class="add-form teacher-only" style="display:none">
         <h3>+ Nova avaliação</h3>
         <div class="form-field"><label>Vincular aluno</label><select id="av-student"></select></div>
@@ -1737,6 +1885,22 @@ html, body{
 
     
     <div id="tab-resultados" class="tab-panel">
+      <div class="linked-student-filter teacher-only" style="display:none">
+        <div class="filter-head">
+          <strong>Filtro de resultados por aluno</strong>
+          <span id="resultados-filter-count">Filtro por aluno</span>
+        </div>
+        <div class="linked-student-filter-grid">
+          <div class="form-field" style="margin-bottom:0">
+            <label>Ver dados de</label>
+            <select id="resultados-student-filter" onchange="setGlobalStudentFilter(this.value)">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <button class="btn-small primary" onclick="syncStudentSelectWithGlobalFilter('res-student,nota-student','res-data')" style="min-height:42px">Usar este aluno no formulário</button>
+        </div>
+        <p>Filtre resultados, notas e tarefas vinculadas por aluno. Também preenche os formulários de resultado e nota.</p>
+      </div>
       <div class="painel-saudacao" style="margin-bottom:14px">
         <h2>Resultados e evolução 📈</h2>
         <p>Acompanhe desempenho nas aulas, notas das provas e avanço nas tarefas/deveres.</p>
@@ -1801,6 +1965,22 @@ html, body{
     </div>
 
     <div id="tab-calendario" class="tab-panel">
+      <div class="linked-student-filter teacher-only" style="display:none">
+        <div class="filter-head">
+          <strong>Filtro do calendário por aluno</strong>
+          <span id="calendario-filter-count">Filtro por aluno</span>
+        </div>
+        <div class="linked-student-filter-grid">
+          <div class="form-field" style="margin-bottom:0">
+            <label>Ver dados de</label>
+            <select id="calendario-student-filter" onchange="setGlobalStudentFilter(this.value)">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <button class="btn-small primary" onclick="syncStudentSelectWithGlobalFilter('cal-student','cal-title')" style="min-height:42px">Usar este aluno no formulário</button>
+        </div>
+        <p>Filtre o calendário por aluno. As aulas lançadas como previstas ou concluídas aparecem automaticamente no calendário.</p>
+      </div>
       <div class="add-form">
         <h3>+ Novo item no calendário</h3>
         <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="cal-student"></select></div>
@@ -2661,7 +2841,7 @@ function populateStudentSelects(){
   }
   populateAulaResultadoSelect();
   const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
-  ["global-student-filter"].forEach(id=>{
+  ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter"].forEach(id=>{
     const filter=document.getElementById(id);
     if(filter){
       filter.innerHTML=(isPauloMaster()?`<option value="all">Todos os alunos</option>`:`<option value="all">Meus registros</option>`)+`<option value="${ownUid()}">Meu acesso — ${myName}</option>`+options;
@@ -2686,7 +2866,7 @@ function visibleByFilter(list){
 }
 function setGlobalStudentFilter(uid){
   globalStudentFilter=uid||"all";
-  ["global-student-filter"].forEach(id=>{
+  ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter"].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.value=globalStudentFilter;
   });
@@ -2694,10 +2874,37 @@ function setGlobalStudentFilter(uid){
   renderPainelTarefas();
   renderAulas();
   renderAvaliacoes();
+  renderResultados();
   renderCalendario();
   updateStats();
   updateProgresso();
   updateFinanceiro();
+}
+
+
+function syncStudentSelectWithGlobalFilter(selectIds,focusId){
+  if(!isTeacher())return;
+  if(!globalStudentFilter || globalStudentFilter==="all"){
+    alert("Escolha um aluno no filtro primeiro.");
+    return;
+  }
+  String(selectIds||"").split(",").map(x=>x.trim()).filter(Boolean).forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.value=globalStudentFilter;
+  });
+  if(focusId)document.getElementById(focusId)?.focus();
+}
+function updateLinkedFilterCounts(){
+  const pairs=[
+    ["aulas-filter-count",isTeacher()?visibleByFilter(allAulas).length:aulas.length,"aula","aulas"],
+    ["calendario-filter-count",isTeacher()?calendarMergedList().length:calendarMergedList().length,"item","itens"],
+    ["avaliacoes-filter-count",isTeacher()?visibleByFilter(allAvaliacoes).length:avaliacoes.length,"avaliação","avaliações"],
+    ["resultados-filter-count",(resultadoBase().res.length+resultadoBase().notasList.length),"registro","registros"]
+  ];
+  pairs.forEach(([id,n,sing,pl])=>{
+    const el=document.getElementById(id);
+    if(el)el.textContent=`${n} ${n===1?sing:pl}`;
+  });
 }
 
 const __originalPopulateStudentSelectsObrigatorioAula = populateStudentSelects;
@@ -2717,8 +2924,28 @@ populateStudentSelects = function(){
   }
 };
 
+
+const __originalPopulateStudentSelectsTaskFilter = populateStudentSelects;
+populateStudentSelects = function(){
+  __originalPopulateStudentSelectsTaskFilter();
+  populateTaskStudentFilter();
+};
+
 function selectedStudentOrSelf(selectId){return isTeacher()?(document.getElementById(selectId)?.value || ""):ownUid()}
 
+
+
+function prazoTarefaInfo(prazo,status){
+  if(!prazo)return {cls:"prazo-sem",txt:"Sem prazo"};
+  if(status==="concluida")return {cls:"prazo-ok",txt:"Concluída"};
+  const hoje=new Date(today()+"T12:00:00");
+  const data=new Date(prazo+"T12:00:00");
+  const diff=Math.round((data-hoje)/86400000);
+  if(diff<0)return {cls:"prazo-atrasado",txt:`Atrasada há ${Math.abs(diff)} dia${Math.abs(diff)===1?"":"s"}`};
+  if(diff===0)return {cls:"prazo-proximo",txt:"Vence hoje"};
+  if(diff<=2)return {cls:"prazo-proximo",txt:`Próxima do prazo: ${diff} dia${diff===1?"":"s"}`};
+  return {cls:"prazo-ok",txt:`No prazo: ${diff} dias`};
+}
 
 function parseLabels(value){
   return String(value||"")
@@ -2851,8 +3078,8 @@ function switchTab(tab){
 
 async function addTarefa(){
   if(!currentUser||!db)return;
-  const studentUid=selectedStudentOrSelf("t-student");
-  if(!studentUid)return alert("Selecione um aluno.");
+  const studentUid=(isTeacher() && taskStudentFilter && taskStudentFilter!=="all" ? taskStudentFilter : selectedStudentOrSelf("t-student"));
+  if(!studentUid)return alert("Selecione um aluno para vincular a tarefa.");
   await ensureTeacherStudentLink(studentUid);
   const nome=document.getElementById("t-nome").value.trim();
   if(!nome)return alert("Digite o nome da tarefa.");
@@ -2977,8 +3204,53 @@ async function delTarefa(id,studentUid){
   if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode excluir tarefas criadas/vinculadas a você.");
   await db.ref("tarefas/"+uid+"/"+id).remove();
 }
+
+function setTaskStudentFilter(value){
+  taskStudentFilter=value||"all";
+  const addSel=document.getElementById("t-student");
+  if(addSel && taskStudentFilter!=="all") addSel.value=taskStudentFilter;
+  renderTarefas();
+}
+function syncTaskAddStudentWithFilter(){
+  const addSel=document.getElementById("t-student");
+  if(!addSel)return;
+  if(taskStudentFilter==="all"){
+    addSel.focus();
+    alert("Escolha um aluno no filtro ou no campo 'Vincular aluno' para adicionar uma tarefa.");
+    return;
+  }
+  addSel.value=taskStudentFilter;
+  document.getElementById("t-nome")?.focus();
+}
+function populateTaskStudentFilter(){
+  const sel=document.getElementById("task-student-filter");
+  if(!sel || !isTeacher())return;
+  const previous=taskStudentFilter||sel.value||"all";
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email||"Aluno")}</option>`).join("");
+  sel.innerHTML=`<option value="all">Todos os alunos</option>`+options;
+  const exists=[...sel.options].some(o=>o.value===previous);
+  taskStudentFilter=exists?previous:"all";
+  sel.value=taskStudentFilter;
+}
+function taskFilteredList(baseList){
+  let list=baseList||[];
+  if(isTeacher() && taskStudentFilter && taskStudentFilter!=="all"){
+    list=list.filter(t=>t.studentUid===taskStudentFilter);
+  }
+  return list;
+}
+function updateTaskFilterCount(list){
+  const el=document.getElementById("task-filter-count");
+  if(!el)return;
+  const n=(list||[]).length;
+  el.textContent=n===1?"1 tarefa":`${n} tarefas`;
+}
+
 function renderTarefas(){
-  const baseList=isTeacher()?visibleByFilter(allTarefas):tarefas,el=document.getElementById("lista-tarefas"); if(!el)return;
+  try{updateLinkedFilterCounts()}catch(e){}
+
+  const rawList=isTeacher()?visibleByFilter(allTarefas):tarefas, baseList=taskFilteredList(rawList), el=document.getElementById("lista-tarefas"); if(!el)return; updateTaskFilterCount(baseList);
   try{
     const list=visibleKanbanTasks(baseList);
     const allLabels=kanbanAllLabels(baseList);
@@ -3028,6 +3300,7 @@ function renderTaskCard(t){
   const status=normalizeTaskStatus(t);
   const labels=Array.isArray(t.labels)?t.labels:parseLabels(t.labels||t.materia||"");
   const prioridade=t.prioridade||"media";
+  const prazoInfo=prazoTarefaInfo(t.prazo,status);
   return `<div class="kanban-card priority-${safeText(prioridade)}" draggable="true" data-id="${safeText(t.id)}" data-student-uid="${safeText(t.studentUid)}" onclick="openTarefaEdit(\'${safeText(t.id)}\',\'${safeText(t.studentUid)}\')">
     <div class="kanban-card-top">
       <div class="kanban-card-title">${safeText(t.nome)}</div>
@@ -3037,6 +3310,7 @@ function renderTaskCard(t){
       ${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}
       ${t.materia?`<span class="badge">📁 ${safeText(t.materia)}</span>`:""}
       ${t.prazo?`<span class="badge warn">📅 ${formatDate(t.prazo)}</span>`:""}
+      <span class="badge ${prazoInfo.cls}">⏳ ${safeText(prazoInfo.txt)}</span>
       <span class="badge ${taskStatusBadgeClass(status)}">${taskStatusLabel(status)}</span>
       ${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}
     </div>
@@ -3130,6 +3404,8 @@ async function updateAulaFinanceiro(studentUid,id,campo,valor){
   await ref.update(up);
 }
 function renderAulas(){
+  try{updateLinkedFilterCounts()}catch(e){}
+
   const list=isTeacher()?visibleByFilter(allAulas):aulas,el=document.getElementById("lista-aulas"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div>';return}
   el.innerHTML=list.map(a=>{
@@ -3276,6 +3552,8 @@ async function submitAvaliacao(id,studentUid){
   }catch(e){alert(firebaseErrorMessage(e));}
 }
 function renderAvaliacoes(){
+  try{updateLinkedFilterCounts()}catch(e){}
+
   const list=isTeacher()?visibleByFilter(allAvaliacoes):avaliacoes,el=document.getElementById("lista-avaliacoes"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📝</div>Nenhuma avaliação ainda.</div>';return}
   el.innerHTML=list.map(av=>{const uid=av.studentUid||ownUid(),respondida=av.status==="respondida";return`<div class="item"><div class="aula-header"><div class="item-title">📝 ${safeText(av.title)}</div><button class="btn-del" onclick="delAvaliacao('${av.id}','${uid}')">×</button></div><div class="item-text">${safeText(av.desc)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(av.studentName||getUserName(uid))}</span>`:""}<span class="badge ok">${safeText(av.materia)}</span>${av.prazo?`<span class="badge warn">Prazo: ${formatDate(av.prazo)}</span>`:""}<span class="badge ${respondida?"ok":"warn"}">${respondida?"Respondida":"Aberta"}</span>${av.anexo?`<a class="badge" href="${safeText(av.anexo)}" target="_blank" rel="noopener">🔗 Link</a>`:""}${attachmentBadge(av.anexoUrl,av.anexoNome,"Anexo")}</div>${isTeacher()?`<div class="answer-box"><strong>Resposta do aluno:</strong><div class="item-text">${safeText(av.respostaTexto||"Ainda sem resposta.")}</div>${av.respostaLink?`<a class="badge ok" href="${safeText(av.respostaLink)}" target="_blank" rel="noopener">Abrir link da resposta</a>`:""}${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta")}</div>`:`<div class="answer-box"><div class="form-field"><label>Sua resposta</label><textarea id="resp-text-${av.id}" placeholder="Digite sua resposta...">${safeText(av.respostaTexto||"")}</textarea></div><div class="form-field"><label>Link da resposta/anexo</label><input type="url" id="resp-link-${av.id}" value="${safeText(av.respostaLink||"")}" placeholder="https://..."></div><div class="form-field"><label>Anexar resposta em PDF ou Word</label><input type="file" id="resp-file-${av.id}" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta enviada")}<button class="btn-small primary" onclick="submitAvaliacao('${av.id}','${uid}')">Enviar resposta</button></div>`}</div>`}).join("");
@@ -3409,6 +3687,8 @@ function tendenciaNotas(list){
   return "Estável";
 }
 function renderResultados(){
+  try{updateLinkedFilterCounts()}catch(e){}
+
   populateAulaResultadoSelect();
   const {res,notasList,taskList}=resultadoBase();
   const mediaAula=res.length?(res.reduce((a,b)=>a+Number(b.media||0),0)/res.length):0;
@@ -3500,6 +3780,46 @@ function renderPrograms(){
   listEl.innerHTML=Object.entries(groups).map(([materia,items])=>`<div><div class="program-subject-title">${safeText(materia)} <span>${items.filter(t=>prog[t.id]).length}/${items.length}</span></div>${items.map(t=>`<div class="program-topic"><button class="program-check ${prog[t.id]?"done":""}" onclick="toggleProgramTopic('${currentProgramView}','${t.id}')">${prog[t.id]?"✓":""}</button><div class="program-topic-main"><strong>${safeText(t.titulo)}</strong><p>${safeText(t.desc||"")}</p><small><span class="badge">${safeText(materia)}</span><span class="badge ${prog[t.id]?"ok":"warn"}">${prog[t.id]?"Concluído":"Pendente"}</span></small></div>${isTeacher()?`<button class="btn-del" onclick="delProgramTopic('${currentProgramView}','${t.id}')">×</button>`:""}</div>`).join("")}</div>`).join("");
 }
 
+
+function aulaToCalendarItem(a){
+  const concluida=(a.statusFinanceiro==="recebido"||a.statusAula==="concluida"||a.concluida===true);
+  return {
+    id:"aula-"+a.id,
+    sourceId:a.id,
+    fromAula:true,
+    type:"aula",
+    date:a.data,
+    start:a.inicio,
+    end:a.fim,
+    title:`Aula: ${a.materia||"Sem matéria"}`,
+    desc:`${a.conteudo||""}${a.professorNome?` · Prof.: ${a.professorNome}`:""}${concluida?" · Concluída":" · Prevista"}`,
+    studentUid:a.studentUid,
+    studentName:a.studentName,
+    createdBy:a.createdBy,
+    ownerTeacherUid:a.ownerTeacherUid,
+    teacherUid:a.teacherUid,
+    professorUid:a.professorUid,
+    statusAula:concluida?"concluida":"prevista"
+  };
+}
+function calendarMergedList(){
+  const calBase=isTeacher()?visibleByFilter(allCalendario):calendario;
+  const aulasBase=isTeacher()?visibleByFilter(allAulas):aulas;
+  const aulaEvents=(aulasBase||[]).filter(a=>a.data).map(aulaToCalendarItem);
+  return [...(calBase||[]),...aulaEvents].sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));
+}
+function openAulaFromCalendar(aulaId,studentUid){
+  switchTab("aulas");
+  setTimeout(()=>{
+    const el=document.getElementById("aula-"+aulaId) || document.querySelector(`[data-aula-id="${aulaId}"]`);
+    if(el)el.scrollIntoView({behavior:"smooth",block:"center"});
+  },120);
+}
+function calendarActionButton(item){
+  if(item.fromAula)return `<button class="btn-small" onclick="openAulaFromCalendar('${safeText(item.sourceId)}','${safeText(item.studentUid||ownUid())}')">Ver aula</button>`;
+  return `<button class="btn-del" onclick="delCalendarioItem('${safeText(item.id)}','${safeText(item.studentUid||ownUid())}')">×</button>`;
+}
+
 function renderCalendario(){
   try{
   const grid=document.getElementById("calendar-grid");
@@ -3516,7 +3836,7 @@ function renderCalendario(){
   const dayList=document.getElementById("calendar-day-list");
   if(!grid||!titleEl||!agendaList)return;
 
-  const list=(isTeacher()?visibleByFilter(allCalendario):calendario).slice().sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));
+  const list=calendarMergedList(); updateLinkedFilterCounts();
   const year=calendarCurrentDate.getFullYear();
   const month=calendarCurrentDate.getMonth();
   const monthNames=["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
@@ -3547,7 +3867,7 @@ function renderCalendario(){
             <span class="badge">${labelForCalendar(item.type)}</span>
           </div>
         </div>
-        <button class="btn-del" onclick="delCalendarioItem('${item.id}','${item.studentUid}')">×</button>
+        ${calendarActionButton(item)}
       </div>
     `).join(""):`<div class="calendar-day-empty"><div style="font-size:28px;margin-bottom:6px">📭</div>Nenhum item neste dia.</div>`;
   }
@@ -3608,7 +3928,7 @@ function renderCalendario(){
         <p>${safeText(item.desc||"")}</p>
         <div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(item.studentName||getUserName(item.studentUid))}</span>`:""}<span class="badge">${labelForCalendar(item.type)}</span></div>
       </div>
-      <button class="btn-del" onclick="delCalendarioItem('${item.id}','${item.studentUid}')">×</button>
+      ${calendarActionButton(item)}
     </div>
   `).join(""):'<div class="empty-state"><div>📭</div>Nenhum item neste mês.</div>';
   }catch(e){console.error(e); alert("Erro ao carregar calendário: "+(e.message||e));}
