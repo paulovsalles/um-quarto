@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<!-- PATCH SEGURANCA PROFESSOR: código de professor removido do front-end; acesso professor/admin deve ser controlado nas regras do Firebase e por aprovação do admin. -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Um Quarto</title>
@@ -1909,13 +1910,13 @@ html, body{
         <div id="lista-alunos"></div>
       </div>
       <div class="card student-only">
-        <div class="card-title">Ativar modo professor</div>
+        <div class="card-title">Solicitar acesso professor</div>
         <p style="font-size:13px;color:var(--cinza);line-height:1.4;margin-bottom:12px">
           Já tem uma conta de aluno e recebeu o código de professor? Digite o código abaixo para liberar o modo professor.
         </p>
         <div class="form-row">
-          <div class="form-field"><label>Código de professor</label><input type="text" id="activate-teacher-code" placeholder="Código secreto"></div>
-          <div class="form-field" style="display:flex;align-items:end"><button class="btn-add" onclick="activateTeacherMode()">Ativar professor</button></div>
+          <div class="form-field"><label>Solicitação de professor</label><input type="text" id="activate-teacher-code" placeholder="Código secreto"></div>
+          <div class="form-field" style="display:flex;align-items:end"><button class="btn-add" onclick="activateTeacherMode()">Solicitar acesso professor</button></div>
         </div>
       </div>
       <div class="card finance-only" style="display:none">
@@ -2611,7 +2612,7 @@ let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAval
 let globalStudentFilter="all";
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
-const TEACHER_CODE="mcqueen2026";
+const TEACHER_CODE=""; // Professor não é mais ativado por código no front-end.
 const IFES_CODE="IFES2026";
 const ENEM_CODE="ENEM2026";
 const STUDENT_LOGIN_DOMAIN="aluno.umquarto.local";
@@ -2829,17 +2830,9 @@ function toggleAccessMode(){
   alert(next==="teacher" ? "Você está no modo professor." : "Você está no modo aluno.");
 }
 async function activateTeacherMode(){
-  const code=document.getElementById("activate-teacher-code")?.value.trim();
-  if(code!==TEACHER_CODE)return alert("Código de professor inválido.");
-  try{
-    await db.ref("users/"+ownUid()).update({role:"teacher",financeiro:false,teacherActivatedAt:firebase.database.ServerValue.TIMESTAMP});
-    currentProfile={...currentProfile,role:"teacher",financeiro:false};
-    sessionStorage.removeItem("uq_access_mode");
-    currentAccessMode=null;
-    alert("Modo professor ativado! Escolha como deseja entrar.");
-    showScreen("role");
-  }catch(e){alert(firebaseErrorMessage(e));}
+  alert("Por segurança, o modo professor não é mais ativado por código no site. Solicite ao administrador para aprovar sua conta como professor.");
 }
+
 async function changeFirstPassword(){
   const p1=document.getElementById("first-pass-1").value;
   const p2=document.getElementById("first-pass-2").value;
