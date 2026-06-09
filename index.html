@@ -3983,23 +3983,46 @@ function renderAulas(){
 }
 function renderAulaEditBox(a,uid){
   const teachers=users.filter(u=>(u.role||"")==="teacher" || u.email===PROFESSOR_EMAIL);
-  const opts=teachers.length?teachers.map(u=>`<option value="${u.id}" ${u.id===(a.professorUid||"")?"selected":""}>${safeText(u.name||u.email||"Professor")}</option>`).join(""):`<option value="${a.professorUid||ownUid()}">${safeText(a.professorNome||currentProfile?.name||"Professor")}</option>`;
+  const teacherOpts=teachers.length
+    ? teachers.map(u=>`<option value="${u.id}" ${u.id===(a.professorUid||"")?"selected":""}>${safeText(u.name||u.email||"Professor")}</option>`).join("")
+    : `<option value="${a.professorUid||ownUid()}">${safeText(a.professorNome||currentProfile?.name||"Professor")}</option>`;
+
+  const studentUsers=users.filter(u=>(u.role||"")!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const selectedStudent=a.studentUid||uid||ownUid();
+  const studentOpts=studentUsers.length
+    ? studentUsers.map(u=>`<option value="${u.id}" ${u.id===selectedStudent?"selected":""}>${safeText(u.name||u.email||"Aluno")} — ${safeText(u.username||u.email||"")}</option>`).join("")
+    : `<option value="${selectedStudent}">${safeText(a.studentName||getUserName(selectedStudent)||"Aluno")}</option>`;
+
   return `<div class="aula-edit-box" id="aula-edit-${a.id}" style="display:none">
     <div class="aula-edit-title">✏️ Editar aula</div>
+
     <div class="form-row">
-      <div class="form-field"><label>Matéria/tema</label><input id="edit-aula-materia-${a.id}" value="${safeText(a.materia||"")}"></div>
+      <div class="form-field"><label>Aluno vinculado</label><select id="edit-aula-student-${a.id}">${studentOpts}</select></div>
+      <div class="form-field"><label>Professor que deu a aula</label><select id="edit-aula-professor-${a.id}">${teacherOpts}</select></div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field"><label>Escola do aluno</label><input id="edit-aula-escola-${a.id}" value="${safeText(a.escola||"")}" placeholder="Ex: Darwin, IFES, Escola Estadual..."></div>
       <div class="form-field"><label>Data</label><input type="date" id="edit-aula-data-${a.id}" value="${safeText(a.data||"")}"></div>
     </div>
+
+    <div class="form-row">
+      <div class="form-field"><label>Matéria/tema</label><input id="edit-aula-materia-${a.id}" value="${safeText(a.materia||"")}"></div>
+      <div class="form-field"><label>Status da aula</label><select id="edit-aula-status-${a.id}"><option value="previsto" ${(a.statusFinanceiro||"previsto")!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${(a.statusFinanceiro||"")==="recebido"?"selected":""}>Aula Concluída</option></select></div>
+    </div>
+
     <div class="form-row">
       <div class="form-field"><label>Início</label><input type="time" id="edit-aula-inicio-${a.id}" value="${safeText(a.inicio||"")}"></div>
       <div class="form-field"><label>Fim</label><input type="time" id="edit-aula-fim-${a.id}" value="${safeText(a.fim||"")}"></div>
     </div>
-    <div class="form-row">
-      <div class="form-field"><label>Professor que deu a aula</label><select id="edit-aula-professor-${a.id}">${opts}</select></div>
-      <div class="form-field"><label>Escola</label><input id="edit-aula-escola-${a.id}" value="${safeText(a.escola||"")}"></div>
-    </div>
+
     <div class="form-field"><label>Conteúdo estudado</label><textarea id="edit-aula-conteudo-${a.id}">${safeText(a.conteudo||"")}</textarea></div>
     <div class="form-field"><label>Observações</label><input id="edit-aula-obs-${a.id}" value="${safeText(a.obs||"")}"></div>
+
+    <p style="font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4;margin:-2px 0 12px">
+      Agora dá para corrigir aluno, professor e escola diretamente na edição. Se trocar o aluno, a aula será movida para a ficha do novo aluno no Realtime Database.
+    </p>
+
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-small primary" onclick="saveAulaEdit('${uid}','${a.id}')">Salvar alterações</button><button class="btn-small" onclick="toggleAulaEdit('${a.id}','${uid}')">Cancelar</button></div>
   </div>`;
 }
@@ -4012,6 +4035,8 @@ async function saveAulaEdit(studentUid,id){
   if(!isTeacher())return alert("Apenas professor pode editar aulas.");
   const item=allAulas.find(a=>a.id===id&&a.studentUid===studentUid);
   if(!teacherCanManageItem(item))return alert("Você só pode editar aulas vinculadas a você.");
+
+  const newStudentUid=document.getElementById(`edit-aula-student-${id}`)?.value || studentUid;
   const materia=document.getElementById(`edit-aula-materia-${id}`)?.value.trim();
   const data=document.getElementById(`edit-aula-data-${id}`)?.value||today();
   const inicio=document.getElementById(`edit-aula-inicio-${id}`)?.value;
@@ -4019,12 +4044,56 @@ async function saveAulaEdit(studentUid,id){
   const conteudo=document.getElementById(`edit-aula-conteudo-${id}`)?.value.trim();
   const escola=document.getElementById(`edit-aula-escola-${id}`)?.value.trim()||"";
   const obs=document.getElementById(`edit-aula-obs-${id}`)?.value.trim()||"";
+  const statusFinanceiro=document.getElementById(`edit-aula-status-${id}`)?.value || (item?.statusFinanceiro||"previsto");
   const professorUid=isPauloMaster()?(document.getElementById(`edit-aula-professor-${id}`)?.value||ownUid()):ownUid();
   const professorNome=getUserName(professorUid)||currentProfile?.name||currentUser?.email||"";
+
+  if(!newStudentUid)return alert("Selecione o aluno vinculado à aula.");
   if(!materia||!inicio||!fim||!conteudo)return alert("Preencha matéria, horário e conteúdo.");
   const dur=calcularDuracao(inicio,fim); if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
-  await db.ref(`aulas/${studentUid}/${id}`).update({materia,data,inicio,fim,dur,conteudo,escola,obs,professorUid,professorNome,ownerTeacherUid:professorUid,teacherUid:professorUid,updatedAt:firebase.database.ServerValue.TIMESTAMP,updatedBy:ownUid(),updatedByEmail:userEmail()});
-  alert("Aula atualizada com sucesso!");
+
+  await ensureTeacherStudentLink(newStudentUid);
+
+  const updateData={
+    ...(item||{}),
+    studentUid:newStudentUid,
+    studentName:getUserName(newStudentUid),
+    studentEmail:getUserEmail(newStudentUid),
+    userId:newStudentUid,
+    userName:getUserName(newStudentUid),
+    userEmail:getUserEmail(newStudentUid),
+    materia,
+    data,
+    inicio,
+    fim,
+    dur,
+    conteudo,
+    escola,
+    obs,
+    professorUid,
+    professorNome,
+    ownerTeacherUid:professorUid,
+    teacherUid:professorUid,
+    statusFinanceiro,
+    updatedAt:firebase.database.ServerValue.TIMESTAMP,
+    updatedBy:ownUid(),
+    updatedByEmail:userEmail()
+  };
+
+  try{
+    if(newStudentUid!==studentUid){
+      await db.ref(`aulas/${newStudentUid}/${id}`).set(updateData);
+      await db.ref(`aulas/${studentUid}/${id}`).remove();
+      const gf=document.getElementById("global-student-filter");
+      if(gf && gf.value===studentUid)gf.value=newStudentUid;
+      globalStudentFilter = (globalStudentFilter===studentUid) ? newStudentUid : globalStudentFilter;
+    }else{
+      await db.ref(`aulas/${studentUid}/${id}`).update(updateData);
+    }
+    alert("Aula atualizada com sucesso!");
+  }catch(e){
+    alert(firebaseErrorMessage(e));
+  }
 }
 
 function csvEscape(value){
