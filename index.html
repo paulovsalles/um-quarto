@@ -2904,7 +2904,22 @@ function teacherOwnsItem(x){
   if(isPauloMaster())return true;
   const uid=ownUid();
   if(!uid||!x)return false;
-  return x.createdBy===uid || x.professorUid===uid || x.teacherUid===uid || x.ownerTeacherUid===uid || x.lancadoPorUid===uid || x.updatedBy===uid || x.linkedTeacherUid===uid || x.createdByEmail===userEmail() || x.professorEmail===userEmail();
+
+  // Compatibilidade: mostra itens antigos mesmo quando eles foram salvos só com o aluno vinculado,
+  // sem createdBy/teacherUid. Isso evita o Kanban "sumir" quando o filtro roda antes da lista de alunos carregar.
+  const studentUid=x.studentUid||x.ownerUid||x.userId||x.alunoUid||x.uidAluno||"";
+  const linkedStudent=studentUid && users.some(u=>String(u.id)===String(studentUid) && teacherLinkedStudent(u));
+
+  return x.createdBy===uid
+    || x.professorUid===uid
+    || x.teacherUid===uid
+    || x.ownerTeacherUid===uid
+    || x.lancadoPorUid===uid
+    || x.updatedBy===uid
+    || x.linkedTeacherUid===uid
+    || x.createdByEmail===userEmail()
+    || x.professorEmail===userEmail()
+    || linkedStudent;
 }
 function teacherLinkedStudent(u){
   if(isPauloMaster())return true;
@@ -3245,7 +3260,9 @@ function attachRealtimeListeners(){
   tarefasRef.on("value",s=>{
     if(isTeacher()){
       const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,t])=>list.push({id,studentUid,...t})));
-      allTarefas=list.filter(t=>isPauloMaster()||teacherOwnsItem(t)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));tarefas=allTarefas.filter(t=>t.studentUid===uid);
+      // Não filtramos aqui para evitar lista vazia quando as tarefas carregam antes dos usuários/vínculos.
+      // O filtro correto é aplicado em visibleByFilter() na hora de renderizar.
+      allTarefas=list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));tarefas=allTarefas.filter(t=>t.studentUid===uid);
     }else{tarefas=objToArray(s.val()).map(t=>({...t,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allTarefas=tarefas}
     renderTarefas();renderPainelTarefas();updateStats();updateProgresso();
   },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>tarefasRef.off());
@@ -3350,9 +3367,13 @@ function renderAlunos(){
 function countByStudent(list,uid){return list.filter(x=>x.studentUid===uid||x.ownerUid===uid).length}
 function visibleByFilter(list){
   let base=list||[];
+
+  // Professor comum vê somente o que criou ou o que está vinculado aos seus alunos.
+  // Mestre/admin continua vendo tudo.
   if(isTeacher()&&!isPauloMaster())base=base.filter(x=>teacherOwnsItem(x));
+
   if(!isTeacher() || globalStudentFilter==="all") return base;
-  return base.filter(x=>(x.studentUid||x.ownerUid||x.userId)===globalStudentFilter);
+  return base.filter(x=>String(x.studentUid||x.ownerUid||x.userId||"")===String(globalStudentFilter));
 }
 function setGlobalStudentFilter(uid){
   globalStudentFilter=uid||"all";
@@ -3541,8 +3562,14 @@ function enablePointerKanbanDrag(card){
 }
 
 function normalizeTaskStatus(t){
-  if(t.status) return t.status;
-  return t.done ? "concluida" : "pendente";
+  const raw=String(t?.status||"").toLowerCase().trim();
+
+  // Compatibilidade com versões anteriores do Kanban e nomes em inglês/português.
+  if(["andamento","doing","em_andamento","em andamento","fazendo","in_progress"].includes(raw)) return "andamento";
+  if(["concluida","concluída","done","finalizada","finalizado","concluido","concluído"].includes(raw)) return "concluida";
+  if(["pendente","todo","a fazer","afazer","open","aberta","aberto"].includes(raw)) return "pendente";
+
+  return t?.done ? "concluida" : "pendente";
 }
 function taskStatusLabel(status){
   if(status==="andamento") return "Em andamento";
@@ -3726,8 +3753,11 @@ function populateTaskStudentFilter(){
 }
 function taskFilteredList(baseList){
   let list=baseList||[];
+
+  // Importante: NÃO filtrar por prazo/data aqui.
+  // Tarefas vencidas continuam aparecendo no Kanban com a etiqueta "Atrasada".
   if(isTeacher() && taskStudentFilter && taskStudentFilter!=="all"){
-    list=list.filter(t=>t.studentUid===taskStudentFilter);
+    list=list.filter(t=>String(t.studentUid||"")===String(taskStudentFilter));
   }
   return list;
 }
