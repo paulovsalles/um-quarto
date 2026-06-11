@@ -1926,6 +1926,15 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
   .aulas-clean-tools-head{align-items:flex-start;flex-direction:column}
 }
 
+
+/* ===== PATCH TAREFAS: arquivar, recuperar e achar tarefas antigas ===== */
+.kanban-archive-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.kanban-archive-tab{background:var(--bg);color:var(--azul);border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900}
+.kanban-archive-tab.active{background:var(--verde);color:#fff}
+.kanban-card.archived{opacity:.72;filter:grayscale(.15)}
+.kanban-card.archived::after{content:"Arquivada";position:absolute;right:10px;bottom:10px;background:#eef4f3;color:var(--cinza);border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900}
+.badge.archive{background:#eef4f3;color:var(--cinza)}
+
 </style>
 </head>
 <body>
@@ -2858,6 +2867,8 @@ let calendarViewMode = "month";
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
 let globalStudentFilter="all";
+let taskStudentFilter="all";
+let kanbanArchiveFilter="active"; // active | archived | all
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
 const TEACHER_CODE=""; // Professor não é mais ativado por código no front-end.
@@ -2904,22 +2915,7 @@ function teacherOwnsItem(x){
   if(isPauloMaster())return true;
   const uid=ownUid();
   if(!uid||!x)return false;
-
-  // Compatibilidade: mostra itens antigos mesmo quando eles foram salvos só com o aluno vinculado,
-  // sem createdBy/teacherUid. Isso evita o Kanban "sumir" quando o filtro roda antes da lista de alunos carregar.
-  const studentUid=x.studentUid||x.ownerUid||x.userId||x.alunoUid||x.uidAluno||"";
-  const linkedStudent=studentUid && users.some(u=>String(u.id)===String(studentUid) && teacherLinkedStudent(u));
-
-  return x.createdBy===uid
-    || x.professorUid===uid
-    || x.teacherUid===uid
-    || x.ownerTeacherUid===uid
-    || x.lancadoPorUid===uid
-    || x.updatedBy===uid
-    || x.linkedTeacherUid===uid
-    || x.createdByEmail===userEmail()
-    || x.professorEmail===userEmail()
-    || linkedStudent;
+  return x.createdBy===uid || x.professorUid===uid || x.teacherUid===uid || x.ownerTeacherUid===uid || x.lancadoPorUid===uid || x.updatedBy===uid || x.linkedTeacherUid===uid || x.createdByEmail===userEmail() || x.professorEmail===userEmail();
 }
 function teacherLinkedStudent(u){
   if(isPauloMaster())return true;
@@ -3259,11 +3255,28 @@ function attachRealtimeListeners(){
   const tarefasRef=isTeacher()?db.ref("tarefas"):db.ref("tarefas/"+uid);
   tarefasRef.on("value",s=>{
     if(isTeacher()){
-      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,t])=>list.push({id,studentUid,...t})));
-      // Não filtramos aqui para evitar lista vazia quando as tarefas carregam antes dos usuários/vínculos.
-      // O filtro correto é aplicado em visibleByFilter() na hora de renderizar.
-      allTarefas=list.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));tarefas=allTarefas.filter(t=>t.studentUid===uid);
-    }else{tarefas=objToArray(s.val()).map(t=>({...t,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allTarefas=tarefas}
+      const data=s.val()||{};
+      let list=[];
+      Object.entries(data).forEach(([studentUid,obj])=>{
+        if(!obj || typeof obj!=="object")return;
+        const looksLikeTask=!!(obj.nome || obj.titulo || obj.title || obj.status || obj.prazo || obj.materia || obj.createdAt);
+        if(looksLikeTask){
+          // Compatibilidade com tarefas antigas salvas direto em /tarefas/{id}
+          list.push({id:studentUid,studentUid:obj.studentUid||obj.ownerUid||obj.userId||uid,...obj});
+        }else{
+          Object.entries(obj||{}).forEach(([id,t])=>{
+            if(t && typeof t==="object") list.push({id,studentUid:t.studentUid||studentUid,...t});
+          });
+        }
+      });
+      allTarefas=list
+        .filter(t=>isPauloMaster() || teacherOwnsItem(t) || String(t.studentUid||"")===String(uid))
+        .sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+      tarefas=allTarefas.filter(t=>String(t.studentUid||"")===String(uid));
+    }else{
+      tarefas=objToArray(s.val()).map(t=>({...t,studentUid:t.studentUid||uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+      allTarefas=tarefas;
+    }
     renderTarefas();renderPainelTarefas();updateStats();updateProgresso();
   },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>tarefasRef.off());
 
@@ -3339,7 +3352,12 @@ function populateStudentSelects(){
     : [{id:ownUid(),name:currentProfile?.name||currentUser?.email,email:currentUser?.email,role:"teacher"}];
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.username||u.email)}</option>`).join("");
   const teacherOptions=teacherUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email||"")}</option>`).join("");
-  ["t-student","a-student","av-student","res-student","nota-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno vinculado</option>'});
+  ["a-student","av-student","res-student","nota-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno vinculado</option>'});
+  const taskSel=document.getElementById("t-student");
+  if(taskSel){
+    const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
+    taskSel.innerHTML=`<option value="${ownUid()}">Geral / meu acesso — ${myName}</option>`+(options || "");
+  }
   const prof=document.getElementById("a-professor");
   if(prof){
     prof.innerHTML=teacherOptions || `<option value="${ownUid()}">${safeText(currentProfile?.name||currentUser?.email||"Professor")}</option>`;
@@ -3367,13 +3385,9 @@ function renderAlunos(){
 function countByStudent(list,uid){return list.filter(x=>x.studentUid===uid||x.ownerUid===uid).length}
 function visibleByFilter(list){
   let base=list||[];
-
-  // Professor comum vê somente o que criou ou o que está vinculado aos seus alunos.
-  // Mestre/admin continua vendo tudo.
   if(isTeacher()&&!isPauloMaster())base=base.filter(x=>teacherOwnsItem(x));
-
   if(!isTeacher() || globalStudentFilter==="all") return base;
-  return base.filter(x=>String(x.studentUid||x.ownerUid||x.userId||"")===String(globalStudentFilter));
+  return base.filter(x=>(x.studentUid||x.ownerUid||x.userId)===globalStudentFilter);
 }
 function setGlobalStudentFilter(uid){
   globalStudentFilter=uid||"all";
@@ -3470,12 +3484,22 @@ function priorityLabel(p){
   if(p==="baixa")return "Baixa";
   return "Média";
 }
+function isTaskArchived(t){
+  return t?.archived===true || t?.arquivada===true || t?.status==="arquivada" || !!t?.archivedAt;
+}
+function setKanbanArchiveFilter(value){
+  kanbanArchiveFilter=value||"active";
+  renderTarefas();
+}
 function visibleKanbanTasks(list){
   const q=(document.getElementById("kanban-search")?.value||"").trim().toLowerCase();
   const label=(document.getElementById("kanban-label-filter")?.value||"").trim().toLowerCase();
   return (list||[]).filter(t=>{
+    const archived=isTaskArchived(t);
+    if(kanbanArchiveFilter==="active" && archived)return false;
+    if(kanbanArchiveFilter==="archived" && !archived)return false;
     const labels=Array.isArray(t.labels)?t.labels:parseLabels(t.labels||t.materia||"");
-    const hay=[t.nome,t.materia,t.studentName,t.studentEmail,t.prioridade,...labels].join(" ").toLowerCase();
+    const hay=[t.nome,t.titulo,t.title,t.materia,t.studentName,t.studentEmail,t.prioridade,t.prazo,t.obs,t.descricao,...labels].join(" ").toLowerCase();
     const okQ=!q||hay.includes(q);
     const okLabel=!label||labels.map(x=>String(x).toLowerCase()).includes(label);
     return okQ&&okLabel;
@@ -3562,18 +3586,17 @@ function enablePointerKanbanDrag(card){
 }
 
 function normalizeTaskStatus(t){
-  const raw=String(t?.status||"").toLowerCase().trim();
-
-  // Compatibilidade com versões anteriores do Kanban e nomes em inglês/português.
-  if(["andamento","doing","em_andamento","em andamento","fazendo","in_progress"].includes(raw)) return "andamento";
-  if(["concluida","concluída","done","finalizada","finalizado","concluido","concluído"].includes(raw)) return "concluida";
-  if(["pendente","todo","a fazer","afazer","open","aberta","aberto"].includes(raw)) return "pendente";
-
+  if(isTaskArchived(t)) return "arquivada";
+  const raw=String(t?.status||"").toLowerCase();
+  if(["todo","afazer","a_fazer","pendente"].includes(raw))return "pendente";
+  if(["doing","em_andamento","andamento"].includes(raw))return "andamento";
+  if(["done","concluido","concluída","concluida"].includes(raw))return "concluida";
   return t?.done ? "concluida" : "pendente";
 }
 function taskStatusLabel(status){
   if(status==="andamento") return "Em andamento";
   if(status==="concluida") return "Concluída";
+  if(status==="arquivada") return "Arquivada";
   return "A fazer";
 }
 function taskStatusBadgeClass(status){
@@ -3703,23 +3726,57 @@ async function saveTarefaEdit(){
 
 async function updateTarefaStatus(id,studentUid,status){
   const uid=studentUid||ownUid();
-  const item=allTarefas.find(t=>t.id===id&&t.studentUid===uid);
+  const list=isTeacher()?allTarefas:tarefas;
+  const item=list.find(t=>String(t.id)===String(id)&&String(t.studentUid)===String(uid));
   if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode alterar tarefas criadas/vinculadas a você.");
-  await db.ref("tarefas/"+uid+"/"+id).update({status,done:status==="concluida"});
+  const normalized=normalizeTaskStatus({status,done:status==="concluida"});
+  await db.ref("tarefas/"+uid+"/"+id).update({status:normalized,done:normalized==="concluida",archived:false,arquivada:false,archivedAt:null});
 }
 async function toggleTarefa(id,studentUid){
   const uid=studentUid||ownUid();
   const list=isTeacher()?allTarefas:tarefas;
-  const t=list.find(x=>x.id===id&&x.studentUid===uid);
+  const t=list.find(x=>String(x.id)===String(id)&&String(x.studentUid)===String(uid));
   if(!t)return;
   const current=normalizeTaskStatus(t);
   const next=current==="concluida"?"pendente":"concluida";
   await updateTarefaStatus(id,uid,next);
 }
+async function archiveTarefa(id,studentUid){
+  const uid=studentUid||ownUid();
+  const list=isTeacher()?allTarefas:tarefas;
+  const item=list.find(t=>String(t.id)===String(id)&&String(t.studentUid)===String(uid));
+  if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode arquivar tarefas criadas/vinculadas a você.");
+  if(!confirm("Arquivar esta tarefa? Ela sairá do Kanban principal, mas poderá ser encontrada em Arquivadas."))return;
+  await db.ref("tarefas/"+uid+"/"+id).update({
+    archived:true,
+    arquivada:true,
+    archivedAt:firebase.database.ServerValue.TIMESTAMP,
+    archivedBy:ownUid(),
+    statusBeforeArchive:normalizeTaskStatus(item)
+  });
+}
+async function restoreTarefa(id,studentUid){
+  const uid=studentUid||ownUid();
+  const list=isTeacher()?allTarefas:tarefas;
+  const item=list.find(t=>String(t.id)===String(id)&&String(t.studentUid)===String(uid));
+  if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode restaurar tarefas criadas/vinculadas a você.");
+  await db.ref("tarefas/"+uid+"/"+id).update({
+    archived:false,
+    arquivada:false,
+    archivedAt:null,
+    archivedBy:null,
+    status:item?.statusBeforeArchive||"pendente"
+  });
+}
 async function delTarefa(id,studentUid){
   const uid=studentUid||ownUid();
-  const item=allTarefas.find(t=>t.id===id&&t.studentUid===uid);
+  const list=isTeacher()?allTarefas:tarefas;
+  const item=list.find(t=>String(t.id)===String(id)&&String(t.studentUid)===String(uid));
   if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode excluir tarefas criadas/vinculadas a você.");
+  if(!isTaskArchived(item)){
+    return archiveTarefa(id,uid);
+  }
+  if(!confirm("Excluir definitivamente esta tarefa arquivada? Essa ação não poderá ser desfeita."))return;
   await db.ref("tarefas/"+uid+"/"+id).remove();
 }
 
@@ -3745,19 +3802,17 @@ function populateTaskStudentFilter(){
   if(!sel || !isTeacher())return;
   const previous=taskStudentFilter||sel.value||"all";
   const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email||"Aluno")}</option>`).join("");
-  sel.innerHTML=`<option value="all">Todos os alunos</option>`+options;
+  sel.innerHTML=`<option value="all">Todos os alunos</option><option value="${ownUid()}">Geral / meu acesso — ${myName}</option>`+options;
   const exists=[...sel.options].some(o=>o.value===previous);
   taskStudentFilter=exists?previous:"all";
   sel.value=taskStudentFilter;
 }
 function taskFilteredList(baseList){
   let list=baseList||[];
-
-  // Importante: NÃO filtrar por prazo/data aqui.
-  // Tarefas vencidas continuam aparecendo no Kanban com a etiqueta "Atrasada".
   if(isTeacher() && taskStudentFilter && taskStudentFilter!=="all"){
-    list=list.filter(t=>String(t.studentUid||"")===String(taskStudentFilter));
+    list=list.filter(t=>t.studentUid===taskStudentFilter);
   }
   return list;
 }
@@ -3771,26 +3826,33 @@ function updateTaskFilterCount(list){
 function renderTarefas(){
   try{updateLinkedFilterCounts()}catch(e){}
 
-  const rawList=isTeacher()?visibleByFilter(allTarefas):tarefas, baseList=taskFilteredList(rawList), el=document.getElementById("lista-tarefas"); if(!el)return; updateTaskFilterCount(baseList);
+  const rawList=isTeacher()?visibleByFilter(allTarefas):tarefas;
+  const baseList=taskFilteredList(rawList);
+  const el=document.getElementById("lista-tarefas");
+  if(!el)return;
+  updateTaskFilterCount(baseList);
   try{
     const list=visibleKanbanTasks(baseList);
     const allLabels=kanbanAllLabels(baseList);
     const selectedLabel=document.getElementById("kanban-label-filter")?.value || "";
     const searchValue=document.getElementById("kanban-search")?.value || "";
-    if(!baseList.length){
-      el.innerHTML='<div class="empty-state"><div>✅</div>Nenhuma tarefa ainda.</div>';
-      return;
-    }
+    const totalAtivas=baseList.filter(t=>!isTaskArchived(t)).length;
+    const totalArquivadas=baseList.filter(t=>isTaskArchived(t)).length;
     const cols=[
       {key:"pendente",title:"A fazer",icon:"📌",hint:"Ideias e tarefas novas"},
       {key:"andamento",title:"Em andamento",icon:"🚧",hint:"O que está sendo feito agora"},
       {key:"concluida",title:"Concluídas",icon:"✅",hint:"Finalizadas e acompanhadas"}
     ];
-    el.innerHTML=`
+    const toolbar=`
       <div class="kanban-toolbar">
         <div class="kanban-toolbar-left">
           <button class="btn-small primary" onclick="document.getElementById('t-nome')?.focus()">+ Nova tarefa</button>
           <button class="btn-small" onclick="renderTarefas()">Atualizar</button>
+          <div class="kanban-archive-tabs">
+            <button class="kanban-archive-tab ${kanbanArchiveFilter==='active'?'active':''}" onclick="setKanbanArchiveFilter('active')">Ativas (${totalAtivas})</button>
+            <button class="kanban-archive-tab ${kanbanArchiveFilter==='archived'?'active':''}" onclick="setKanbanArchiveFilter('archived')">Arquivadas (${totalArquivadas})</button>
+            <button class="kanban-archive-tab ${kanbanArchiveFilter==='all'?'active':''}" onclick="setKanbanArchiveFilter('all')">Todas (${baseList.length})</button>
+          </div>
         </div>
         <div class="kanban-filter">
           <input id="kanban-search" value="${safeText(searchValue)}" placeholder="Buscar tarefa, aluno, label..." oninput="renderTarefas()">
@@ -3799,7 +3861,21 @@ function renderTarefas(){
             ${allLabels.map(l=>`<option value="${safeText(l)}" ${l===selectedLabel?"selected":""}>${safeText(l)}</option>`).join("")}
           </select>
         </div>
-      </div>
+      </div>`;
+    if(!baseList.length){
+      el.innerHTML=toolbar+'<div class="empty-state"><div>✅</div>Nenhuma tarefa encontrada neste filtro.</div>';
+      return;
+    }
+    if(!list.length){
+      el.innerHTML=toolbar+'<div class="empty-state"><div>🗂️</div>Nenhuma tarefa nessa visualização. Use Ativas, Arquivadas ou Todas.</div>';
+      return;
+    }
+    if(kanbanArchiveFilter==="archived"){
+      el.innerHTML=toolbar+`<div class="result-list">${list.map(t=>renderTaskCard(t)).join("")}</div>`;
+      setupKanbanDnD();
+      return;
+    }
+    el.innerHTML=toolbar+`
       <div class="kanban-board">${cols.map(col=>{
         const items=list.filter(t=>normalizeTaskStatus(t)===col.key);
         return `<div class="kanban-col" data-status="${col.key}">
@@ -3818,31 +3894,33 @@ function renderTarefas(){
   }
 }
 function renderTaskCard(t){
+  const archived=isTaskArchived(t);
   const status=normalizeTaskStatus(t);
+  const visibleStatus=archived ? (t.statusBeforeArchive||"pendente") : status;
   const labels=Array.isArray(t.labels)?t.labels:parseLabels(t.labels||t.materia||"");
   const prioridade=t.prioridade||"media";
-  const prazoInfo=prazoTarefaInfo(t.prazo,status);
-  return `<div class="kanban-card priority-${safeText(prioridade)}" draggable="true" data-id="${safeText(t.id)}" data-student-uid="${safeText(t.studentUid)}" onclick="openTarefaEdit(\'${safeText(t.id)}\',\'${safeText(t.studentUid)}\')">
+  const prazoInfo=prazoTarefaInfo(t.prazo,visibleStatus);
+  return `<div class="kanban-card ${archived?'archived':''} priority-${safeText(prioridade)}" draggable="${archived?'false':'true'}" data-id="${safeText(t.id)}" data-student-uid="${safeText(t.studentUid)}" onclick="openTarefaEdit('${safeText(t.id)}','${safeText(t.studentUid)}')">
     <div class="kanban-card-top">
-      <div class="kanban-card-title">${safeText(t.nome)}</div>
+      <div class="kanban-card-title">${safeText(t.nome||t.titulo||t.title||"Tarefa sem título")}</div>
       <span class="kanban-priority ${safeText(prioridade)}">${priorityLabel(prioridade)}</span>
     </div>
     <div class="item-meta">
-      ${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid))}</span>`:""}
+      ${isTeacher()?`<span class="badge ok">👤 ${safeText(t.studentName||getUserName(t.studentUid)||"Geral")}</span>`:""}
       ${t.materia?`<span class="badge">📁 ${safeText(t.materia)}</span>`:""}
       ${t.prazo?`<span class="badge warn">📅 ${formatDate(t.prazo)}</span>`:""}
       <span class="badge ${prazoInfo.cls}">⏳ ${safeText(prazoInfo.txt)}</span>
-      <span class="badge ${taskStatusBadgeClass(status)}">${taskStatusLabel(status)}</span>
+      ${archived?`<span class="badge archive">🗂️ Arquivada</span>`:`<span class="badge ${taskStatusBadgeClass(status)}">${taskStatusLabel(status)}</span>`}
       ${attachmentBadge(t.anexoUrl,t.anexoNome,"Anexo")}
     </div>
     ${labels.length?`<div class="kanban-labels">${labels.map(l=>`<span class="kanban-label">#${safeText(l)}</span>`).join("")}</div>`:""}
     ${t.obs?`<div class="item-text">${safeText(t.obs)}</div>`:""}
     <div class="kanban-card-open-tip">✏️ Clique no card para editar</div>
     <div class="kanban-actions" onclick="event.stopPropagation()">
-      ${status!=="pendente"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','pendente')">A fazer</button>`:""}
-      ${status!=="andamento"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','andamento')">Andamento</button>`:""}
-      ${status!=="concluida"?`<button class="btn-small primary" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','concluida')">Concluir</button>`:""}
-      <button class="btn-small" onclick="delTarefa('${t.id}','${t.studentUid}')">Excluir</button>
+      ${!archived && status!=="pendente"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','pendente')">A fazer</button>`:""}
+      ${!archived && status!=="andamento"?`<button class="btn-small" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','andamento')">Andamento</button>`:""}
+      ${!archived && status!=="concluida"?`<button class="btn-small primary" onclick="updateTarefaStatus('${t.id}','${t.studentUid}','concluida')">Concluir</button>`:""}
+      ${archived?`<button class="btn-small primary" onclick="restoreTarefa('${t.id}','${t.studentUid}')">Restaurar</button><button class="btn-small" onclick="delTarefa('${t.id}','${t.studentUid}')">Excluir definitivo</button>`:`<button class="btn-small" onclick="archiveTarefa('${t.id}','${t.studentUid}')">Arquivar</button>`}
     </div>
   </div>`;
 }
