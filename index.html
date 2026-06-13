@@ -5,6 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Um Quarto</title>
+<!-- MIGRADO PARA CLOUD FIRESTORE + STORAGE em 13/06/2026 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -2837,25 +2838,159 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyDlxZpvhfRuy-7AX1_hNrWuDAfX4rArsoM",
-  authDomain: "umquartonew.firebaseapp.com",
-  databaseURL: "https://umquartonew-default-rtdb.firebaseio.com",
-  projectId: "umquartonew",
-  storageBucket: "umquartonew.firebasestorage.app",
-  messagingSenderId: "1057520002134",
-  appId: "1:1057520002134:web:c5e91e007bd6c2058ec7f7"
+  apiKey: "AIzaSyCCWJqv_61xQY8DfTKGOSlcRPOn1WXUI90",
+  authDomain: "umquartodeaula-38669.firebaseapp.com",
+  projectId: "umquartodeaula-38669",
+  storageBucket: "umquartodeaula-38669.firebasestorage.app",
+  messagingSenderId: "963220554878",
+  appId: "1:963220554878:web:e528abdd4b96b392e9c42f"
 };
 
-let auth=null, db=null, storage=null, firebaseReady=false;
-if(firebaseConfig.apiKey && firebaseConfig.databaseURL){
+/*
+ * Camada de compatibilidade: mantém o restante do site funcionando com a
+ * sintaxe antiga db.ref(...), mas salva tudo no Cloud Firestore.
+ * Cada raiz (users, tarefas, aulas etc.) fica em legacyRTDB/{raiz}.
+ */
+function createFirestoreRealtimeCompat(firestore){
+  const COL = "legacyRTDB";
+  const clean = p => String(p || "").replace(/^\/+|\/+$/g, "");
+  const parts = p => clean(p).split("/").filter(Boolean);
+  const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
+  const resolveValues = value => {
+    if(Array.isArray(value)) return value.map(resolveValues);
+    if(value && typeof value === "object"){
+      const out = {};
+      Object.entries(value).forEach(([k,v]) => out[k] = resolveValues(v));
+      return out;
+    }
+    return value;
+  };
+  const getAt = (obj, segs) => segs.reduce((acc,k) => acc == null ? undefined : acc[k], obj);
+  const setAt = (obj, segs, value) => {
+    if(!segs.length) return clone(value);
+    const root = obj && typeof obj === "object" ? clone(obj) : {};
+    let cur = root;
+    segs.forEach((k,i) => {
+      if(i === segs.length - 1) cur[k] = clone(value);
+      else {
+        if(!cur[k] || typeof cur[k] !== "object") cur[k] = {};
+        cur = cur[k];
+      }
+    });
+    return root;
+  };
+  const delAt = (obj, segs) => {
+    if(!segs.length) return null;
+    const root = obj && typeof obj === "object" ? clone(obj) : {};
+    let cur = root;
+    for(let i=0;i<segs.length-1;i++){
+      if(!cur[segs[i]] || typeof cur[segs[i]] !== "object") return root;
+      cur = cur[segs[i]];
+    }
+    delete cur[segs[segs.length-1]];
+    return root;
+  };
+  class CompatSnapshot{
+    constructor(value,key){ this._value = value; this.key = key || null; }
+    val(){ return clone(this._value); }
+    exists(){ return this._value !== undefined && this._value !== null; }
+  }
+  class CompatRef{
+    constructor(path){
+      this.path = clean(path);
+      this._parts = parts(this.path);
+      this.key = this._parts.length ? this._parts[this._parts.length-1] : null;
+      this._unsubscribe = null;
+    }
+    _root(){ return this._parts[0] || "root"; }
+    _rest(){ return this._parts.slice(1); }
+    _doc(){ return firestore.collection(COL).doc(this._root()); }
+    child(sub){ return new CompatRef([this.path,clean(sub)].filter(Boolean).join("/")); }
+    async once(event){
+      if(event !== "value") throw new Error("Somente o evento value é suportado.");
+      const snap = await this._doc().get();
+      const root = snap.exists ? (snap.data().value ?? null) : null;
+      return new CompatSnapshot(getAt(root,this._rest()),this.key);
+    }
+    on(event,success,error){
+      if(event !== "value") throw new Error("Somente o evento value é suportado.");
+      this.off();
+      this._unsubscribe = this._doc().onSnapshot(docSnap => {
+        const root = docSnap.exists ? (docSnap.data().value ?? null) : null;
+        success(new CompatSnapshot(getAt(root,this._rest()),this.key));
+      }, error);
+      return success;
+    }
+    off(){ if(this._unsubscribe){ this._unsubscribe(); this._unsubscribe = null; } }
+    async set(value){
+      const val = resolveValues(value);
+      await firestore.runTransaction(async tx => {
+        const ref = this._doc();
+        const snap = await tx.get(ref);
+        const current = snap.exists ? (snap.data().value ?? null) : null;
+        const next = setAt(current,this._rest(),val);
+        tx.set(ref,{value:next,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      });
+      return value;
+    }
+    async update(patch){
+      const val = resolveValues(patch || {});
+      await firestore.runTransaction(async tx => {
+        const ref = this._doc();
+        const snap = await tx.get(ref);
+        const current = snap.exists ? (snap.data().value ?? null) : null;
+        const oldNode = getAt(current,this._rest());
+        const merged = {...(oldNode && typeof oldNode === "object" ? oldNode : {}),...val};
+        const next = setAt(current,this._rest(),merged);
+        tx.set(ref,{value:next,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      });
+      return patch;
+    }
+    async remove(){
+      await firestore.runTransaction(async tx => {
+        const ref = this._doc();
+        const snap = await tx.get(ref);
+        if(!snap.exists) return;
+        if(!this._rest().length){ tx.delete(ref); return; }
+        const current = snap.data().value ?? null;
+        tx.set(ref,{value:delAt(current,this._rest()),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      });
+    }
+    push(value){
+      const id = firestore.collection("_ids").doc().id;
+      const childRef = this.child(id);
+      if(arguments.length) childRef.set(value);
+      return childRef;
+    }
+    async transaction(updateFn){
+      let result;
+      await firestore.runTransaction(async tx => {
+        const ref = this._doc();
+        const snap = await tx.get(ref);
+        const currentRoot = snap.exists ? (snap.data().value ?? null) : null;
+        const currentValue = getAt(currentRoot,this._rest());
+        result = updateFn(clone(currentValue));
+        if(result === undefined) return;
+        const next = setAt(currentRoot,this._rest(),resolveValues(result));
+        tx.set(ref,{value:next,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
+      });
+      return {committed:result !== undefined,snapshot:new CompatSnapshot(result,this.key)};
+    }
+  }
+  return {ref:path => new CompatRef(path)};
+}
+
+let auth=null, db=null, storage=null, firestore=null, firebaseReady=false;
+if(firebaseConfig.apiKey && firebaseConfig.projectId){
   firebase.initializeApp(firebaseConfig);
   auth=firebase.auth();
-  db=firebase.database();
+  firestore=firebase.firestore();
+  db=createFirestoreRealtimeCompat(firestore);
   storage=firebase.storage();
   firebaseReady=true;
 }
@@ -3033,7 +3168,7 @@ async function doRegister(){
       email,
       role:isProf?"teacher":"student",
       financeiro:email===PROFESSOR_EMAIL,
-      createdAt:firebase.database.ServerValue.TIMESTAMP
+      createdAt:Date.now()
     });
   }catch(e){showError(firebaseErrorMessage(e))}
 }
@@ -3053,7 +3188,7 @@ function firebaseErrorMessage(e){
   if(c.includes("invalid-credential"))return"E-mail ou senha incorretos.";
   if(c.includes("email-already-in-use"))return"Este e-mail já está cadastrado.";
   if(c.includes("weak-password"))return"Senha muito fraca. Use pelo menos 6 caracteres.";
-  if(c.includes("permission-denied"))return"Sem permissão. Confira as Rules do Realtime Database e do Storage.";
+  if(c.includes("permission-denied"))return"Sem permissão. Confira as Rules do Cloud Firestore e do Storage.";
   if(c.includes("storage/unauthorized"))return"Sem permissão para enviar arquivo. Confira as Rules do Storage.";
   return"Erro: "+(e?.message||"não foi possível concluir.");
 }
@@ -3107,7 +3242,7 @@ async function changeFirstPassword(){
   }
   try{
     await currentUser.updatePassword(p1);
-    await db.ref("users/"+ownUid()).update({mustChangePassword:false,passwordChangedAt:firebase.database.ServerValue.TIMESTAMP});
+    await db.ref("users/"+ownUid()).update({mustChangePassword:false,passwordChangedAt:Date.now()});
     currentProfile={...currentProfile,mustChangePassword:false};
     alert("Senha alterada com sucesso!");
     showScreen("app");
@@ -3145,7 +3280,7 @@ async function createStudentLogin(){
       mustChangePassword:true,
       createdBy:ownUid(),
       createdByEmail:userEmail(),
-      createdAt:firebase.database.ServerValue.TIMESTAMP
+      createdAt:Date.now()
     });
     ["new-student-name","new-student-login","new-student-pass","new-student-school"].forEach(id=>document.getElementById(id).value="");
     alert(`Aluno criado!\n\nLogin: ${login}\nSenha provisória: ${pass}\n\nNo primeiro acesso ele deverá trocar a senha.`);
@@ -3187,7 +3322,7 @@ async function createTeacherLogin(){
       mustChangePassword:true,
       createdBy:ownUid(),
       createdByEmail:userEmail(),
-      createdAt:firebase.database.ServerValue.TIMESTAMP
+      createdAt:Date.now()
     });
     ["new-teacher-name","new-teacher-login","new-teacher-pass","new-teacher-note"].forEach(id=>document.getElementById(id).value="");
     alert(`Professor criado!\n\nLogin: ${login}\nSenha provisória: ${pass}\n\nNo primeiro acesso ele deverá trocar a senha.`);
@@ -3211,7 +3346,7 @@ async function loadOrCreateUserProfile(){
     return;
   }
   const isProf=currentUser.email.toLowerCase()===PROFESSOR_EMAIL;
-  currentProfile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isProf?"teacher":"student",financeiro:isProf,admin:isProf,createdAt:firebase.database.ServerValue.TIMESTAMP};
+  currentProfile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isProf?"teacher":"student",financeiro:isProf,admin:isProf,createdAt:Date.now()};
   await db.ref("users/"+currentUser.uid).set(currentProfile);
 }
 
@@ -3278,7 +3413,7 @@ function attachRealtimeListeners(){
       allTarefas=tarefas;
     }
     renderTarefas();renderPainelTarefas();updateStats();updateProgresso();
-  },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>tarefasRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>tarefasRef.off());
 
   const aulasRef=isTeacher()?db.ref("aulas"):db.ref("aulas/"+uid);
   aulasRef.on("value",s=>{
@@ -3287,7 +3422,7 @@ function attachRealtimeListeners(){
       allAulas=list.filter(a=>isPauloMaster()||teacherOwnsItem(a)).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));aulas=allAulas.filter(a=>a.studentUid===uid);
     }else{aulas=objToArray(s.val()).map(a=>({...a,studentUid:uid,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));allAulas=aulas}
     renderAulas();updateStats();updateProgresso();updateFinanceiro();
-  },e=>{console.error(e);alert("Erro ao carregar aulas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>aulasRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar aulas. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>aulasRef.off());
 
   const avRef=isTeacher()?db.ref("avaliacoes"):db.ref("avaliacoes/"+uid);
   avRef.on("value",s=>{
@@ -3296,7 +3431,7 @@ function attachRealtimeListeners(){
       allAvaliacoes=list.filter(a=>isPauloMaster()||teacherOwnsItem(a)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));avaliacoes=allAvaliacoes.filter(a=>a.studentUid===uid);
     }else{avaliacoes=objToArray(s.val()).map(a=>({...a,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allAvaliacoes=avaliacoes}
     renderAvaliacoes();updateStats();updateProgresso();
-  },e=>{console.error(e);alert("Erro ao carregar avaliações. Confira as regras do Realtime Database.")});unsubscribers.push(()=>avRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar avaliações. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>avRef.off());
 
 
   const calRef=isTeacher()?db.ref("calendario"):db.ref("calendario/"+uid);
@@ -3306,14 +3441,14 @@ function attachRealtimeListeners(){
       allCalendario=list.filter(c=>isPauloMaster()||teacherOwnsItem(c)).sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));calendario=allCalendario.filter(c=>c.studentUid===uid);
     }else{calendario=objToArray(s.val()).map(c=>({...c,studentUid:uid})).sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));allCalendario=calendario}
     renderCalendario();
-  },e=>{console.error(e);alert("Erro ao carregar calendário. Confira as regras do Realtime Database.")});unsubscribers.push(()=>calRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar calendário. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>calRef.off());
 
 
   const forumRef=db.ref("forumPosts");
   forumRef.on("value",s=>{
     forumPosts=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     renderForum();
-  },e=>{console.error(e);alert("Erro ao carregar bate-papo. Confira as regras do Realtime Database.")});
+  },e=>{console.error(e);alert("Erro ao carregar bate-papo. Confira as regras do Cloud Firestore.")});
   unsubscribers.push(()=>forumRef.off());
 
   const habitosRef=db.ref("habitos/"+uid);
@@ -3642,7 +3777,7 @@ async function addTarefa(){
       studentEmail:getUserEmail(studentUid),
       createdBy:ownUid(),
       createdByEmail:userEmail(),
-      createdAt:firebase.database.ServerValue.TIMESTAMP
+      createdAt:Date.now()
     };
     if(uploaded){
       payload.anexoUrl=uploaded.url;
@@ -3714,7 +3849,7 @@ async function saveTarefaEdit(){
     obs:document.getElementById("edit-task-obs").value.trim(),
     updatedBy:ownUid(),
     updatedByEmail:userEmail(),
-    updatedAt:firebase.database.ServerValue.TIMESTAMP
+    updatedAt:Date.now()
   };
   try{
     await db.ref("tarefas/"+uid+"/"+id).update(payload);
@@ -3750,7 +3885,7 @@ async function archiveTarefa(id,studentUid){
   await db.ref("tarefas/"+uid+"/"+id).update({
     archived:true,
     arquivada:true,
-    archivedAt:firebase.database.ServerValue.TIMESTAMP,
+    archivedAt:Date.now(),
     archivedBy:ownUid(),
     statusBeforeArchive:normalizeTaskStatus(item)
   });
@@ -3979,7 +4114,7 @@ async function addAula(){
     statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",
     createdBy:ownUid(),
     createdByEmail:userEmail(),
-    createdAt:firebase.database.ServerValue.TIMESTAMP
+    createdAt:Date.now()
   };
   try{
     await db.ref("aulas/"+studentUid).push(aula);
@@ -4128,7 +4263,7 @@ function renderAulaEditBox(a,uid){
     <div class="form-field"><label>Observações</label><input id="edit-aula-obs-${a.id}" value="${safeText(a.obs||"")}"></div>
 
     <p style="font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4;margin:-2px 0 12px">
-      Agora dá para corrigir aluno, professor e escola diretamente na edição. Se trocar o aluno, a aula será movida para a ficha do novo aluno no Realtime Database.
+      Agora dá para corrigir aluno, professor e escola diretamente na edição. Se trocar o aluno, a aula será movida para a ficha do novo aluno no Cloud Firestore.
     </p>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-small primary" onclick="saveAulaEdit('${uid}','${a.id}')">Salvar alterações</button><button class="btn-small" onclick="toggleAulaEdit('${a.id}','${uid}')">Cancelar</button></div>
@@ -4183,7 +4318,7 @@ async function saveAulaEdit(studentUid,id){
     ownerTeacherUid:professorUid,
     teacherUid:professorUid,
     statusFinanceiro,
-    updatedAt:firebase.database.ServerValue.TIMESTAMP,
+    updatedAt:Date.now(),
     updatedBy:ownUid(),
     updatedByEmail:userEmail()
   };
@@ -4235,7 +4370,7 @@ async function addAvaliacao(){
   if(file && !validateAttachment(file)) return;
   try{
     const uploaded=file ? await uploadAttachment(file,studentUid,"avaliacoes") : null;
-    const payload={title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP};
+    const payload={title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()};
     if(uploaded){
       payload.anexoUrl=uploaded.url;
       payload.anexoNome=uploaded.nome;
@@ -4255,7 +4390,7 @@ async function submitAvaliacao(id,studentUid){
   if(!texto&&!link&&!file)return alert("Escreva uma resposta, envie um link ou anexe um arquivo.");
   try{
     const uploaded=file ? await uploadAttachment(file,studentUid,"respostas") : null;
-    const payload={respostaTexto:texto,respostaLink:link,status:"respondida",respondedAt:firebase.database.ServerValue.TIMESTAMP};
+    const payload={respostaTexto:texto,respostaLink:link,status:"respondida",respondedAt:Date.now()};
     if(uploaded){
       payload.respostaAnexoUrl=uploaded.url;
       payload.respostaAnexoNome=uploaded.nome;
@@ -4285,7 +4420,7 @@ async function addCalendarioItem(){
   const title=document.getElementById("cal-title").value.trim();
   const desc=document.getElementById("cal-desc").value.trim();
   if(!date||!title)return alert("Preencha pelo menos data e título.");
-  await db.ref("calendario/"+studentUid).push({type,date,start,end,title,desc,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP});
+  await db.ref("calendario/"+studentUid).push({type,date,start,end,title,desc,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()});
   ["cal-date","cal-start","cal-end","cal-title","cal-desc"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
   document.getElementById("cal-type").value="compromisso";
 }
@@ -4367,7 +4502,7 @@ async function addResultadoAula(){
     date:data,aulaId,aulaTitulo:aula.materia||"",criterios,media,
     obs:document.getElementById("res-obs")?.value.trim()||"",
     studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
-    createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP
+    createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
   });
   ["res-obs"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
   alert("Resultado da aula salvo!");
@@ -4387,7 +4522,7 @@ async function addNotaAluno(){
     valor,max,percentual:Math.round((valor/max)*100),
     obs:document.getElementById("nota-obs")?.value.trim()||"",
     studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
-    createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP
+    createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
   });
   ["nota-materia","nota-titulo","nota-valor","nota-obs"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
   alert("Nota salva!");
@@ -4465,7 +4600,7 @@ async function addProgramTopic(){
   const titulo=document.getElementById("prog-titulo")?.value.trim();
   const desc=document.getElementById("prog-desc")?.value.trim()||"";
   if(!materia||!titulo)return alert("Preencha matéria e conteúdo.");
-  await db.ref(`studyGuides/${program}`).push({materia,titulo,desc,ordem:Date.now(),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:firebase.database.ServerValue.TIMESTAMP});
+  await db.ref(`studyGuides/${program}`).push({materia,titulo,desc,ordem:Date.now(),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()});
   ["prog-materia","prog-titulo","prog-desc"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
 }
 async function delProgramTopic(program,id){if(!isTeacher())return; if(confirm("Remover este conteúdo do guia?")) await db.ref(`studyGuides/${program}/${id}`).remove()}
@@ -4534,7 +4669,7 @@ async function addForumPost(){
     authorName:currentProfile?.name||currentUser.email||"Usuário",
     authorEmail:userEmail(),
     authorRole:isTeacher()?"teacher":"student",
-    createdAt:firebase.database.ServerValue.TIMESTAMP,
+    createdAt:Date.now(),
     answers:{}
   };
   try{
@@ -4553,7 +4688,7 @@ async function addForumAnswer(postId){
     authorName:currentProfile?.name||currentUser.email||"Usuário",
     authorEmail:userEmail(),
     authorRole:isTeacher()?"teacher":"student",
-    createdAt:firebase.database.ServerValue.TIMESTAMP
+    createdAt:Date.now()
   };
   try{
     await db.ref("forumPosts/"+postId+"/answers").push(payload);
@@ -4786,7 +4921,7 @@ async function addHabito(){
   if(!nome)return alert("Digite o nome do hábito.");
   const tipo=document.getElementById("h-tipo")?.value||"diario";
   const meta=Math.max(1,Number(document.getElementById("h-meta")?.value||1));
-  await db.ref("habitos/"+ownUid()).push({nome,tipo,meta,checks:{},createdAt:firebase.database.ServerValue.TIMESTAMP});
+  await db.ref("habitos/"+ownUid()).push({nome,tipo,meta,checks:{},createdAt:Date.now()});
   document.getElementById("h-nome").value="";
   document.getElementById("h-meta").value="1";
 }
@@ -4964,7 +5099,7 @@ function getPlanejamentoFromForm(){
       melhorar:document.getElementById("pl-rev-melhorar")?.value||"",
       nota:document.getElementById("pl-rev-nota")?.value||"7"
     },
-    updatedAt:firebase.database.ServerValue.TIMESTAMP
+    updatedAt:Date.now()
   };
 }
 async function savePlanejamento(){
@@ -5226,7 +5361,7 @@ async function stopAndRegisterTimer(){
 }
 async function registerStudySession(mins,focus,produced,completed){
   await db.ref("mins/"+ownUid()+"/"+today()).transaction(c=>Number(c||0)+mins);
-  await db.ref("sessoes/"+ownUid()).push({date:today(),minutes:mins,focus,produced,completed,mode:timerMode,createdAt:firebase.database.ServerValue.TIMESTAMP});
+  await db.ref("sessoes/"+ownUid()).push({date:today(),minutes:mins,focus,produced,completed,mode:timerMode,createdAt:Date.now()});
   document.getElementById("timer-produced").value="";
   document.getElementById("timer-task").value="";
 }
