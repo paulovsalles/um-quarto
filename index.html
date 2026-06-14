@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Um Quarto</title>
-<!-- MIGRADO PARA CLOUD FIRESTORE + STORAGE em 13/06/2026 -->
+<!-- FIREBASE AUTHENTICATION + REALTIME DATABASE · SEM FIRESTORE E SEM STORAGE -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -2196,7 +2196,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
           <div class="form-field"><label>Labels / etiquetas</label><input type="text" id="t-labels" placeholder="Ex: Matemática, urgente, IFES"></div>
           <div class="form-field"><label>Prioridade</label><select id="t-prioridade"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></div>
         </div>
-        <div class="form-field"><label>Anexar PDF ou Word (opcional)</label><input type="file" id="t-anexo" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
+        <div class="form-field"><label>Link do material ou anexo (opcional)</label><input type="url" id="t-anexo-url" placeholder="Cole um link do Google Drive, OneDrive ou outro serviço"><p style="font-size:12px;color:var(--cinza);margin-top:6px">Configure o arquivo como “qualquer pessoa com o link pode visualizar”.</p></div>
         <button class="btn-add" onclick="addTarefa()">Adicionar tarefa</button>
       </div>
       <div class="card">
@@ -2297,8 +2297,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div class="form-row"><div class="form-field"><label>Título</label><input type="text" id="av-title" placeholder="Ex: Lista de Matemática"></div><div class="form-field"><label>Matéria</label><input type="text" id="av-materia" placeholder="Ex: Matemática"></div></div>
         <div class="form-field"><label>Prazo</label><input type="date" id="av-prazo"></div>
         <div class="form-field"><label>Descrição</label><textarea id="av-desc" placeholder="Explique a avaliação, páginas, questões ou orientações..."></textarea></div>
-        <div class="form-field"><label>Anexar PDF ou Word (opcional)</label><input type="file" id="av-anexo-file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
-        <div class="form-field"><label>Link do anexo/arquivo (opcional)</label><input type="url" id="av-anexo" placeholder="https://..."></div>
+        <div class="form-field"><label>Link do material ou arquivo (opcional)</label><input type="url" id="av-anexo" placeholder="Cole um link do Google Drive, OneDrive ou outro serviço"><p style="font-size:12px;color:var(--cinza);margin-top:6px">Configure o arquivo como “qualquer pessoa com o link pode visualizar”.</p></div>
         <button class="btn-add" onclick="addAvaliacao()">Enviar avaliação</button>
       </div>
       <div class="card" id="student-answer-info" style="display:none">
@@ -2838,161 +2837,37 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-storage-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyCCWJqv_61xQY8DfTKGOSlcRPOn1WXUI90",
-  authDomain: "umquartodeaula-38669.firebaseapp.com",
-  projectId: "umquartodeaula-38669",
-  storageBucket: "umquartodeaula-38669.firebasestorage.app",
-  messagingSenderId: "963220554878",
-  appId: "1:963220554878:web:e528abdd4b96b392e9c42f"
+  apiKey: "AIzaSyDlxZpvhfRuy-7AX1_hNrWuDAfX4rArsoM",
+  authDomain: "umquartonew.firebaseapp.com",
+  databaseURL: "https://umquartonew-default-rtdb.firebaseio.com",
+  projectId: "umquartonew",
+  messagingSenderId: "1057520002134",
+  appId: "1:1057520002134:web:c5e91e007bd6c2058ec7f7"
 };
 
-/*
- * Camada de compatibilidade: mantém o restante do site funcionando com a
- * sintaxe antiga db.ref(...), mas salva tudo no Cloud Firestore.
- * Cada raiz (users, tarefas, aulas etc.) fica em legacyRTDB/{raiz}.
- */
-function createFirestoreRealtimeCompat(firestore){
-  const COL = "legacyRTDB";
-  const clean = p => String(p || "").replace(/^\/+|\/+$/g, "");
-  const parts = p => clean(p).split("/").filter(Boolean);
-  const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
-  const resolveValues = value => {
-    if(Array.isArray(value)) return value.map(resolveValues);
-    if(value && typeof value === "object"){
-      const out = {};
-      Object.entries(value).forEach(([k,v]) => out[k] = resolveValues(v));
-      return out;
-    }
-    return value;
-  };
-  const getAt = (obj, segs) => segs.reduce((acc,k) => acc == null ? undefined : acc[k], obj);
-  const setAt = (obj, segs, value) => {
-    if(!segs.length) return clone(value);
-    const root = obj && typeof obj === "object" ? clone(obj) : {};
-    let cur = root;
-    segs.forEach((k,i) => {
-      if(i === segs.length - 1) cur[k] = clone(value);
-      else {
-        if(!cur[k] || typeof cur[k] !== "object") cur[k] = {};
-        cur = cur[k];
-      }
-    });
-    return root;
-  };
-  const delAt = (obj, segs) => {
-    if(!segs.length) return null;
-    const root = obj && typeof obj === "object" ? clone(obj) : {};
-    let cur = root;
-    for(let i=0;i<segs.length-1;i++){
-      if(!cur[segs[i]] || typeof cur[segs[i]] !== "object") return root;
-      cur = cur[segs[i]];
-    }
-    delete cur[segs[segs.length-1]];
-    return root;
-  };
-  class CompatSnapshot{
-    constructor(value,key){ this._value = value; this.key = key || null; }
-    val(){ return clone(this._value); }
-    exists(){ return this._value !== undefined && this._value !== null; }
-  }
-  class CompatRef{
-    constructor(path){
-      this.path = clean(path);
-      this._parts = parts(this.path);
-      this.key = this._parts.length ? this._parts[this._parts.length-1] : null;
-      this._unsubscribe = null;
-    }
-    _root(){ return this._parts[0] || "root"; }
-    _rest(){ return this._parts.slice(1); }
-    _doc(){ return firestore.collection(COL).doc(this._root()); }
-    child(sub){ return new CompatRef([this.path,clean(sub)].filter(Boolean).join("/")); }
-    async once(event){
-      if(event !== "value") throw new Error("Somente o evento value é suportado.");
-      const snap = await this._doc().get();
-      const root = snap.exists ? (snap.data().value ?? null) : null;
-      return new CompatSnapshot(getAt(root,this._rest()),this.key);
-    }
-    on(event,success,error){
-      if(event !== "value") throw new Error("Somente o evento value é suportado.");
-      this.off();
-      this._unsubscribe = this._doc().onSnapshot(docSnap => {
-        const root = docSnap.exists ? (docSnap.data().value ?? null) : null;
-        success(new CompatSnapshot(getAt(root,this._rest()),this.key));
-      }, error);
-      return success;
-    }
-    off(){ if(this._unsubscribe){ this._unsubscribe(); this._unsubscribe = null; } }
-    async set(value){
-      const val = resolveValues(value);
-      await firestore.runTransaction(async tx => {
-        const ref = this._doc();
-        const snap = await tx.get(ref);
-        const current = snap.exists ? (snap.data().value ?? null) : null;
-        const next = setAt(current,this._rest(),val);
-        tx.set(ref,{value:next,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      });
-      return value;
-    }
-    async update(patch){
-      const val = resolveValues(patch || {});
-      await firestore.runTransaction(async tx => {
-        const ref = this._doc();
-        const snap = await tx.get(ref);
-        const current = snap.exists ? (snap.data().value ?? null) : null;
-        const oldNode = getAt(current,this._rest());
-        const merged = {...(oldNode && typeof oldNode === "object" ? oldNode : {}),...val};
-        const next = setAt(current,this._rest(),merged);
-        tx.set(ref,{value:next,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      });
-      return patch;
-    }
-    async remove(){
-      await firestore.runTransaction(async tx => {
-        const ref = this._doc();
-        const snap = await tx.get(ref);
-        if(!snap.exists) return;
-        if(!this._rest().length){ tx.delete(ref); return; }
-        const current = snap.data().value ?? null;
-        tx.set(ref,{value:delAt(current,this._rest()),updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      });
-    }
-    push(value){
-      const id = firestore.collection("_ids").doc().id;
-      const childRef = this.child(id);
-      if(arguments.length) childRef.set(value);
-      return childRef;
-    }
-    async transaction(updateFn){
-      let result;
-      await firestore.runTransaction(async tx => {
-        const ref = this._doc();
-        const snap = await tx.get(ref);
-        const currentRoot = snap.exists ? (snap.data().value ?? null) : null;
-        const currentValue = getAt(currentRoot,this._rest());
-        result = updateFn(clone(currentValue));
-        if(result === undefined) return;
-        const next = setAt(currentRoot,this._rest(),resolveValues(result));
-        tx.set(ref,{value:next,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      });
-      return {committed:result !== undefined,snapshot:new CompatSnapshot(result,this.key)};
-    }
-  }
-  return {ref:path => new CompatRef(path)};
-}
+let auth = null;
+let db = null;
+let firebaseReady = false;
 
-let auth=null, db=null, storage=null, firestore=null, firebaseReady=false;
-if(firebaseConfig.apiKey && firebaseConfig.projectId){
-  firebase.initializeApp(firebaseConfig);
-  auth=firebase.auth();
-  firestore=firebase.firestore();
-  db=createFirestoreRealtimeCompat(firestore);
-  storage=firebase.storage();
-  firebaseReady=true;
+try {
+  if (firebaseConfig.apiKey && firebaseConfig.projectId && firebaseConfig.databaseURL) {
+    firebase.initializeApp(firebaseConfig);
+    auth = firebase.auth();
+    db = firebase.database();
+    firebaseReady = true;
+    console.log("Firebase conectado ao projeto:", firebaseConfig.projectId);
+  }
+} catch (error) {
+  console.error("Erro ao inicializar o Firebase:", error);
+  const alerta = document.getElementById("firebase-config-alert");
+  if (alerta) {
+    alerta.style.display = "block";
+    alerta.textContent = "Erro ao conectar ao Firebase. Confira as credenciais do projeto umquartonew.";
+  }
 }
 
 let currentUser=null,currentProfile=null,currentAccessMode=null;
@@ -3159,17 +3034,10 @@ async function doRegister(){
   if(!name)return showError("Digite seu nome.");
   if(!email||!email.includes("@"))return showError("E-mail inválido.");
   if(pass.length<6)return showError("Senha: mínimo 6 caracteres.");
-  if(code!==STUDENT_CODE && code!==TEACHER_CODE)return showError("Código de acesso inválido.");
+  if(code!==STUDENT_CODE)return showError("Código de aluno inválido.");
   try{
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
-    const isProf=(code===TEACHER_CODE || email===PROFESSOR_EMAIL);
-    await db.ref("users/"+cred.user.uid).set({
-      name,
-      email,
-      role:isProf?"teacher":"student",
-      financeiro:email===PROFESSOR_EMAIL,
-      createdAt:Date.now()
-    });
+    await db.ref("users/"+cred.user.uid).set({name,email,role:"student",financeiro:false,admin:false,createdAt:Date.now()});
   }catch(e){showError(firebaseErrorMessage(e))}
 }
 async function doLogin(){
@@ -3183,13 +3051,13 @@ async function doLogin(){
 }
 function doLogout(){resetTimer();clearFirebaseListeners();sessionStorage.removeItem("uq_access_mode");currentAccessMode=null;auth?auth.signOut():showScreen("landing")}
 function firebaseErrorMessage(e){
-  const c=e?.code||"";
+  const c=String(e?.code||"").toLowerCase();
   if(c.includes("invalid-email"))return"E-mail inválido.";
-  if(c.includes("invalid-credential"))return"E-mail ou senha incorretos.";
+  if(c.includes("invalid-credential")||c.includes("wrong-password")||c.includes("user-not-found"))return"E-mail ou senha incorretos.";
   if(c.includes("email-already-in-use"))return"Este e-mail já está cadastrado.";
   if(c.includes("weak-password"))return"Senha muito fraca. Use pelo menos 6 caracteres.";
-  if(c.includes("permission-denied"))return"Sem permissão. Confira as Rules do Cloud Firestore e do Storage.";
-  if(c.includes("storage/unauthorized"))return"Sem permissão para enviar arquivo. Confira as Rules do Storage.";
+  if(c.includes("permission-denied")||c.includes("permission_denied"))return"Sem permissão no Realtime Database. Confira as regras e o perfil do usuário.";
+  if(c.includes("api-key-not-valid")||c.includes("invalid-api-key"))return"Chave Firebase inválida. Confira a configuração do projeto umquartonew.";
   return"Erro: "+(e?.message||"não foi possível concluir.");
 }
 if(firebaseReady){
@@ -3413,7 +3281,7 @@ function attachRealtimeListeners(){
       allTarefas=tarefas;
     }
     renderTarefas();renderPainelTarefas();updateStats();updateProgresso();
-  },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>tarefasRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>tarefasRef.off());
 
   const aulasRef=isTeacher()?db.ref("aulas"):db.ref("aulas/"+uid);
   aulasRef.on("value",s=>{
@@ -3422,7 +3290,7 @@ function attachRealtimeListeners(){
       allAulas=list.filter(a=>isPauloMaster()||teacherOwnsItem(a)).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));aulas=allAulas.filter(a=>a.studentUid===uid);
     }else{aulas=objToArray(s.val()).map(a=>({...a,studentUid:uid,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));allAulas=aulas}
     renderAulas();updateStats();updateProgresso();updateFinanceiro();
-  },e=>{console.error(e);alert("Erro ao carregar aulas. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>aulasRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar aulas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>aulasRef.off());
 
   const avRef=isTeacher()?db.ref("avaliacoes"):db.ref("avaliacoes/"+uid);
   avRef.on("value",s=>{
@@ -3431,7 +3299,7 @@ function attachRealtimeListeners(){
       allAvaliacoes=list.filter(a=>isPauloMaster()||teacherOwnsItem(a)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));avaliacoes=allAvaliacoes.filter(a=>a.studentUid===uid);
     }else{avaliacoes=objToArray(s.val()).map(a=>({...a,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allAvaliacoes=avaliacoes}
     renderAvaliacoes();updateStats();updateProgresso();
-  },e=>{console.error(e);alert("Erro ao carregar avaliações. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>avRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar avaliações. Confira as regras do Realtime Database.")});unsubscribers.push(()=>avRef.off());
 
 
   const calRef=isTeacher()?db.ref("calendario"):db.ref("calendario/"+uid);
@@ -3441,14 +3309,14 @@ function attachRealtimeListeners(){
       allCalendario=list.filter(c=>isPauloMaster()||teacherOwnsItem(c)).sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));calendario=allCalendario.filter(c=>c.studentUid===uid);
     }else{calendario=objToArray(s.val()).map(c=>({...c,studentUid:uid})).sort((a,b)=>`${a.date||""} ${a.start||""}`.localeCompare(`${b.date||""} ${b.start||""}`));allCalendario=calendario}
     renderCalendario();
-  },e=>{console.error(e);alert("Erro ao carregar calendário. Confira as regras do Cloud Firestore.")});unsubscribers.push(()=>calRef.off());
+  },e=>{console.error(e);alert("Erro ao carregar calendário. Confira as regras do Realtime Database.")});unsubscribers.push(()=>calRef.off());
 
 
   const forumRef=db.ref("forumPosts");
   forumRef.on("value",s=>{
     forumPosts=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
     renderForum();
-  },e=>{console.error(e);alert("Erro ao carregar bate-papo. Confira as regras do Cloud Firestore.")});
+  },e=>{console.error(e);alert("Erro ao carregar bate-papo. Confira as regras do Realtime Database.")});
   unsubscribers.push(()=>forumRef.off());
 
   const habitosRef=db.ref("habitos/"+uid);
@@ -3753,55 +3621,27 @@ function switchTab(tab){
 }
 
 async function addTarefa(){
-  if(!currentUser||!db)return;
-  const studentUid=(isTeacher() && taskStudentFilter && taskStudentFilter!=="all" ? taskStudentFilter : selectedStudentOrSelf("t-student"));
+  if(!currentUser||!db)return alert("Você precisa estar conectado.");
+  const studentUid=(isTeacher()&&taskStudentFilter&&taskStudentFilter!=="all"?taskStudentFilter:selectedStudentOrSelf("t-student"));
   if(!studentUid)return alert("Selecione um aluno para vincular a tarefa.");
-  await ensureTeacherStudentLink(studentUid);
   const nome=document.getElementById("t-nome").value.trim();
   if(!nome)return alert("Digite o nome da tarefa.");
-  const file=document.getElementById("t-anexo")?.files?.[0] || null;
-  if(file && !validateAttachment(file)) return;
+  const anexoUrl=document.getElementById("t-anexo-url")?.value.trim()||"";
+  if(anexoUrl){try{new URL(anexoUrl)}catch(e){return alert("O link do material não é válido.")}}
   try{
-    const uploaded=file ? await uploadAttachment(file,studentUid,"tarefas") : null;
-    const payload={
-      nome,
-      materia:document.getElementById("t-materia").value.trim(),
-      prazo:document.getElementById("t-prazo").value,
-      labels:parseLabels(document.getElementById("t-labels")?.value),
-      prioridade:document.getElementById("t-prioridade")?.value || "media",
-      obs:"",
-      status:"pendente",
-      done:false,
-      studentUid,
-      studentName:getUserName(studentUid),
-      studentEmail:getUserEmail(studentUid),
-      createdBy:ownUid(),
-      createdByEmail:userEmail(),
-      createdAt:Date.now()
-    };
-    if(uploaded){
-      payload.anexoUrl=uploaded.url;
-      payload.anexoNome=uploaded.nome;
-      payload.anexoTipo=uploaded.tipo;
-      payload.anexoPath=uploaded.path;
-    }
-    const ref=await db.ref("tarefas/"+studentUid).push(payload);
+    await ensureTeacherStudentLink(studentUid);
+    const payload={nome,materia:document.getElementById("t-materia").value.trim(),prazo:document.getElementById("t-prazo").value,labels:parseLabels(document.getElementById("t-labels")?.value),prioridade:document.getElementById("t-prioridade")?.value||"media",anexoUrl,anexoNome:anexoUrl?"Abrir material":"",obs:"",status:"pendente",done:false,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()};
+    const ref=db.ref("tarefas/"+studentUid).push();
+    await ref.set(payload);
     const localTask={id:ref.key,...payload};
-    if(isTeacher()){
-      allTarefas=[localTask,...allTarefas.filter(t=>t.id!==ref.key)];
-    }
-    if(studentUid===ownUid()){
-      tarefas=[localTask,...tarefas.filter(t=>t.id!==ref.key)];
-    }
-    renderTarefas();
-    renderPainelTarefas();
-    updateStats();
-    ["t-nome","t-materia","t-prazo","t-labels","t-anexo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
-    const pr=document.getElementById("t-prioridade"); if(pr)pr.value="media";
+    if(isTeacher())allTarefas=[localTask,...allTarefas.filter(t=>t.id!==ref.key)];
+    if(studentUid===ownUid())tarefas=[localTask,...tarefas.filter(t=>t.id!==ref.key)];
+    renderTarefas();renderPainelTarefas();updateStats();
+    ["t-nome","t-materia","t-prazo","t-labels","t-anexo-url"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    const pr=document.getElementById("t-prioridade");if(pr)pr.value="media";
     alert("Tarefa salva com sucesso!");
-  }catch(e){alert(firebaseErrorMessage(e));}
+  }catch(e){console.error("Erro ao salvar tarefa:",e);alert(firebaseErrorMessage(e));}
 }
-
 let kanbanSuppressClick=false;
 function getTarefaById(id,studentUid){
   const uid=studentUid||ownUid();
@@ -4263,7 +4103,7 @@ function renderAulaEditBox(a,uid){
     <div class="form-field"><label>Observações</label><input id="edit-aula-obs-${a.id}" value="${safeText(a.obs||"")}"></div>
 
     <p style="font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4;margin:-2px 0 12px">
-      Agora dá para corrigir aluno, professor e escola diretamente na edição. Se trocar o aluno, a aula será movida para a ficha do novo aluno no Cloud Firestore.
+      Agora dá para corrigir aluno, professor e escola diretamente na edição. Se trocar o aluno, a aula será movida para a ficha do novo aluno no Realtime Database.
     </p>
 
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn-small primary" onclick="saveAulaEdit('${uid}','${a.id}')">Salvar alterações</button><button class="btn-small" onclick="toggleAulaEdit('${a.id}','${uid}')">Cancelar</button></div>
@@ -4362,51 +4202,33 @@ function exportAulasCSV(){
 }
 
 async function addAvaliacao(){
-  const studentUid=selectedStudentOrSelf("av-student"); if(!studentUid)return alert("Selecione um aluno.");
-  await ensureTeacherStudentLink(studentUid);
+  const studentUid=selectedStudentOrSelf("av-student");if(!studentUid)return alert("Selecione um aluno.");
   const title=document.getElementById("av-title").value.trim(),materia=document.getElementById("av-materia").value.trim(),prazo=document.getElementById("av-prazo").value,desc=document.getElementById("av-desc").value.trim(),anexo=document.getElementById("av-anexo").value.trim();
-  const file=document.getElementById("av-anexo-file")?.files?.[0] || null;
   if(!title||!materia||!desc)return alert("Preencha título, matéria e descrição.");
-  if(file && !validateAttachment(file)) return;
+  if(anexo){try{new URL(anexo)}catch(e){return alert("O link do anexo não é válido.")}}
   try{
-    const uploaded=file ? await uploadAttachment(file,studentUid,"avaliacoes") : null;
-    const payload={title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()};
-    if(uploaded){
-      payload.anexoUrl=uploaded.url;
-      payload.anexoNome=uploaded.nome;
-      payload.anexoTipo=uploaded.tipo;
-      payload.anexoPath=uploaded.path;
-    }
-    await db.ref("avaliacoes/"+studentUid).push(payload);
-    ["av-title","av-materia","av-prazo","av-desc","av-anexo","av-anexo-file"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    await ensureTeacherStudentLink(studentUid);
+    await db.ref("avaliacoes/"+studentUid).push({title,materia,prazo,desc,anexo,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),status:"aberta",respostaTexto:"",respostaLink:"",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()});
+    ["av-title","av-materia","av-prazo","av-desc","av-anexo"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     alert("Avaliação enviada com sucesso!");
-  }catch(e){alert(firebaseErrorMessage(e));}
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
 }
 async function delAvaliacao(id,studentUid){const uid=studentUid||ownUid(); const item=allAvaliacoes.find(a=>a.id===id&&a.studentUid===uid); if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode excluir avaliações criadas/vinculadas a você."); await db.ref("avaliacoes/"+uid+"/"+id).remove()}
 async function submitAvaliacao(id,studentUid){
-  const texto=document.getElementById("resp-text-"+id)?.value.trim()||"", link=document.getElementById("resp-link-"+id)?.value.trim()||"";
-  const file=document.getElementById("resp-file-"+id)?.files?.[0] || null;
-  if(file && !validateAttachment(file)) return;
-  if(!texto&&!link&&!file)return alert("Escreva uma resposta, envie um link ou anexe um arquivo.");
+  const texto=document.getElementById("resp-text-"+id)?.value.trim()||"",link=document.getElementById("resp-link-"+id)?.value.trim()||"";
+  if(!texto&&!link)return alert("Escreva uma resposta ou envie o link do arquivo.");
+  if(link){try{new URL(link)}catch(e){return alert("O link da resposta não é válido.")}}
   try{
-    const uploaded=file ? await uploadAttachment(file,studentUid,"respostas") : null;
-    const payload={respostaTexto:texto,respostaLink:link,status:"respondida",respondedAt:Date.now()};
-    if(uploaded){
-      payload.respostaAnexoUrl=uploaded.url;
-      payload.respostaAnexoNome=uploaded.nome;
-      payload.respostaAnexoTipo=uploaded.tipo;
-      payload.respostaAnexoPath=uploaded.path;
-    }
-    await db.ref("avaliacoes/"+studentUid+"/"+id).update(payload);
+    await db.ref("avaliacoes/"+studentUid+"/"+id).update({respostaTexto:texto,respostaLink:link,status:"respondida",respondedAt:Date.now()});
     alert("Resposta enviada com sucesso!");
-  }catch(e){alert(firebaseErrorMessage(e));}
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
 }
 function renderAvaliacoes(){
   try{updateLinkedFilterCounts()}catch(e){}
 
   const list=isTeacher()?visibleByFilter(allAvaliacoes):avaliacoes,el=document.getElementById("lista-avaliacoes"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📝</div>Nenhuma avaliação ainda.</div>';return}
-  el.innerHTML=list.map(av=>{const uid=av.studentUid||ownUid(),respondida=av.status==="respondida";return`<div class="item"><div class="aula-header"><div class="item-title">📝 ${safeText(av.title)}</div><button class="btn-del" onclick="delAvaliacao('${av.id}','${uid}')">×</button></div><div class="item-text">${safeText(av.desc)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(av.studentName||getUserName(uid))}</span>`:""}<span class="badge ok">${safeText(av.materia)}</span>${av.prazo?`<span class="badge warn">Prazo: ${formatDate(av.prazo)}</span>`:""}<span class="badge ${respondida?"ok":"warn"}">${respondida?"Respondida":"Aberta"}</span>${av.anexo?`<a class="badge" href="${safeText(av.anexo)}" target="_blank" rel="noopener">🔗 Link</a>`:""}${attachmentBadge(av.anexoUrl,av.anexoNome,"Anexo")}</div>${isTeacher()?`<div class="answer-box"><strong>Resposta do aluno:</strong><div class="item-text">${safeText(av.respostaTexto||"Ainda sem resposta.")}</div>${av.respostaLink?`<a class="badge ok" href="${safeText(av.respostaLink)}" target="_blank" rel="noopener">Abrir link da resposta</a>`:""}${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta")}</div>`:`<div class="answer-box"><div class="form-field"><label>Sua resposta</label><textarea id="resp-text-${av.id}" placeholder="Digite sua resposta...">${safeText(av.respostaTexto||"")}</textarea></div><div class="form-field"><label>Link da resposta/anexo</label><input type="url" id="resp-link-${av.id}" value="${safeText(av.respostaLink||"")}" placeholder="https://..."></div><div class="form-field"><label>Anexar resposta em PDF ou Word</label><input type="file" id="resp-file-${av.id}" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta enviada")}<button class="btn-small primary" onclick="submitAvaliacao('${av.id}','${uid}')">Enviar resposta</button></div>`}</div>`}).join("");
+  el.innerHTML=list.map(av=>{const uid=av.studentUid||ownUid(),respondida=av.status==="respondida";return`<div class="item"><div class="aula-header"><div class="item-title">📝 ${safeText(av.title)}</div><button class="btn-del" onclick="delAvaliacao('${av.id}','${uid}')">×</button></div><div class="item-text">${safeText(av.desc)}</div><div class="item-meta">${isTeacher()?`<span class="badge ok">👤 ${safeText(av.studentName||getUserName(uid))}</span>`:""}<span class="badge ok">${safeText(av.materia)}</span>${av.prazo?`<span class="badge warn">Prazo: ${formatDate(av.prazo)}</span>`:""}<span class="badge ${respondida?"ok":"warn"}">${respondida?"Respondida":"Aberta"}</span>${av.anexo?`<a class="badge" href="${safeText(av.anexo)}" target="_blank" rel="noopener">🔗 Link</a>`:""}${attachmentBadge(av.anexoUrl,av.anexoNome,"Anexo")}</div>${isTeacher()?`<div class="answer-box"><strong>Resposta do aluno:</strong><div class="item-text">${safeText(av.respostaTexto||"Ainda sem resposta.")}</div>${av.respostaLink?`<a class="badge ok" href="${safeText(av.respostaLink)}" target="_blank" rel="noopener">Abrir link da resposta</a>`:""}${attachmentBadge(av.respostaAnexoUrl,av.respostaAnexoNome,"Resposta")}</div>`:`<div class="answer-box"><div class="form-field"><label>Sua resposta</label><textarea id="resp-text-${av.id}" placeholder="Digite sua resposta...">${safeText(av.respostaTexto||"")}</textarea></div><div class="form-field"><label>Link da resposta/anexo</label><input type="url" id="resp-link-${av.id}" value="${safeText(av.respostaLink||"")}" placeholder="https://..."></div><button class="btn-small primary" onclick="submitAvaliacao('${av.id}','${uid}')">Enviar resposta</button></div>`}</div>`}).join("");
 }
 
 
