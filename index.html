@@ -1936,6 +1936,28 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .kanban-card.archived::after{content:"Arquivada";position:absolute;right:10px;bottom:10px;background:#eef4f3;color:var(--cinza);border-radius:999px;padding:3px 8px;font-size:10px;font-weight:900}
 .badge.archive{background:#eef4f3;color:var(--cinza)}
 
+
+/* ===== ACESSO DOS PAIS / RESPONSÁVEIS ===== */
+#screen-parent-login,#screen-parent-app{background:linear-gradient(180deg,#f7fbfa,#eef6f4);min-height:100vh}
+#screen-parent-login.active{display:flex;align-items:center;justify-content:center;padding:20px}
+.parent-login-card{width:min(100%,420px);background:#fff;border:1px solid var(--borda);border-radius:24px;padding:24px;box-shadow:0 20px 50px rgba(40,71,84,.12)}
+.parent-login-icon{width:54px;height:54px;border-radius:18px;background:#e8f5f3;color:var(--verde-dark);display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px}
+.parent-login-card h2{font-size:24px;margin-bottom:6px}.parent-login-card p{font-size:13px;color:var(--cinza);line-height:1.5;margin-bottom:18px}
+.parent-topbar{background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--borda);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.parent-brand{display:flex;align-items:center;gap:10px}.parent-brand-badge{width:40px;height:40px;border-radius:14px;background:var(--verde);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px}.parent-brand strong{display:block;font-size:15px}.parent-brand small{display:block;font-size:11px;color:var(--cinza);font-weight:800;margin-top:2px}
+.parent-main{width:min(100%,820px);margin:0 auto;padding:18px 14px 44px}
+.parent-hero{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:22px;padding:22px;margin-bottom:14px;box-shadow:0 18px 40px rgba(40,71,84,.12)}
+.parent-hero h1{font-size:24px;margin-bottom:5px}.parent-hero p{font-size:13px;opacity:.86;line-height:1.45}
+.parent-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.parent-summary-card{background:#fff;border:1px solid var(--borda);border-radius:17px;padding:15px;text-align:center;box-shadow:var(--shadow)}.parent-summary-card strong{display:block;font-size:24px;color:var(--verde-dark)}.parent-summary-card span{display:block;font-size:11px;color:var(--cinza);font-weight:900;margin-top:3px}
+.parent-section{background:#fff;border:1px solid var(--borda);border-radius:20px;padding:17px;margin-bottom:14px;box-shadow:var(--shadow)}
+.parent-section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}.parent-section-title h2{font-size:17px}.parent-section-title span{font-size:11px;color:var(--cinza);font-weight:900;background:var(--bg);padding:5px 9px;border-radius:999px}
+.parent-lesson{border:1px solid var(--borda);border-radius:17px;padding:14px;margin-bottom:10px;background:#fff}.parent-lesson:last-child{margin-bottom:0}.parent-lesson-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.parent-lesson-head strong{font-size:15px}.parent-lesson-head small{font-size:11px;color:var(--cinza);font-weight:900;white-space:nowrap}.parent-lesson-content{font-size:13px;color:var(--azul-light);line-height:1.5;margin-top:7px}
+.parent-ratings{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.parent-rating{background:var(--bg);border-radius:12px;padding:9px;text-align:center}.parent-rating b{display:block;font-size:18px;color:var(--verde-dark)}.parent-rating span{display:block;font-size:10px;color:var(--cinza);font-weight:900;margin-top:2px}
+.parent-note{margin-top:10px;border-left:4px solid var(--verde);background:#f7fbfa;border-radius:0 12px 12px 0;padding:10px 12px;font-size:12px;color:var(--azul-light);line-height:1.45}.parent-note b{color:var(--azul)}
+.parent-message{border:1px solid var(--borda);border-radius:14px;padding:11px;margin-bottom:8px;background:#fbfdfc}.parent-message strong{font-size:12px}.parent-message small{float:right;color:var(--cinza);font-size:10px;font-weight:800}.parent-message p{clear:both;font-size:12px;color:var(--azul-light);line-height:1.45;margin-top:5px;white-space:pre-wrap}
+.parent-access-box{background:#f8fbfa;border:1px solid var(--borda);border-radius:16px;padding:14px;margin-top:10px}
+@media(max-width:620px){.parent-summary{grid-template-columns:1fr 1fr}.parent-summary-card:last-child{grid-column:1/-1}.parent-ratings{grid-template-columns:1fr 1fr}.parent-rating:last-child{grid-column:1/-1}.parent-main{padding:12px 10px 34px}.parent-hero{padding:18px 16px}.parent-lesson-head{flex-direction:column}.parent-lesson-head small{white-space:normal}}
+
 </style>
 </head>
 <body>
@@ -1954,6 +1976,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div class="btn-hero-group">
           <button class="btn-primary" onclick="showScreen('auth','register')">Começar agora</button>
           <button class="btn-outline hero-secondary" onclick="showScreen('auth','login')">Já tenho conta</button>
+          <button class="btn-outline hero-secondary" onclick="showScreen('parentLogin')">Acesso dos pais</button>
         </div>
         <div class="landing-mini-points">
           <span>⏱️ foco livre</span>
@@ -1985,6 +2008,42 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
     <div class="feature-card"><div class="feature-icon">📅</div><h3>Acompanhamento</h3><p>Calendário visual, plano semanal e rotina centralizada em um só lugar.</p></div>
   </div>
   <div class="landing-footer">&copy; 2026 Um Quarto · Foco, acompanhamento e rotina para aprender melhor.</div>
+</div>
+
+
+<div id="screen-parent-login" class="screen">
+  <div class="parent-login-card">
+    <div class="parent-login-icon">👨‍👩‍👧</div>
+    <h2>Acesso da família</h2>
+    <p>Consulte as aulas, orientações e o acompanhamento do estudante em uma tela simples e objetiva.</p>
+    <div class="form-group"><label>Login dos pais</label><input type="text" id="parent-login" placeholder="Ex: joao.pais"></div>
+    <div class="form-group"><label>Senha</label><input type="password" id="parent-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doParentLogin()"></div>
+    <button class="btn-full" onclick="doParentLogin()">Entrar no acompanhamento</button>
+    <p id="parent-login-error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none"></p>
+    <p class="auth-link"><span onclick="showScreen('landing')">← Voltar ao início</span></p>
+  </div>
+</div>
+
+<div id="screen-parent-app" class="screen">
+  <div class="parent-topbar">
+    <div class="parent-brand"><div class="parent-brand-badge">¼</div><div><strong>Um Quarto</strong><small>Acompanhamento da família</small></div></div>
+    <button class="btn-logout" onclick="doLogout()">Sair</button>
+  </div>
+  <main class="parent-main">
+    <section class="parent-hero"><h1 id="parent-student-name">Acompanhamento do estudante</h1><p>Informações objetivas sobre aulas, desenvolvimento e orientações.</p></section>
+    <div class="parent-summary">
+      <div class="parent-summary-card"><strong id="parent-total-aulas">0</strong><span>AULAS REGISTRADAS</span></div>
+      <div class="parent-summary-card"><strong id="parent-media-desempenho">—</strong><span>MÉDIA DE DESEMPENHO</span></div>
+      <div class="parent-summary-card"><strong id="parent-pendencias">0</strong><span>ORIENTAÇÕES / DEVERES</span></div>
+    </div>
+    <section class="parent-section"><div class="parent-section-title"><h2>📚 Aulas dadas</h2><span id="parent-aulas-count">0 registros</span></div><div id="parent-aulas-list"><div class="empty-state"><div>📖</div>Nenhuma aula registrada ainda.</div></div></section>
+    <section class="parent-section"><div class="parent-section-title"><h2>📌 Orientações e deveres</h2><span>para acompanhar</span></div><div id="parent-orientacoes-list"><div class="empty-state"><div>🌱</div>Nada por aqui no momento.</div></div></section>
+    <section class="parent-section"><div class="parent-section-title"><h2>💬 Falar com o professor</h2><span>mensagem da família</span></div>
+      <textarea id="parent-message-text" placeholder="Escreva uma dúvida, observação ou retorno para o professor..."></textarea>
+      <button class="btn-add" style="margin-top:10px" onclick="sendParentMessage()">Enviar mensagem</button>
+      <div id="parent-messages-list" style="margin-top:14px"></div>
+    </section>
+  </main>
 </div>
 
 <div id="screen-auth" class="screen">
@@ -2105,6 +2164,21 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <button class="btn-add" onclick="createStudentLogin()">Criar login do aluno</button>
       </div>
 
+      <div class="card teacher-only" style="display:none">
+        <div class="card-title">Criar acesso dos pais</div>
+        <p style="font-size:13px;color:var(--cinza);line-height:1.45;margin-bottom:12px">Crie um acesso separado e simples para a família acompanhar apenas aulas, indicadores e orientações do aluno.</p>
+        <div class="form-row">
+          <div class="form-field"><label>Aluno</label><select id="parent-student-select"></select></div>
+          <div class="form-field"><label>Nome do responsável</label><input id="parent-responsible-name" placeholder="Ex: Maria, mãe do João"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Login dos pais</label><input id="parent-new-login" placeholder="Ex: joao.pais"></div>
+          <div class="form-field"><label>Senha provisória</label><input id="parent-new-pass" placeholder="Mínimo 6 caracteres"></div>
+        </div>
+        <button class="btn-add" onclick="createParentAccess()">Criar acesso da família</button>
+        <div id="parent-access-result" class="parent-access-box" style="display:none"></div>
+      </div>
+
       <div class="card master-only" style="display:none">
         <div class="card-title">Criar acesso de professor</div>
         <p style="font-size:13px;color:var(--cinza);line-height:1.4;margin-bottom:12px">
@@ -2124,6 +2198,10 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Alunos da Um Quarto</div>
         <div id="lista-alunos"></div>
+      </div>
+      <div class="card teacher-only" style="display:none">
+        <div class="card-title">Mensagens das famílias</div>
+        <div id="teacher-parent-messages"><div class="empty-state"><div>💬</div>Nenhuma mensagem recebida.</div></div>
       </div>
       <div class="card student-only">
         <div class="card-title">Solicitar acesso professor</div>
@@ -2234,6 +2312,18 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div class="form-row"><div class="form-field"><label>Início</label><input type="time" id="a-inicio"></div><div class="form-field"><label>Fim</label><input type="time" id="a-fim"></div></div>
         <div class="form-field"><label>Conteúdo estudado</label><input type="text" id="a-conteudo" placeholder="Ex: Equações do 2º grau"></div>
         <div class="form-field"><label>Observações</label><input type="text" id="a-obs" placeholder="Opcional"></div>
+        <div class="card" style="box-shadow:none;border:1px solid var(--borda);background:#fff;padding:14px;margin:12px 0">
+          <div class="card-title" style="margin-bottom:12px">Acompanhamento da aula</div>
+          <div class="rating-grid">
+            <div class="rating-field"><label>Interesse do aluno</label><select id="a-interesse"><option value="">Não avaliar</option><option value="1">1 — muito baixo</option><option value="2">2 — baixo</option><option value="3">3 — adequado</option><option value="4">4 — bom</option><option value="5">5 — excelente</option></select></div>
+            <div class="rating-field"><label>Desempenho</label><select id="a-desempenho"><option value="">Não avaliar</option><option value="1">1 — muito baixo</option><option value="2">2 — baixo</option><option value="3">3 — adequado</option><option value="4">4 — bom</option><option value="5">5 — excelente</option></select></div>
+            <div class="rating-field"><label>Autonomia</label><select id="a-autonomia"><option value="">Não avaliar</option><option value="1">1 — precisa de muito apoio</option><option value="2">2 — precisa de apoio</option><option value="3">3 — autonomia adequada</option><option value="4">4 — boa autonomia</option><option value="5">5 — excelente autonomia</option></select></div>
+          </div>
+          <div class="form-row" style="margin-top:10px">
+            <div class="form-field"><label>Nota em simulado (opcional)</label><input type="number" id="a-simulado" min="0" max="1000" step="0.1" placeholder="Ex: 8,5 ou 720"></div>
+            <div class="form-field"><label>Orientação / dever</label><input type="text" id="a-orientacao" placeholder="Ex: estudar páginas 37 e 38"></div>
+          </div>
+        </div>
         <div class="form-row finance-only" style="display:none">
           <div class="form-field"><label>Valor da aula / faturamento (R$)</label><input type="number" id="a-valor" placeholder="Ex: 80" min="0" step="0.01"></div>
           <div class="form-field"><label>Valor repassado ao professor (R$)</label><input type="number" id="a-repasse" placeholder="Ex: 40" min="0" step="0.01"></div>
@@ -2877,6 +2967,7 @@ let calendarViewMode = "month";
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
 let globalStudentFilter="all";
+let parentStudentUid="",parentAulas=[],parentTarefas=[],parentMessages=[],allParentMessages=[];
 let taskStudentFilter="all";
 let kanbanArchiveFilter="active"; // active | archived | all
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
@@ -2885,6 +2976,7 @@ const TEACHER_CODE=""; // Professor não é mais ativado por código no front-en
 const IFES_CODE="IFES2026";
 const ENEM_CODE="ENEM2026";
 const STUDENT_LOGIN_DOMAIN="aluno.umquarto.local";
+const PARENT_LOGIN_DOMAIN="pais.umquarto.local";
 const today=()=>new Date().toISOString().slice(0,10);
 function dateKeyLocal(d){
   const y=d.getFullYear();
@@ -3005,11 +3097,11 @@ window.toggleSidebar = toggleSidebar;
 window.restoreSidebarState = restoreSidebarState;
 
 function showScreen(name, sub=""){
-  const screens={landing:document.getElementById("screen-landing"),auth:document.getElementById("screen-auth"),role:document.getElementById("screen-role"),changePassword:document.getElementById("screen-change-password"),app:document.getElementById("screen-app")};
+  const screens={landing:document.getElementById("screen-landing"),auth:document.getElementById("screen-auth"),parentLogin:document.getElementById("screen-parent-login"),parentApp:document.getElementById("screen-parent-app"),role:document.getElementById("screen-role"),changePassword:document.getElementById("screen-change-password"),app:document.getElementById("screen-app")};
   Object.values(screens).forEach(s=>{if(!s)return;s.classList.remove("active");s.style.display="none"});
   const target=screens[name]; if(!target)return;
   target.classList.add("active");
-  target.style.display=name==="auth"||name==="app"||name==="role"||name==="changePassword"?"flex":"block";
+   target.style.display=name==="auth"||name==="app"||name==="role"||name==="changePassword"||name==="parentLogin"?"flex":"block";
   window.scrollTo({top:0,behavior:"instant"});
   if(name==="auth"&&sub)switchAuthTab(sub);
   if(name==="app")initApp();
@@ -3040,6 +3132,65 @@ async function doRegister(){
     await db.ref("users/"+cred.user.uid).set({name,email,role:"student",financeiro:false,admin:false,createdAt:Date.now()});
   }catch(e){showError(firebaseErrorMessage(e))}
 }
+async function doParentLogin(){
+  if(!requireFirebase())return;
+  const login=normalizeLogin(document.getElementById("parent-login")?.value||"");
+  const pass=document.getElementById("parent-pass")?.value||"";
+  const err=document.getElementById("parent-login-error"); if(err)err.style.display="none";
+  if(!login||!pass){if(err){err.textContent="Digite o login e a senha.";err.style.display="block";}return;}
+  const email=login.includes("@")?login:`${login}@${PARENT_LOGIN_DOMAIN}`;
+  try{await auth.signInWithEmailAndPassword(email,pass)}catch(e){if(err){err.textContent="Login ou senha dos pais incorretos.";err.style.display="block";}}
+}
+async function createParentAccess(){
+  if(!isTeacher())return alert("Apenas professor pode criar acesso da família.");
+  const studentUid=document.getElementById("parent-student-select")?.value||"";
+  const responsibleName=document.getElementById("parent-responsible-name")?.value.trim()||"Responsável";
+  const login=normalizeLogin(document.getElementById("parent-new-login")?.value||"");
+  const pass=document.getElementById("parent-new-pass")?.value||"";
+  if(!studentUid)return alert("Selecione o aluno.");
+  if(!/^[a-z0-9._-]{3,30}$/.test(login))return alert("Use um login com 3 a 30 caracteres, sem espaços.");
+  if(pass.length<6)return alert("A senha precisa ter pelo menos 6 caracteres.");
+  const email=`${login}@${PARENT_LOGIN_DOMAIN}`;
+  try{
+    const resp=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email,password:pass,returnSecureToken:true})});
+    const data=await resp.json(); if(!resp.ok)throw new Error(data?.error?.message||"Erro ao criar acesso.");
+    const parentUid=data.localId;
+    await db.ref("users/"+parentUid).set({name:responsibleName,email,username:login,role:"parent",studentUid,studentName:getUserName(studentUid),createdBy:ownUid(),createdAt:Date.now()});
+    await db.ref(`parentAccess/${studentUid}/${parentUid}`).set({parentUid,login,responsibleName,createdBy:ownUid(),createdAt:Date.now()});
+    const box=document.getElementById("parent-access-result"); if(box){box.style.display="block";box.innerHTML=`<strong>Acesso criado!</strong><br>Login: <b>${safeText(login)}</b><br>Senha provisória: <b>${safeText(pass)}</b><br><small>Envie esses dados apenas ao responsável.</small>`;}
+    ["parent-responsible-name","parent-new-login","parent-new-pass"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+  }catch(e){alert(String(e.message||e).includes("EMAIL_EXISTS")?"Esse login dos pais já existe.":firebaseErrorMessage(e));}
+}
+function parentRatingLabel(v){const n=Number(v||0);return n?`${n}/5`:"—";}
+function renderParentDashboard(){
+  const name=currentProfile?.studentName||getUserName(parentStudentUid)||"Estudante";
+  const title=document.getElementById("parent-student-name"); if(title)title.textContent=`Acompanhamento de ${name}`;
+  const lessons=[...parentAulas].sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));
+  const desempenho=lessons.map(a=>Number(a.desempenho||0)).filter(Boolean);
+  const media=desempenho.length?(desempenho.reduce((s,n)=>s+n,0)/desempenho.length).toFixed(1):"—";
+  const orientacoes=lessons.filter(a=>String(a.orientacao||"").trim());
+  document.getElementById("parent-total-aulas").textContent=lessons.length;
+  document.getElementById("parent-media-desempenho").textContent=media==="—"?media:`${media}/5`;
+  document.getElementById("parent-pendencias").textContent=orientacoes.length+parentTarefas.filter(t=>t.status!=="done").length;
+  document.getElementById("parent-aulas-count").textContent=`${lessons.length} registro${lessons.length===1?"":"s"}`;
+  const list=document.getElementById("parent-aulas-list");
+  if(list)list.innerHTML=lessons.length?lessons.map(a=>`<article class="parent-lesson"><div class="parent-lesson-head"><strong>${safeText(a.materia||"Aula")}</strong><small>${formatDate(aulaDataKey(a))} · ${safeText(a.inicio||"")} ${a.fim?`às ${safeText(a.fim)}`:""}</small></div><div class="parent-lesson-content"><b>Conteúdo:</b> ${safeText(a.conteudo||"Não informado")}${a.obs?`<br><b>Observação:</b> ${safeText(a.obs)}`:""}</div><div class="parent-ratings"><div class="parent-rating"><b>${parentRatingLabel(a.interesse)}</b><span>INTERESSE</span></div><div class="parent-rating"><b>${parentRatingLabel(a.desempenho)}</b><span>DESEMPENHO</span></div><div class="parent-rating"><b>${parentRatingLabel(a.autonomia)}</b><span>AUTONOMIA</span></div></div>${a.notaSimulado!==""&&a.notaSimulado!=null?`<div class="parent-note"><b>Nota em simulado:</b> ${safeText(a.notaSimulado)}</div>`:""}${a.orientacao?`<div class="parent-note"><b>Orientação / dever:</b> ${safeText(a.orientacao)}</div>`:""}</article>`).join(""):'<div class="empty-state"><div>📖</div>Nenhuma aula registrada ainda.</div>';
+  const o=document.getElementById("parent-orientacoes-list");
+  const allOrient=[...orientacoes.map(a=>({title:a.materia||"Aula",text:a.orientacao,date:a.data})),...parentTarefas.filter(t=>t.status!=="done").map(t=>({title:t.title||t.titulo||"Dever",text:t.desc||t.descricao||"",date:t.prazo||t.dueDate||""}))];
+  if(o)o.innerHTML=allOrient.length?allOrient.map(x=>`<div class="parent-message"><strong>${safeText(x.title)}</strong><small>${x.date?formatDate(x.date):""}</small><p>${safeText(x.text||"Orientação registrada")}</p></div>`).join(""):'<div class="empty-state"><div>🌱</div>Nada por aqui no momento.</div>';
+  const m=document.getElementById("parent-messages-list"); if(m)m.innerHTML=parentMessages.length?parentMessages.slice().sort((a,b)=>(b.createdAt||0)-(a.createdAt||0)).map(x=>`<div class="parent-message"><strong>${safeText(x.authorName||"Família")}</strong><small>${new Date(x.createdAt||Date.now()).toLocaleDateString("pt-BR")}</small><p>${safeText(x.text||"")}</p></div>`).join(""):"";
+}
+function attachParentListeners(){
+  clearFirebaseListeners(); parentStudentUid=currentProfile?.studentUid||""; if(!parentStudentUid)return showScreen("landing");
+  const aRef=db.ref("aulas/"+parentStudentUid);aRef.on("value",s=>{parentAulas=objToArray(s.val());renderParentDashboard()});unsubscribers.push(()=>aRef.off());
+  const tRef=db.ref("tarefas/"+parentStudentUid);tRef.on("value",s=>{parentTarefas=objToArray(s.val());renderParentDashboard()});unsubscribers.push(()=>tRef.off());
+  const mRef=db.ref("parentMessages/"+parentStudentUid);mRef.on("value",s=>{parentMessages=objToArray(s.val());renderParentDashboard()});unsubscribers.push(()=>mRef.off());
+}
+async function sendParentMessage(){
+  const textValue=document.getElementById("parent-message-text")?.value.trim()||""; if(!textValue)return alert("Escreva uma mensagem.");
+  await db.ref("parentMessages/"+parentStudentUid).push({text:textValue,authorUid:ownUid(),authorName:currentProfile?.name||"Família",role:"parent",createdAt:Date.now()});document.getElementById("parent-message-text").value="";
+}
+
 async function doLogin(){
   if(!requireFirebase())return;
   const loginRaw=document.getElementById("login-email").value.trim().toLowerCase();
@@ -3066,6 +3217,12 @@ if(firebaseReady){
     if(!user){currentUser=null;currentProfile=null;currentAccessMode=null;users=[];tarefas=[];allTarefas=[];aulas=[];allAulas=[];avaliacoes=[];allAvaliacoes=[];resultados=[];allResultados=[];notas=[];allNotas=[];calendario=[];allCalendario=[];habitos=[];minsMap={};showScreen("landing");return}
     currentUser=user;
     await loadOrCreateUserProfile();
+    if(currentProfile?.role==="parent"){
+      parentStudentUid=currentProfile.studentUid||"";
+      showScreen("parentApp");
+      attachParentListeners();
+      return;
+    }
     if(currentProfile?.mustChangePassword === true){
       showScreen("changePassword");
       return;
@@ -3312,6 +3469,12 @@ function attachRealtimeListeners(){
   },e=>{console.error(e);alert("Erro ao carregar calendário. Confira as regras do Realtime Database.")});unsubscribers.push(()=>calRef.off());
 
 
+  if(isTeacher()){
+    const pmRef=db.ref("parentMessages");
+    pmRef.on("value",s=>{const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,m])=>list.push({id,studentUid,...m})));allParentMessages=list;renderTeacherParentMessages();});
+    unsubscribers.push(()=>pmRef.off());
+  }
+
   const forumRef=db.ref("forumPosts");
   forumRef.on("value",s=>{
     forumPosts=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
@@ -3347,9 +3510,16 @@ function attachRealtimeListeners(){
   progressRef.on("value",s=>{programProgress={ifes:{},enem:{},...(s.val()||{})};renderPrograms();});
   unsubscribers.push(()=>progressRef.off());
 }
-function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function renderTeacherParentMessages(){
+  const el=document.getElementById("teacher-parent-messages"); if(!el||!isTeacher())return;
+  const list=[...allParentMessages].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>💬</div>Nenhuma mensagem recebida.</div>';return;}
+  el.innerHTML=list.map(m=>`<div class="parent-message"><strong>${safeText(m.authorName||"Família")} · ${safeText(getUserName(m.studentUid)||m.studentName||"Aluno")}</strong><small>${new Date(m.createdAt||Date.now()).toLocaleDateString("pt-BR")}</small><p>${safeText(m.text||"")}</p></div>`).join("");
+}
+
+function renderAll(){populateStudentSelects();renderAlunos();renderTeacherParentMessages();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
-  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.role!=="parent" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=isPauloMaster()
     ? users.filter(u=>u.role==="teacher" || u.financeiro===true || u.email===PROFESSOR_EMAIL)
     : [{id:ownUid(),name:currentProfile?.name||currentUser?.email,email:currentUser?.email,role:"teacher"}];
@@ -3381,7 +3551,7 @@ function getUserName(uid){const u=users.find(x=>x.id===uid);return u?(u.name||u.
 function getUserEmail(uid){const u=users.find(x=>x.id===uid);return u?.email||""}
 function renderAlunos(){
   const el=document.getElementById("lista-alunos"); if(!el)return;
-  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.role!=="parent" && u.email!==PROFESSOR_EMAIL);
   if(!studentUsers.length){el.innerHTML='<div class="empty-state"><div>👥</div>Nenhum aluno vinculado ainda.</div>';return}
   el.innerHTML=studentUsers.map(u=>`<div class="item"><div class="item-title">${safeText(u.name||u.email)}</div><div class="item-text">${u.username?`Login: ${safeText(u.username)} · `:""}${safeText(u.email)} · ${countByStudent(allAulas,u.id)} aulas · ${countByStudent(allTarefas,u.id)} tarefas · ${countByStudent(allAvaliacoes,u.id)} avaliações</div></div>`).join("");
 }
@@ -3776,7 +3946,7 @@ function populateTaskStudentFilter(){
   const sel=document.getElementById("task-student-filter");
   if(!sel || !isTeacher())return;
   const previous=taskStudentFilter||sel.value||"all";
-  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.role!=="parent" && u.email!==PROFESSOR_EMAIL);
   const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email||"Aluno")}</option>`).join("");
   sel.innerHTML=`<option value="all">Todos os alunos</option><option value="${ownUid()}">Geral / meu acesso — ${myName}</option>`+options;
@@ -3948,6 +4118,11 @@ async function addAula(){
     dur,
     conteudo:cont,
     obs:document.getElementById("a-obs").value.trim(),
+    interesse:Number(document.getElementById("a-interesse")?.value||0),
+    desempenho:Number(document.getElementById("a-desempenho")?.value||0),
+    autonomia:Number(document.getElementById("a-autonomia")?.value||0),
+    notaSimulado:document.getElementById("a-simulado")?.value||"",
+    orientacao:document.getElementById("a-orientacao")?.value.trim()||"",
     valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,
     repasseProfessor:isFinanceUser()?Number(document.getElementById("a-repasse").value||0):0,
     valorLiquido:isFinanceUser()?(Number(document.getElementById("a-valor").value||0)-Number(document.getElementById("a-repasse").value||0)):0,
@@ -3958,7 +4133,7 @@ async function addAula(){
   };
   try{
     await db.ref("aulas/"+studentUid).push(aula);
-    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-valor","a-repasse","a-liquido-preview"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";
+    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-simulado","a-orientacao","a-valor","a-repasse","a-liquido-preview"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";["a-interesse","a-desempenho","a-autonomia"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     alert("Aula salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
@@ -4033,6 +4208,8 @@ function renderAulas(){
       <div class="aula-clean-main">
         <strong>📚 ${safeText(a.materia||"Aula")}</strong>
         <small>${safeText(conteudo)}</small>
+        ${(a.interesse||a.desempenho||a.autonomia)?`<div class="item-meta"><span class="badge">Interesse ${parentRatingLabel(a.interesse)}</span><span class="badge">Desempenho ${parentRatingLabel(a.desempenho)}</span><span class="badge">Autonomia ${parentRatingLabel(a.autonomia)}</span></div>`:""}
+        ${a.orientacao?`<div class="parent-note"><b>Orientação / dever:</b> ${safeText(a.orientacao)}</div>`:""}
       </div>
 
       <div class="aula-clean-info">
@@ -4070,7 +4247,7 @@ function renderAulaEditBox(a,uid){
     ? teachers.map(u=>`<option value="${u.id}" ${u.id===(a.professorUid||"")?"selected":""}>${safeText(u.name||u.email||"Professor")}</option>`).join("")
     : `<option value="${a.professorUid||ownUid()}">${safeText(a.professorNome||currentProfile?.name||"Professor")}</option>`;
 
-  const studentUsers=users.filter(u=>(u.role||"")!=="teacher" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>(u.role||"")!=="teacher" && (u.role||"")!=="parent" && u.email!==PROFESSOR_EMAIL);
   const selectedStudent=a.studentUid||uid||ownUid();
   const studentOpts=studentUsers.length
     ? studentUsers.map(u=>`<option value="${u.id}" ${u.id===selectedStudent?"selected":""}>${safeText(u.name||u.email||"Aluno")} — ${safeText(u.username||u.email||"")}</option>`).join("")
@@ -4101,6 +4278,12 @@ function renderAulaEditBox(a,uid){
 
     <div class="form-field"><label>Conteúdo estudado</label><textarea id="edit-aula-conteudo-${a.id}">${safeText(a.conteudo||"")}</textarea></div>
     <div class="form-field"><label>Observações</label><input id="edit-aula-obs-${a.id}" value="${safeText(a.obs||"")}"></div>
+    <div class="rating-grid">
+      <div class="rating-field"><label>Interesse</label><select id="edit-aula-interesse-${a.id}"><option value="">Não avaliar</option>${[1,2,3,4,5].map(n=>`<option value="${n}" ${Number(a.interesse)===n?"selected":""}>${n}/5</option>`).join("")}</select></div>
+      <div class="rating-field"><label>Desempenho</label><select id="edit-aula-desempenho-${a.id}"><option value="">Não avaliar</option>${[1,2,3,4,5].map(n=>`<option value="${n}" ${Number(a.desempenho)===n?"selected":""}>${n}/5</option>`).join("")}</select></div>
+      <div class="rating-field"><label>Autonomia</label><select id="edit-aula-autonomia-${a.id}"><option value="">Não avaliar</option>${[1,2,3,4,5].map(n=>`<option value="${n}" ${Number(a.autonomia)===n?"selected":""}>${n}/5</option>`).join("")}</select></div>
+    </div>
+    <div class="form-row" style="margin-top:10px"><div class="form-field"><label>Nota em simulado</label><input type="number" id="edit-aula-simulado-${a.id}" value="${safeText(a.notaSimulado??"")}"></div><div class="form-field"><label>Orientação / dever</label><input id="edit-aula-orientacao-${a.id}" value="${safeText(a.orientacao||"")}"></div></div>
 
     <p style="font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4;margin:-2px 0 12px">
       Agora dá para corrigir aluno, professor e escola diretamente na edição. Se trocar o aluno, a aula será movida para a ficha do novo aluno no Realtime Database.
@@ -4127,6 +4310,11 @@ async function saveAulaEdit(studentUid,id){
   const conteudo=document.getElementById(`edit-aula-conteudo-${id}`)?.value.trim();
   const escola=document.getElementById(`edit-aula-escola-${id}`)?.value.trim()||"";
   const obs=document.getElementById(`edit-aula-obs-${id}`)?.value.trim()||"";
+  const interesse=Number(document.getElementById(`edit-aula-interesse-${id}`)?.value||0);
+  const desempenho=Number(document.getElementById(`edit-aula-desempenho-${id}`)?.value||0);
+  const autonomia=Number(document.getElementById(`edit-aula-autonomia-${id}`)?.value||0);
+  const notaSimulado=document.getElementById(`edit-aula-simulado-${id}`)?.value||"";
+  const orientacao=document.getElementById(`edit-aula-orientacao-${id}`)?.value.trim()||"";
   const statusFinanceiro=document.getElementById(`edit-aula-status-${id}`)?.value || (item?.statusFinanceiro||"previsto");
   const professorUid=isPauloMaster()?(document.getElementById(`edit-aula-professor-${id}`)?.value||ownUid()):ownUid();
   const professorNome=getUserName(professorUid)||currentProfile?.name||currentUser?.email||"";
@@ -4153,6 +4341,11 @@ async function saveAulaEdit(studentUid,id){
     conteudo,
     escola,
     obs,
+    interesse,
+    desempenho,
+    autonomia,
+    notaSimulado,
+    orientacao,
     professorUid,
     professorNome,
     ownerTeacherUid:professorUid,
