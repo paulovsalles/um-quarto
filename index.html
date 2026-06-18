@@ -2168,7 +2168,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div class="card-title">Criar acesso dos pais</div>
         <p style="font-size:13px;color:var(--cinza);line-height:1.45;margin-bottom:12px">Crie um acesso separado e simples para a família acompanhar apenas aulas, indicadores e orientações do aluno.</p>
         <div class="form-row">
-          <div class="form-field"><label>Aluno</label><select id="parent-student-select"></select></div>
+          <div class="form-field"><label>Aluno</label><select id="parent-student-select"><option value="">Carregando alunos...</option></select><small style="display:block;margin-top:6px;color:var(--cinza);font-size:11px;font-weight:700">Escolha o aluno que será acompanhado pela família.</small></div>
           <div class="form-field"><label>Nome do responsável</label><input id="parent-responsible-name" placeholder="Ex: Maria, mãe do João"></div>
         </div>
         <div class="form-row">
@@ -2198,10 +2198,6 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Alunos da Um Quarto</div>
         <div id="lista-alunos"></div>
-      </div>
-      <div class="card teacher-only" style="display:none">
-        <div class="card-title">Mensagens das famílias</div>
-        <div id="teacher-parent-messages"><div class="empty-state"><div>💬</div>Nenhuma mensagem recebida.</div></div>
       </div>
       <div class="card student-only">
         <div class="card-title">Solicitar acesso professor</div>
@@ -2967,7 +2963,7 @@ let calendarViewMode = "month";
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
 let globalStudentFilter="all";
-let parentStudentUid="",parentAulas=[],parentTarefas=[],parentMessages=[],allParentMessages=[];
+let parentStudentUid="",parentAulas=[],parentTarefas=[],parentMessages=[];
 let taskStudentFilter="all";
 let kanbanArchiveFilter="active"; // active | archived | all
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
@@ -3469,12 +3465,6 @@ function attachRealtimeListeners(){
   },e=>{console.error(e);alert("Erro ao carregar calendário. Confira as regras do Realtime Database.")});unsubscribers.push(()=>calRef.off());
 
 
-  if(isTeacher()){
-    const pmRef=db.ref("parentMessages");
-    pmRef.on("value",s=>{const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,m])=>list.push({id,studentUid,...m})));allParentMessages=list;renderTeacherParentMessages();});
-    unsubscribers.push(()=>pmRef.off());
-  }
-
   const forumRef=db.ref("forumPosts");
   forumRef.on("value",s=>{
     forumPosts=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
@@ -3510,22 +3500,23 @@ function attachRealtimeListeners(){
   progressRef.on("value",s=>{programProgress={ifes:{},enem:{},...(s.val()||{})};renderPrograms();});
   unsubscribers.push(()=>progressRef.off());
 }
-function renderTeacherParentMessages(){
-  const el=document.getElementById("teacher-parent-messages"); if(!el||!isTeacher())return;
-  const list=[...allParentMessages].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  if(!list.length){el.innerHTML='<div class="empty-state"><div>💬</div>Nenhuma mensagem recebida.</div>';return;}
-  el.innerHTML=list.map(m=>`<div class="parent-message"><strong>${safeText(m.authorName||"Família")} · ${safeText(getUserName(m.studentUid)||m.studentName||"Aluno")}</strong><small>${new Date(m.createdAt||Date.now()).toLocaleDateString("pt-BR")}</small><p>${safeText(m.text||"")}</p></div>`).join("");
-}
-
-function renderAll(){populateStudentSelects();renderAlunos();renderTeacherParentMessages();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
-  const studentUsers=users.filter(u=>u.role!=="teacher" && u.role!=="parent" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>u.role==="student" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=isPauloMaster()
     ? users.filter(u=>u.role==="teacher" || u.financeiro===true || u.email===PROFESSOR_EMAIL)
     : [{id:ownUid(),name:currentProfile?.name||currentUser?.email,email:currentUser?.email,role:"teacher"}];
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.username||u.email)}</option>`).join("");
   const teacherOptions=teacherUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email||"")}</option>`).join("");
   ["a-student","av-student","res-student","nota-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno vinculado</option>'});
+  const parentSel=document.getElementById("parent-student-select");
+  if(parentSel){
+    const previous=parentSel.value;
+    parentSel.innerHTML='<option value="">Selecione um aluno</option>'+options;
+    if(previous && studentUsers.some(u=>u.id===previous)) parentSel.value=previous;
+    else if(globalStudentFilter && globalStudentFilter!=="all" && studentUsers.some(u=>u.id===globalStudentFilter)) parentSel.value=globalStudentFilter;
+    else if(studentUsers.length===1) parentSel.value=studentUsers[0].id;
+  }
   const taskSel=document.getElementById("t-student");
   if(taskSel){
     const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
@@ -3551,7 +3542,7 @@ function getUserName(uid){const u=users.find(x=>x.id===uid);return u?(u.name||u.
 function getUserEmail(uid){const u=users.find(x=>x.id===uid);return u?.email||""}
 function renderAlunos(){
   const el=document.getElementById("lista-alunos"); if(!el)return;
-  const studentUsers=users.filter(u=>u.role!=="teacher" && u.role!=="parent" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>u.role==="student" && u.email!==PROFESSOR_EMAIL);
   if(!studentUsers.length){el.innerHTML='<div class="empty-state"><div>👥</div>Nenhum aluno vinculado ainda.</div>';return}
   el.innerHTML=studentUsers.map(u=>`<div class="item"><div class="item-title">${safeText(u.name||u.email)}</div><div class="item-text">${u.username?`Login: ${safeText(u.username)} · `:""}${safeText(u.email)} · ${countByStudent(allAulas,u.id)} aulas · ${countByStudent(allTarefas,u.id)} tarefas · ${countByStudent(allAvaliacoes,u.id)} avaliações</div></div>`).join("");
 }
@@ -3946,7 +3937,7 @@ function populateTaskStudentFilter(){
   const sel=document.getElementById("task-student-filter");
   if(!sel || !isTeacher())return;
   const previous=taskStudentFilter||sel.value||"all";
-  const studentUsers=users.filter(u=>u.role!=="teacher" && u.role!=="parent" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>u.role!=="teacher" && u.email!==PROFESSOR_EMAIL);
   const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email||"Aluno")}</option>`).join("");
   sel.innerHTML=`<option value="all">Todos os alunos</option><option value="${ownUid()}">Geral / meu acesso — ${myName}</option>`+options;
@@ -4247,7 +4238,7 @@ function renderAulaEditBox(a,uid){
     ? teachers.map(u=>`<option value="${u.id}" ${u.id===(a.professorUid||"")?"selected":""}>${safeText(u.name||u.email||"Professor")}</option>`).join("")
     : `<option value="${a.professorUid||ownUid()}">${safeText(a.professorNome||currentProfile?.name||"Professor")}</option>`;
 
-  const studentUsers=users.filter(u=>(u.role||"")!=="teacher" && (u.role||"")!=="parent" && u.email!==PROFESSOR_EMAIL);
+  const studentUsers=users.filter(u=>(u.role||"")!=="teacher" && u.email!==PROFESSOR_EMAIL);
   const selectedStudent=a.studentUid||uid||ownUid();
   const studentOpts=studentUsers.length
     ? studentUsers.map(u=>`<option value="${u.id}" ${u.id===selectedStudent?"selected":""}>${safeText(u.name||u.email||"Aluno")} — ${safeText(u.username||u.email||"")}</option>`).join("")
