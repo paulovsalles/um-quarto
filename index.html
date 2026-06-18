@@ -2307,7 +2307,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div class="form-field teacher-only" style="display:none"><label>Professor que deu a aula</label><select id="a-professor"></select></div>
         <div class="form-row"><div class="form-field"><label>Início</label><input type="time" id="a-inicio"></div><div class="form-field"><label>Fim</label><input type="time" id="a-fim"></div></div>
         <div class="form-field"><label>Conteúdo estudado</label><input type="text" id="a-conteudo" placeholder="Ex: Equações do 2º grau"></div>
-        <div class="form-field"><label>Observações</label><input type="text" id="a-obs" placeholder="Opcional"></div>
+        <div class="form-field"><label>Resumo da aula</label><input type="text" id="a-obs" placeholder="Ex: O aluno compreendeu o conteúdo e realizou os exercícios com apoio."></div>
         <div class="card" style="box-shadow:none;border:1px solid var(--borda);background:#fff;padding:14px;margin:12px 0">
           <div class="card-title" style="margin-bottom:12px">Acompanhamento da aula</div>
           <div class="rating-grid">
@@ -3170,7 +3170,7 @@ function renderParentDashboard(){
   document.getElementById("parent-pendencias").textContent=orientacoes.length+parentTarefas.filter(t=>t.status!=="done").length;
   document.getElementById("parent-aulas-count").textContent=`${lessons.length} registro${lessons.length===1?"":"s"}`;
   const list=document.getElementById("parent-aulas-list");
-  if(list)list.innerHTML=lessons.length?lessons.map(a=>`<article class="parent-lesson"><div class="parent-lesson-head"><strong>${safeText(a.materia||"Aula")}</strong><small>${formatDate(aulaDataKey(a))} · ${safeText(a.inicio||"")} ${a.fim?`às ${safeText(a.fim)}`:""}</small></div><div class="parent-lesson-content"><b>Conteúdo:</b> ${safeText(a.conteudo||"Não informado")}${a.obs?`<br><b>Observação:</b> ${safeText(a.obs)}`:""}</div><div class="parent-ratings"><div class="parent-rating"><b>${parentRatingLabel(a.interesse)}</b><span>INTERESSE</span></div><div class="parent-rating"><b>${parentRatingLabel(a.desempenho)}</b><span>DESEMPENHO</span></div><div class="parent-rating"><b>${parentRatingLabel(a.autonomia)}</b><span>AUTONOMIA</span></div></div>${a.notaSimulado!==""&&a.notaSimulado!=null?`<div class="parent-note"><b>Nota em simulado:</b> ${safeText(a.notaSimulado)}</div>`:""}${a.orientacao?`<div class="parent-note"><b>Orientação / dever:</b> ${safeText(a.orientacao)}</div>`:""}</article>`).join(""):'<div class="empty-state"><div>📖</div>Nenhuma aula registrada ainda.</div>';
+  if(list)list.innerHTML=lessons.length?lessons.map(a=>`<article class="parent-lesson"><div class="parent-lesson-head"><strong>${safeText(a.materia||"Aula")}</strong><small>${formatDate(aulaDataKey(a))} · ${safeText(a.inicio||"")} ${a.fim?`às ${safeText(a.fim)}`:""}</small></div><div class="parent-lesson-content"><b>Conteúdo:</b> ${safeText(a.conteudo||"Não informado")}${a.obs?`<br><b>Resumo da aula:</b> ${safeText(a.obs)}`:""}</div><div class="parent-ratings"><div class="parent-rating"><b>${parentRatingLabel(a.interesse)}</b><span>INTERESSE</span></div><div class="parent-rating"><b>${parentRatingLabel(a.desempenho)}</b><span>DESEMPENHO</span></div><div class="parent-rating"><b>${parentRatingLabel(a.autonomia)}</b><span>AUTONOMIA</span></div></div>${a.notaSimulado!==""&&a.notaSimulado!=null?`<div class="parent-note"><b>Nota em simulado:</b> ${safeText(a.notaSimulado)}</div>`:""}${a.orientacao?`<div class="parent-note"><b>Orientação / dever:</b> ${safeText(a.orientacao)}</div>`:""}</article>`).join(""):'<div class="empty-state"><div>📖</div>Nenhuma aula registrada ainda.</div>';
   const o=document.getElementById("parent-orientacoes-list");
   const allOrient=[...orientacoes.map(a=>({title:a.materia||"Aula",text:a.orientacao,date:a.data})),...parentTarefas.filter(t=>t.status!=="done").map(t=>({title:t.title||t.titulo||"Dever",text:t.desc||t.descricao||"",date:t.prazo||t.dueDate||""}))];
   if(o)o.innerHTML=allOrient.length?allOrient.map(x=>`<div class="parent-message"><strong>${safeText(x.title)}</strong><small>${x.date?formatDate(x.date):""}</small><p>${safeText(x.text||"Orientação registrada")}</p></div>`).join(""):'<div class="empty-state"><div>🌱</div>Nada por aqui no momento.</div>';
@@ -4289,7 +4289,7 @@ function renderAulaEditBox(a,uid){
     </div>
 
     <div class="form-field"><label>Conteúdo estudado</label><textarea id="edit-aula-conteudo-${a.id}">${safeText(a.conteudo||"")}</textarea></div>
-    <div class="form-field"><label>Observações</label><input id="edit-aula-obs-${a.id}" value="${safeText(a.obs||"")}"></div>
+    <div class="form-field"><label>Resumo da aula</label><input id="edit-aula-obs-${a.id}" placeholder="Resumo breve do desenvolvimento da aula" value="${safeText(a.obs||"")}"></div>
     <div class="rating-grid">
       <div class="rating-field"><label>Interesse</label><select id="edit-aula-interesse-${a.id}"><option value="">Não avaliar</option>${[1,2,3,4,5].map(n=>`<option value="${n}" ${Number(a.interesse)===n?"selected":""}>${n}/5</option>`).join("")}</select></div>
       <div class="rating-field"><label>Desempenho</label><select id="edit-aula-desempenho-${a.id}"><option value="">Não avaliar</option>${[1,2,3,4,5].map(n=>`<option value="${n}" ${Number(a.desempenho)===n?"selected":""}>${n}/5</option>`).join("")}</select></div>
@@ -4390,7 +4390,7 @@ function csvEscape(value){
 }
 function exportAulasCSV(){
   if(!isTeacher())return alert("Exportação disponível apenas para professor.");
-  const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Observacoes","Faturamento","Repasse_Professor","Valor_Liquido","Status_financeiro"];
+  const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Resumo_da_aula","Faturamento","Repasse_Professor","Valor_Liquido","Status_financeiro"];
   const rows=visibleByFilter(allAulas).map(a=>[
     a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),Number(a.repasseProfessor||0).toFixed(2).replace(".",","),aulaLiquido(a).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"
   ]);
