@@ -3193,8 +3193,29 @@ async function doLogin(){
   const pass=document.getElementById("login-pass").value;
   if(!loginRaw)return showError("Digite o e-mail ou login.");
   if(!pass)return showError("Digite a senha.");
-  const email=loginRaw.includes("@") ? loginRaw : loginToEmail(loginRaw);
-  try{await auth.signInWithEmailAndPassword(email,pass)}catch(e){showError(firebaseErrorMessage(e))}
+
+  // Quando a pessoa informa um e-mail completo, usa diretamente.
+  if(loginRaw.includes("@")){
+    try{await auth.signInWithEmailAndPassword(loginRaw,pass)}catch(e){showError(firebaseErrorMessage(e))}
+    return;
+  }
+
+  // O mesmo campo aceita login de aluno/professor e login dos pais.
+  // Primeiro tenta o domínio comum; se não encontrar, tenta o domínio da família.
+  const possibleEmails=[loginToEmail(loginRaw),`${normalizeLogin(loginRaw)}@${PARENT_LOGIN_DOMAIN}`];
+  let lastError=null;
+  for(const email of possibleEmails){
+    try{
+      await auth.signInWithEmailAndPassword(email,pass);
+      return;
+    }catch(e){
+      lastError=e;
+      const code=String(e?.code||"").toLowerCase();
+      const canTryNext=code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found");
+      if(!canTryNext)break;
+    }
+  }
+  showError(firebaseErrorMessage(lastError));
 }
 function doLogout(){resetTimer();clearFirebaseListeners();sessionStorage.removeItem("uq_access_mode");currentAccessMode=null;auth?auth.signOut():showScreen("landing")}
 function firebaseErrorMessage(e){
