@@ -2057,8 +2057,8 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
       <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Criar conta</button>
     </div>
     <div id="form-login">
-      <div class="form-group"><label>E-mail ou login</label><input type="text" id="login-email" placeholder="seu@email.com ou login do aluno"></div>
-      <div class="form-group"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••"></div>
+      <div class="form-group"><label>E-mail ou login</label><input type="text" id="login-email" placeholder="seu@email.com, login do professor, aluno ou pais"></div>
+      <div class="form-group"><label>Senha</label><input type="password" id="login-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
       <button class="btn-full" onclick="doLogin()">Entrar →</button>
       <p class="auth-link">Não tem conta? <span onclick="switchAuthTab('register')">Criar agora</span></p>
     </div>
@@ -2972,6 +2972,7 @@ const TEACHER_CODE=""; // Professor não é mais ativado por código no front-en
 const IFES_CODE="IFES2026";
 const ENEM_CODE="ENEM2026";
 const STUDENT_LOGIN_DOMAIN="aluno.umquarto.local";
+const TEACHER_LOGIN_DOMAIN="prof.umquarto.local";
 const PARENT_LOGIN_DOMAIN="pais.umquarto.local";
 const today=()=>new Date().toISOString().slice(0,10);
 function dateKeyLocal(d){
@@ -3006,6 +3007,8 @@ const curiosidades = [
 function userEmail(){return currentUser?.email?.toLowerCase().trim()||""}
 function normalizeLogin(login){return String(login||"").trim().toLowerCase().replace(/\s+/g,"")}
 function loginToEmail(login){return `${normalizeLogin(login)}@${STUDENT_LOGIN_DOMAIN}`}
+function teacherLoginToEmail(login){return `${normalizeLogin(login)}@${TEACHER_LOGIN_DOMAIN}`}
+function parentLoginToEmail(login){return `${normalizeLogin(login)}@${PARENT_LOGIN_DOMAIN}`}
 function hasTeacherPermission(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.role==="teacher" || currentProfile?.financeiro===true}
 function isPauloMaster(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.admin===true}
 function isMacroUser(){return isPauloMaster()}
@@ -3196,13 +3199,25 @@ async function doLogin(){
 
   // Quando a pessoa informa um e-mail completo, usa diretamente.
   if(loginRaw.includes("@")){
-    try{await auth.signInWithEmailAndPassword(loginRaw,pass)}catch(e){showError(firebaseErrorMessage(e))}
+    try{
+      await auth.signInWithEmailAndPassword(loginRaw,pass);
+    }catch(e){
+      console.error("Erro no login por e-mail:",e);
+      showError(firebaseErrorMessage(e));
+    }
     return;
   }
 
-  // O mesmo campo aceita login de aluno/professor e login dos pais.
-  // Primeiro tenta o domínio comum; se não encontrar, tenta o domínio da família.
-  const possibleEmails=[loginToEmail(loginRaw),`${normalizeLogin(loginRaw)}@${PARENT_LOGIN_DOMAIN}`];
+  // O mesmo campo aceita login de professor, aluno e família.
+  // A ordem é importante: professor primeiro, depois aluno, depois pais.
+  // Mantém compatibilidade com professores antigos que foram criados no domínio de aluno.
+  const cleanLogin=normalizeLogin(loginRaw);
+  const possibleEmails=[
+    teacherLoginToEmail(cleanLogin),
+    loginToEmail(cleanLogin),
+    parentLoginToEmail(cleanLogin)
+  ].filter((email,index,arr)=>email&&arr.indexOf(email)===index);
+
   let lastError=null;
   for(const email of possibleEmails){
     try{
@@ -3210,8 +3225,9 @@ async function doLogin(){
       return;
     }catch(e){
       lastError=e;
+      console.warn("Tentativa de login falhou:",email,e?.code||e?.message||e);
       const code=String(e?.code||"").toLowerCase();
-      const canTryNext=code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found");
+      const canTryNext=code.includes("invalid-credential")||code.includes("wrong-password")||code.includes("user-not-found")||code.includes("invalid-login-credentials");
       if(!canTryNext)break;
     }
   }
@@ -3342,7 +3358,7 @@ async function createTeacherLogin(){
   if(!name)return alert("Digite o nome do professor.");
   if(!/^[a-z0-9._-]{3,30}$/.test(login))return alert("Login inválido. Use 3 a 30 caracteres: letras, números, ponto, hífen ou underline.");
   if(pass.length<6)return alert("A senha provisória precisa ter pelo menos 6 caracteres.");
-  const email=loginToEmail(login);
+  const email=teacherLoginToEmail(login);
   try{
     const resp=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${firebaseConfig.apiKey}`,{
       method:"POST",
@@ -3387,8 +3403,19 @@ async function loadOrCreateUserProfile(){
     }
     return;
   }
-  const isProf=currentUser.email.toLowerCase()===PROFESSOR_EMAIL;
-  currentProfile={name:currentUser.email.split("@")[0],email:currentUser.email,role:isProf?"teacher":"student",financeiro:isProf,admin:isProf,createdAt:Date.now()};
+  const emailLower=currentUser.email.toLowerCase();
+  const isProf=emailLower===PROFESSOR_EMAIL || emailLower.endsWith("@"+TEACHER_LOGIN_DOMAIN);
+  const isParent=emailLower.endsWith("@"+PARENT_LOGIN_DOMAIN);
+  currentProfile={
+    name:currentUser.email.split("@")[0],
+    email:currentUser.email,
+    username:currentUser.email.split("@")[0],
+    role:isParent?"parent":(isProf?"teacher":"student"),
+    financeiro:isProf && emailLower===PROFESSOR_EMAIL,
+    admin:isProf && emailLower===PROFESSOR_EMAIL,
+    mustChangePassword:isProf && emailLower!==PROFESSOR_EMAIL,
+    createdAt:Date.now()
+  };
   await db.ref("users/"+currentUser.uid).set(currentProfile);
 }
 
