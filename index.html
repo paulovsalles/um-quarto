@@ -1972,6 +1972,10 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .simulado-layout{display:grid;grid-template-columns:minmax(310px,.8fr) minmax(430px,1.2fr);gap:14px;align-items:start}
 .simulado-question-list{display:grid;gap:10px}.simulado-question-card{border:1.5px solid var(--borda);border-radius:16px;background:#fff;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}
 .simulado-question-card strong{color:var(--azul);font-size:14px}.simulado-question-card p{font-size:13px;color:var(--azul-light);line-height:1.45;margin-top:5px;white-space:pre-wrap}.simulado-question-card small{display:block;color:var(--cinza);font-weight:800;margin-top:7px}
+.simulado-img{width:100%;max-height:360px;object-fit:contain;border:1.5px solid var(--borda);border-radius:14px;background:#fbfdfc;margin:10px 0;display:block}
+.simulado-img-preview{display:none;border:1.5px dashed var(--borda);border-radius:14px;background:#fbfdfc;padding:10px;margin-top:8px}
+.simulado-img-preview img{width:100%;max-height:220px;object-fit:contain;border-radius:10px;display:block}.simulado-img-preview small{display:block;margin-top:8px;color:var(--cinza);font-weight:800;font-size:12px}
+.simulado-img-help{font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4;margin-top:6px}
 .simulado-answer{border:1.5px solid var(--borda);border-radius:18px;padding:16px;background:#fff;margin-bottom:12px;box-shadow:0 8px 20px rgba(40,71,84,.04)}
 .simulado-answer h4{font-size:15px;color:var(--azul);margin-bottom:8px}.simulado-answer p{font-size:13px;color:var(--azul-light);line-height:1.5;white-space:pre-wrap}
 .simulado-options{display:grid;gap:8px;margin-top:12px}.simulado-option{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--borda);border-radius:12px;padding:10px;background:#fbfdfc;color:var(--azul);font-size:13px;font-weight:800;cursor:pointer}.simulado-option input{width:auto;margin-top:2px}
@@ -2918,6 +2922,12 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
           <div class="card-title">Adicionar questão</div>
           <div class="form-field"><label>Simulado</label><select id="sim-question-simulado"><option value="">Selecione um simulado</option></select></div>
           <div class="form-field"><label>Enunciado</label><textarea id="sim-q-enunciado" placeholder="Digite o enunciado da questão..."></textarea></div>
+          <div class="form-field">
+            <label>Imagem da questão / gráfico (opcional)</label>
+            <input id="sim-q-img" type="file" accept="image/*" onchange="previewSimQuestionImage()">
+            <div class="simulado-img-help">A imagem será salva dentro do Realtime Database em Base64. Use imagens leves, de preferência até 700 KB.</div>
+            <div id="sim-q-img-preview" class="simulado-img-preview"></div>
+          </div>
           <div class="form-row">
             <div class="form-field"><label>Tipo</label><select id="sim-q-tipo" onchange="toggleSimQuestionType()"><option value="multipla">Múltipla escolha</option><option value="discursiva">Discursiva</option></select></div>
             <div class="form-field"><label>Área/conteúdo</label><input id="sim-q-area" placeholder="Ex: Frações, Potências, Porcentagem"></div>
@@ -5350,6 +5360,45 @@ function toggleSimQuestionType(){
   if(corr)corr.style.display=tipo==="multipla"?"block":"none";
   if(resp)resp.style.display=tipo==="discursiva"?"block":"none";
 }
+function getSimQuestionImageFile(){return document.getElementById("sim-q-img")?.files?.[0]||null;}
+function clearSimQuestionImage(){
+  const inp=document.getElementById("sim-q-img"); if(inp)inp.value="";
+  const prev=document.getElementById("sim-q-img-preview"); if(prev){prev.style.display="none";prev.innerHTML="";}
+}
+function fileToDataUrl(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(String(reader.result||""));
+    reader.onerror=()=>reject(reader.error||new Error("Erro ao ler imagem."));
+    reader.readAsDataURL(file);
+  });
+}
+async function previewSimQuestionImage(){
+  const file=getSimQuestionImageFile();
+  const prev=document.getElementById("sim-q-img-preview");
+  if(!prev)return;
+  if(!file){prev.style.display="none";prev.innerHTML="";return;}
+  if(!file.type.startsWith("image/")){alert("Escolha um arquivo de imagem.");clearSimQuestionImage();return;}
+  if(file.size>700*1024){alert("Essa imagem está grande demais. Use uma imagem com até 700 KB para não pesar o Realtime Database.");clearSimQuestionImage();return;}
+  try{
+    const dataUrl=await fileToDataUrl(file);
+    prev.style.display="block";
+    prev.innerHTML=`<img src="${dataUrl}" alt="Prévia da imagem da questão"><small>${safeText(file.name)} · ${Math.round(file.size/1024)} KB</small>`;
+  }catch(e){console.error(e);alert("Não foi possível carregar a imagem.");clearSimQuestionImage();}
+}
+async function readSimQuestionImageData(){
+  const file=getSimQuestionImageFile();
+  if(!file)return "";
+  if(!file.type.startsWith("image/"))throw new Error("Escolha um arquivo de imagem.");
+  if(file.size>700*1024)throw new Error("Imagem grande demais. Use uma imagem com até 700 KB.");
+  return await fileToDataUrl(file);
+}
+function simQuestionImageHtml(q){
+  const img=q?.imagemData||q?.imagemUrl||"";
+  if(!img)return "";
+  if(!(String(img).startsWith("data:image/") || String(img).startsWith("https://") || String(img).startsWith("http://")))return "";
+  return `<img class="simulado-img" src="${img}" alt="Imagem da questão">`;
+}
 function getSimuladoById(id){return (allSimulados||[]).find(s=>String(s.id)===String(id));}
 function simuladoQuestoes(sim){
   const q=sim?.questoes||{};
@@ -5391,6 +5440,10 @@ async function addQuestaoSimulado(){
   const area=document.getElementById("sim-q-area")?.value.trim()||"Geral";
   const valor=Number(document.getElementById("sim-q-valor")?.value||1);
   const payload={enunciado,tipo,area,valor,ordem:Date.now(),createdBy:ownUid(),createdAt:Date.now()};
+  try{
+    const imagemData=await readSimQuestionImageData();
+    if(imagemData)payload.imagemData=imagemData;
+  }catch(e){return alert(e.message||"Erro ao carregar imagem da questão.");}
   if(tipo==="multipla"){
     const alternativas={};
     [["A","sim-q-a"],["B","sim-q-b"],["C","sim-q-c"],["D","sim-q-d"],["E","sim-q-e"]].forEach(([letra,id])=>{const v=document.getElementById(id)?.value.trim(); if(v)alternativas[letra]=v;});
@@ -5403,6 +5456,7 @@ async function addQuestaoSimulado(){
   try{
     await db.ref("simulados/"+simId+"/questoes").push(payload);
     ["sim-q-enunciado","sim-q-area","sim-q-a","sim-q-b","sim-q-c","sim-q-d","sim-q-e","sim-q-resp"].forEach(id=>{const el=document.getElementById(id); if(el)el.value=""});
+    clearSimQuestionImage();
     const val=document.getElementById("sim-q-valor"); if(val)val.value=1;
   }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
 }
@@ -5433,9 +5487,9 @@ function renderSimuladoPlayer(sim){
     </div>`;
 }
 function renderSimuladoQuestionForm(q,i){
-  if(q.tipo==="discursiva")return `<div class="simulado-answer"><h4>Questão ${i+1} · ${safeText(q.area||"Geral")}</h4><p>${safeText(q.enunciado||"")}</p><textarea id="sim-resp-${q.id}" placeholder="Digite sua resposta..."></textarea></div>`;
+  if(q.tipo==="discursiva")return `<div class="simulado-answer"><h4>Questão ${i+1} · ${safeText(q.area||"Geral")}</h4><p>${safeText(q.enunciado||"")}</p>${simQuestionImageHtml(q)}<textarea id="sim-resp-${q.id}" placeholder="Digite sua resposta..."></textarea></div>`;
   const alts=q.alternativas||{};
-  return `<div class="simulado-answer"><h4>Questão ${i+1} · ${safeText(q.area||"Geral")}</h4><p>${safeText(q.enunciado||"")}</p><div class="simulado-options">${Object.entries(alts).map(([letra,texto])=>`<label class="simulado-option"><input type="radio" name="sim-${q.id}" value="${letra}"><span><b>${letra})</b> ${safeText(texto)}</span></label>`).join("")}</div></div>`;
+  return `<div class="simulado-answer"><h4>Questão ${i+1} · ${safeText(q.area||"Geral")}</h4><p>${safeText(q.enunciado||"")}</p>${simQuestionImageHtml(q)}<div class="simulado-options">${Object.entries(alts).map(([letra,texto])=>`<label class="simulado-option"><input type="radio" name="sim-${q.id}" value="${letra}"><span><b>${letra})</b> ${safeText(texto)}</span></label>`).join("")}</div></div>`;
 }
 async function submitSimulado(simId){
   const sim=getSimuladoById(simId); if(!sim)return;
@@ -5494,7 +5548,7 @@ function renderSimuladoCard(sim){
   const jaFez=(respostasSimulados||[]).some(r=>r.simuladoId===sim.id);
   const meta=`<div class="simulado-meta"><span class="badge ${status==="publicado"?"ok":status==="rascunho"?"warn":""}">${safeText(status)}</span><span class="badge">${qs.length} questões</span>${sim.tempoMinutos?`<span class="badge warn">⏱️ ${sim.tempoMinutos} min</span>`:""}<span class="badge">${safeText(sim.studentName||"Todos os alunos")}</span>${isTeacher()?`<span class="badge ok">${tentativas} envio(s)</span>`:""}${jaFez&&!isTeacher()?`<span class="badge ok">Já enviado</span>`:""}</div>`;
   const teacherActions=isTeacher()?`<button class="btn-small" onclick="document.getElementById('sim-question-simulado').value='${sim.id}';switchTab('simulados');document.getElementById('sim-q-enunciado')?.focus()">+ questão</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','publicado')">Publicar</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','rascunho')">Rascunho</button><button class="btn-small" onclick="delSimulado('${sim.id}')">Excluir</button>`:`<button class="btn-small primary" onclick="startSimulado('${sim.id}')">${jaFez?"Refazer":"Iniciar simulado"}</button>`;
-  const questoesTeacher=isTeacher()&&qs.length?`<div class="simulado-question-list">${qs.map((q,i)=>`<div class="simulado-question-card"><strong>Q${i+1} · ${safeText(q.area||"Geral")} · ${q.tipo==="discursiva"?"Discursiva":"Objetiva"}</strong><p>${safeText(q.enunciado||"")}</p><small>${q.tipo==="multipla"?`Correta: ${safeText(q.correta||"")}`:"Correção manual"}</small><button class="btn-small" style="margin-top:8px" onclick="delQuestaoSimulado('${sim.id}','${q.id}')">Remover questão</button></div>`).join("")}</div>`:"";
+  const questoesTeacher=isTeacher()&&qs.length?`<div class="simulado-question-list">${qs.map((q,i)=>`<div class="simulado-question-card"><strong>Q${i+1} · ${safeText(q.area||"Geral")} · ${q.tipo==="discursiva"?"Discursiva":"Objetiva"}${q.imagemData||q.imagemUrl?" · com imagem":""}</strong><p>${safeText(q.enunciado||"")}</p>${simQuestionImageHtml(q)}<small>${q.tipo==="multipla"?`Correta: ${safeText(q.correta||"")}`:"Correção manual"}</small><button class="btn-small" style="margin-top:8px" onclick="delQuestaoSimulado('${sim.id}','${q.id}')">Remover questão</button></div>`).join("")}</div>`:"";
   return `<div class="simulado-card ${safeText(status)}"><h3>${safeText(sim.titulo||"Simulado")}</h3><p>${safeText(sim.desc||"Sem descrição.")}</p>${meta}<div class="simulado-actions">${teacherActions}</div>${questoesTeacher}</div>`;
 }
 function renderSimuladosResults(){
