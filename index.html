@@ -2147,6 +2147,16 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <p id="painel-data">Hoje é um ótimo dia para aprender.</p>
         <span id="teacher-badge" class="teacher-badge" style="display:none">Perfil professor completo</span>
       </div>
+      <div class="card" id="simulados-atalho-painel" style="border-left:5px solid var(--verde)">
+        <div class="card-title">Área de provas</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+          <div>
+            <h3 style="font-size:18px;color:var(--azul);margin-bottom:4px">🧪 Simulados</h3>
+            <p style="font-size:13px;color:var(--cinza);line-height:1.45">Crie ou responda provas on-line, com correção automática das objetivas e aproveitamento por área.</p>
+          </div>
+          <button class="btn-small primary" onclick="switchTab('simulados')">Abrir simulados</button>
+        </div>
+      </div>
       <div class="frase-motivacional" id="curiosidade-dia"></div>
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Filtro de visualização</div>
@@ -2977,7 +2987,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <button class="nav-item clean-primary" id="nav-tarefas" onclick="switchTab('tarefas')">✅<span>Tarefas</span></button>
         <button class="nav-item clean-primary" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
         <button class="nav-item clean-primary" id="nav-forum" onclick="switchTab('forum')">💬<span>Bate-papo</span></button>
-        <button class="nav-item clean-primary" id="nav-simulados" onclick="switchTab('simulados')">🧪<span>Simulados</span></button>
+        <button class="nav-item clean-primary" id="nav-simulados" onclick="switchTab('simulados')">🧪<span>Provas/Simulados</span></button>
       </div>
     </div>
 
