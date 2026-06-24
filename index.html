@@ -1958,6 +1958,29 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .parent-access-box{background:#f8fbfa;border:1px solid var(--borda);border-radius:16px;padding:14px;margin-top:10px}
 @media(max-width:620px){.parent-summary{grid-template-columns:1fr 1fr}.parent-summary-card:last-child{grid-column:1/-1}.parent-ratings{grid-template-columns:1fr 1fr}.parent-rating:last-child{grid-column:1/-1}.parent-main{padding:12px 10px 34px}.parent-hero{padding:18px 16px}.parent-lesson-head{flex-direction:column}.parent-lesson-head small{white-space:normal}}
 
+
+
+/* ===== SIMULADOS ONLINE ===== */
+.simulado-hero{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:var(--radius);padding:22px;margin-bottom:14px;box-shadow:0 18px 40px rgba(40,71,84,.10)}
+.simulado-hero h2{font-size:24px;margin-bottom:6px}.simulado-hero p{font-size:13px;opacity:.9;line-height:1.45}
+.simulado-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:14px}
+.simulado-card{background:#fff;border:1.5px solid var(--borda);border-radius:20px;padding:16px;box-shadow:var(--shadow);display:grid;gap:10px;position:relative;overflow:hidden}
+.simulado-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--verde)}
+.simulado-card.rascunho:before{background:#c8721a}.simulado-card.encerrado:before{background:#a8bec8}
+.simulado-card h3{font-size:18px;color:var(--azul);line-height:1.2;margin-left:4px}.simulado-card p{font-size:13px;color:var(--cinza);line-height:1.45;margin-left:4px}
+.simulado-meta{display:flex;gap:6px;flex-wrap:wrap;margin-left:4px}.simulado-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;margin-left:4px}
+.simulado-layout{display:grid;grid-template-columns:minmax(310px,.8fr) minmax(430px,1.2fr);gap:14px;align-items:start}
+.simulado-question-list{display:grid;gap:10px}.simulado-question-card{border:1.5px solid var(--borda);border-radius:16px;background:#fff;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}
+.simulado-question-card strong{color:var(--azul);font-size:14px}.simulado-question-card p{font-size:13px;color:var(--azul-light);line-height:1.45;margin-top:5px;white-space:pre-wrap}.simulado-question-card small{display:block;color:var(--cinza);font-weight:800;margin-top:7px}
+.simulado-answer{border:1.5px solid var(--borda);border-radius:18px;padding:16px;background:#fff;margin-bottom:12px;box-shadow:0 8px 20px rgba(40,71,84,.04)}
+.simulado-answer h4{font-size:15px;color:var(--azul);margin-bottom:8px}.simulado-answer p{font-size:13px;color:var(--azul-light);line-height:1.5;white-space:pre-wrap}
+.simulado-options{display:grid;gap:8px;margin-top:12px}.simulado-option{display:flex;gap:8px;align-items:flex-start;border:1.5px solid var(--borda);border-radius:12px;padding:10px;background:#fbfdfc;color:var(--azul);font-size:13px;font-weight:800;cursor:pointer}.simulado-option input{width:auto;margin-top:2px}
+.simulado-result-box{background:#fff;border:1.5px solid var(--borda);border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}.simulado-result-box h3{font-size:21px;color:var(--azul);margin-bottom:8px}.simulado-result-box p{font-size:13px;color:var(--cinza);line-height:1.45}
+.area-bars{display:grid;gap:10px;margin-top:12px}.area-row{background:#f8fbfa;border:1px solid var(--borda);border-radius:14px;padding:10px}.area-row-top{display:flex;justify-content:space-between;gap:10px;font-size:13px;font-weight:900;color:var(--azul);margin-bottom:7px}.area-bar-track{height:9px;background:#e8eded;border-radius:999px;overflow:hidden}.area-bar-fill{height:100%;background:var(--verde);border-radius:999px}
+.simulado-results-list{display:grid;gap:10px}.simulado-results-item{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}.simulado-results-item strong{font-size:14px;color:var(--azul)}.simulado-results-item p{font-size:12px;color:var(--cinza);line-height:1.45;margin-top:4px}
+@media(max-width:900px){.simulado-layout,.simulado-grid{grid-template-columns:1fr}}
+@media(max-width:720px){.simulado-hero{padding:18px 16px}.simulado-hero h2{font-size:21px}.simulado-actions{flex-direction:column}.simulado-actions .btn-small{width:100%}}
+
 </style>
 </head>
 <body>
@@ -2855,6 +2878,65 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
       </div>
     </div>
 
+
+
+    <div id="tab-simulados" class="tab-panel">
+      <div class="simulado-hero">
+        <h2>🧪 Simulados</h2>
+        <p>Crie provas on-line, responda no próprio site e acompanhe acertos, aproveitamento e conteúdos que precisam de reforço.</p>
+      </div>
+
+      <div id="simulado-student-result"></div>
+
+      <div class="simulado-layout teacher-only" style="display:none">
+        <div class="card">
+          <div class="card-title">Criar simulado</div>
+          <div class="form-field"><label>Título</label><input id="sim-title" placeholder="Ex: Simulado - Frações e Potências"></div>
+          <div class="form-row">
+            <div class="form-field"><label>Aluno / público</label><select id="sim-student"><option value="all">Todos os alunos</option></select></div>
+            <div class="form-field"><label>Tempo em minutos</label><input id="sim-tempo" type="number" min="0" placeholder="Ex: 40"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Status</label><select id="sim-status"><option value="rascunho">Rascunho</option><option value="publicado">Publicado</option><option value="encerrado">Encerrado</option></select></div>
+            <div class="form-field"><label>Mostrar resultado ao aluno</label><select id="sim-show-result"><option value="sim">Sim</option><option value="nao">Não</option></select></div>
+          </div>
+          <div class="form-field"><label>Descrição / orientação</label><textarea id="sim-desc" placeholder="Orientações para o aluno antes de começar..."></textarea></div>
+          <button class="btn-add" onclick="addSimulado()">Criar simulado</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Adicionar questão</div>
+          <div class="form-field"><label>Simulado</label><select id="sim-question-simulado"><option value="">Selecione um simulado</option></select></div>
+          <div class="form-field"><label>Enunciado</label><textarea id="sim-q-enunciado" placeholder="Digite o enunciado da questão..."></textarea></div>
+          <div class="form-row">
+            <div class="form-field"><label>Tipo</label><select id="sim-q-tipo" onchange="toggleSimQuestionType()"><option value="multipla">Múltipla escolha</option><option value="discursiva">Discursiva</option></select></div>
+            <div class="form-field"><label>Área/conteúdo</label><input id="sim-q-area" placeholder="Ex: Frações, Potências, Porcentagem"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Valor</label><input id="sim-q-valor" type="number" min="0" step="0.5" value="1"></div>
+            <div class="form-field" id="sim-q-correta-wrap"><label>Alternativa correta</label><select id="sim-q-correta"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="E">E</option></select></div>
+          </div>
+          <div id="sim-q-alternativas">
+            <div class="form-row"><div class="form-field"><label>A</label><input id="sim-q-a"></div><div class="form-field"><label>B</label><input id="sim-q-b"></div></div>
+            <div class="form-row"><div class="form-field"><label>C</label><input id="sim-q-c"></div><div class="form-field"><label>D</label><input id="sim-q-d"></div></div>
+            <div class="form-field"><label>E opcional</label><input id="sim-q-e"></div>
+          </div>
+          <div class="form-field" id="sim-q-resp-wrap" style="display:none"><label>Resposta esperada / critério de correção</label><textarea id="sim-q-resp" placeholder="Ex: Espera-se que o aluno explique..."></textarea></div>
+          <button class="btn-add" onclick="addQuestaoSimulado()">Adicionar questão</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" id="simulados-list-title">Simulados disponíveis</div>
+        <div id="simulados-list"><div class="empty-state"><div>🧪</div>Nenhum simulado encontrado.</div></div>
+      </div>
+
+      <div class="card teacher-only" style="display:none">
+        <div class="card-title">Resultados dos alunos</div>
+        <div id="simulados-results"><div class="empty-state"><div>📈</div>Nenhum resultado enviado ainda.</div></div>
+      </div>
+    </div>
+
     <div id="tab-financeiro" class="tab-panel finance-only" style="display:none">
       <div class="card">
         <div class="card-title">Financeiro</div>
@@ -2895,6 +2977,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <button class="nav-item clean-primary" id="nav-tarefas" onclick="switchTab('tarefas')">✅<span>Tarefas</span></button>
         <button class="nav-item clean-primary" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
         <button class="nav-item clean-primary" id="nav-forum" onclick="switchTab('forum')">💬<span>Bate-papo</span></button>
+        <button class="nav-item clean-primary" id="nav-simulados" onclick="switchTab('simulados')">🧪<span>Simulados</span></button>
       </div>
     </div>
 
@@ -2962,6 +3045,7 @@ let calendarSelectedDate = new Date();
 let calendarViewMode = "month";
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
+let simulados=[],allSimulados=[],respostasSimulados=[],allRespostasSimulados=[],simuladoAtual=null;
 let globalStudentFilter="all";
 let parentStudentUid="",parentAulas=[],parentTarefas=[],parentMessages=[];
 let taskStudentFilter="all";
@@ -3547,8 +3631,33 @@ function attachRealtimeListeners(){
   const progressRef=db.ref("studyProgress/"+uid);
   progressRef.on("value",s=>{programProgress={ifes:{},enem:{},...(s.val()||{})};renderPrograms();});
   unsubscribers.push(()=>progressRef.off());
+
+
+  const simRef=db.ref("simulados");
+  simRef.on("value",s=>{
+    allSimulados=objToArray(s.val()).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+    simulados=isTeacher()?allSimulados:allSimulados.filter(sim=>String(sim.status||"")==="publicado" && (!sim.studentUid || sim.studentUid==="all" || sim.studentUid===uid));
+    populateStudentSelects();renderSimulados();updateStats();updateProgresso();
+  },e=>{console.error(e);alert("Erro ao carregar simulados. Confira as regras do Realtime Database.")});
+  unsubscribers.push(()=>simRef.off());
+
+  const simRespRef=isTeacher()?db.ref("respostasSimulados"):db.ref("respostasSimulados/"+uid);
+  simRespRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];
+      Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,r])=>list.push({id,studentUid,...r})));
+      allRespostasSimulados=list.filter(r=>isPauloMaster() || teacherOwnsItem(allSimulados.find(s=>s.id===r.simuladoId)) || r.createdBy===ownUid()).sort((a,b)=>(b.enviadoEm||0)-(a.enviadoEm||0));
+      respostasSimulados=allRespostasSimulados;
+    }else{
+      respostasSimulados=objToArray(s.val()).map(r=>({...r,studentUid:uid})).sort((a,b)=>(b.enviadoEm||0)-(a.enviadoEm||0));
+      allRespostasSimulados=respostasSimulados;
+    }
+    renderSimulados();updateStats();updateProgresso();
+  },e=>{console.error(e);alert("Erro ao carregar resultados dos simulados. Confira as regras do Realtime Database.")});
+  unsubscribers.push(()=>simRespRef.off());
+
 }
-function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();renderSimulados();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
   const studentUsers=users.filter(u=>u.role==="student" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=isPauloMaster()
@@ -3556,7 +3665,16 @@ function populateStudentSelects(){
     : [{id:ownUid(),name:currentProfile?.name||currentUser?.email,email:currentUser?.email,role:"teacher"}];
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.username||u.email)}</option>`).join("");
   const teacherOptions=teacherUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email||"")}</option>`).join("");
-  ["a-student","av-student","res-student","nota-student","cal-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno vinculado</option>'});
+  ["a-student","av-student","res-student","nota-student","cal-student","sim-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno vinculado</option>'});
+
+  const simQuestionSel=document.getElementById("sim-question-simulado");
+  if(simQuestionSel){
+    const previous=simQuestionSel.value;
+    const meus=(allSimulados||[]).filter(s=>isPauloMaster() || teacherOwnsItem(s));
+    simQuestionSel.innerHTML='<option value="">Selecione um simulado</option>'+meus.map(s=>`<option value="${s.id}">${safeText(s.titulo||"Simulado")}</option>`).join("");
+    if(previous && meus.some(s=>s.id===previous)) simQuestionSel.value=previous;
+  }
+
   const parentSel=document.getElementById("parent-student-select");
   if(parentSel){
     const previous=parentSel.value;
@@ -3824,7 +3942,7 @@ function switchTab(tab){
   document.getElementById("tab-"+tab)?.classList.add("active");
   document.getElementById("nav-"+tab)?.classList.add("active");
   if(tab==="progresso")updateProgresso(); if(tab==="resultados")renderResultados(); if(tab==="programas")renderPrograms();
-  if(tab==="forum")renderForum(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  if(tab==="forum")renderForum(); if(tab==="simulados")renderSimulados(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
   document.body.classList.remove("mobile-sidebar-open");
   window.scrollTo({top:0,behavior:"instant"});
 }
@@ -5213,6 +5331,170 @@ function updateProgresso(){
   setBar("pb-mins","pb-mins-val",weekMins,300);setBar("pb-tar","pb-tar-val",tarDone,10);setBar("pb-aul","pb-aul-val",aulaList.length,7);setBar("pb-av","pb-av-val",avDone,3);
   const max=Math.max(...days.map(d=>d.m),1);document.getElementById("week-bars").innerHTML=days.map(d=>`<div class="day-bar-wrap"><div class="day-bar-bg"><div class="day-bar-fill" style="height:${Math.round(d.m/max*100)}%"></div></div></div>`).join("");document.getElementById("week-days-labels").innerHTML=days.map(d=>`<div style="flex:1;text-align:center;font-size:10px;font-weight:800;color:var(--cinza)">${d.label}</div>`).join("");
 }
+
+
+function toggleSimQuestionType(){
+  const tipo=document.getElementById("sim-q-tipo")?.value||"multipla";
+  const alt=document.getElementById("sim-q-alternativas"), corr=document.getElementById("sim-q-correta-wrap"), resp=document.getElementById("sim-q-resp-wrap");
+  if(alt)alt.style.display=tipo==="multipla"?"block":"none";
+  if(corr)corr.style.display=tipo==="multipla"?"block":"none";
+  if(resp)resp.style.display=tipo==="discursiva"?"block":"none";
+}
+function getSimuladoById(id){return (allSimulados||[]).find(s=>String(s.id)===String(id));}
+function simuladoQuestoes(sim){
+  const q=sim?.questoes||{};
+  return Object.entries(q).map(([id,value])=>({id,...value})).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
+}
+async function addSimulado(){
+  if(!isTeacher())return alert("Apenas professor pode criar simulados.");
+  const titulo=document.getElementById("sim-title")?.value.trim()||"";
+  if(!titulo)return alert("Digite o título do simulado.");
+  const studentUid=document.getElementById("sim-student")?.value||"all";
+  const payload={titulo,desc:document.getElementById("sim-desc")?.value.trim()||"",studentUid,studentName:studentUid==="all"?"Todos os alunos":getUserName(studentUid),tempoMinutos:Number(document.getElementById("sim-tempo")?.value||0),status:document.getElementById("sim-status")?.value||"rascunho",showResult:(document.getElementById("sim-show-result")?.value||"sim")==="sim",createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()};
+  try{
+    if(studentUid!=="all")await ensureTeacherStudentLink(studentUid);
+    const ref=db.ref("simulados").push();
+    await ref.set(payload);
+    ["sim-title","sim-desc","sim-tempo"].forEach(id=>{const el=document.getElementById(id); if(el)el.value=""});
+    const st=document.getElementById("sim-status"); if(st)st.value="rascunho";
+    alert("Simulado criado! Agora adicione as questões.");
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+}
+async function delSimulado(id){
+  const sim=getSimuladoById(id); if(!sim)return;
+  if(!teacherCanManageItem(sim))return alert("Você só pode excluir simulados criados por você.");
+  if(confirm("Excluir este simulado? As respostas dos alunos não serão apagadas.")) await db.ref("simulados/"+id).remove();
+}
+async function updateSimuladoStatus(id,status){
+  const sim=getSimuladoById(id); if(!sim||!teacherCanManageItem(sim))return alert("Você não pode alterar este simulado.");
+  await db.ref("simulados/"+id).update({status,updatedBy:ownUid(),updatedAt:Date.now()});
+}
+async function addQuestaoSimulado(){
+  if(!isTeacher())return alert("Apenas professor pode adicionar questões.");
+  const simId=document.getElementById("sim-question-simulado")?.value||"";
+  const sim=getSimuladoById(simId);
+  if(!sim)return alert("Selecione um simulado.");
+  if(!teacherCanManageItem(sim))return alert("Você só pode editar simulados criados por você.");
+  const enunciado=document.getElementById("sim-q-enunciado")?.value.trim()||"";
+  if(!enunciado)return alert("Digite o enunciado da questão.");
+  const tipo=document.getElementById("sim-q-tipo")?.value||"multipla";
+  const area=document.getElementById("sim-q-area")?.value.trim()||"Geral";
+  const valor=Number(document.getElementById("sim-q-valor")?.value||1);
+  const payload={enunciado,tipo,area,valor,ordem:Date.now(),createdBy:ownUid(),createdAt:Date.now()};
+  if(tipo==="multipla"){
+    const alternativas={};
+    [["A","sim-q-a"],["B","sim-q-b"],["C","sim-q-c"],["D","sim-q-d"],["E","sim-q-e"]].forEach(([letra,id])=>{const v=document.getElementById(id)?.value.trim(); if(v)alternativas[letra]=v;});
+    if(Object.keys(alternativas).length<2)return alert("Digite pelo menos duas alternativas.");
+    payload.alternativas=alternativas;payload.correta=document.getElementById("sim-q-correta")?.value||"A";
+    if(!payload.alternativas[payload.correta])return alert("A alternativa correta precisa estar preenchida.");
+  }else{
+    payload.respostaEsperada=document.getElementById("sim-q-resp")?.value.trim()||"";
+  }
+  try{
+    await db.ref("simulados/"+simId+"/questoes").push(payload);
+    ["sim-q-enunciado","sim-q-area","sim-q-a","sim-q-b","sim-q-c","sim-q-d","sim-q-e","sim-q-resp"].forEach(id=>{const el=document.getElementById(id); if(el)el.value=""});
+    const val=document.getElementById("sim-q-valor"); if(val)val.value=1;
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+}
+async function delQuestaoSimulado(simId,qId){
+  const sim=getSimuladoById(simId); if(!sim||!teacherCanManageItem(sim))return alert("Você não pode remover esta questão.");
+  if(confirm("Remover esta questão?")) await db.ref(`simulados/${simId}/questoes/${qId}`).remove();
+}
+function startSimulado(id){
+  const sim=getSimuladoById(id); if(!sim)return;
+  const qs=simuladoQuestoes(sim);
+  if(!qs.length)return alert("Este simulado ainda não possui questões.");
+  simuladoAtual={id,startedAt:Date.now()};
+  renderSimuladoPlayer(sim);
+  document.getElementById("simulado-player")?.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderSimuladoPlayer(sim){
+  const result=document.getElementById("simulado-student-result"); if(!result)return;
+  const qs=simuladoQuestoes(sim);
+  result.innerHTML=`
+    <div class="simulado-result-box" id="simulado-player">
+      <h3>${safeText(sim.titulo||"Simulado")}</h3>
+      <p>${safeText(sim.desc||"Responda com atenção e envie ao finalizar.")}</p>
+      <div class="simulado-meta" style="margin:12px 0">${sim.tempoMinutos?`<span class="badge warn">⏱️ ${sim.tempoMinutos} min</span>`:""}<span class="badge">${qs.length} questões</span></div>
+      <div id="simulado-form-questoes">
+        ${qs.map((q,i)=>renderSimuladoQuestionForm(q,i)).join("")}
+      </div>
+      <button class="btn-add" onclick="submitSimulado('${sim.id}')">Enviar simulado</button>
+    </div>`;
+}
+function renderSimuladoQuestionForm(q,i){
+  if(q.tipo==="discursiva")return `<div class="simulado-answer"><h4>Questão ${i+1} · ${safeText(q.area||"Geral")}</h4><p>${safeText(q.enunciado||"")}</p><textarea id="sim-resp-${q.id}" placeholder="Digite sua resposta..."></textarea></div>`;
+  const alts=q.alternativas||{};
+  return `<div class="simulado-answer"><h4>Questão ${i+1} · ${safeText(q.area||"Geral")}</h4><p>${safeText(q.enunciado||"")}</p><div class="simulado-options">${Object.entries(alts).map(([letra,texto])=>`<label class="simulado-option"><input type="radio" name="sim-${q.id}" value="${letra}"><span><b>${letra})</b> ${safeText(texto)}</span></label>`).join("")}</div></div>`;
+}
+async function submitSimulado(simId){
+  const sim=getSimuladoById(simId); if(!sim)return;
+  const qs=simuladoQuestoes(sim);
+  if(!qs.length)return;
+  const respostas={},areaMap={};let acertos=0,totalObjetivas=0,pontosObtidos=0,pontosTotais=0,discursivas=0;
+  for(const q of qs){
+    const area=q.area||"Geral"; const valor=Number(q.valor||1); pontosTotais+=valor;
+    if(!areaMap[area])areaMap[area]={acertos:0,total:0,pontos:0,pontosTotais:0};
+    areaMap[area].total++; areaMap[area].pontosTotais+=valor;
+    if(q.tipo==="discursiva"){
+      discursivas++;
+      const resposta=document.getElementById(`sim-resp-${q.id}`)?.value.trim()||"";
+      respostas[q.id]={resposta,tipo:"discursiva",area,valor,corrigida:false,pontos:0};
+    }else{
+      totalObjetivas++;
+      const marcada=document.querySelector(`input[name="sim-${q.id}"]:checked`)?.value||"";
+      if(!marcada)return alert("Responda todas as questões objetivas antes de enviar.");
+      const correta=marcada===q.correta;
+      if(correta){acertos++;pontosObtidos+=valor;areaMap[area].acertos++;areaMap[area].pontos+=valor;}
+      respostas[q.id]={resposta:marcada,tipo:"multipla",area,valor,correta,corretaEsperada:q.correta,pontos:correta?valor:0};
+    }
+  }
+  const aproveitamento=pontosTotais?Math.round((pontosObtidos/pontosTotais)*100):0;
+  Object.keys(areaMap).forEach(a=>{const it=areaMap[a];it.aproveitamento=it.pontosTotais?Math.round((it.pontos/it.pontosTotais)*100):0;});
+  const payload={simuladoId:sim.id,simuladoTitulo:sim.titulo||"Simulado",studentUid:ownUid(),studentName:currentProfile?.name||currentUser?.email,studentEmail:currentUser?.email,respostas,resultado:{totalQuestoes:qs.length,totalObjetivas,discursivas,acertosObjetivas:acertos,pontosObtidos,pontosTotais,aproveitamento},desempenhoPorArea:areaMap,enviadoEm:Date.now(),createdBy:sim.createdBy,createdByEmail:sim.createdByEmail};
+  try{
+    await db.ref("respostasSimulados/"+ownUid()).push(payload);
+    simuladoAtual=null;
+    renderSimuladoResult(payload,sim.showResult!==false);
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+}
+function renderSimuladoResult(r,show=true){
+  const el=document.getElementById("simulado-student-result"); if(!el)return;
+  if(!show){el.innerHTML='<div class="simulado-result-box"><h3>Simulado enviado ✅</h3><p>Suas respostas foram enviadas. O professor poderá acompanhar o resultado.</p></div>';return;}
+  const res=r.resultado||{}; const areas=r.desempenhoPorArea||{};
+  const melhorar=Object.entries(areas).filter(([_,v])=>Number(v.aproveitamento||0)<70).map(([a])=>a);
+  el.innerHTML=`<div class="simulado-result-box"><h3>Resultado: ${safeText(r.simuladoTitulo||"Simulado")}</h3><p>Você acertou <b>${res.acertosObjetivas||0}</b> de <b>${res.totalObjetivas||0}</b> questões objetivas. Aproveitamento parcial: <b>${res.aproveitamento||0}%</b>.</p>${res.discursivas?`<p><b>${res.discursivas}</b> questão(ões) discursiva(s) ficaram pendentes de correção do professor.</p>`:""}${melhorar.length?`<p><b>Precisa melhorar em:</b> ${safeText(melhorar.join(", "))}.</p>`:`<p><b>Ótimo desempenho nas áreas objetivas!</b></p>`}<div class="area-bars">${Object.entries(areas).map(([area,v])=>`<div class="area-row"><div class="area-row-top"><span>${safeText(area)}</span><span>${v.aproveitamento||0}%</span></div><div class="area-bar-track"><div class="area-bar-fill" style="width:${v.aproveitamento||0}%"></div></div></div>`).join("")}</div></div>`;
+}
+function renderSimulados(){
+  const listEl=document.getElementById("simulados-list"); if(!listEl)return;
+  const title=document.getElementById("simulados-list-title"); if(title)title.textContent=isTeacher()?"Simulados criados":"Simulados disponíveis";
+  const base=isTeacher()?visibleSimuladosTeacher():simulados;
+  if(!base.length){listEl.innerHTML='<div class="empty-state"><div>🧪</div>Nenhum simulado encontrado.</div>';}else{
+    listEl.innerHTML=`<div class="simulado-grid">${base.map(renderSimuladoCard).join("")}</div>`;
+  }
+  renderSimuladosResults();populateStudentSelects();toggleSimQuestionType();
+}
+function visibleSimuladosTeacher(){
+  let base=(allSimulados||[]).filter(s=>isPauloMaster()||teacherOwnsItem(s));
+  if(globalStudentFilter&&globalStudentFilter!=="all")base=base.filter(s=>s.studentUid==="all"||s.studentUid===globalStudentFilter);
+  return base;
+}
+function renderSimuladoCard(sim){
+  const qs=simuladoQuestoes(sim); const status=sim.status||"rascunho"; const tentativas=(allRespostasSimulados||[]).filter(r=>r.simuladoId===sim.id).length;
+  const jaFez=(respostasSimulados||[]).some(r=>r.simuladoId===sim.id);
+  const meta=`<div class="simulado-meta"><span class="badge ${status==="publicado"?"ok":status==="rascunho"?"warn":""}">${safeText(status)}</span><span class="badge">${qs.length} questões</span>${sim.tempoMinutos?`<span class="badge warn">⏱️ ${sim.tempoMinutos} min</span>`:""}<span class="badge">${safeText(sim.studentName||"Todos os alunos")}</span>${isTeacher()?`<span class="badge ok">${tentativas} envio(s)</span>`:""}${jaFez&&!isTeacher()?`<span class="badge ok">Já enviado</span>`:""}</div>`;
+  const teacherActions=isTeacher()?`<button class="btn-small" onclick="document.getElementById('sim-question-simulado').value='${sim.id}';switchTab('simulados');document.getElementById('sim-q-enunciado')?.focus()">+ questão</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','publicado')">Publicar</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','rascunho')">Rascunho</button><button class="btn-small" onclick="delSimulado('${sim.id}')">Excluir</button>`:`<button class="btn-small primary" onclick="startSimulado('${sim.id}')">${jaFez?"Refazer":"Iniciar simulado"}</button>`;
+  const questoesTeacher=isTeacher()&&qs.length?`<div class="simulado-question-list">${qs.map((q,i)=>`<div class="simulado-question-card"><strong>Q${i+1} · ${safeText(q.area||"Geral")} · ${q.tipo==="discursiva"?"Discursiva":"Objetiva"}</strong><p>${safeText(q.enunciado||"")}</p><small>${q.tipo==="multipla"?`Correta: ${safeText(q.correta||"")}`:"Correção manual"}</small><button class="btn-small" style="margin-top:8px" onclick="delQuestaoSimulado('${sim.id}','${q.id}')">Remover questão</button></div>`).join("")}</div>`:"";
+  return `<div class="simulado-card ${safeText(status)}"><h3>${safeText(sim.titulo||"Simulado")}</h3><p>${safeText(sim.desc||"Sem descrição.")}</p>${meta}<div class="simulado-actions">${teacherActions}</div>${questoesTeacher}</div>`;
+}
+function renderSimuladosResults(){
+  const el=document.getElementById("simulados-results"); if(!el)return;
+  if(!isTeacher()){el.innerHTML="";return;}
+  const list=(allRespostasSimulados||[]).filter(r=>isPauloMaster()||teacherOwnsItem(getSimuladoById(r.simuladoId)));
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>📈</div>Nenhum resultado enviado ainda.</div>';return;}
+  el.innerHTML=`<div class="simulado-results-list">${list.map(r=>{const res=r.resultado||{};const areas=Object.entries(r.desempenhoPorArea||{}).map(([a,v])=>`${safeText(a)}: ${v.aproveitamento||0}%`).join(" · ");return `<div class="simulado-results-item"><strong>${safeText(r.studentName||"Aluno")} — ${safeText(r.simuladoTitulo||"Simulado")}</strong><p>${new Date(r.enviadoEm||Date.now()).toLocaleString("pt-BR")} · Objetivas: ${res.acertosObjetivas||0}/${res.totalObjetivas||0} · Aproveitamento parcial: ${res.aproveitamento||0}% ${res.discursivas?`· ${res.discursivas} discursiva(s) pendente(s)`:""}</p><p>${areas||"Sem áreas registradas."}</p></div>`}).join("")}</div>`;
+}
+
 function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
 function aulaLiquido(a){return Number(a.valor||0)-Number(a.repasseProfessor||0)}
 function calcFinanceiro(){
