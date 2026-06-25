@@ -1984,6 +1984,9 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .simulado-results-list{display:grid;gap:10px}.simulado-results-item{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}.simulado-results-item strong{font-size:14px;color:var(--azul)}.simulado-results-item p{font-size:12px;color:var(--cinza);line-height:1.45;margin-top:4px}
 @media(max-width:900px){.simulado-layout,.simulado-grid{grid-template-columns:1fr}}
 @media(max-width:720px){.simulado-hero{padding:18px 16px}.simulado-hero h2{font-size:21px}.simulado-actions{flex-direction:column}.simulado-actions .btn-small{width:100%}}
+.simulado-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.simulado-tab{background:#fff;border:1.5px solid var(--borda);color:var(--azul);border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;box-shadow:var(--shadow)}.simulado-tab.active{background:var(--verde);color:#fff;border-color:var(--verde)}
+.simulado-analysis-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}.simulado-analysis-card{background:#f8fbfa;border:1px solid var(--borda);border-radius:16px;padding:13px}.simulado-analysis-card strong{display:block;color:var(--azul);font-size:14px;margin-bottom:4px}.simulado-analysis-card span{font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4}.simulado-action-plan{display:grid;gap:8px;margin-top:12px}.simulado-action-step{background:#fff;border:1.5px solid var(--borda);border-radius:14px;padding:11px 12px;font-size:13px;color:var(--azul-light);font-weight:800}.simulado-action-step b{color:var(--verde-dark)}
+.manual-questions-hero{background:#fff;border:1.5px solid var(--borda);border-left:5px solid var(--verde);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.manual-questions-hero h3{font-size:18px;color:var(--azul);margin-bottom:5px}.manual-questions-hero p{font-size:13px;color:var(--cinza);line-height:1.45}.manual-list{display:grid;gap:10px}.manual-item{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}.manual-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}.manual-item-head strong{font-size:14px;color:var(--azul)}.manual-item-head small{font-size:11px;color:var(--cinza);font-weight:900;white-space:nowrap}.manual-item p{font-size:12px;color:var(--cinza);line-height:1.45;margin-top:4px}.manual-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.manual-summary-card{background:#fff;border:1px solid var(--borda);border-radius:15px;padding:12px;text-align:center}.manual-summary-card strong{display:block;font-size:22px;color:var(--verde-dark)}.manual-summary-card span{display:block;font-size:10px;font-weight:900;color:var(--cinza);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}@media(max-width:720px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr 1fr}.manual-item-head{flex-direction:column}.manual-item-head small{white-space:normal}}@media(max-width:460px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr}}
 
 </style>
 </head>
@@ -2902,6 +2905,13 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 
       <div id="simulado-student-result"></div>
 
+      <div class="simulado-tabs">
+        <button class="simulado-tab active" id="sim-tab-online" onclick="switchSimuladosSubtab('online')">🧪 Simulados on-line</button>
+        <button class="simulado-tab" id="sim-tab-manual" onclick="switchSimuladosSubtab('manual')">✍️ Registro manual</button>
+      </div>
+
+      <div id="simulados-online-section">
+
       <div class="simulado-layout teacher-only" style="display:none">
         <div class="card">
           <div class="card-title">Criar simulado</div>
@@ -2954,6 +2964,42 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
       <div class="card teacher-only" style="display:none">
         <div class="card-title">Resultados dos alunos</div>
         <div id="simulados-results"><div class="empty-state"><div>📈</div>Nenhum resultado enviado ainda.</div></div>
+      </div>
+      </div>
+
+      <div id="simulados-manual-section" style="display:none">
+        <div class="manual-questions-hero">
+          <h3>✍️ Registro manual de questões</h3>
+          <p>Use esta área para registrar questões feitas fora do site: livro, apostila, lista impressa, caderno ou simulado físico. O sistema calcula o aproveitamento e junta os dados por área.</p>
+        </div>
+
+        <div class="card student-only">
+          <div class="card-title">Registrar questões feitas fora do site</div>
+          <div class="form-row">
+            <div class="form-field"><label>Material</label><input id="manual-material" placeholder="Ex: Livro de Matemática, apostila, lista 2"></div>
+            <div class="form-field"><label>Questões</label><input id="manual-questoes" placeholder="Ex: 38 até 45, 12, 13 e 14"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Área/conteúdo</label><input id="manual-area" placeholder="Ex: Frações, Porcentagem, Função afim"></div>
+            <div class="form-field"><label>Data</label><input id="manual-data" type="date"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-field"><label>Total de questões</label><input id="manual-total" type="number" min="1" placeholder="Ex: 8"></div>
+            <div class="form-field"><label>Acertos</label><input id="manual-acertos" type="number" min="0" placeholder="Ex: 6"></div>
+          </div>
+          <div class="form-field"><label>Observação / motivo dos erros</label><textarea id="manual-obs" placeholder="Ex: errei divisão de frações, falta de atenção, interpretação..."></textarea></div>
+          <button class="btn-add" onclick="addRegistroManualQuestoes()">Salvar registro manual</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title" id="manual-summary-title">Resumo das questões manuais</div>
+          <div id="manual-summary"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title" id="manual-list-title">Meus registros manuais</div>
+          <div id="manual-registros-list"><div class="empty-state"><div>✍️</div>Nenhum registro manual ainda.</div></div>
+        </div>
       </div>
     </div>
 
@@ -3065,7 +3111,7 @@ let calendarSelectedDate = new Date();
 let calendarViewMode = "month";
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
-let simulados=[],allSimulados=[],respostasSimulados=[],allRespostasSimulados=[],simuladoAtual=null;
+let simulados=[],allSimulados=[],respostasSimulados=[],allRespostasSimulados=[],simuladoAtual=null,registrosManuaisQuestoes=[],allRegistrosManuaisQuestoes=[];
 let globalStudentFilter="all";
 let parentStudentUid="",parentAulas=[],parentTarefas=[],parentMessages=[];
 let taskStudentFilter="all";
@@ -3127,6 +3173,11 @@ function teacherLinkedStudent(u){
   const uid=ownUid();
   if(!uid||!u)return false;
   return u.id===uid || u.createdBy===uid || u.teacherUid===uid || u.ownerTeacherUid===uid || u.professorUid===uid || u.linkedTeacherUid===uid || u.linkedTeachers?.[uid]===true || u.teacherIds?.[uid]===true;
+}
+function teacherOwnsStudent(studentUid){
+  if(isPauloMaster())return true;
+  const u=(users||[]).find(x=>String(x.id)===String(studentUid));
+  return teacherLinkedStudent(u);
 }
 async function ensureTeacherStudentLink(studentUid){
   if(!isTeacher() || isPauloMaster() || !studentUid || studentUid===ownUid())return;
@@ -3676,8 +3727,23 @@ function attachRealtimeListeners(){
   },e=>{console.error(e);alert("Erro ao carregar resultados dos simulados. Confira as regras do Realtime Database.")});
   unsubscribers.push(()=>simRespRef.off());
 
+  const manualRef=isTeacher()?db.ref("registrosManuaisQuestoes"):db.ref("registrosManuaisQuestoes/"+uid);
+  manualRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];
+      Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,r])=>list.push({id,studentUid,...r})));
+      allRegistrosManuaisQuestoes=list.filter(r=>isPauloMaster() || teacherOwnsStudent(r.studentUid) || r.createdBy===ownUid()).sort((a,b)=>(b.criadoEm||0)-(a.criadoEm||0));
+      registrosManuaisQuestoes=allRegistrosManuaisQuestoes;
+    }else{
+      registrosManuaisQuestoes=objToArray(s.val()).map(r=>({...r,studentUid:uid})).sort((a,b)=>(b.criadoEm||0)-(a.criadoEm||0));
+      allRegistrosManuaisQuestoes=registrosManuaisQuestoes;
+    }
+    renderRegistrosManuais();updateStats();updateProgresso();
+  },e=>{console.error(e);alert("Erro ao carregar registros manuais. Confira as regras do Realtime Database.")});
+  unsubscribers.push(()=>manualRef.off());
+
 }
-function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();renderSimulados();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();renderSimulados();renderRegistrosManuais();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
   const studentUsers=users.filter(u=>u.role==="student" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=isPauloMaster()
@@ -5526,8 +5592,8 @@ function renderSimuladoResult(r,show=true){
   const el=document.getElementById("simulado-student-result"); if(!el)return;
   if(!show){el.innerHTML='<div class="simulado-result-box"><h3>Simulado enviado ✅</h3><p>Suas respostas foram enviadas. O professor poderá acompanhar o resultado.</p></div>';return;}
   const res=r.resultado||{}; const areas=r.desempenhoPorArea||{};
-  const melhorar=Object.entries(areas).filter(([_,v])=>Number(v.aproveitamento||0)<70).map(([a])=>a);
-  el.innerHTML=`<div class="simulado-result-box"><h3>Resultado: ${safeText(r.simuladoTitulo||"Simulado")}</h3><p>Você acertou <b>${res.acertosObjetivas||0}</b> de <b>${res.totalObjetivas||0}</b> questões objetivas. Aproveitamento parcial: <b>${res.aproveitamento||0}%</b>.</p>${res.discursivas?`<p><b>${res.discursivas}</b> questão(ões) discursiva(s) ficaram pendentes de correção do professor.</p>`:""}${melhorar.length?`<p><b>Precisa melhorar em:</b> ${safeText(melhorar.join(", "))}.</p>`:`<p><b>Ótimo desempenho nas áreas objetivas!</b></p>`}<div class="area-bars">${Object.entries(areas).map(([area,v])=>`<div class="area-row"><div class="area-row-top"><span>${safeText(area)}</span><span>${v.aproveitamento||0}%</span></div><div class="area-bar-track"><div class="area-bar-fill" style="width:${v.aproveitamento||0}%"></div></div></div>`).join("")}</div></div>`;
+  const analise=buildSimuladoAnalysis(r);
+  el.innerHTML=`<div class="simulado-result-box"><h3>Resultado: ${safeText(r.simuladoTitulo||"Simulado")}</h3><p>Você acertou <b>${res.acertosObjetivas||0}</b> de <b>${res.totalObjetivas||0}</b> questões objetivas. Aproveitamento parcial: <b>${res.aproveitamento||0}%</b> — <b>${safeText(analise.perfil)}</b>.</p>${res.discursivas?`<p><b>${res.discursivas}</b> questão(ões) discursiva(s) ficaram pendentes de correção do professor.</p>`:""}<div class="simulado-analysis-grid"><div class="simulado-analysis-card"><strong>Diagnóstico</strong><span>${safeText(analise.diagnostico)}</span></div><div class="simulado-analysis-card"><strong>Pontos fortes</strong><span>${analise.fortes.length?safeText(analise.fortes.join(", ")):"Ainda não houve área acima de 80%."}</span></div><div class="simulado-analysis-card"><strong>Prioridade</strong><span>${analise.fracas.length?safeText(analise.fracas.join(", ")):"Manter revisão e constância."}</span></div></div><div class="area-bars">${Object.entries(areas).map(([area,v])=>`<div class="area-row"><div class="area-row-top"><span>${safeText(area)}</span><span>${v.aproveitamento||0}%</span></div><div class="area-bar-track"><div class="area-bar-fill" style="width:${v.aproveitamento||0}%"></div></div></div>`).join("")}</div><h4 class="result-section-title">Plano de ação</h4><div class="simulado-action-plan">${analise.plano.map((p,i)=>`<div class="simulado-action-step"><b>${i+1}.</b> ${safeText(p)}</div>`).join("")}</div><h4 class="result-section-title">Dicas de estudo</h4><div class="simulado-action-plan">${analise.dicas.map(d=>`<div class="simulado-action-step">💡 ${safeText(d)}</div>`).join("")}</div></div>`;
 }
 function renderSimulados(){
   const listEl=document.getElementById("simulados-list"); if(!listEl)return;
@@ -5536,7 +5602,7 @@ function renderSimulados(){
   if(!base.length){listEl.innerHTML='<div class="empty-state"><div>🧪</div>Nenhum simulado encontrado.</div>';}else{
     listEl.innerHTML=`<div class="simulado-grid">${base.map(renderSimuladoCard).join("")}</div>`;
   }
-  renderSimuladosResults();populateStudentSelects();toggleSimQuestionType();
+  renderSimuladosResults();renderRegistrosManuais();populateStudentSelects();toggleSimQuestionType();
 }
 function visibleSimuladosTeacher(){
   let base=(allSimulados||[]).filter(s=>isPauloMaster()||teacherOwnsItem(s));
@@ -5556,7 +5622,79 @@ function renderSimuladosResults(){
   if(!isTeacher()){el.innerHTML="";return;}
   const list=(allRespostasSimulados||[]).filter(r=>isPauloMaster()||teacherOwnsItem(getSimuladoById(r.simuladoId)));
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📈</div>Nenhum resultado enviado ainda.</div>';return;}
-  el.innerHTML=`<div class="simulado-results-list">${list.map(r=>{const res=r.resultado||{};const areas=Object.entries(r.desempenhoPorArea||{}).map(([a,v])=>`${safeText(a)}: ${v.aproveitamento||0}%`).join(" · ");return `<div class="simulado-results-item"><strong>${safeText(r.studentName||"Aluno")} — ${safeText(r.simuladoTitulo||"Simulado")}</strong><p>${new Date(r.enviadoEm||Date.now()).toLocaleString("pt-BR")} · Objetivas: ${res.acertosObjetivas||0}/${res.totalObjetivas||0} · Aproveitamento parcial: ${res.aproveitamento||0}% ${res.discursivas?`· ${res.discursivas} discursiva(s) pendente(s)`:""}</p><p>${areas||"Sem áreas registradas."}</p></div>`}).join("")}</div>`;
+  el.innerHTML=`<div class="simulado-results-list">${list.map(r=>{const res=r.resultado||{};const areas=Object.entries(r.desempenhoPorArea||{}).map(([a,v])=>`${safeText(a)}: ${v.aproveitamento||0}%`).join(" · ");const analise=buildSimuladoAnalysis(r);return `<div class="simulado-results-item"><strong>${safeText(r.studentName||"Aluno")} — ${safeText(r.simuladoTitulo||"Simulado")}</strong><p>${new Date(r.enviadoEm||Date.now()).toLocaleString("pt-BR")} · Objetivas: ${res.acertosObjetivas||0}/${res.totalObjetivas||0} · Aproveitamento parcial: ${res.aproveitamento||0}% ${res.discursivas?`· ${res.discursivas} discursiva(s) pendente(s)`:""}</p><p>${areas||"Sem áreas registradas."}</p><p><b>Plano:</b> ${safeText((analise.plano||[]).slice(0,2).join(" "))}</p></div>`}).join("")}</div>`;
+}
+function switchSimuladosSubtab(tab){
+  const online=document.getElementById("simulados-online-section"),manual=document.getElementById("simulados-manual-section");
+  const bOnline=document.getElementById("sim-tab-online"),bManual=document.getElementById("sim-tab-manual");
+  if(online)online.style.display=tab==="manual"?"none":"block";
+  if(manual)manual.style.display=tab==="manual"?"block":"none";
+  bOnline?.classList.toggle("active",tab!=="manual");bManual?.classList.toggle("active",tab==="manual");
+  if(tab==="manual")renderRegistrosManuais(); else renderSimulados();
+}
+function simPerformanceLabel(pct){pct=Number(pct||0);if(pct>=85)return "ótimo domínio";if(pct>=70)return "bom desempenho";if(pct>=50)return "atenção e prática";return "revisão urgente";}
+function buildSimuladoAnalysis(r){
+  const res=r.resultado||{},areas=r.desempenhoPorArea||{};
+  const entries=Object.entries(areas).sort((a,b)=>Number(a[1].aproveitamento||0)-Number(b[1].aproveitamento||0));
+  const fracas=entries.filter(([_,v])=>Number(v.aproveitamento||0)<70).map(([a])=>a);
+  const fortes=entries.filter(([_,v])=>Number(v.aproveitamento||0)>=80).map(([a])=>a);
+  const pct=Number(res.aproveitamento||0);
+  const diagnostico=pct>=85?"Você demonstrou domínio muito bom nas questões objetivas. Agora vale manter a constância e revisar os pequenos erros.":pct>=70?"Você teve um bom resultado geral, mas ainda existem conteúdos específicos que merecem reforço para ganhar segurança.":pct>=50?"Seu resultado mostra que você já entende parte do conteúdo, porém precisa praticar com mais regularidade e corrigir os tipos de erro mais comuns.":"O resultado indica necessidade de retomar a base com calma, refazer exemplos resolvidos e praticar questões guiadas antes de avançar.";
+  const plano=[];
+  if(fracas.length)plano.push(`Revisar primeiro: ${fracas.join(", ")}.`); else plano.push("Manter a revisão das áreas trabalhadas para consolidar o desempenho.");
+  plano.push("Refazer as questões erradas sem olhar o gabarito e anotar o motivo do erro.");
+  plano.push("Resolver uma nova lista curta com 5 a 10 questões dos conteúdos com menor aproveitamento.");
+  if(res.discursivas)plano.push("Aguardar a correção das discursivas e comparar sua resposta com o critério esperado.");
+  const dicas=["Separe os erros por tipo: conteúdo, cálculo, interpretação ou falta de atenção.","Estude primeiro as áreas abaixo de 70% de aproveitamento.","Depois de revisar, faça novas questões parecidas para confirmar se aprendeu."];
+  return{diagnostico,fracas,fortes,plano,dicas,perfil:simPerformanceLabel(pct)};
+}
+function manualRowsVisible(){
+  let list=isTeacher()?(allRegistrosManuaisQuestoes||[]):(registrosManuaisQuestoes||[]);
+  if(isTeacher()&&globalStudentFilter&&globalStudentFilter!=="all")list=list.filter(r=>r.studentUid===globalStudentFilter);
+  return list.sort((a,b)=>(b.criadoEm||0)-(a.criadoEm||0));
+}
+async function addRegistroManualQuestoes(){
+  if(isTeacher())return alert("Entre como aluno para registrar questões manuais.");
+  const material=document.getElementById("manual-material")?.value.trim()||"";
+  const questoes=document.getElementById("manual-questoes")?.value.trim()||"";
+  const area=document.getElementById("manual-area")?.value.trim()||"Geral";
+  const data=document.getElementById("manual-data")?.value||today();
+  const total=Number(document.getElementById("manual-total")?.value||0);
+  const acertos=Number(document.getElementById("manual-acertos")?.value||0);
+  const obs=document.getElementById("manual-obs")?.value.trim()||"";
+  if(!material)return alert("Informe o material usado.");
+  if(!questoes)return alert("Informe quais questões foram feitas.");
+  if(!total||total<1)return alert("Informe o total de questões.");
+  if(acertos<0||acertos>total)return alert("Os acertos precisam ficar entre 0 e o total de questões.");
+  const erros=total-acertos,aproveitamento=Math.round((acertos/total)*100);
+  const payload={material,questoes,area,total,acertos,erros,aproveitamento,observacao:obs,data,studentUid:ownUid(),studentName:currentProfile?.name||currentUser?.email,studentEmail:currentUser?.email,createdBy:ownUid(),criadoEm:Date.now()};
+  try{
+    await db.ref("registrosManuaisQuestoes/"+ownUid()).push(payload);
+    ["manual-material","manual-questoes","manual-area","manual-total","manual-acertos","manual-obs"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    const dt=document.getElementById("manual-data"); if(dt)dt.value=today();
+    alert("Registro manual salvo!");
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+}
+async function delRegistroManualQuestoes(studentUid,id){
+  const can=!isTeacher()?studentUid===ownUid():(isPauloMaster()||teacherOwnsStudent(studentUid));
+  if(!can)return alert("Você não pode excluir este registro.");
+  if(confirm("Excluir este registro manual?"))await db.ref(`registrosManuaisQuestoes/${studentUid}/${id}`).remove();
+}
+function renderRegistrosManuais(){
+  const summary=document.getElementById("manual-summary"),listEl=document.getElementById("manual-registros-list");
+  if(!summary&&!listEl)return;
+  const rows=manualRowsVisible();
+  const title=document.getElementById("manual-list-title"); if(title)title.textContent=isTeacher()?"Registros manuais dos alunos":"Meus registros manuais";
+  const title2=document.getElementById("manual-summary-title"); if(title2)title2.textContent=isTeacher()?"Resumo dos registros manuais":"Resumo das minhas questões manuais";
+  let total=0,acertos=0,areas={};
+  rows.forEach(r=>{total+=Number(r.total||0);acertos+=Number(r.acertos||0);const area=r.area||"Geral";if(!areas[area])areas[area]={total:0,acertos:0};areas[area].total+=Number(r.total||0);areas[area].acertos+=Number(r.acertos||0);});
+  const pct=total?Math.round((acertos/total)*100):0;
+  const areaText=Object.entries(areas).sort((a,b)=>((b[1].total?b[1].acertos/b[1].total:0)-(a[1].total?a[1].acertos/a[1].total:0))).map(([a,v])=>`${safeText(a)}: ${v.total?Math.round(v.acertos/v.total*100):0}% (${v.acertos}/${v.total})`).join(" · ");
+  if(summary)summary.innerHTML=rows.length?`<div class="manual-summary-grid"><div class="manual-summary-card"><strong>${rows.length}</strong><span>registros</span></div><div class="manual-summary-card"><strong>${total}</strong><span>questões</span></div><div class="manual-summary-card"><strong>${acertos}</strong><span>acertos</span></div><div class="manual-summary-card"><strong>${pct}%</strong><span>aproveitamento</span></div></div><p class="item-text"><b>Por área:</b> ${areaText||"Sem áreas registradas."}</p>`:'<div class="empty-state"><div>✍️</div>Nenhum registro manual ainda.</div>';
+  if(listEl)listEl.innerHTML=rows.length?`<div class="manual-list">${rows.map(renderManualItem).join("")}</div>`:'<div class="empty-state"><div>✍️</div>Nenhum registro manual ainda.</div>';
+}
+function renderManualItem(r){
+  return `<div class="manual-item"><div class="manual-item-head"><strong>${safeText(r.studentName||"Aluno")} · ${safeText(r.material||"Material")}</strong><small>${formatDate(r.data||"")} · ${new Date(r.criadoEm||Date.now()).toLocaleString("pt-BR")}</small></div><div class="simulado-meta" style="margin-left:0"><span class="badge">${safeText(r.area||"Geral")}</span><span class="badge ok">${r.acertos||0}/${r.total||0} acertos</span><span class="badge ${Number(r.aproveitamento||0)>=70?"ok":Number(r.aproveitamento||0)>=50?"warn":"danger"}">${r.aproveitamento||0}%</span></div><p><b>Questões:</b> ${safeText(r.questoes||"")}</p>${r.observacao?`<p><b>Observação:</b> ${safeText(r.observacao)}</p>`:""}<div class="simulado-actions" style="margin-left:0"><button class="btn-small" onclick="delRegistroManualQuestoes('${r.studentUid||ownUid()}','${r.id}')">Excluir</button></div></div>`;
 }
 
 function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
