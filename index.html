@@ -1988,6 +1988,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .simulado-analysis-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}.simulado-analysis-card{background:#f8fbfa;border:1px solid var(--borda);border-radius:16px;padding:13px}.simulado-analysis-card strong{display:block;color:var(--azul);font-size:14px;margin-bottom:4px}.simulado-analysis-card span{font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4}.simulado-action-plan{display:grid;gap:8px;margin-top:12px}.simulado-action-step{background:#fff;border:1.5px solid var(--borda);border-radius:14px;padding:11px 12px;font-size:13px;color:var(--azul-light);font-weight:800}.simulado-action-step b{color:var(--verde-dark)}
 .manual-questions-hero{background:#fff;border:1.5px solid var(--borda);border-left:5px solid var(--verde);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.manual-questions-hero h3{font-size:18px;color:var(--azul);margin-bottom:5px}.manual-questions-hero p{font-size:13px;color:var(--cinza);line-height:1.45}.manual-list{display:grid;gap:10px}.manual-item{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}.manual-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}.manual-item-head strong{font-size:14px;color:var(--azul)}.manual-item-head small{font-size:11px;color:var(--cinza);font-weight:900;white-space:nowrap}.manual-item p{font-size:12px;color:var(--cinza);line-height:1.45;margin-top:4px}.manual-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.manual-summary-card{background:#fff;border:1px solid var(--borda);border-radius:15px;padding:12px;text-align:center}.manual-summary-card strong{display:block;font-size:22px;color:var(--verde-dark)}.manual-summary-card span{display:block;font-size:10px;font-weight:900;color:var(--cinza);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}@media(max-width:720px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr 1fr}.manual-item-head{flex-direction:column}.manual-item-head small{white-space:normal}}@media(max-width:460px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr}}
 
+@media(max-width:720px){.linked-student-filter-grid[style]{grid-template-columns:1fr!important}}
 </style>
 </head>
 <body>
@@ -2254,6 +2255,8 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div class="stats-grid">
           <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="painel-fin-previsto">R$ 0,00</div><div class="stat-label">faturamento</div></div>
           <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-num" id="painel-fin-recebido">R$ 0,00</div><div class="stat-label">líquido</div></div>
+          <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num" id="painel-fin-horas">0h</div><div class="stat-label">horas</div></div>
+          <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="painel-fin-aulas">0</div><div class="stat-label">aulas</div></div>
         </div>
       </div>
       <div class="card"><div class="card-title">Tarefas pendentes</div><div id="painel-tarefas"></div></div>
@@ -3006,19 +3009,25 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
     <div id="tab-financeiro" class="tab-panel finance-only" style="display:none">
       <div class="linked-student-filter">
         <div class="filter-head">
-          <strong>Filtro financeiro por aluno</strong>
+          <strong>Filtros financeiros</strong>
           <span id="financeiro-filter-count">Todos os lançamentos</span>
         </div>
-        <div class="linked-student-filter-grid">
+        <div class="linked-student-filter-grid" style="grid-template-columns:1fr 1fr auto">
           <div class="form-field" style="margin-bottom:0">
-            <label>Ver financeiro de</label>
+            <label>Aluno</label>
             <select id="financeiro-student-filter" onchange="setFinanceiroStudentFilter(this.value)">
               <option value="all">Todos os alunos</option>
             </select>
           </div>
-          <button class="btn-small primary" onclick="setFinanceiroStudentFilter('all')" style="min-height:42px">Ver todos</button>
+          <div class="form-field" style="margin-bottom:0">
+            <label>Professor</label>
+            <select id="financeiro-teacher-filter" onchange="setFinanceiroTeacherFilter(this.value)">
+              <option value="all">Todos os professores</option>
+            </select>
+          </div>
+          <button class="btn-small primary" onclick="clearFinanceiroFilters()" style="min-height:42px">Ver todos</button>
         </div>
-        <p>Use esse filtro para ver faturamento, repasse, líquido e lançamentos de um aluno específico.</p>
+        <p>Use esses filtros para ver faturamento, repasse, líquido, horas e lançamentos por aluno e/ou professor.</p>
       </div>
 
       <div class="card">
@@ -3029,6 +3038,8 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-num" id="fin-mes-faturamento">R$ 0,00</div><div class="stat-label">faturamento do mês</div></div>
         <div class="stat-card"><div class="stat-icon">👨‍🏫</div><div class="stat-num" id="fin-mes-repasse">R$ 0,00</div><div class="stat-label">repasse do mês</div></div>
         <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-num" id="fin-mes-liquido">R$ 0,00</div><div class="stat-label">líquido do mês</div></div>
+        <div class="stat-card"><div class="stat-icon">⏱️</div><div class="stat-num" id="fin-mes-horas">0h</div><div class="stat-label">horas do mês</div></div>
+        <div class="stat-card"><div class="stat-icon">📚</div><div class="stat-num" id="fin-mes-aulas">0</div><div class="stat-label">aulas do mês</div></div>
         <div class="stat-card"><div class="stat-icon">📆</div><div class="stat-num" id="fin-ano-liquido">R$ 0,00</div><div class="stat-label">líquido no ano</div></div>
       </div>
       <div class="card">
@@ -3806,6 +3817,12 @@ function populateStudentSelects(){
       filter.value=globalStudentFilter;
     }
   });
+  const finProf=document.getElementById("financeiro-teacher-filter");
+  if(finProf){
+    finProf.innerHTML=(isPauloMaster()?`<option value="all">Todos os professores</option>`:`<option value="${ownUid()}">Meu acesso</option>`)+teacherOptions;
+    if(!isPauloMaster())financeiroTeacherFilter=ownUid();
+    finProf.value=financeiroTeacherFilter||"all";
+  }
   updateFinanceiroFilterCount();
 }
 function getUserName(uid){const u=users.find(x=>x.id===uid);return u?(u.name||u.email):uid}
@@ -3848,15 +3865,13 @@ function updateFinanceiroFilterCount(){
   if(!el)return;
   const mes=document.getElementById("fin-mes")?.value||"";
   let list=[];
-  try{ list=typeof visibleByFilter==="function"?visibleByFilter(allAulas||[]):(allAulas||[]); }catch(e){ list=allAulas||[]; }
+  try{ list=typeof financeiroBaseAulas==="function"?financeiroBaseAulas():(allAulas||[]); }catch(e){ list=allAulas||[]; }
   if(mes)list=list.filter(a=>(a.data||"").slice(0,7)===mes);
   const total=list.length;
-  if(globalStudentFilter==="all"){
-    el.textContent=`${total} lançamento${total===1?"":"s"}`;
-  }else{
-    const nome=getUserName(globalStudentFilter)||"Aluno";
-    el.textContent=`${nome} · ${total} lançamento${total===1?"":"s"}`;
-  }
+  const partes=[];
+  if(globalStudentFilter && globalStudentFilter!=="all")partes.push(getUserName(globalStudentFilter)||"Aluno");
+  if(financeiroTeacherFilter && financeiroTeacherFilter!=="all")partes.push(getUserName(financeiroTeacherFilter)||"Professor");
+  el.textContent=`${partes.length?partes.join(" + ")+" · ":""}${total} lançamento${total===1?"":"s"}`;
 }
 
 
@@ -5736,19 +5751,48 @@ function renderManualItem(r){
 
 function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
 function aulaLiquido(a){return Number(a.valor||0)-Number(a.repasseProfessor||0)}
+function aulaMinutos(a){
+  const dur=Number(a.dur||0);
+  if(dur>0)return dur;
+  return calcularDuracao(a.inicio||"",a.fim||"");
+}
+function financeiroBaseAulas(){
+  let base=visibleByFilter(allAulas||[]);
+  if(financeiroTeacherFilter && financeiroTeacherFilter!=="all"){
+    base=base.filter(a=>(a.professorUid||a.teacherUid||a.ownerTeacherUid||a.lancadoPorUid||a.createdBy)===financeiroTeacherFilter);
+  }
+  return base;
+}
+function clearFinanceiroFilters(){
+  financeiroTeacherFilter="all";
+  setGlobalStudentFilter("all");
+  const prof=document.getElementById("financeiro-teacher-filter");
+  if(prof)prof.value="all";
+  updateFinanceiro();
+}
+function setFinanceiroTeacherFilter(uid){
+  financeiroTeacherFilter=uid||"all";
+  const el=document.getElementById("financeiro-teacher-filter");
+  if(el)el.value=financeiroTeacherFilter;
+  updateFinanceiro();
+  updatePainelFinanceiro();
+}
 function calcFinanceiro(){
   const mes=document.getElementById("fin-mes")?.value||new Date().toISOString().slice(0,7);
   const ano=document.getElementById("fin-ano")?.value||String(new Date().getFullYear());
-  let mesFaturamento=0,mesRepasse=0,mesLiquido=0,mesConcluido=0,mesPrevisto=0;
-  let anoFaturamento=0,anoRepasse=0,anoLiquido=0;
-  visibleByFilter(allAulas).forEach(a=>{
+  let mesFaturamento=0,mesRepasse=0,mesLiquido=0,mesConcluido=0,mesPrevisto=0,mesMinutos=0,mesAulas=0;
+  let anoFaturamento=0,anoRepasse=0,anoLiquido=0,anoMinutos=0,anoAulas=0;
+  financeiroBaseAulas().forEach(a=>{
     const valor=Number(a.valor||0);
     const repasse=Number(a.repasseProfessor||0);
     const liquido=valor-repasse;
+    const minutos=aulaMinutos(a);
     const status=a.statusFinanceiro||"previsto";
     const data=a.data||"";
     if(!data)return;
     if(data.slice(0,7)===mes){
+      mesAulas++;
+      mesMinutos+=minutos;
       mesFaturamento+=valor;
       mesRepasse+=repasse;
       mesLiquido+=liquido;
@@ -5756,24 +5800,30 @@ function calcFinanceiro(){
       else mesPrevisto+=valor;
     }
     if(data.slice(0,4)===String(ano)){
+      anoAulas++;
+      anoMinutos+=minutos;
       anoFaturamento+=valor;
       anoRepasse+=repasse;
       anoLiquido+=liquido;
     }
   });
-  return{mesFaturamento,mesRepasse,mesLiquido,mesConcluido,mesPrevisto,anoFaturamento,anoRepasse,anoLiquido};
+  return{mesFaturamento,mesRepasse,mesLiquido,mesConcluido,mesPrevisto,mesMinutos,mesAulas,anoFaturamento,anoRepasse,anoLiquido,anoMinutos,anoAulas};
 }
 function updatePainelFinanceiro(){
   if(!isFinanceUser())return;
   const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-  let faturamento=0,liquido=0;
-  visibleByFilter(allAulas).forEach(a=>{
+  let faturamento=0,liquido=0,minutos=0,aulasQtd=0;
+  financeiroBaseAulas().forEach(a=>{
     if((a.data||"").slice(0,7)!==m)return;
+    aulasQtd++;
+    minutos+=aulaMinutos(a);
     faturamento+=Number(a.valor||0);
     liquido+=aulaLiquido(a);
   });
-  document.getElementById("painel-fin-previsto").textContent=formatMoney(faturamento);
-  document.getElementById("painel-fin-recebido").textContent=formatMoney(liquido);
+  const prev=document.getElementById("painel-fin-previsto"); if(prev)prev.textContent=formatMoney(faturamento);
+  const rec=document.getElementById("painel-fin-recebido"); if(rec)rec.textContent=formatMoney(liquido);
+  const hrs=document.getElementById("painel-fin-horas"); if(hrs)hrs.textContent=formatDuracao(minutos);
+  const qtd=document.getElementById("painel-fin-aulas"); if(qtd)qtd.textContent=String(aulasQtd);
 }
 function updateFinanceiro(){
   if(!isFinanceUser())return;
@@ -5782,6 +5832,8 @@ function updateFinanceiro(){
   document.getElementById("fin-mes-faturamento").textContent=formatMoney(d.mesFaturamento);
   document.getElementById("fin-mes-repasse").textContent=formatMoney(d.mesRepasse);
   document.getElementById("fin-mes-liquido").textContent=formatMoney(d.mesLiquido);
+  const finHoras=document.getElementById("fin-mes-horas"); if(finHoras)finHoras.textContent=formatDuracao(d.mesMinutos);
+  const finAulas=document.getElementById("fin-mes-aulas"); if(finAulas)finAulas.textContent=String(d.mesAulas);
   document.getElementById("fin-ano-faturamento").textContent=formatMoney(d.anoFaturamento);
   document.getElementById("fin-ano-repasse").textContent=formatMoney(d.anoRepasse);
   document.getElementById("fin-ano-liquido").textContent=formatMoney(d.anoLiquido);
@@ -5794,9 +5846,9 @@ function updateFinanceiro(){
 function renderFinanceiroLista(){
   const el=document.getElementById("fin-lista"); if(!el)return;
   const mes=document.getElementById("fin-mes")?.value;
-  const base=visibleByFilter(allAulas); const list=mes?base.filter(a=>(a.data||"").slice(0,7)===mes):base;
+  const base=financeiroBaseAulas(); const list=mes?base.filter(a=>(a.data||"").slice(0,7)===mes):base;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}
-  el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Professor</th><th>Faturamento</th><th>Repasse</th><th>Líquido</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}<br><small>${safeText(a.escola||"")}</small></td><td>${safeText(a.professorNome||"")}</td><td>${formatMoney(a.valor||0)}</td><td>${formatMoney(a.repasseProfessor||0)}</td><td>${formatMoney(aulaLiquido(a))}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`;
+  el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Professor</th><th>Horas</th><th>Faturamento</th><th>Repasse</th><th>Líquido</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}<br><small>${safeText(a.escola||"")}</small></td><td>${safeText(a.professorNome||"")}</td><td>${formatDuracao(aulaMinutos(a))}</td><td>${formatMoney(a.valor||0)}</td><td>${formatMoney(a.repasseProfessor||0)}</td><td>${formatMoney(aulaLiquido(a))}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`;
 }
 
 const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"},custom:{sec:900,label:"Personalizado"}};
