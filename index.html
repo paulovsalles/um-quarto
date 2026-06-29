@@ -6010,5 +6010,224 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
   </div>
 </div>
 
+  
+<style>
+/* ===== PATCH: FILTRO FINANCEIRO POR ALUNO ===== */
+.finance-student-filter-patch{
+  background:#fff;
+  border:1.5px solid var(--borda);
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+}
+.finance-student-filter-patch .filter-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:10px;
+}
+.finance-student-filter-patch .filter-head strong{
+  font-size:13px;
+  color:var(--azul);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.finance-student-filter-patch .filter-head span{
+  font-size:12px;
+  font-weight:900;
+  color:var(--verde-dark);
+  background:#e8f5f3;
+  padding:4px 9px;
+  border-radius:999px;
+}
+.finance-student-filter-grid-patch{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+  align-items:end;
+}
+.finance-student-filter-patch p{
+  font-size:12px;
+  color:var(--cinza);
+  line-height:1.4;
+  font-weight:700;
+  margin-top:8px;
+}
+@media(max-width:720px){
+  .finance-student-filter-grid-patch{grid-template-columns:1fr}
+}
+</style>
+
+<script>
+/* ===== PATCH: FILTRO FINANCEIRO POR ALUNO ===== */
+(function(){
+  function patchReady(fn){
+    if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", fn);
+    else fn();
+  }
+
+  function getSafeText(value){
+    if(typeof safeText === "function") return safeText(value);
+    return String(value ?? "")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  window.setFinanceiroStudentFilter = function(uid){
+    window.globalStudentFilter = uid || "all";
+
+    [
+      "global-student-filter",
+      "aulas-student-filter",
+      "calendario-student-filter",
+      "avaliacoes-student-filter",
+      "resultados-student-filter",
+      "financeiro-student-filter"
+    ].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.value = window.globalStudentFilter;
+    });
+
+    if(typeof renderTarefas === "function") renderTarefas();
+    if(typeof renderPainelTarefas === "function") renderPainelTarefas();
+    if(typeof renderAulas === "function") renderAulas();
+    if(typeof renderAvaliacoes === "function") renderAvaliacoes();
+    if(typeof renderResultados === "function") renderResultados();
+    if(typeof renderCalendario === "function") renderCalendario();
+    if(typeof updateStats === "function") updateStats();
+    if(typeof updateProgresso === "function") updateProgresso();
+    if(typeof updateFinanceiro === "function") updateFinanceiro();
+    if(typeof updateFinanceiroFilterCount === "function") updateFinanceiroFilterCount();
+  };
+
+  window.updateFinanceiroFilterCount = function(){
+    var el = document.getElementById("financeiro-filter-count");
+    if(!el) return;
+
+    var mes = document.getElementById("fin-mes")?.value || "";
+    var list = [];
+
+    try{
+      if(typeof visibleByFilter === "function") list = visibleByFilter(window.allAulas || []);
+      else list = window.allAulas || [];
+    }catch(e){
+      list = window.allAulas || [];
+    }
+
+    if(mes){
+      list = list.filter(function(a){ return String(a.data || "").slice(0,7) === mes; });
+    }
+
+    var total = list.length;
+    var filtro = window.globalStudentFilter || "all";
+
+    if(filtro === "all"){
+      el.textContent = total + " lançamento" + (total === 1 ? "" : "s");
+    }else{
+      var nome = "Aluno";
+      try{
+        if(typeof getUserName === "function") nome = getUserName(filtro) || "Aluno";
+      }catch(e){}
+      el.textContent = nome + " · " + total + " lançamento" + (total === 1 ? "" : "s");
+    }
+  };
+
+  function populateFinanceiroStudentFilter(){
+    var sel = document.getElementById("financeiro-student-filter");
+    if(!sel) return;
+
+    var previous = window.globalStudentFilter || sel.value || "all";
+    var alunos = [];
+
+    try{
+      alunos = (window.users || []).filter(function(u){
+        return u && u.role === "student" && String(u.email || "").toLowerCase() !== "salles.paulo@hotmail.com";
+      });
+    }catch(e){ alunos = []; }
+
+    var html = '<option value="all">Todos os alunos</option>';
+    alunos.forEach(function(u){
+      html += '<option value="' + getSafeText(u.id) + '">' + getSafeText(u.name || u.email || "Aluno") + '</option>';
+    });
+
+    sel.innerHTML = html;
+
+    var exists = Array.from(sel.options).some(function(o){ return o.value === previous; });
+    sel.value = exists ? previous : "all";
+  }
+
+  function injectFinanceiroFilter(){
+    var tab = document.getElementById("tab-financeiro");
+    if(!tab) return;
+    if(document.getElementById("financeiro-student-filter")) return;
+
+    var box = document.createElement("div");
+    box.className = "finance-student-filter-patch";
+    box.innerHTML = `
+      <div class="filter-head">
+        <strong>Filtro financeiro por aluno</strong>
+        <span id="financeiro-filter-count">Todos os lançamentos</span>
+      </div>
+      <div class="finance-student-filter-grid-patch">
+        <div class="form-field" style="margin-bottom:0">
+          <label>Ver financeiro de</label>
+          <select id="financeiro-student-filter" onchange="setFinanceiroStudentFilter(this.value)">
+            <option value="all">Todos os alunos</option>
+          </select>
+        </div>
+        <button class="btn-small primary" onclick="setFinanceiroStudentFilter('all')" style="min-height:42px">Ver todos</button>
+      </div>
+      <p>Use esse filtro para ver faturamento, repasse, líquido e lançamentos de um aluno específico.</p>
+    `;
+
+    tab.insertBefore(box, tab.firstElementChild);
+    populateFinanceiroStudentFilter();
+    updateFinanceiroFilterCount();
+  }
+
+  patchReady(function(){
+    injectFinanceiroFilter();
+
+    var oldPopulate = window.populateStudentSelects;
+    if(typeof oldPopulate === "function"){
+      window.populateStudentSelects = function(){
+        oldPopulate.apply(this, arguments);
+        populateFinanceiroStudentFilter();
+        updateFinanceiroFilterCount();
+      };
+    }
+
+    var oldSetGlobal = window.setGlobalStudentFilter;
+    if(typeof oldSetGlobal === "function"){
+      window.setGlobalStudentFilter = function(uid){
+        oldSetGlobal.apply(this, arguments);
+        var fin = document.getElementById("financeiro-student-filter");
+        if(fin) fin.value = window.globalStudentFilter || uid || "all";
+        updateFinanceiroFilterCount();
+      };
+    }
+
+    var oldUpdateFin = window.updateFinanceiro;
+    if(typeof oldUpdateFin === "function"){
+      window.updateFinanceiro = function(){
+        oldUpdateFin.apply(this, arguments);
+        populateFinanceiroStudentFilter();
+        updateFinanceiroFilterCount();
+      };
+    }
+
+    var observer = new MutationObserver(function(){
+      injectFinanceiroFilter();
+    });
+    observer.observe(document.body, {childList:true, subtree:true});
+  });
+})();
+</script>
+
 </body>
 </html>
