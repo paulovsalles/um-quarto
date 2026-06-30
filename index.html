@@ -2297,7 +2297,11 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
               <option value="all">Todos os alunos</option>
             </select>
           </div>
-          <button class="btn-small primary" onclick="syncTaskAddStudentWithFilter()" style="min-height:42px">Adicionar para este aluno</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn-small primary" onclick="syncTaskAddStudentWithFilter()" style="min-height:42px">Adicionar para este aluno</button>
+              <button class="btn-small" onclick="setTaskOnlyMine()" style="min-height:42px">Só minhas tarefas</button>
+              <button class="btn-small" onclick="setTaskStudentFilter('all')" style="min-height:42px">Todos os alunos</button>
+            </div>
         </div>
         <p>Use esse filtro para acompanhar o Kanban de um aluno específico. Ao adicionar uma tarefa, o campo de aluno já fica alinhado com o filtro selecionado.</p>
       </div>
@@ -6034,6 +6038,156 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
   ["login-email","login-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()}));
   ["reg-name","reg-email","reg-pass"].forEach(id=>document.getElementById(id)?.addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()}));
 });
+
+/* ===== PATCH FINAL: filtro de tarefas por aluno robusto + botão "Só minhas tarefas" ===== */
+(function(){
+  function uqIsTeacherLike(u){
+    const role=String(u?.role||u?.tipo||u?.perfil||"").toLowerCase();
+    const email=String(u?.email||"").toLowerCase();
+    return role==="teacher" || role==="professor" || u?.financeiro===true || u?.admin===true || email===String(PROFESSOR_EMAIL||"").toLowerCase() || email.endsWith("@"+TEACHER_LOGIN_DOMAIN);
+  }
+
+  function uqIsParentLike(u){
+    const role=String(u?.role||u?.tipo||u?.perfil||"").toLowerCase();
+    const email=String(u?.email||"").toLowerCase();
+    return role==="parent" || role==="pais" || role==="responsavel" || email.endsWith("@"+PARENT_LOGIN_DOMAIN);
+  }
+
+  function uqIsStudentLike(u){
+    if(!u)return false;
+    const role=String(u.role||u.tipo||u.perfil||"").toLowerCase();
+    const email=String(u.email||"").toLowerCase();
+    if(email===String(PROFESSOR_EMAIL||"").toLowerCase())return false;
+    if(uqIsTeacherLike(u) || uqIsParentLike(u))return false;
+    return role==="student" || role==="aluno" || role==="estudante" || u.aluno===true || u.student===true || !!u.username || email.endsWith("@"+STUDENT_LOGIN_DOMAIN) || (!!u.id && u.id!==ownUid());
+  }
+
+  function uqPushStudent(map,uid,data){
+    if(!uid)return;
+    uid=String(uid);
+    if(uid==="all")return;
+    const previous=map.get(uid)||{};
+    const merged={...previous,...(data||{}),id:uid};
+    if(!merged.name && merged.studentName)merged.name=merged.studentName;
+    if(!merged.email && merged.studentEmail)merged.email=merged.studentEmail;
+    if(!merged.username && merged.login)merged.username=merged.login;
+    map.set(uid,merged);
+  }
+
+  window.getStudentUsersForSelect=function(){
+    const map=new Map();
+
+    (users||[]).forEach(u=>{
+      if(!u || !u.id)return;
+      const canSee=isPauloMaster() || teacherLinkedStudent(u) || String(u.id)===String(ownUid());
+      if(canSee && uqIsStudentLike(u))uqPushStudent(map,u.id,u);
+    });
+
+    const lists=[allTarefas,allAulas,allAvaliacoes,allResultados,allNotas,allCalendario,allRespostasSimulados,allRegistrosManuaisQuestoes];
+    lists.forEach(list=>{
+      (list||[]).forEach(x=>{
+        const sid=x?.studentUid||x?.ownerUid||x?.userId||x?.alunoUid||x?.uidAluno;
+        if(!sid)return;
+        const canSee=isPauloMaster() || teacherOwnsItem(x) || String(sid)===String(ownUid());
+        if(canSee)uqPushStudent(map,sid,{name:x.studentName||x.alunoNome||x.nomeAluno,email:x.studentEmail||x.alunoEmail});
+      });
+    });
+
+    return [...map.values()].filter(u=>String(u.id)!==String(ownUid()) || uqIsStudentLike(u)).sort((a,b)=>
+      String(a.name||a.email||a.username||"Aluno").localeCompare(String(b.name||b.email||b.username||"Aluno"),"pt-BR")
+    );
+  };
+
+  function uqStudentOptions(studentUsers){
+    return (studentUsers||[]).map(u=>{
+      const nome=safeText(u.name||u.nome||u.email||u.username||"Aluno");
+      const sub=safeText(u.username||u.login||u.email||"");
+      return `<option value="${safeText(u.id)}">${nome}${sub?` — ${sub}`:""}</option>`;
+    }).join("");
+  }
+
+  const __uqPopulateStudentSelectsBase = populateStudentSelects;
+  populateStudentSelects=function(){
+    try{__uqPopulateStudentSelectsBase()}catch(e){console.warn("populateStudentSelects original falhou:",e)}
+    const studentUsers=getStudentUsersForSelect();
+    const options=uqStudentOptions(studentUsers);
+    const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
+
+    ["a-student","av-student","res-student","nota-student","cal-student","sim-student"].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.innerHTML=options || '<option value="">Nenhum aluno encontrado</option>';
+    });
+
+    const taskSel=document.getElementById("t-student");
+    if(taskSel){
+      const previous=taskSel.value;
+      taskSel.innerHTML=`<option value="${ownUid()}">Geral / meu acesso — ${myName}</option>`+(options || "");
+      if(previous && [...taskSel.options].some(o=>o.value===previous))taskSel.value=previous;
+      else if(taskStudentFilter && taskStudentFilter!=="all" && [...taskSel.options].some(o=>o.value===taskStudentFilter))taskSel.value=taskStudentFilter;
+    }
+
+    const parentSel=document.getElementById("parent-student-select");
+    if(parentSel){
+      const previous=parentSel.value;
+      parentSel.innerHTML='<option value="">Selecione um aluno</option>'+options;
+      if(previous && studentUsers.some(u=>String(u.id)===String(previous)))parentSel.value=previous;
+      else if(globalStudentFilter && globalStudentFilter!=="all" && studentUsers.some(u=>String(u.id)===String(globalStudentFilter)))parentSel.value=globalStudentFilter;
+      else if(studentUsers.length===1)parentSel.value=studentUsers[0].id;
+    }
+
+    ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter","financeiro-student-filter"].forEach(id=>{
+      const filter=document.getElementById(id);
+      if(filter){
+        const previous=filter.value||globalStudentFilter||"all";
+        filter.innerHTML=(isPauloMaster()?`<option value="all">Todos os alunos</option>`:`<option value="all">Meus registros</option>`)+`<option value="${ownUid()}">Meu acesso — ${myName}</option>`+options;
+        filter.value=[...filter.options].some(o=>o.value===previous)?previous:"all";
+      }
+    });
+
+    populateTaskStudentFilter();
+    try{updateFinanceiroFilterCount()}catch(e){}
+  };
+
+  populateTaskStudentFilter=function(){
+    const sel=document.getElementById("task-student-filter");
+    if(!sel || !isTeacher())return;
+    const previous=taskStudentFilter||sel.value||"all";
+    const studentUsers=getStudentUsersForSelect();
+    const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
+    const options=uqStudentOptions(studentUsers);
+    sel.innerHTML=`<option value="all">Todos os alunos</option><option value="${ownUid()}">Só minhas tarefas — ${myName}</option>`+(options || "");
+    taskStudentFilter=[...sel.options].some(o=>o.value===previous)?previous:"all";
+    sel.value=taskStudentFilter;
+  };
+
+  window.setTaskOnlyMine=function(){
+    setTaskStudentFilter(ownUid());
+    const addSel=document.getElementById("t-student");
+    if(addSel)addSel.value=ownUid();
+    document.getElementById("t-nome")?.focus();
+  };
+
+  const __uqRenderTarefasBase=renderTarefas;
+  renderTarefas=function(){
+    if(isTeacher()){
+      try{populateTaskStudentFilter()}catch(e){console.warn("Não foi possível atualizar o filtro de tarefas:",e)}
+    }
+    return __uqRenderTarefasBase();
+  };
+
+  const __uqRenderAlunosBase=renderAlunos;
+  renderAlunos=function(){
+    const el=document.getElementById("lista-alunos");
+    if(!el)return __uqRenderAlunosBase();
+    const studentUsers=getStudentUsersForSelect();
+    if(!studentUsers.length){
+      el.innerHTML='<div class="empty-state"><div>👥</div>Nenhum aluno encontrado. Verifique se os alunos existem em /users ou se há registros vinculados a eles.</div>';
+      return;
+    }
+    el.innerHTML=studentUsers.map(u=>`<div class="item"><div class="item-title">${safeText(u.name||u.nome||u.email||"Aluno")}</div><div class="item-text">${u.username?`Login: ${safeText(u.username)} · `:""}${safeText(u.email||"Sem e-mail visível")}</div><div class="item-meta"><span class="badge ok">Aluno</span>${teacherLinkedStudent(u)?'<span class="badge">vinculado</span>':''}</div></div>`).join("");
+  };
+})();
+
 </script>
 
 <div class="kanban-edit-overlay" id="kanban-edit-overlay" onclick="if(event.target.id==='kanban-edit-overlay')closeTarefaEdit()">
