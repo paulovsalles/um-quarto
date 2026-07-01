@@ -1989,6 +1989,27 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .manual-questions-hero{background:#fff;border:1.5px solid var(--borda);border-left:5px solid var(--verde);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.manual-questions-hero h3{font-size:18px;color:var(--azul);margin-bottom:5px}.manual-questions-hero p{font-size:13px;color:var(--cinza);line-height:1.45}.manual-list{display:grid;gap:10px}.manual-item{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}.manual-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}.manual-item-head strong{font-size:14px;color:var(--azul)}.manual-item-head small{font-size:11px;color:var(--cinza);font-weight:900;white-space:nowrap}.manual-item p{font-size:12px;color:var(--cinza);line-height:1.45;margin-top:4px}.manual-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.manual-summary-card{background:#fff;border:1px solid var(--borda);border-radius:15px;padding:12px;text-align:center}.manual-summary-card strong{display:block;font-size:22px;color:var(--verde-dark)}.manual-summary-card span{display:block;font-size:10px;font-weight:900;color:var(--cinza);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}@media(max-width:720px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr 1fr}.manual-item-head{flex-direction:column}.manual-item-head small{white-space:normal}}@media(max-width:460px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr}}
 
 @media(max-width:720px){.linked-student-filter-grid[style]{grid-template-columns:1fr!important}}
+
+/* ===== CHECKLIST DE ESTUDOS ===== */
+.checklist-category{border:1.5px solid var(--borda);border-radius:16px;background:#fff;padding:14px;margin-bottom:12px;box-shadow:0 8px 20px rgba(40,71,84,.04)}
+.checklist-category-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.checklist-category-head strong{font-size:15px;color:var(--azul)}
+.checklist-category-head span{font-size:12px;font-weight:800;color:var(--cinza)}
+.checklist-progress{height:8px;background:var(--bg);border-radius:999px;overflow:hidden;margin-bottom:12px}
+.checklist-progress span{display:block;height:100%;background:var(--verde);border-radius:999px}
+.checklist-item{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--borda);border-radius:12px;padding:10px;margin-bottom:8px;background:#fbfdfc}
+.checklist-item.done{opacity:.65;background:#f5fbfa}
+.checklist-item.done .checklist-item-text{text-decoration:line-through;color:var(--cinza)}
+.checklist-check{width:24px;height:24px;min-width:24px;border-radius:8px;border:2px solid var(--borda);background:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.checklist-check.done{background:var(--verde);border-color:var(--verde)}
+.checklist-check svg{display:none;width:14px;height:14px;stroke:#fff}
+.checklist-check.done svg{display:block}
+.checklist-item-body{flex:1;min-width:0}
+.checklist-item-text{font-size:14px;font-weight:800;color:var(--azul)}
+.checklist-item-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.checklist-item-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.checklist-edit-box{margin-top:10px;border-top:1px dashed var(--borda);padding-top:10px}
+@media(max-width:720px){.checklist-item{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -3010,6 +3031,62 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
       </div>
     </div>
 
+    <div id="tab-checklist" class="tab-panel">
+      <div class="painel-saudacao" style="margin-bottom:14px">
+        <h2>Checklist de Estudos ✅</h2>
+        <p>Organize matérias e tópicos, marque o que já foi estudado e acompanhe o progresso em tempo real.</p>
+      </div>
+
+      <div class="linked-student-filter teacher-only" style="display:none">
+        <div class="filter-head">
+          <strong>Filtro do checklist por aluno</strong>
+          <span id="checklist-filter-count">Filtro por aluno</span>
+        </div>
+        <div class="linked-student-filter-grid">
+          <div class="form-field" style="margin-bottom:0">
+            <label>Ver dados de</label>
+            <select id="checklist-student-filter" onchange="setGlobalStudentFilter(this.value)">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <button class="btn-small primary" onclick="syncStudentSelectWithGlobalFilter('chk-student','chk-texto')" style="min-height:42px">Usar este aluno no formulário</button>
+        </div>
+        <p>Filtre o checklist por aluno e use o mesmo aluno ao adicionar um novo item.</p>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-card"><div class="num" id="chk-total">0</div><div class="label">itens no total</div></div>
+        <div class="result-card"><div class="num" id="chk-feitos">0</div><div class="label">concluídos</div></div>
+        <div class="result-card"><div class="num" id="chk-pendentes">0</div><div class="label">pendentes</div></div>
+        <div class="result-card"><div class="num" id="chk-pct">0%</div><div class="label">progresso geral</div></div>
+      </div>
+
+      <div class="card">
+        <div class="prog-bar-label"><span>Progresso geral</span><span id="chk-pct-label">0%</span></div>
+        <div class="prog-bar-track"><div class="prog-bar-fill" id="chk-progress-bar"></div></div>
+      </div>
+
+      <div class="add-form">
+        <h3>+ Novo item do checklist</h3>
+        <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="chk-student"></select></div>
+        <div class="form-row">
+          <div class="form-field"><label>Categoria/Matéria</label><input type="text" id="chk-categoria" placeholder="Ex: Matemática, Redação, Química..." list="chk-categorias-existentes"><datalist id="chk-categorias-existentes"></datalist></div>
+          <div class="form-field"><label>Prioridade</label><select id="chk-prioridade"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></div>
+        </div>
+        <div class="form-field"><label>Tópico / o que estudar</label><input type="text" id="chk-texto" placeholder="Ex: Revisar equações do 2º grau"></div>
+        <div class="form-row">
+          <div class="form-field"><label>Prazo (opcional)</label><input type="date" id="chk-prazo"></div>
+          <div class="form-field"><label>Observação (opcional)</label><input type="text" id="chk-obs" placeholder="Ex: página 45 do livro, videoaula X..."></div>
+        </div>
+        <button class="btn-add" onclick="addChecklistItem()">Adicionar ao checklist</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Checklist por matéria</div>
+        <div id="lista-checklist"><div class="empty-state"><div>📋</div>Nenhum item no checklist ainda.</div></div>
+      </div>
+    </div>
+
     <div id="tab-financeiro" class="tab-panel finance-only" style="display:none">
       <div class="linked-student-filter">
         <div class="filter-head">
@@ -3076,6 +3153,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <button class="nav-item clean-primary" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
         <button class="nav-item clean-primary" id="nav-forum" onclick="switchTab('forum')">💬<span>Bate-papo</span></button>
         <button class="nav-item clean-primary" id="nav-simulados" onclick="switchTab('simulados')">🧪<span>Provas/Simulados</span></button>
+        <button class="nav-item clean-primary" id="nav-checklist" onclick="switchTab('checklist')">📋<span>Checklist de Estudos</span></button>
       </div>
     </div>
 
@@ -3144,6 +3222,7 @@ let calendarViewMode = "month";
 let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
 let simulados=[],allSimulados=[],respostasSimulados=[],allRespostasSimulados=[],simuladoAtual=null,registrosManuaisQuestoes=[],allRegistrosManuaisQuestoes=[];
+let checklist=[],allChecklist=[];
 let globalStudentFilter="all";
 let parentStudentUid="",parentAulas=[],parentTarefas=[],parentMessages=[];
 let taskStudentFilter="all";
@@ -3774,8 +3853,18 @@ function attachRealtimeListeners(){
   },e=>{console.error(e);alert("Erro ao carregar registros manuais. Confira as regras do Realtime Database.")});
   unsubscribers.push(()=>manualRef.off());
 
+  const chkRef=isTeacher()?db.ref("checklist"):db.ref("checklist/"+uid);
+  chkRef.on("value",s=>{
+    if(isTeacher()){
+      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,it])=>list.push({id,studentUid,...it})));
+      allChecklist=list.filter(it=>isPauloMaster()||teacherOwnsItem(it)).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));checklist=allChecklist.filter(it=>it.studentUid===uid);
+    }else{checklist=objToArray(s.val()).map(it=>({...it,studentUid:uid})).sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));allChecklist=checklist}
+    renderChecklist();
+  },e=>{console.error(e);alert("Erro ao carregar checklist. Confira as regras do Realtime Database.")});
+  unsubscribers.push(()=>chkRef.off());
+
 }
-function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();renderSimulados();renderRegistrosManuais();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
+function renderAll(){populateStudentSelects();renderAlunos();renderTarefas();renderAulas();renderAvaliacoes();renderCalendario();renderHabitos();renderPrograms();renderForum();renderSimulados();renderRegistrosManuais();renderChecklist();updateStats();updateProgresso();updateFinanceiro();setupTimerRing();updateTimerDisplay()}
 function populateStudentSelects(){
   const studentUsers=users.filter(u=>u.role==="student" && u.email!==PROFESSOR_EMAIL);
   const teacherUsers=isPauloMaster()
@@ -3783,7 +3872,7 @@ function populateStudentSelects(){
     : [{id:ownUid(),name:currentProfile?.name||currentUser?.email,email:currentUser?.email,role:"teacher"}];
   const options=studentUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.username||u.email)}</option>`).join("");
   const teacherOptions=teacherUsers.map(u=>`<option value="${u.id}">${safeText(u.name||u.email)} — ${safeText(u.email||"")}</option>`).join("");
-  ["a-student","av-student","res-student","nota-student","cal-student","sim-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno vinculado</option>'});
+  ["a-student","av-student","res-student","nota-student","cal-student","sim-student","chk-student"].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML=options || '<option value="">Nenhum aluno vinculado</option>'});
 
   const simQuestionSel=document.getElementById("sim-question-simulado");
   if(simQuestionSel){
@@ -3814,7 +3903,7 @@ function populateStudentSelects(){
   }
   populateAulaResultadoSelect();
   const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
-  ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter","financeiro-student-filter"].forEach(id=>{
+  ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter","financeiro-student-filter","checklist-student-filter"].forEach(id=>{
     const filter=document.getElementById(id);
     if(filter){
       filter.innerHTML=(isPauloMaster()?`<option value="all">Todos os alunos</option>`:`<option value="all">Meus registros</option>`)+`<option value="${ownUid()}">Meu acesso — ${myName}</option>`+options;
@@ -3846,7 +3935,7 @@ function visibleByFilter(list){
 }
 function setGlobalStudentFilter(uid){
   globalStudentFilter=uid||"all";
-  ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter","financeiro-student-filter"].forEach(id=>{
+  ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter","financeiro-student-filter","checklist-student-filter"].forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.value=globalStudentFilter;
   });
@@ -3856,6 +3945,7 @@ function setGlobalStudentFilter(uid){
   renderAvaliacoes();
   renderResultados();
   renderCalendario();
+  renderChecklist();
   updateStats();
   updateProgresso();
   updateFinanceiro();
@@ -3896,7 +3986,8 @@ function updateLinkedFilterCounts(){
     ["aulas-filter-count",isTeacher()?visibleByFilter(allAulas).length:aulas.length,"aula","aulas"],
     ["calendario-filter-count",isTeacher()?calendarMergedList().length:calendarMergedList().length,"item","itens"],
     ["avaliacoes-filter-count",isTeacher()?visibleByFilter(allAvaliacoes).length:avaliacoes.length,"avaliação","avaliações"],
-    ["resultados-filter-count",(resultadoBase().res.length+resultadoBase().notasList.length),"registro","registros"]
+    ["resultados-filter-count",(resultadoBase().res.length+resultadoBase().notasList.length),"registro","registros"],
+    ["checklist-filter-count",checklistVisibleList().length,"item","itens"]
   ];
   pairs.forEach(([id,n,sing,pl])=>{
     const el=document.getElementById(id);
@@ -4084,7 +4175,7 @@ function switchTab(tab){
   document.getElementById("tab-"+tab)?.classList.add("active");
   document.getElementById("nav-"+tab)?.classList.add("active");
   if(tab==="progresso")updateProgresso(); if(tab==="resultados")renderResultados(); if(tab==="programas")renderPrograms();
-  if(tab==="forum")renderForum(); if(tab==="simulados")renderSimulados(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()}
+  if(tab==="forum")renderForum(); if(tab==="simulados")renderSimulados(); if(tab==="financeiro")updateFinanceiro(); if(tab==="calendario")renderCalendario(); if(tab==="painel"){updateStats();renderPainelTarefas()} if(tab==="checklist")renderChecklist();
   document.body.classList.remove("mobile-sidebar-open");
   window.scrollTo({top:0,behavior:"instant"});
 }
@@ -5753,6 +5844,129 @@ function renderManualItem(r){
   return `<div class="manual-item"><div class="manual-item-head"><strong>${safeText(r.studentName||"Aluno")} · ${safeText(r.material||"Material")}</strong><small>${formatDate(r.data||"")} · ${new Date(r.criadoEm||Date.now()).toLocaleString("pt-BR")}</small></div><div class="simulado-meta" style="margin-left:0"><span class="badge">${safeText(r.area||"Geral")}</span><span class="badge ok">${r.acertos||0}/${r.total||0} acertos</span><span class="badge ${Number(r.aproveitamento||0)>=70?"ok":Number(r.aproveitamento||0)>=50?"warn":"danger"}">${r.aproveitamento||0}%</span></div><p><b>Questões:</b> ${safeText(r.questoes||"")}</p>${r.observacao?`<p><b>Observação:</b> ${safeText(r.observacao)}</p>`:""}<div class="simulado-actions" style="margin-left:0"><button class="btn-small" onclick="delRegistroManualQuestoes('${r.studentUid||ownUid()}','${r.id}')">Excluir</button></div></div>`;
 }
 
+function checklistVisibleList(){return isTeacher()?visibleByFilter(allChecklist):checklist}
+
+async function addChecklistItem(){
+  const studentUid=selectedStudentOrSelf("chk-student"); if(!studentUid)return alert("Selecione um aluno.");
+  const categoria=document.getElementById("chk-categoria").value.trim();
+  const texto=document.getElementById("chk-texto").value.trim();
+  if(!categoria||!texto)return alert("Preencha a categoria/matéria e o tópico.");
+  try{
+    await ensureTeacherStudentLink(studentUid);
+    await db.ref("checklist/"+studentUid).push({
+      categoria,texto,
+      prioridade:document.getElementById("chk-prioridade")?.value||"media",
+      prazo:document.getElementById("chk-prazo")?.value||"",
+      obs:document.getElementById("chk-obs")?.value.trim()||"",
+      feito:false,
+      studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
+      createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
+    });
+    ["chk-categoria","chk-texto","chk-prazo","chk-obs"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    const pr=document.getElementById("chk-prioridade");if(pr)pr.value="media";
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+}
+
+async function toggleChecklistItem(id,studentUid){
+  const uid=studentUid||ownUid();
+  const item=checklistVisibleList().find(x=>x.id===id&&x.studentUid===uid);
+  if(!item)return;
+  if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode marcar itens vinculados a você.");
+  await db.ref("checklist/"+uid+"/"+id).update({feito:!item.feito,concluidoEm:!item.feito?Date.now():null});
+}
+
+async function delChecklistItem(id,studentUid){
+  const uid=studentUid||ownUid();
+  const item=checklistVisibleList().find(x=>x.id===id&&x.studentUid===uid);
+  if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode excluir itens vinculados a você.");
+  if(!confirm("Excluir este item do checklist?"))return;
+  await db.ref("checklist/"+uid+"/"+id).remove();
+}
+
+function toggleChecklistEdit(id){
+  const el=document.getElementById("chk-edit-"+id); if(!el)return;
+  el.style.display=el.style.display==="none"||!el.style.display?"block":"none";
+}
+
+async function saveChecklistEdit(id,studentUid){
+  const uid=studentUid||ownUid();
+  const item=checklistVisibleList().find(x=>x.id===id&&x.studentUid===uid);
+  if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode editar itens vinculados a você.");
+  const texto=document.getElementById(`chk-edit-texto-${id}`)?.value.trim();
+  if(!texto)return alert("Digite o tópico.");
+  await db.ref("checklist/"+uid+"/"+id).update({
+    categoria:document.getElementById(`chk-edit-categoria-${id}`)?.value.trim()||item.categoria,
+    texto,
+    prioridade:document.getElementById(`chk-edit-prioridade-${id}`)?.value||item.prioridade,
+    prazo:document.getElementById(`chk-edit-prazo-${id}`)?.value||"",
+    obs:document.getElementById(`chk-edit-obs-${id}`)?.value.trim()||""
+  });
+  toggleChecklistEdit(id);
+}
+
+function prioridadeBadgeClass(p){return p==="alta"?"danger":p==="baixa"?"":"warn"}
+
+function renderChecklistItem(it){
+  const uid=it.studentUid||ownUid();
+  const canManage=uid===ownUid()||teacherCanManageItem(it);
+  const prazoInfo=it.prazo?prazoTarefaInfo(it.prazo,it.feito?"concluida":""):null;
+  return `<div class="checklist-item ${it.feito?"done":""}">
+    <div class="checklist-check ${it.feito?"done":""}" onclick="toggleChecklistItem('${it.id}','${uid}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="checklist-item-body">
+      <div class="checklist-item-text">${safeText(it.texto)}</div>
+      <div class="checklist-item-meta">
+        ${isTeacher()?`<span class="badge ok">👤 ${safeText(it.studentName||getUserName(uid))}</span>`:""}
+        <span class="badge ${prioridadeBadgeClass(it.prioridade)}">${priorityLabel(it.prioridade||"media")}</span>
+        ${it.prazo?`<span class="badge ${prazoInfo?prazoInfo.cls:""}">📅 ${formatDate(it.prazo)}</span>`:""}
+        ${it.obs?`<span class="badge">📝 ${safeText(it.obs)}</span>`:""}
+      </div>
+      ${canManage?`<div class="checklist-item-actions">
+        <button class="btn-small" onclick="toggleChecklistEdit('${it.id}')">Editar</button>
+        <button class="btn-small" onclick="delChecklistItem('${it.id}','${uid}')">Excluir</button>
+      </div>
+      <div class="checklist-edit-box" id="chk-edit-${it.id}" style="display:none">
+        <div class="form-row">
+          <div class="form-field"><label>Categoria</label><input id="chk-edit-categoria-${it.id}" value="${safeText(it.categoria||"")}"></div>
+          <div class="form-field"><label>Prioridade</label><select id="chk-edit-prioridade-${it.id}"><option value="baixa" ${it.prioridade==="baixa"?"selected":""}>Baixa</option><option value="media" ${(!it.prioridade||it.prioridade==="media")?"selected":""}>Média</option><option value="alta" ${it.prioridade==="alta"?"selected":""}>Alta</option></select></div>
+        </div>
+        <div class="form-field"><label>Tópico</label><input id="chk-edit-texto-${it.id}" value="${safeText(it.texto||"")}"></div>
+        <div class="form-row">
+          <div class="form-field"><label>Prazo</label><input type="date" id="chk-edit-prazo-${it.id}" value="${safeText(it.prazo||"")}"></div>
+          <div class="form-field"><label>Observação</label><input id="chk-edit-obs-${it.id}" value="${safeText(it.obs||"")}"></div>
+        </div>
+        <button class="btn-small primary" onclick="saveChecklistEdit('${it.id}','${uid}')">Salvar</button>
+      </div>`:""}
+    </div>
+  </div>`;
+}
+
+function renderChecklist(){
+  const list=checklistVisibleList();
+  const total=list.length, feitos=list.filter(x=>x.feito).length, pendentes=total-feitos, pct=total?Math.round(feitos/total*100):0;
+  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  setText("chk-total",total);setText("chk-feitos",feitos);setText("chk-pendentes",pendentes);setText("chk-pct",pct+"%");setText("chk-pct-label",pct+"%");
+  const bar=document.getElementById("chk-progress-bar"); if(bar)bar.style.width=pct+"%";
+
+  const dl=document.getElementById("chk-categorias-existentes");
+  if(dl){const cats=[...new Set(list.map(x=>x.categoria).filter(Boolean))];dl.innerHTML=cats.map(c=>`<option value="${safeText(c)}"></option>`).join("");}
+
+  const el=document.getElementById("lista-checklist"); if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>📋</div>Nenhum item no checklist ainda.</div>';return}
+
+  const grupos={};
+  list.forEach(it=>{const cat=it.categoria||"Sem categoria";(grupos[cat] ||= []).push(it)});
+
+  el.innerHTML=Object.entries(grupos).map(([cat,itens])=>{
+    const done=itens.filter(x=>x.feito).length, pctCat=itens.length?Math.round(done/itens.length*100):0;
+    const ordered=itens.slice().sort((a,b)=>(a.feito===b.feito?0:a.feito?1:-1) || (b.createdAt||0)-(a.createdAt||0));
+    return `<div class="checklist-category">
+      <div class="checklist-category-head"><strong>📚 ${safeText(cat)}</strong><span>${done}/${itens.length} concluídos · ${pctCat}%</span></div>
+      <div class="checklist-progress"><span style="width:${pctCat}%"></span></div>
+      ${ordered.map(it=>renderChecklistItem(it)).join("")}
+    </div>`;
+  }).join("");
+}
+
 function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
 function aulaLiquido(a){return Number(a.valor||0)-Number(a.repasseProfessor||0)}
 function aulaMinutos(a){
@@ -6113,7 +6327,7 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
     const options=uqStudentOptions(studentUsers);
     const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
 
-    ["a-student","av-student","res-student","nota-student","cal-student","sim-student"].forEach(id=>{
+    ["a-student","av-student","res-student","nota-student","cal-student","sim-student","chk-student"].forEach(id=>{
       const el=document.getElementById(id);
       if(el)el.innerHTML=options || '<option value="">Nenhum aluno encontrado</option>';
     });
@@ -6135,7 +6349,7 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
       else if(studentUsers.length===1)parentSel.value=studentUsers[0].id;
     }
 
-    ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter","financeiro-student-filter"].forEach(id=>{
+    ["global-student-filter","aulas-student-filter","calendario-student-filter","avaliacoes-student-filter","resultados-student-filter","financeiro-student-filter","checklist-student-filter"].forEach(id=>{
       const filter=document.getElementById(id);
       if(filter){
         const previous=filter.value||globalStudentFilter||"all";
