@@ -2010,6 +2010,16 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .checklist-item-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .checklist-edit-box{margin-top:10px;border-top:1px dashed var(--borda);padding-top:10px}
 @media(max-width:720px){.checklist-item{flex-wrap:wrap}}
+
+
+/* ===== PLANEJAMENTO DE ESTUDOS COMPLETO ===== */
+.study-plan-hero{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:var(--radius);padding:24px;margin-bottom:14px;box-shadow:0 18px 40px rgba(40,71,84,.10);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.study-plan-hero h2{font-size:26px;margin:4px 0 6px}.study-plan-hero p{font-size:13px;opacity:.9;line-height:1.5;max-width:820px}.study-plan-kicker{display:inline-flex;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2);padding:5px 10px;border-radius:999px;font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.study-plan-controls{padding:14px!important}.study-plan-form{border:1.5px solid var(--borda);box-shadow:var(--shadow);background:#fff}.study-plan-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(320px,.9fr);gap:14px;align-items:start}.study-mini-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.study-mini-pill{background:#f8fbfa;border:1px solid var(--borda);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900;color:var(--azul-light)}
+.study-subject-box{border:1.5px solid var(--borda);border-radius:18px;background:#fff;margin-bottom:12px;overflow:hidden;box-shadow:0 8px 22px rgba(40,71,84,.04)}.study-subject-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 14px 10px;background:#fbfdfc;border-bottom:1px solid var(--borda)}.study-subject-head strong{font-size:17px;color:var(--azul);display:block}.study-subject-head small{display:block;color:var(--cinza);font-weight:800;margin-top:3px;font-size:12px}.study-subject-pct{font-size:13px;font-weight:900;color:var(--verde-dark);background:#e8f5f3;border-radius:999px;padding:5px 10px;white-space:nowrap}.study-subject-progress{height:8px;background:var(--bg);overflow:hidden}.study-subject-progress span{display:block;height:100%;background:var(--verde);border-radius:999px}.study-topic-list{padding:12px}.study-topic-card{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:flex-start;border:1.5px solid var(--borda);border-radius:14px;background:#fff;padding:11px;margin-bottom:8px}.study-topic-card.done{background:#f5fbfa;opacity:.72}.study-topic-check{width:27px;height:27px;border-radius:9px;border:2px solid var(--borda);display:flex;align-items:center;justify-content:center;background:#fff;cursor:pointer;color:#fff;font-weight:900}.study-topic-check.done{background:var(--verde);border-color:var(--verde)}.study-topic-title{font-size:14px;font-weight:900;color:var(--azul);line-height:1.3}.study-topic-card.done .study-topic-title{text-decoration:line-through;color:var(--cinza)}.study-topic-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}.study-topic-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.study-topic-edit{grid-column:1/-1;border-top:1px dashed var(--borda);padding-top:10px;margin-top:4px}.study-schedule-group{border:1.5px solid var(--borda);border-radius:16px;background:#fff;margin-bottom:10px;overflow:hidden}.study-schedule-head{background:#fbfdfc;padding:12px 14px;border-bottom:1px solid var(--borda);display:flex;justify-content:space-between;gap:10px;align-items:center}.study-schedule-head strong{color:var(--azul);font-size:14px}.study-schedule-head span{font-size:12px;font-weight:900;color:var(--cinza)}.study-schedule-item{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--borda)}.study-schedule-item:last-child{border-bottom:0}.study-schedule-dot{width:12px;height:12px;border-radius:50%;background:var(--verde);margin-top:4px}.study-schedule-item.done .study-schedule-dot{background:#a8bec8}.study-schedule-item strong{display:block;font-size:13px;color:var(--azul)}.study-schedule-item small{display:block;font-size:12px;color:var(--cinza);font-weight:800;margin-top:3px;line-height:1.35}
+@media(max-width:980px){.study-plan-layout{grid-template-columns:1fr}.study-plan-hero{align-items:flex-start;flex-direction:column}.study-topic-card{grid-template-columns:auto 1fr}.study-topic-card .btn-del{grid-column:2;justify-self:end}}
+@media(max-width:720px){.study-plan-hero{padding:18px 16px}.study-plan-hero h2{font-size:22px}.study-subject-head{flex-direction:column}.study-subject-pct{width:max-content}.study-topic-card{grid-template-columns:1fr}.study-topic-check{grid-column:1}.study-topic-actions{grid-column:1}}
+
 </style>
 </head>
 <body>
@@ -3032,58 +3042,90 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
     </div>
 
     <div id="tab-checklist" class="tab-panel">
-      <div class="painel-saudacao" style="margin-bottom:14px">
-        <h2>Checklist de Estudos ✅</h2>
-        <p>Organize matérias e tópicos, marque o que já foi estudado e acompanhe o progresso em tempo real.</p>
+      <div class="study-plan-hero">
+        <div>
+          <span class="study-plan-kicker">Planejamento completo</span>
+          <h2>Planejamento de Estudos 🧭</h2>
+          <p>Monte planos específicos, como IFES, ENEM ou prova da escola. Separe por matérias, organize por semanas/blocos e acompanhe a evolução de cada tópico.</p>
+        </div>
+        <button class="btn-small primary" onclick="fillIfesPlanPreset()">Modelo rápido IFES</button>
       </div>
 
       <div class="linked-student-filter teacher-only" style="display:none">
         <div class="filter-head">
-          <strong>Filtro do checklist por aluno</strong>
+          <strong>Filtro do planejamento por aluno</strong>
           <span id="checklist-filter-count">Filtro por aluno</span>
         </div>
         <div class="linked-student-filter-grid">
           <div class="form-field" style="margin-bottom:0">
-            <label>Ver dados de</label>
+            <label>Ver planejamento de</label>
             <select id="checklist-student-filter" onchange="setGlobalStudentFilter(this.value)">
               <option value="all">Todos os alunos</option>
             </select>
           </div>
           <button class="btn-small primary" onclick="syncStudentSelectWithGlobalFilter('chk-student','chk-texto')" style="min-height:42px">Usar este aluno no formulário</button>
         </div>
-        <p>Filtre o checklist por aluno e use o mesmo aluno ao adicionar um novo item.</p>
+        <p>Filtre por aluno e use o mesmo aluno ao adicionar novos tópicos ao planejamento.</p>
+      </div>
+
+      <div class="study-plan-controls card">
+        <div class="form-row">
+          <div class="form-field">
+            <label>Filtrar por planejamento</label>
+            <select id="chk-plano-filter" onchange="renderChecklist()"><option value="all">Todos os planejamentos</option></select>
+          </div>
+          <div class="form-field">
+            <label>Filtrar por matéria</label>
+            <select id="chk-materia-filter" onchange="renderChecklist()"><option value="all">Todas as matérias</option></select>
+          </div>
+        </div>
       </div>
 
       <div class="result-grid">
-        <div class="result-card"><div class="num" id="chk-total">0</div><div class="label">itens no total</div></div>
+        <div class="result-card"><div class="num" id="chk-total">0</div><div class="label">tópicos planejados</div></div>
         <div class="result-card"><div class="num" id="chk-feitos">0</div><div class="label">concluídos</div></div>
         <div class="result-card"><div class="num" id="chk-pendentes">0</div><div class="label">pendentes</div></div>
         <div class="result-card"><div class="num" id="chk-pct">0%</div><div class="label">progresso geral</div></div>
       </div>
 
       <div class="card">
-        <div class="prog-bar-label"><span>Progresso geral</span><span id="chk-pct-label">0%</span></div>
+        <div class="prog-bar-label"><span>Progresso do planejamento</span><span id="chk-pct-label">0%</span></div>
         <div class="prog-bar-track"><div class="prog-bar-fill" id="chk-progress-bar"></div></div>
+        <div id="study-plan-mini-summary" class="study-mini-summary"></div>
       </div>
 
-      <div class="add-form">
-        <h3>+ Novo item do checklist</h3>
+      <div class="add-form study-plan-form">
+        <h3>+ Adicionar tópico ao planejamento</h3>
         <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="chk-student"></select></div>
         <div class="form-row">
-          <div class="form-field"><label>Categoria/Matéria</label><input type="text" id="chk-categoria" placeholder="Ex: Matemática, Redação, Química..." list="chk-categorias-existentes"><datalist id="chk-categorias-existentes"></datalist></div>
-          <div class="form-field"><label>Prioridade</label><select id="chk-prioridade"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></div>
+          <div class="form-field"><label>Nome do planejamento</label><input type="text" id="chk-plano" placeholder="Ex: Planejamento de Estudos do IFES" list="chk-planos-existentes"><datalist id="chk-planos-existentes"></datalist></div>
+          <div class="form-field"><label>Matéria</label><input type="text" id="chk-materia" placeholder="Ex: Matemática, Português, Ciências..." list="chk-categorias-existentes"><datalist id="chk-categorias-existentes"></datalist></div>
         </div>
-        <div class="form-field"><label>Tópico / o que estudar</label><input type="text" id="chk-texto" placeholder="Ex: Revisar equações do 2º grau"></div>
         <div class="form-row">
-          <div class="form-field"><label>Prazo (opcional)</label><input type="date" id="chk-prazo"></div>
-          <div class="form-field"><label>Observação (opcional)</label><input type="text" id="chk-obs" placeholder="Ex: página 45 do livro, videoaula X..."></div>
+          <div class="form-field"><label>Semana/Bloco</label><input type="text" id="chk-bloco" placeholder="Ex: Semana 1, Bloco 2, Revisão final"></div>
+          <div class="form-field"><label>Tipo de estudo</label><select id="chk-tipo"><option value="Lista de exercícios">Lista de exercícios</option><option value="Aula expositiva">Aula expositiva</option><option value="Revisão">Revisão</option><option value="Simulado">Simulado</option><option value="Correção de erros">Correção de erros</option><option value="Leitura/resumo">Leitura/resumo</option></select></div>
         </div>
-        <button class="btn-add" onclick="addChecklistItem()">Adicionar ao checklist</button>
+        <div class="form-field"><label>Tópico / objetivo da sessão</label><input type="text" id="chk-texto" placeholder="Ex: Resolver lista de razão e proporção / revisar interpretação de gráficos"></div>
+        <div class="form-row">
+          <div class="form-field"><label>Prazo ou data da sessão</label><input type="date" id="chk-prazo"></div>
+          <div class="form-field"><label>Tempo previsto</label><input type="text" id="chk-carga" placeholder="Ex: 30 min, 1h, 2 aulas"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-field"><label>Prioridade</label><select id="chk-prioridade"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></div>
+          <div class="form-field"><label>Observação / material</label><input type="text" id="chk-obs" placeholder="Ex: páginas do livro, link, lista 1, caderno..."></div>
+        </div>
+        <button class="btn-add" onclick="addChecklistItem()">Adicionar ao planejamento</button>
       </div>
 
-      <div class="card">
-        <div class="card-title">Checklist por matéria</div>
-        <div id="lista-checklist"><div class="empty-state"><div>📋</div>Nenhum item no checklist ainda.</div></div>
+      <div class="study-plan-layout">
+        <div class="card">
+          <div class="card-title">Matérias em caixas</div>
+          <div id="lista-checklist"><div class="empty-state"><div>🧭</div>Nenhum tópico planejado ainda.</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Cronograma por semana/bloco</div>
+          <div id="study-plan-schedule"><div class="empty-state"><div>📅</div>O cronograma aparece quando você adicionar tópicos.</div></div>
+        </div>
       </div>
     </div>
 
@@ -5845,16 +5887,55 @@ function renderManualItem(r){
 }
 
 function checklistVisibleList(){return isTeacher()?visibleByFilter(allChecklist):checklist}
-
+function chkPlano(it){return it.plano||it.planejamento||"Planejamento geral"}
+function chkMateria(it){return it.materia||it.categoria||"Sem matéria"}
+function chkBloco(it){return it.bloco||it.semana||"Sem bloco definido"}
+function chkTipo(it){return it.tipo||"Lista de exercícios"}
+function chkCarga(it){return it.cargaHoraria||it.carga||""}
+function filteredChecklistPlanList(){
+  let list=checklistVisibleList();
+  const pf=document.getElementById("chk-plano-filter")?.value||"all";
+  const mf=document.getElementById("chk-materia-filter")?.value||"all";
+  if(pf!=="all")list=list.filter(it=>chkPlano(it)===pf);
+  if(mf!=="all")list=list.filter(it=>chkMateria(it)===mf);
+  return list;
+}
+function updatePlanFilters(list){
+  const planoSel=document.getElementById("chk-plano-filter"), matSel=document.getElementById("chk-materia-filter");
+  const currentP=planoSel?.value||"all", currentM=matSel?.value||"all";
+  const planos=[...new Set(list.map(chkPlano).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  const mats=[...new Set(list.map(chkMateria).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"));
+  if(planoSel){planoSel.innerHTML=`<option value="all">Todos os planejamentos</option>`+planos.map(p=>`<option value="${safeText(p)}" ${p===currentP?"selected":""}>${safeText(p)}</option>`).join("");}
+  if(matSel){matSel.innerHTML=`<option value="all">Todas as matérias</option>`+mats.map(m=>`<option value="${safeText(m)}" ${m===currentM?"selected":""}>${safeText(m)}</option>`).join("");}
+  const dl=document.getElementById("chk-categorias-existentes"); if(dl)dl.innerHTML=mats.map(c=>`<option value="${safeText(c)}"></option>`).join("");
+  const dp=document.getElementById("chk-planos-existentes"); if(dp)dp.innerHTML=planos.map(c=>`<option value="${safeText(c)}"></option>`).join("");
+}
+function fillIfesPlanPreset(){
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v};
+  set("chk-plano","Planejamento de Estudos do IFES");
+  set("chk-bloco","Semana 1");
+  set("chk-tipo","Lista de exercícios");
+  set("chk-carga","45 min");
+  set("chk-prioridade","alta");
+  set("chk-materia","Matemática");
+  set("chk-texto","Resolver lista de razão, proporção e porcentagem");
+  set("chk-obs","Depois adicione caixas para Português, Ciências, Humanas e Redação.");
+}
 async function addChecklistItem(){
   const studentUid=selectedStudentOrSelf("chk-student"); if(!studentUid)return alert("Selecione um aluno.");
-  const categoria=document.getElementById("chk-categoria").value.trim();
-  const texto=document.getElementById("chk-texto").value.trim();
-  if(!categoria||!texto)return alert("Preencha a categoria/matéria e o tópico.");
+  const plano=document.getElementById("chk-plano")?.value.trim()||"Planejamento geral";
+  const materia=document.getElementById("chk-materia")?.value.trim();
+  const texto=document.getElementById("chk-texto")?.value.trim();
+  if(!materia||!texto)return alert("Preencha a matéria e o tópico/objetivo da sessão.");
   try{
     await ensureTeacherStudentLink(studentUid);
     await db.ref("checklist/"+studentUid).push({
-      categoria,texto,
+      plano,planejamento:plano,
+      materia,categoria:materia,
+      texto,
+      bloco:document.getElementById("chk-bloco")?.value.trim()||"Sem bloco definido",
+      tipo:document.getElementById("chk-tipo")?.value||"Lista de exercícios",
+      carga:document.getElementById("chk-carga")?.value.trim()||"",
       prioridade:document.getElementById("chk-prioridade")?.value||"media",
       prazo:document.getElementById("chk-prazo")?.value||"",
       obs:document.getElementById("chk-obs")?.value.trim()||"",
@@ -5862,11 +5943,10 @@ async function addChecklistItem(){
       studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
       createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
     });
-    ["chk-categoria","chk-texto","chk-prazo","chk-obs"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    ["chk-texto","chk-prazo","chk-obs","chk-carga"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     const pr=document.getElementById("chk-prioridade");if(pr)pr.value="media";
   }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
 }
-
 async function toggleChecklistItem(id,studentUid){
   const uid=studentUid||ownUid();
   const item=checklistVisibleList().find(x=>x.id===id&&x.studentUid===uid);
@@ -5874,97 +5954,126 @@ async function toggleChecklistItem(id,studentUid){
   if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode marcar itens vinculados a você.");
   await db.ref("checklist/"+uid+"/"+id).update({feito:!item.feito,concluidoEm:!item.feito?Date.now():null});
 }
-
 async function delChecklistItem(id,studentUid){
   const uid=studentUid||ownUid();
   const item=checklistVisibleList().find(x=>x.id===id&&x.studentUid===uid);
   if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode excluir itens vinculados a você.");
-  if(!confirm("Excluir este item do checklist?"))return;
+  if(!confirm("Excluir este tópico do planejamento?"))return;
   await db.ref("checklist/"+uid+"/"+id).remove();
 }
-
 function toggleChecklistEdit(id){
   const el=document.getElementById("chk-edit-"+id); if(!el)return;
   el.style.display=el.style.display==="none"||!el.style.display?"block":"none";
 }
-
 async function saveChecklistEdit(id,studentUid){
   const uid=studentUid||ownUid();
   const item=checklistVisibleList().find(x=>x.id===id&&x.studentUid===uid);
   if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode editar itens vinculados a você.");
   const texto=document.getElementById(`chk-edit-texto-${id}`)?.value.trim();
-  if(!texto)return alert("Digite o tópico.");
+  const materia=document.getElementById(`chk-edit-materia-${id}`)?.value.trim();
+  if(!texto||!materia)return alert("Preencha matéria e tópico.");
+  const plano=document.getElementById(`chk-edit-plano-${id}`)?.value.trim()||chkPlano(item);
   await db.ref("checklist/"+uid+"/"+id).update({
-    categoria:document.getElementById(`chk-edit-categoria-${id}`)?.value.trim()||item.categoria,
+    plano,planejamento:plano,
+    materia,categoria:materia,
     texto,
+    bloco:document.getElementById(`chk-edit-bloco-${id}`)?.value.trim()||"Sem bloco definido",
+    tipo:document.getElementById(`chk-edit-tipo-${id}`)?.value||chkTipo(item),
+    carga:document.getElementById(`chk-edit-carga-${id}`)?.value.trim()||"",
     prioridade:document.getElementById(`chk-edit-prioridade-${id}`)?.value||item.prioridade,
     prazo:document.getElementById(`chk-edit-prazo-${id}`)?.value||"",
     obs:document.getElementById(`chk-edit-obs-${id}`)?.value.trim()||""
   });
   toggleChecklistEdit(id);
 }
-
-function prioridadeBadgeClass(p){return p==="alta"?"danger":p==="baixa"?"":"warn"}
-
+function prioridadeBadgeClass(p){return p==="alta"?"danger":p==="baixa"?"ok":"warn"}
 function renderChecklistItem(it){
   const uid=it.studentUid||ownUid();
   const canManage=uid===ownUid()||teacherCanManageItem(it);
   const prazoInfo=it.prazo?prazoTarefaInfo(it.prazo,it.feito?"concluida":""):null;
-  return `<div class="checklist-item ${it.feito?"done":""}">
-    <div class="checklist-check ${it.feito?"done":""}" onclick="toggleChecklistItem('${it.id}','${uid}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>
-    <div class="checklist-item-body">
-      <div class="checklist-item-text">${safeText(it.texto)}</div>
-      <div class="checklist-item-meta">
+  const tipos=["Lista de exercícios","Aula expositiva","Revisão","Simulado","Correção de erros","Leitura/resumo"];
+  return `<div class="study-topic-card ${it.feito?"done":""}">
+    <div class="study-topic-check ${it.feito?"done":""}" onclick="toggleChecklistItem('${it.id}','${uid}')">✓</div>
+    <div>
+      <div class="study-topic-title">${safeText(it.texto)}</div>
+      <div class="study-topic-meta">
         ${isTeacher()?`<span class="badge ok">👤 ${safeText(it.studentName||getUserName(uid))}</span>`:""}
+        <span class="badge">🧭 ${safeText(chkPlano(it))}</span>
+        <span class="badge">📦 ${safeText(chkBloco(it))}</span>
+        <span class="badge">${safeText(chkTipo(it))}</span>
+        ${chkCarga(it)?`<span class="badge">⏱️ ${safeText(chkCarga(it))}</span>`:""}
         <span class="badge ${prioridadeBadgeClass(it.prioridade)}">${priorityLabel(it.prioridade||"media")}</span>
         ${it.prazo?`<span class="badge ${prazoInfo?prazoInfo.cls:""}">📅 ${formatDate(it.prazo)}</span>`:""}
         ${it.obs?`<span class="badge">📝 ${safeText(it.obs)}</span>`:""}
       </div>
-      ${canManage?`<div class="checklist-item-actions">
+      ${canManage?`<div class="study-topic-actions">
         <button class="btn-small" onclick="toggleChecklistEdit('${it.id}')">Editar</button>
         <button class="btn-small" onclick="delChecklistItem('${it.id}','${uid}')">Excluir</button>
-      </div>
-      <div class="checklist-edit-box" id="chk-edit-${it.id}" style="display:none">
-        <div class="form-row">
-          <div class="form-field"><label>Categoria</label><input id="chk-edit-categoria-${it.id}" value="${safeText(it.categoria||"")}"></div>
-          <div class="form-field"><label>Prioridade</label><select id="chk-edit-prioridade-${it.id}"><option value="baixa" ${it.prioridade==="baixa"?"selected":""}>Baixa</option><option value="media" ${(!it.prioridade||it.prioridade==="media")?"selected":""}>Média</option><option value="alta" ${it.prioridade==="alta"?"selected":""}>Alta</option></select></div>
-        </div>
-        <div class="form-field"><label>Tópico</label><input id="chk-edit-texto-${it.id}" value="${safeText(it.texto||"")}"></div>
-        <div class="form-row">
-          <div class="form-field"><label>Prazo</label><input type="date" id="chk-edit-prazo-${it.id}" value="${safeText(it.prazo||"")}"></div>
-          <div class="form-field"><label>Observação</label><input id="chk-edit-obs-${it.id}" value="${safeText(it.obs||"")}"></div>
-        </div>
-        <button class="btn-small primary" onclick="saveChecklistEdit('${it.id}','${uid}')">Salvar</button>
       </div>`:""}
     </div>
+    ${canManage?`<div class="study-topic-edit" id="chk-edit-${it.id}" style="display:none">
+      <div class="form-row">
+        <div class="form-field"><label>Planejamento</label><input id="chk-edit-plano-${it.id}" value="${safeText(chkPlano(it))}"></div>
+        <div class="form-field"><label>Matéria</label><input id="chk-edit-materia-${it.id}" value="${safeText(chkMateria(it))}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Semana/Bloco</label><input id="chk-edit-bloco-${it.id}" value="${safeText(chkBloco(it))}"></div>
+        <div class="form-field"><label>Tipo</label><select id="chk-edit-tipo-${it.id}">${tipos.map(t=>`<option value="${t}" ${chkTipo(it)===t?"selected":""}>${t}</option>`).join("")}</select></div>
+      </div>
+      <div class="form-field"><label>Tópico</label><input id="chk-edit-texto-${it.id}" value="${safeText(it.texto||"")}"></div>
+      <div class="form-row">
+        <div class="form-field"><label>Prazo</label><input type="date" id="chk-edit-prazo-${it.id}" value="${safeText(it.prazo||"")}"></div>
+        <div class="form-field"><label>Tempo previsto</label><input id="chk-edit-carga-${it.id}" value="${safeText(chkCarga(it))}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-field"><label>Prioridade</label><select id="chk-edit-prioridade-${it.id}"><option value="baixa" ${it.prioridade==="baixa"?"selected":""}>Baixa</option><option value="media" ${(!it.prioridade||it.prioridade==="media")?"selected":""}>Média</option><option value="alta" ${it.prioridade==="alta"?"selected":""}>Alta</option></select></div>
+        <div class="form-field"><label>Observação</label><input id="chk-edit-obs-${it.id}" value="${safeText(it.obs||"")}"></div>
+      </div>
+      <button class="btn-small primary" onclick="saveChecklistEdit('${it.id}','${uid}')">Salvar</button>
+    </div>`:""}
   </div>`;
 }
-
+function renderStudySchedule(list){
+  const el=document.getElementById("study-plan-schedule"); if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>📅</div>O cronograma aparece quando você adicionar tópicos.</div>';return}
+  const grupos={};
+  list.forEach(it=>{const key=chkBloco(it);(grupos[key] ||= []).push(it)});
+  const entries=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0],"pt-BR",{numeric:true}));
+  el.innerHTML=entries.map(([bloco,itens])=>{
+    const done=itens.filter(x=>x.feito).length;
+    const ordered=itens.slice().sort((a,b)=>(a.prazo||"").localeCompare(b.prazo||"") || chkMateria(a).localeCompare(chkMateria(b),"pt-BR"));
+    return `<div class="study-schedule-group"><div class="study-schedule-head"><strong>${safeText(bloco)}</strong><span>${done}/${itens.length}</span></div>${ordered.map(it=>`<div class="study-schedule-item ${it.feito?"done":""}"><div class="study-schedule-dot"></div><div><strong>${safeText(chkMateria(it))}: ${safeText(it.texto)}</strong><small>${it.prazo?formatDate(it.prazo)+" · ":""}${safeText(chkTipo(it))}${chkCarga(it)?" · "+safeText(chkCarga(it)):""}</small></div></div>`).join("")}</div>`;
+  }).join("");
+}
 function renderChecklist(){
-  const list=checklistVisibleList();
+  const base=checklistVisibleList();
+  updatePlanFilters(base);
+  const list=filteredChecklistPlanList();
   const total=list.length, feitos=list.filter(x=>x.feito).length, pendentes=total-feitos, pct=total?Math.round(feitos/total*100):0;
   const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
   setText("chk-total",total);setText("chk-feitos",feitos);setText("chk-pendentes",pendentes);setText("chk-pct",pct+"%");setText("chk-pct-label",pct+"%");
   const bar=document.getElementById("chk-progress-bar"); if(bar)bar.style.width=pct+"%";
-
-  const dl=document.getElementById("chk-categorias-existentes");
-  if(dl){const cats=[...new Set(list.map(x=>x.categoria).filter(Boolean))];dl.innerHTML=cats.map(c=>`<option value="${safeText(c)}"></option>`).join("");}
-
+  const summary=document.getElementById("study-plan-mini-summary");
+  if(summary){
+    const planos=[...new Set(list.map(chkPlano))].length;
+    const materias=[...new Set(list.map(chkMateria))].length;
+    const atrasados=list.filter(x=>x.prazo&&!x.feito&&prazoTarefaInfo(x.prazo,"")?.cls==="prazo-atrasado").length;
+    summary.innerHTML=`<span class="study-mini-pill">${planos} planejamento(s)</span><span class="study-mini-pill">${materias} matéria(s)</span><span class="study-mini-pill">${atrasados} prazo(s) atrasado(s)</span>`;
+  }
   const el=document.getElementById("lista-checklist"); if(!el)return;
-  if(!list.length){el.innerHTML='<div class="empty-state"><div>📋</div>Nenhum item no checklist ainda.</div>';return}
-
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>🧭</div>Nenhum tópico planejado ainda.</div>';renderStudySchedule(list);return}
   const grupos={};
-  list.forEach(it=>{const cat=it.categoria||"Sem categoria";(grupos[cat] ||= []).push(it)});
-
-  el.innerHTML=Object.entries(grupos).map(([cat,itens])=>{
+  list.forEach(it=>{const cat=chkMateria(it);(grupos[cat] ||= []).push(it)});
+  el.innerHTML=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0],"pt-BR")).map(([cat,itens])=>{
     const done=itens.filter(x=>x.feito).length, pctCat=itens.length?Math.round(done/itens.length*100):0;
-    const ordered=itens.slice().sort((a,b)=>(a.feito===b.feito?0:a.feito?1:-1) || (b.createdAt||0)-(a.createdAt||0));
-    return `<div class="checklist-category">
-      <div class="checklist-category-head"><strong>📚 ${safeText(cat)}</strong><span>${done}/${itens.length} concluídos · ${pctCat}%</span></div>
-      <div class="checklist-progress"><span style="width:${pctCat}%"></span></div>
-      ${ordered.map(it=>renderChecklistItem(it)).join("")}
+    const ordered=itens.slice().sort((a,b)=>(a.feito===b.feito?0:a.feito?1:-1) || chkBloco(a).localeCompare(chkBloco(b),"pt-BR",{numeric:true}) || (a.prazo||"").localeCompare(b.prazo||""));
+    return `<div class="study-subject-box">
+      <div class="study-subject-head"><div><strong>📚 ${safeText(cat)}</strong><small>${safeText([...new Set(itens.map(chkPlano))].join(" · "))}</small></div><div class="study-subject-pct">${done}/${itens.length} · ${pctCat}%</div></div>
+      <div class="study-subject-progress"><span style="width:${pctCat}%"></span></div>
+      <div class="study-topic-list">${ordered.map(renderChecklistItem).join("")}</div>
     </div>`;
   }).join("");
+  renderStudySchedule(list);
 }
 
 function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
