@@ -5910,16 +5910,91 @@ function updatePlanFilters(list){
   const dl=document.getElementById("chk-categorias-existentes"); if(dl)dl.innerHTML=mats.map(c=>`<option value="${safeText(c)}"></option>`).join("");
   const dp=document.getElementById("chk-planos-existentes"); if(dp)dp.innerHTML=planos.map(c=>`<option value="${safeText(c)}"></option>`).join("");
 }
-function fillIfesPlanPreset(){
+async function fillIfesPlanPreset(){
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v};
-  set("chk-plano","Planejamento de Estudos do IFES");
+  const plano="Planejamento de Estudos do IFES";
+  set("chk-plano",plano);
   set("chk-bloco","Semana 1");
   set("chk-tipo","Lista de exercícios");
   set("chk-carga","45 min");
   set("chk-prioridade","alta");
   set("chk-materia","Matemática");
   set("chk-texto","Resolver lista de razão, proporção e porcentagem");
-  set("chk-obs","Depois adicione caixas para Português, Ciências, Humanas e Redação.");
+  set("chk-obs","Modelo IFES: Matemática, Português, Ciências, Humanas e Redação.");
+
+  const studentUid=selectedStudentOrSelf("chk-student");
+  if(!studentUid){
+    alert("Selecione um aluno para criar o modelo rápido IFES.");
+    document.getElementById("chk-student")?.focus();
+    return;
+  }
+
+  const ok=confirm("Criar automaticamente o Planejamento de Estudos do IFES com matérias, blocos e tópicos iniciais?");
+  if(!ok){
+    document.getElementById("chk-plano")?.scrollIntoView({behavior:"smooth",block:"center"});
+    return;
+  }
+
+  const itens=[
+    {materia:"Matemática",bloco:"Semana 1",tipo:"Lista de exercícios",texto:"Razão, proporção e porcentagem: resolver lista de exercícios",carga:"45 min",prioridade:"alta",obs:"Foco em interpretação, conta e regra de três."},
+    {materia:"Matemática",bloco:"Semana 2",tipo:"Correção de erros",texto:"Corrigir erros da lista de razão, proporção e porcentagem",carga:"30 min",prioridade:"alta",obs:"Registrar os tipos de erro mais frequentes."},
+    {materia:"Matemática",bloco:"Semana 3",tipo:"Lista de exercícios",texto:"Função afim, gráficos e problemas contextualizados",carga:"45 min",prioridade:"alta",obs:"Treinar leitura de gráfico e lei de formação."},
+    {materia:"Matemática",bloco:"Semana 4",tipo:"Simulado",texto:"Simulado curto de Matemática com correção comentada",carga:"1h",prioridade:"alta",obs:"Separar questões erradas para revisão."},
+
+    {materia:"Português",bloco:"Semana 1",tipo:"Leitura/resumo",texto:"Leitura e interpretação de textos: identificar tema, ideia principal e inferências",carga:"45 min",prioridade:"alta",obs:"Fazer resumo do texto e justificar respostas."},
+    {materia:"Português",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Gêneros textuais, finalidade do texto e linguagem",carga:"45 min",prioridade:"media",obs:"Treinar questões objetivas."},
+    {materia:"Português",bloco:"Semana 3",tipo:"Correção de erros",texto:"Revisar erros de interpretação e vocabulário em contexto",carga:"30 min",prioridade:"media",obs:"Montar lista de palavras e expressões difíceis."},
+    {materia:"Português",bloco:"Semana 4",tipo:"Simulado",texto:"Simulado curto de Português com foco em interpretação",carga:"1h",prioridade:"alta",obs:"Corrigir com justificativa."},
+
+    {materia:"Ciências",bloco:"Semana 1",tipo:"Revisão",texto:"Revisar conceitos principais de Ciências cobrados no edital/material",carga:"40 min",prioridade:"media",obs:"Fazer mapa mental."},
+    {materia:"Ciências",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Resolver questões de Ciências e anotar dúvidas",carga:"45 min",prioridade:"media",obs:"Separar por conteúdo."},
+    {materia:"Ciências",bloco:"Semana 3",tipo:"Correção de erros",texto:"Refazer questões erradas de Ciências",carga:"30 min",prioridade:"media",obs:"Foco nos conteúdos com menor acerto."},
+
+    {materia:"Humanas",bloco:"Semana 1",tipo:"Leitura/resumo",texto:"História e Geografia: leitura de textos, mapas, gráficos e contexto social",carga:"45 min",prioridade:"media",obs:"Treinar interpretação de fontes."},
+    {materia:"Humanas",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Resolver questões de Humanas com leitura de mapas, tabelas e imagens",carga:"45 min",prioridade:"media",obs:"Sublinhar informações importantes do enunciado."},
+    {materia:"Humanas",bloco:"Semana 3",tipo:"Correção de erros",texto:"Revisar erros de Humanas e montar resumo dos temas mais cobrados",carga:"30 min",prioridade:"baixa",obs:"Separar dúvidas para aula."},
+
+    {materia:"Redação",bloco:"Semana 1",tipo:"Aula expositiva",texto:"Estrutura de redação: introdução, desenvolvimento e conclusão",carga:"45 min",prioridade:"media",obs:"Montar modelo de parágrafo."},
+    {materia:"Redação",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Produzir um texto curto com tema de atualidade",carga:"1h",prioridade:"media",obs:"Depois revisar coerência e pontuação."},
+    {materia:"Redação",bloco:"Semana 3",tipo:"Correção de erros",texto:"Reescrever a redação corrigindo os pontos indicados",carga:"45 min",prioridade:"media",obs:"Comparar primeira e segunda versão."},
+
+    {materia:"Revisão geral",bloco:"Semana 4",tipo:"Simulado",texto:"Simulado geral IFES com tempo marcado",carga:"2h",prioridade:"alta",obs:"Após o simulado, registrar acertos por matéria."},
+    {materia:"Revisão geral",bloco:"Semana 4",tipo:"Correção de erros",texto:"Plano de ação: revisar somente os tópicos com maior erro",carga:"1h",prioridade:"alta",obs:"Criar nova lista de recuperação."}
+  ];
+
+  try{
+    await ensureTeacherStudentLink(studentUid);
+    const updates={};
+    const refBase=db.ref("checklist/"+studentUid);
+    itens.forEach((it,i)=>{
+      const key=refBase.push().key;
+      updates[key]={
+        plano,planejamento:plano,
+        materia:it.materia,categoria:it.materia,
+        bloco:it.bloco,
+        tipo:it.tipo,
+        texto:it.texto,
+        carga:it.carga,
+        prioridade:it.prioridade,
+        prazo:"",
+        obs:it.obs,
+        feito:false,
+        studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
+        createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()+i
+      };
+    });
+    await refBase.update(updates);
+    const pf=document.getElementById("chk-plano-filter"); if(pf)pf.value="all";
+    const mf=document.getElementById("chk-materia-filter"); if(mf)mf.value="all";
+    setTimeout(()=>{
+      renderChecklist();
+      document.getElementById("lista-checklist")?.scrollIntoView({behavior:"smooth",block:"start"});
+    },250);
+    alert("Modelo rápido IFES criado com matérias, blocos e tópicos iniciais.");
+  }catch(e){
+    console.error(e);
+    alert(firebaseErrorMessage(e));
+  }
 }
 async function addChecklistItem(){
   const studentUid=selectedStudentOrSelf("chk-student"); if(!studentUid)return alert("Selecione um aluno.");
