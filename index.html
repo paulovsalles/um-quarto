@@ -2022,6 +2022,43 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 
 
 
+
+
+/* ===== IFES 12 SEMANAS · CHECKLIST GAMIFICADO ===== */
+.ifes-dashboard{display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin-bottom:14px}
+.ifes-status-card{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:22px;padding:20px;box-shadow:0 18px 40px rgba(40,71,84,.12);position:relative;overflow:hidden}
+.ifes-status-card:after{content:"";position:absolute;right:-42px;top:-42px;width:150px;height:150px;border-radius:50%;background:rgba(35,184,166,.18)}
+.ifes-status-card h3{font-size:21px;margin-bottom:6px;position:relative;z-index:1}
+.ifes-status-card p{font-size:13px;opacity:.9;line-height:1.45;position:relative;z-index:1}
+.ifes-level-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:relative;z-index:1}
+.ifes-level-pill{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900}
+.ifes-mission-card{background:#fff;border:1.5px solid var(--borda);border-radius:22px;padding:18px;box-shadow:var(--shadow)}
+.ifes-mission-card h3{font-size:17px;color:var(--azul);margin-bottom:8px}
+.ifes-mission-card p{font-size:13px;color:var(--cinza);font-weight:800;line-height:1.45}
+.ifes-mission-card .btn-small{margin-top:12px}
+.ifes-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ifes-badge{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--borda);background:#fff;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:900;color:var(--cinza)}
+.ifes-badge.unlocked{background:#e8f5f3;color:var(--verde-dark);border-color:rgba(35,184,166,.28)}
+.ifes-phase-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.ifes-phase-tab{border:1.5px solid var(--borda);background:#fff;color:var(--azul);border-radius:999px;padding:9px 13px;font-size:12px;font-weight:900;box-shadow:var(--shadow)}
+.ifes-phase-tab.active{background:var(--verde);border-color:var(--verde);color:#fff}
+.ifes-week-card{border:1.5px solid var(--borda);border-radius:16px;background:#fff;margin-bottom:10px;overflow:hidden}
+.ifes-week-head{display:flex;justify-content:space-between;gap:10px;align-items:center;background:#fbfdfc;border-bottom:1px solid var(--borda);padding:12px 14px}
+.ifes-week-head strong{font-size:14px;color:var(--azul)}
+.ifes-week-head span{font-size:12px;font-weight:900;color:var(--verde-dark);background:#e8f5f3;border-radius:999px;padding:4px 9px}
+.ifes-week-items{display:grid;gap:0}
+.ifes-week-line{display:grid;grid-template-columns:78px 1fr auto;gap:10px;align-items:start;padding:10px 14px;border-bottom:1px solid var(--borda)}
+.ifes-week-line:last-child{border-bottom:0}
+.ifes-week-line.done{opacity:.66;background:#f8fbfa}
+.ifes-day{font-size:12px;font-weight:900;color:var(--cinza)}
+.ifes-week-line strong{display:block;font-size:13px;color:var(--azul);line-height:1.3}
+.ifes-week-line small{display:block;font-size:12px;color:var(--cinza);font-weight:800;margin-top:3px;line-height:1.35}
+.ifes-xp{font-size:11px;font-weight:900;border-radius:999px;background:#fff3e8;color:#c8721a;padding:4px 8px;white-space:nowrap}
+.study-topic-card.ifes-simulado{border-color:rgba(123,97,255,.28)}
+.study-topic-card.ifes-simulado .study-topic-check{border-color:#7b61ff}
+.study-topic-card.ifes-simulado .study-topic-check.done{background:#7b61ff;border-color:#7b61ff}
+@media(max-width:900px){.ifes-dashboard{grid-template-columns:1fr}.ifes-week-line{grid-template-columns:1fr}.ifes-xp{width:max-content}}
+
 /* ===== AJUSTE DA TELA INICIAL E LOGIN · HIERARQUIA + CLAREZA ===== */
 #screen-landing{
   background:linear-gradient(180deg,#f7fbfa 0%,#eef7f5 56%,#f4f7f6 100%)!important;
@@ -3305,11 +3342,11 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
     <div id="tab-checklist" class="tab-panel">
       <div class="study-plan-hero">
         <div>
-          <span class="study-plan-kicker">Planejamento completo</span>
-          <h2>Planejamento de Estudos 🧭</h2>
-          <p>Monte planos específicos, como IFES, ENEM ou prova da escola. Separe por matérias, organize por semanas/blocos e acompanhe a evolução de cada tópico.</p>
+          <span class="study-plan-kicker">Checklist gamificado</span>
+          <h2>Plano IFES — 12 semanas 🧭</h2>
+          <p>Checklist organizado por semana, matéria, tempo de estudo, simulados, XP, níveis e conquistas. As 5 primeiras semanas passam por todo o conteúdo; as 7 seguintes focam revisão, Português, Matemática e provas antigas.</p>
         </div>
-        <button class="btn-small primary" onclick="fillIfesPlanPreset()">Modelo rápido IFES</button>
+        <button class="btn-small primary" onclick="fillIfesPlanPreset()">Gerar plano IFES 12 semanas</button>
       </div>
 
       <div class="linked-student-filter teacher-only" style="display:none">
@@ -3340,6 +3377,12 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
             <select id="chk-materia-filter" onchange="renderChecklist()"><option value="all">Todas as matérias</option></select>
           </div>
         </div>
+        <div class="ifes-phase-tabs" style="margin-top:12px;margin-bottom:0">
+          <button class="ifes-phase-tab active" id="chk-fase-all" onclick="setChecklistPhaseFilter('all')">Tudo</button>
+          <button class="ifes-phase-tab" id="chk-fase-conteudo" onclick="setChecklistPhaseFilter('conteudo')">Semanas 1–5 · Conteúdo</button>
+          <button class="ifes-phase-tab" id="chk-fase-revisao" onclick="setChecklistPhaseFilter('revisao')">Semanas 6–12 · Revisão</button>
+          <button class="ifes-phase-tab" id="chk-fase-simulado" onclick="setChecklistPhaseFilter('simulado')">Simulados</button>
+        </div>
       </div>
 
       <div class="result-grid">
@@ -3355,6 +3398,24 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <div id="study-plan-mini-summary" class="study-mini-summary"></div>
       </div>
 
+      <div class="ifes-dashboard" id="ifes-dashboard">
+        <div class="ifes-status-card">
+          <h3 id="ifes-level-title">Nível: Iniciante IFES</h3>
+          <p id="ifes-level-desc">Complete missões para ganhar XP, abrir conquistas e acompanhar sua evolução rumo à prova.</p>
+          <div class="ifes-level-row">
+            <span class="ifes-level-pill" id="ifes-xp-pill">0 XP</span>
+            <span class="ifes-level-pill" id="ifes-week-pill">Semana atual: —</span>
+            <span class="ifes-level-pill" id="ifes-streak-pill">Sequência: 0</span>
+          </div>
+          <div class="ifes-badges" id="ifes-badges"></div>
+        </div>
+        <div class="ifes-mission-card">
+          <h3>Próxima missão 🎯</h3>
+          <p id="ifes-next-mission">Gere o plano IFES 12 semanas para aparecer a próxima atividade.</p>
+          <button class="btn-small primary" onclick="scrollToNextIfesMission()">Ir para próxima missão</button>
+        </div>
+      </div>
+
       <div class="add-form study-plan-form">
         <h3>+ Adicionar tópico ao planejamento</h3>
         <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="chk-student"></select></div>
@@ -3364,7 +3425,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         </div>
         <div class="form-row">
           <div class="form-field"><label>Semana/Bloco</label><input type="text" id="chk-bloco" placeholder="Ex: Semana 1, Bloco 2, Revisão final"></div>
-          <div class="form-field"><label>Tipo de estudo</label><select id="chk-tipo"><option value="Lista de exercícios">Lista de exercícios</option><option value="Aula expositiva">Aula expositiva</option><option value="Revisão">Revisão</option><option value="Simulado">Simulado</option><option value="Correção de erros">Correção de erros</option><option value="Leitura/resumo">Leitura/resumo</option></select></div>
+          <div class="form-field"><label>Tipo de estudo</label><select id="chk-tipo"><option value="Lista de exercícios">Lista de exercícios</option><option value="Aula expositiva">Aula expositiva</option><option value="Revisão">Revisão</option><option value="Simulado">Simulado</option><option value="Prova antiga">Prova antiga</option><option value="Correção de erros">Correção de erros</option><option value="Leitura/resumo">Leitura/resumo</option></select></div>
         </div>
         <div class="form-field"><label>Tópico / objetivo da sessão</label><input type="text" id="chk-texto" placeholder="Ex: Resolver lista de razão e proporção / revisar interpretação de gráficos"></div>
         <div class="form-row">
@@ -6147,18 +6208,27 @@ function renderManualItem(r){
   return `<div class="manual-item"><div class="manual-item-head"><strong>${safeText(r.studentName||"Aluno")} · ${safeText(r.material||"Material")}</strong><small>${formatDate(r.data||"")} · ${new Date(r.criadoEm||Date.now()).toLocaleString("pt-BR")}</small></div><div class="simulado-meta" style="margin-left:0"><span class="badge">${safeText(r.area||"Geral")}</span><span class="badge ok">${r.acertos||0}/${r.total||0} acertos</span><span class="badge ${Number(r.aproveitamento||0)>=70?"ok":Number(r.aproveitamento||0)>=50?"warn":"danger"}">${r.aproveitamento||0}%</span></div><p><b>Questões:</b> ${safeText(r.questoes||"")}</p>${r.observacao?`<p><b>Observação:</b> ${safeText(r.observacao)}</p>`:""}<div class="simulado-actions" style="margin-left:0"><button class="btn-small" onclick="delRegistroManualQuestoes('${r.studentUid||ownUid()}','${r.id}')">Excluir</button></div></div>`;
 }
 
+
 function checklistVisibleList(){return isTeacher()?visibleByFilter(allChecklist):checklist}
 function chkPlano(it){return it.plano||it.planejamento||"Planejamento geral"}
 function chkMateria(it){return it.materia||it.categoria||"Sem matéria"}
 function chkBloco(it){return it.bloco||it.semana||"Sem bloco definido"}
 function chkTipo(it){return it.tipo||"Lista de exercícios"}
 function chkCarga(it){return it.cargaHoraria||it.carga||""}
+function chkDia(it){return it.dia||""}
+function chkFase(it){return it.fase||((chkBloco(it).match(/Semana\s*(\d+)/i)?.[1]||0)<=5?"conteudo":"revisao")}
+function chkXP(it){if(Number(it.xp))return Number(it.xp); const t=chkTipo(it); const c=chkCarga(it); if(t==="Simulado")return 230; if(t==="Prova antiga")return 170; if(t==="Correção de erros")return 80; if(c.includes("1h30"))return 90; if(c.includes("2h15"))return 230; return 40}
+let checklistPhaseFilter="all";
+function setChecklistPhaseFilter(v){checklistPhaseFilter=v||"all";["all","conteudo","revisao","simulado"].forEach(k=>{const el=document.getElementById("chk-fase-"+k);if(el)el.classList.toggle("active",checklistPhaseFilter===k)});renderChecklist()}
 function filteredChecklistPlanList(){
   let list=checklistVisibleList();
   const pf=document.getElementById("chk-plano-filter")?.value||"all";
   const mf=document.getElementById("chk-materia-filter")?.value||"all";
   if(pf!=="all")list=list.filter(it=>chkPlano(it)===pf);
   if(mf!=="all")list=list.filter(it=>chkMateria(it)===mf);
+  if(checklistPhaseFilter==="conteudo")list=list.filter(it=>chkFase(it)==="conteudo");
+  if(checklistPhaseFilter==="revisao")list=list.filter(it=>chkFase(it)==="revisao");
+  if(checklistPhaseFilter==="simulado")list=list.filter(it=>["Simulado","Prova antiga"].includes(chkTipo(it)) || /simulado|prova antiga/i.test(it.texto||""));
   return list;
 }
 function updatePlanFilters(list){
@@ -6171,91 +6241,110 @@ function updatePlanFilters(list){
   const dl=document.getElementById("chk-categorias-existentes"); if(dl)dl.innerHTML=mats.map(c=>`<option value="${safeText(c)}"></option>`).join("");
   const dp=document.getElementById("chk-planos-existentes"); if(dp)dp.innerHTML=planos.map(c=>`<option value="${safeText(c)}"></option>`).join("");
 }
+function ifesPlano12Semanas(){
+  const plano="Plano IFES 12 semanas";
+  const mk=(semana,dia,carga,materia,tipo,texto,prioridade="media",obs="")=>({
+    plano,planejamento:plano,semanaNum:semana,bloco:`Semana ${semana}`,dia,carga,materia,categoria:materia,tipo,texto,prioridade,obs,
+    fase:semana<=5?"conteudo":"revisao",xp: tipo==="Simulado"?230:tipo==="Prova antiga"?170:tipo==="Correção de erros"?80:carga==="1h30"?90:40
+  });
+  return [
+    mk(1,"Segunda","40 min","Português","Leitura/resumo","Interpretação de textos: tema, ideia principal, finalidade e inferência.","alta","Resolver 5 questões."),
+    mk(1,"Quarta","40 min","Matemática","Lista de exercícios","Conjuntos, conjuntos numéricos, sistema decimal e operações com naturais.","alta","Resolver 8 questões."),
+    mk(1,"Sexta","1h30","Ciências + Matemática","Revisão","Matéria e energia: misturas, separação de materiais e transformações químicas + múltiplos/divisores.","media","Fazer resumo e lista mista."),
+    mk(1,"Sábado","1h30","História + Geografia","Leitura/resumo","Tempo histórico, registros, povos indígenas, lugar no mundo e formação territorial do Brasil.","media","Fazer mapa mental."),
+    mk(1,"Domingo","2h15","Simulado","Simulado","Simulado IFES da semana 1 + correção e caderno de erros.","alta","Simulado completo ou adaptado de 40 questões."),
+
+    mk(2,"Segunda","40 min","Português","Revisão","Língua e linguagem: verbal/não verbal, fala/escrita, linguagem formal e informal, variação linguística.","alta","Resolver 5 questões."),
+    mk(2,"Quarta","40 min","Matemática","Lista de exercícios","Números primos, compostos, múltiplos, divisores, potenciação, radiciação e notação científica.","alta","Resolver 8 questões."),
+    mk(2,"Sexta","1h30","Ciências + Matemática","Lista de exercícios","Estrutura da matéria, radiações, máquinas simples, calor, energia + razão, proporção e regra de três.","alta","Lista mista com correção."),
+    mk(2,"Sábado","1h30","História + Geografia","Leitura/resumo","Grécia, Roma, cidadania, política, trabalho e mapas temáticos do Brasil.","media","Responder questões com fontes e mapas."),
+    mk(2,"Domingo","2h15","Simulado","Simulado","Simulado IFES da semana 2 + correção por área.","alta","Registrar acertos por disciplina."),
+
+    mk(3,"Segunda","40 min","Português","Lista de exercícios","Morfologia: classes de palavras, flexões, estrutura e formação de palavras.","alta","Resolver 6 questões."),
+    mk(3,"Quarta","40 min","Matemática","Lista de exercícios","Porcentagem, acréscimos/descontos sucessivos, juros simples e compostos.","alta","Resolver 10 questões."),
+    mk(3,"Sexta","1h30","Ciências + Matemática","Revisão","Vida e evolução: célula, sistemas locomotor/nervoso, saúde pública, reprodução e hereditariedade + expressões algébricas.","media","Resumo + exercícios."),
+    mk(3,"Sábado","1h30","História + Geografia","Leitura/resumo","Mundo moderno, Renascimento, reformas religiosas, expansão marítima, população e trabalho.","media","Fazer linha do tempo."),
+    mk(3,"Domingo","2h15","Simulado","Simulado","Simulado IFES da semana 3 + correção detalhada.","alta","Marcar questões para refazer."),
+
+    mk(4,"Segunda","40 min","Português","Revisão","Sintaxe: frase, oração, período, coordenação, subordinação, concordância e regência.","alta","Questões objetivas."),
+    mk(4,"Quarta","40 min","Matemática","Lista de exercícios","Equações do 1º grau, 2º grau, sistemas, fatoração e produtos notáveis.","alta","Resolver lista curta."),
+    mk(4,"Sexta","1h30","Ciências + Matemática","Lista de exercícios","Terra e Universo: movimentos da Terra, sistema solar, clima, efeito estufa, placas tectônicas + funções e sequências.","media","Treinar gráficos e leitura."),
+    mk(4,"Sábado","1h30","História + Geografia","Revisão","Colonização, escravidão moderna, independências, Brasil século XIX, cartografia e globalização.","media","Questões com mapas/tabelas."),
+    mk(4,"Domingo","2h15","Simulado","Simulado","Simulado IFES da semana 4 + caderno de erros.","alta","Cronometrar tempo."),
+
+    mk(5,"Segunda","40 min","Português","Lista de exercícios","Figuras de linguagem, semântica, sinonímia, antonímia, denotação, conotação e intertextualidade.","alta","Resolver 8 questões."),
+    mk(5,"Quarta","40 min","Matemática","Lista de exercícios","Geometria: plano cartesiano, polígonos, triângulos, retas, semelhança, circunferência e Pitágoras.","alta","Priorizar problemas com desenho."),
+    mk(5,"Sexta","1h30","Matemática + Ciências","Revisão","Grandezas e medidas, perímetro, área, volume, unidades, estatística, probabilidade + revisão de Ciências.","alta","Fechar todo o conteúdo."),
+    mk(5,"Sábado","1h30","Português + Humanas","Revisão","Acentuação, ortografia, pontuação + século XX, guerras, Brasil pós-1946, natureza e qualidade de vida.","alta","Revisão geral do edital."),
+    mk(5,"Domingo","2h15","Simulado","Simulado","Simulado IFES da semana 5 cobrindo todo o conteúdo programático.","alta","Diagnóstico para a fase de revisão."),
+
+    mk(6,"Segunda","40 min","Português","Correção de erros","Revisar erros de interpretação dos simulados e justificar alternativas.","alta","Caderno de erros."),
+    mk(6,"Quarta","40 min","Matemática","Correção de erros","Revisar erros de porcentagem, razão, proporção e regra de três.","alta","Refazer questões erradas."),
+    mk(6,"Sexta","1h30","Matemática","Prova antiga","Prova antiga/simulado por área: Matemática básica, porcentagem e proporção.","alta","1ª prova antiga da semana."),
+    mk(6,"Sábado","1h30","Ciências + Humanas","Lista de exercícios","Exercícios por área com foco nos temas de maior erro.","media","Lista direcionada."),
+    mk(6,"Domingo","2h15","Simulado","Simulado","Simulado IFES completo + correção por disciplina.","alta","2ª prova da semana."),
+
+    mk(7,"Segunda","40 min","Português","Lista de exercícios","Gêneros textuais, finalidade, linguagem e variação linguística.","alta","Treino objetivo."),
+    mk(7,"Quarta","40 min","Matemática","Lista de exercícios","Equações, sistemas, fatoração, produtos notáveis e função.","alta","Foco nos erros."),
+    mk(7,"Sexta","1h30","Português","Prova antiga","Prova antiga/simulado por área: Português e interpretação.","alta","Corrigir com justificativa."),
+    mk(7,"Sábado","1h30","Matemática","Lista de exercícios","Geometria: triângulos, retas, Pitágoras, áreas e circunferência.","alta","Lista de aplicação."),
+    mk(7,"Domingo","2h15","Simulado","Simulado","Simulado IFES completo + caderno de erros.","alta","Comparar com semana 6."),
+
+    mk(8,"Segunda","40 min","Português","Revisão","Morfologia e sintaxe em questões de texto.","media","Treino misto."),
+    mk(8,"Quarta","40 min","Matemática","Lista de exercícios","Grandezas e medidas, estatística, probabilidade e contagem.","alta","Questões com gráficos/tabelas."),
+    mk(8,"Sexta","1h30","Ciências","Prova antiga","Prova antiga/simulado por área: Ciências.","media","Corrigir e anotar lacunas."),
+    mk(8,"Sábado","1h30","História + Geografia","Lista de exercícios","Exercícios de Humanas com mapas, textos, fontes e imagens.","media","Treinar leitura atenta."),
+    mk(8,"Domingo","2h15","Simulado","Simulado","Simulado IFES completo + análise de desempenho.","alta","Atualizar plano de ação."),
+
+    mk(9,"Segunda","40 min","Português","Correção de erros","Revisar semântica, figuras de linguagem, pontuação e ortografia.","alta","Foco em questões erradas."),
+    mk(9,"Quarta","40 min","Matemática","Correção de erros","Revisar álgebra e funções a partir do caderno de erros.","alta","Refazer sem olhar resolução."),
+    mk(9,"Sexta","1h30","História + Geografia","Prova antiga","Prova antiga/simulado por área: Humanas.","media","Corrigir por tema."),
+    mk(9,"Sábado","1h30","Português + Matemática","Lista de exercícios","Bloco forte de Português e Matemática com questões mistas.","alta","Prioridade da fase final."),
+    mk(9,"Domingo","2h15","Simulado","Simulado","Simulado IFES completo + correção completa.","alta","Meta: reduzir erros repetidos."),
+
+    mk(10,"Segunda","40 min","Português","Lista de exercícios","Interpretação avançada: inferência, tese, argumentos e intertextualidade.","alta","Treino cronometrado."),
+    mk(10,"Quarta","40 min","Matemática","Lista de exercícios","Matemática mista: números, álgebra, geometria, estatística e medidas.","alta","Questões variadas."),
+    mk(10,"Sexta","1h30","Português + Matemática","Prova antiga","Prova antiga com foco em Português e Matemática.","alta","1ª prova da semana."),
+    mk(10,"Sábado","1h30","Ciências + Humanas","Revisão","Revisão rápida dos resumos e erros acumulados de Ciências/Humanas.","media","Fichas-resumo."),
+    mk(10,"Domingo","2h15","Simulado","Simulado","Simulado IFES completo em ritmo de prova.","alta","2ª prova da semana."),
+
+    mk(11,"Segunda","40 min","Português","Correção de erros","Revisão final de Português pelos erros mais frequentes.","alta","Sem conteúdo novo."),
+    mk(11,"Quarta","40 min","Matemática","Correção de erros","Revisão final de Matemática pelos erros mais frequentes.","alta","Sem conteúdo novo."),
+    mk(11,"Sexta","1h30","Português + Matemática","Prova antiga","Prova antiga cronometrada de Português e Matemática.","alta","Corrigir no mesmo dia."),
+    mk(11,"Sábado","1h30","Revisão geral","Revisão","Revisão leve de fórmulas, mapas mentais, conceitos e estratégias de prova.","media","Organizar dúvidas finais."),
+    mk(11,"Domingo","2h15","Simulado","Simulado","Simulado IFES completo final 1.","alta","Anotar últimos ajustes."),
+
+    mk(12,"Segunda","40 min","Português","Revisão","Revisão leve: interpretação, pontuação, ortografia e semântica.","alta","Evitar estudar pesado."),
+    mk(12,"Quarta","40 min","Matemática","Revisão","Revisão leve: porcentagem, equações, funções, geometria e estatística.","alta","Fórmulas e erros recorrentes."),
+    mk(12,"Sexta","1h30","Português + Matemática","Prova antiga","Última prova antiga/simulado por área com foco em Português e Matemática.","alta","Treinar atenção e tempo."),
+    mk(12,"Sábado","1h30","Revisão geral","Correção de erros","Revisão final do caderno de erros e checklist de conteúdos.","alta","Nada de conteúdo novo."),
+    mk(12,"Domingo","2h15","Simulado","Simulado","Simulado IFES completo final 2 ou revisão se a prova estiver próxima.","alta","Fechar preparação."),
+  ];
+}
 async function fillIfesPlanPreset(){
   const set=(id,v)=>{const el=document.getElementById(id);if(el)el.value=v};
-  const plano="Planejamento de Estudos do IFES";
-  set("chk-plano",plano);
-  set("chk-bloco","Semana 1");
-  set("chk-tipo","Lista de exercícios");
-  set("chk-carga","45 min");
-  set("chk-prioridade","alta");
-  set("chk-materia","Matemática");
-  set("chk-texto","Resolver lista de razão, proporção e porcentagem");
-  set("chk-obs","Modelo IFES: Matemática, Português, Ciências, Humanas e Redação.");
-
+  const plano="Plano IFES 12 semanas";
+  set("chk-plano",plano);set("chk-bloco","Semana 1");set("chk-tipo","Lista de exercícios");set("chk-carga","40 min");set("chk-prioridade","alta");set("chk-materia","Português");set("chk-texto","Interpretação de textos: tema, ideia principal, finalidade e inferência.");set("chk-obs","Plano completo IFES com checklist, XP e simulados.");
   const studentUid=selectedStudentOrSelf("chk-student");
-  if(!studentUid){
-    alert("Selecione um aluno para criar o modelo rápido IFES.");
-    document.getElementById("chk-student")?.focus();
-    return;
-  }
-
-  const ok=confirm("Criar automaticamente o Planejamento de Estudos do IFES com matérias, blocos e tópicos iniciais?");
-  if(!ok){
-    document.getElementById("chk-plano")?.scrollIntoView({behavior:"smooth",block:"center"});
-    return;
-  }
-
-  const itens=[
-    {materia:"Matemática",bloco:"Semana 1",tipo:"Lista de exercícios",texto:"Razão, proporção e porcentagem: resolver lista de exercícios",carga:"45 min",prioridade:"alta",obs:"Foco em interpretação, conta e regra de três."},
-    {materia:"Matemática",bloco:"Semana 2",tipo:"Correção de erros",texto:"Corrigir erros da lista de razão, proporção e porcentagem",carga:"30 min",prioridade:"alta",obs:"Registrar os tipos de erro mais frequentes."},
-    {materia:"Matemática",bloco:"Semana 3",tipo:"Lista de exercícios",texto:"Função afim, gráficos e problemas contextualizados",carga:"45 min",prioridade:"alta",obs:"Treinar leitura de gráfico e lei de formação."},
-    {materia:"Matemática",bloco:"Semana 4",tipo:"Simulado",texto:"Simulado curto de Matemática com correção comentada",carga:"1h",prioridade:"alta",obs:"Separar questões erradas para revisão."},
-
-    {materia:"Português",bloco:"Semana 1",tipo:"Leitura/resumo",texto:"Leitura e interpretação de textos: identificar tema, ideia principal e inferências",carga:"45 min",prioridade:"alta",obs:"Fazer resumo do texto e justificar respostas."},
-    {materia:"Português",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Gêneros textuais, finalidade do texto e linguagem",carga:"45 min",prioridade:"media",obs:"Treinar questões objetivas."},
-    {materia:"Português",bloco:"Semana 3",tipo:"Correção de erros",texto:"Revisar erros de interpretação e vocabulário em contexto",carga:"30 min",prioridade:"media",obs:"Montar lista de palavras e expressões difíceis."},
-    {materia:"Português",bloco:"Semana 4",tipo:"Simulado",texto:"Simulado curto de Português com foco em interpretação",carga:"1h",prioridade:"alta",obs:"Corrigir com justificativa."},
-
-    {materia:"Ciências",bloco:"Semana 1",tipo:"Revisão",texto:"Revisar conceitos principais de Ciências cobrados no edital/material",carga:"40 min",prioridade:"media",obs:"Fazer mapa mental."},
-    {materia:"Ciências",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Resolver questões de Ciências e anotar dúvidas",carga:"45 min",prioridade:"media",obs:"Separar por conteúdo."},
-    {materia:"Ciências",bloco:"Semana 3",tipo:"Correção de erros",texto:"Refazer questões erradas de Ciências",carga:"30 min",prioridade:"media",obs:"Foco nos conteúdos com menor acerto."},
-
-    {materia:"Humanas",bloco:"Semana 1",tipo:"Leitura/resumo",texto:"História e Geografia: leitura de textos, mapas, gráficos e contexto social",carga:"45 min",prioridade:"media",obs:"Treinar interpretação de fontes."},
-    {materia:"Humanas",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Resolver questões de Humanas com leitura de mapas, tabelas e imagens",carga:"45 min",prioridade:"media",obs:"Sublinhar informações importantes do enunciado."},
-    {materia:"Humanas",bloco:"Semana 3",tipo:"Correção de erros",texto:"Revisar erros de Humanas e montar resumo dos temas mais cobrados",carga:"30 min",prioridade:"baixa",obs:"Separar dúvidas para aula."},
-
-    {materia:"Redação",bloco:"Semana 1",tipo:"Aula expositiva",texto:"Estrutura de redação: introdução, desenvolvimento e conclusão",carga:"45 min",prioridade:"media",obs:"Montar modelo de parágrafo."},
-    {materia:"Redação",bloco:"Semana 2",tipo:"Lista de exercícios",texto:"Produzir um texto curto com tema de atualidade",carga:"1h",prioridade:"media",obs:"Depois revisar coerência e pontuação."},
-    {materia:"Redação",bloco:"Semana 3",tipo:"Correção de erros",texto:"Reescrever a redação corrigindo os pontos indicados",carga:"45 min",prioridade:"media",obs:"Comparar primeira e segunda versão."},
-
-    {materia:"Revisão geral",bloco:"Semana 4",tipo:"Simulado",texto:"Simulado geral IFES com tempo marcado",carga:"2h",prioridade:"alta",obs:"Após o simulado, registrar acertos por matéria."},
-    {materia:"Revisão geral",bloco:"Semana 4",tipo:"Correção de erros",texto:"Plano de ação: revisar somente os tópicos com maior erro",carga:"1h",prioridade:"alta",obs:"Criar nova lista de recuperação."}
-  ];
-
+  if(!studentUid){alert("Selecione um aluno para criar o plano IFES.");document.getElementById("chk-student")?.focus();return;}
+  const existing=checklistVisibleList().filter(x=>(x.studentUid||ownUid())===studentUid&&chkPlano(x)===plano).length;
+  const msg=existing?`Já existem ${existing} itens desse plano para este aluno. Criar outra cópia mesmo assim?`:`Criar automaticamente o Plano IFES 12 semanas com 60 missões, XP, simulados e revisão?`;
+  if(!confirm(msg))return;
   try{
     await ensureTeacherStudentLink(studentUid);
-    const updates={};
-    const refBase=db.ref("checklist/"+studentUid);
+    const itens=ifesPlano12Semanas();
+    const updates={},refBase=db.ref("checklist/"+studentUid);
     itens.forEach((it,i)=>{
       const key=refBase.push().key;
-      updates[key]={
-        plano,planejamento:plano,
-        materia:it.materia,categoria:it.materia,
-        bloco:it.bloco,
-        tipo:it.tipo,
-        texto:it.texto,
-        carga:it.carga,
-        prioridade:it.prioridade,
-        prazo:"",
-        obs:it.obs,
-        feito:false,
-        studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
-        createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()+i
-      };
+      updates[key]={...it,ordem:i+1,prazo:"",feito:false,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()+i};
     });
     await refBase.update(updates);
     const pf=document.getElementById("chk-plano-filter"); if(pf)pf.value="all";
     const mf=document.getElementById("chk-materia-filter"); if(mf)mf.value="all";
-    setTimeout(()=>{
-      renderChecklist();
-      document.getElementById("lista-checklist")?.scrollIntoView({behavior:"smooth",block:"start"});
-    },250);
-    alert("Modelo rápido IFES criado com matérias, blocos e tópicos iniciais.");
-  }catch(e){
-    console.error(e);
-    alert(firebaseErrorMessage(e));
-  }
+    checklistPhaseFilter="all";
+    setTimeout(()=>{renderChecklist();document.getElementById("ifes-dashboard")?.scrollIntoView({behavior:"smooth",block:"start"});},250);
+    alert("Plano IFES 12 semanas criado com 60 missões no checklist.");
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
 }
 async function addChecklistItem(){
   const studentUid=selectedStudentOrSelf("chk-student"); if(!studentUid)return alert("Selecione um aluno.");
@@ -6263,21 +6352,18 @@ async function addChecklistItem(){
   const materia=document.getElementById("chk-materia")?.value.trim();
   const texto=document.getElementById("chk-texto")?.value.trim();
   if(!materia||!texto)return alert("Preencha a matéria e o tópico/objetivo da sessão.");
+  const carga=document.getElementById("chk-carga")?.value.trim()||"";
+  const tipo=document.getElementById("chk-tipo")?.value||"Lista de exercícios";
   try{
     await ensureTeacherStudentLink(studentUid);
     await db.ref("checklist/"+studentUid).push({
-      plano,planejamento:plano,
-      materia,categoria:materia,
-      texto,
+      plano,planejamento:plano,materia,categoria:materia,texto,
       bloco:document.getElementById("chk-bloco")?.value.trim()||"Sem bloco definido",
-      tipo:document.getElementById("chk-tipo")?.value||"Lista de exercícios",
-      carga:document.getElementById("chk-carga")?.value.trim()||"",
-      prioridade:document.getElementById("chk-prioridade")?.value||"media",
-      prazo:document.getElementById("chk-prazo")?.value||"",
-      obs:document.getElementById("chk-obs")?.value.trim()||"",
-      feito:false,
-      studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),
-      createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
+      tipo,carga,prioridade:document.getElementById("chk-prioridade")?.value||"media",
+      prazo:document.getElementById("chk-prazo")?.value||"",obs:document.getElementById("chk-obs")?.value.trim()||"",
+      fase:/semana\s*([1-5])(\D|$)/i.test(document.getElementById("chk-bloco")?.value||"")?"conteudo":"revisao",
+      xp: tipo==="Simulado"?230:tipo==="Prova antiga"?170:tipo==="Correção de erros"?80:carga.includes("1h30")?90:40,
+      feito:false,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
     });
     ["chk-texto","chk-prazo","chk-obs","chk-carga"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     const pr=document.getElementById("chk-prioridade");if(pr)pr.value="media";
@@ -6297,10 +6383,7 @@ async function delChecklistItem(id,studentUid){
   if(!confirm("Excluir este tópico do planejamento?"))return;
   await db.ref("checklist/"+uid+"/"+id).remove();
 }
-function toggleChecklistEdit(id){
-  const el=document.getElementById("chk-edit-"+id); if(!el)return;
-  el.style.display=el.style.display==="none"||!el.style.display?"block":"none";
-}
+function toggleChecklistEdit(id){const el=document.getElementById("chk-edit-"+id); if(!el)return; el.style.display=el.style.display==="none"||!el.style.display?"block":"none";}
 async function saveChecklistEdit(id,studentUid){
   const uid=studentUid||ownUid();
   const item=checklistVisibleList().find(x=>x.id===id&&x.studentUid===uid);
@@ -6310,9 +6393,7 @@ async function saveChecklistEdit(id,studentUid){
   if(!texto||!materia)return alert("Preencha matéria e tópico.");
   const plano=document.getElementById(`chk-edit-plano-${id}`)?.value.trim()||chkPlano(item);
   await db.ref("checklist/"+uid+"/"+id).update({
-    plano,planejamento:plano,
-    materia,categoria:materia,
-    texto,
+    plano,planejamento:plano,materia,categoria:materia,texto,
     bloco:document.getElementById(`chk-edit-bloco-${id}`)?.value.trim()||"Sem bloco definido",
     tipo:document.getElementById(`chk-edit-tipo-${id}`)?.value||chkTipo(item),
     carga:document.getElementById(`chk-edit-carga-${id}`)?.value.trim()||"",
@@ -6327,8 +6408,9 @@ function renderChecklistItem(it){
   const uid=it.studentUid||ownUid();
   const canManage=uid===ownUid()||teacherCanManageItem(it);
   const prazoInfo=it.prazo?prazoTarefaInfo(it.prazo,it.feito?"concluida":""):null;
-  const tipos=["Lista de exercícios","Aula expositiva","Revisão","Simulado","Correção de erros","Leitura/resumo"];
-  return `<div class="study-topic-card ${it.feito?"done":""}">
+  const tipos=["Lista de exercícios","Aula expositiva","Revisão","Simulado","Prova antiga","Correção de erros","Leitura/resumo"];
+  const isSim=["Simulado","Prova antiga"].includes(chkTipo(it));
+  return `<div class="study-topic-card ${it.feito?"done":""} ${isSim?"ifes-simulado":""}" id="chk-item-${it.id}">
     <div class="study-topic-check ${it.feito?"done":""}" onclick="toggleChecklistItem('${it.id}','${uid}')">✓</div>
     <div>
       <div class="study-topic-title">${safeText(it.texto)}</div>
@@ -6336,35 +6418,22 @@ function renderChecklistItem(it){
         ${isTeacher()?`<span class="badge ok">👤 ${safeText(it.studentName||getUserName(uid))}</span>`:""}
         <span class="badge">🧭 ${safeText(chkPlano(it))}</span>
         <span class="badge">📦 ${safeText(chkBloco(it))}</span>
+        ${chkDia(it)?`<span class="badge">🗓️ ${safeText(chkDia(it))}</span>`:""}
         <span class="badge">${safeText(chkTipo(it))}</span>
         ${chkCarga(it)?`<span class="badge">⏱️ ${safeText(chkCarga(it))}</span>`:""}
+        <span class="badge warn">⭐ ${chkXP(it)} XP</span>
         <span class="badge ${prioridadeBadgeClass(it.prioridade)}">${priorityLabel(it.prioridade||"media")}</span>
         ${it.prazo?`<span class="badge ${prazoInfo?prazoInfo.cls:""}">📅 ${formatDate(it.prazo)}</span>`:""}
         ${it.obs?`<span class="badge">📝 ${safeText(it.obs)}</span>`:""}
       </div>
-      ${canManage?`<div class="study-topic-actions">
-        <button class="btn-small" onclick="toggleChecklistEdit('${it.id}')">Editar</button>
-        <button class="btn-small" onclick="delChecklistItem('${it.id}','${uid}')">Excluir</button>
-      </div>`:""}
+      ${canManage?`<div class="study-topic-actions"><button class="btn-small" onclick="toggleChecklistEdit('${it.id}')">Editar</button><button class="btn-small" onclick="delChecklistItem('${it.id}','${uid}')">Excluir</button></div>`:""}
     </div>
     ${canManage?`<div class="study-topic-edit" id="chk-edit-${it.id}" style="display:none">
-      <div class="form-row">
-        <div class="form-field"><label>Planejamento</label><input id="chk-edit-plano-${it.id}" value="${safeText(chkPlano(it))}"></div>
-        <div class="form-field"><label>Matéria</label><input id="chk-edit-materia-${it.id}" value="${safeText(chkMateria(it))}"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-field"><label>Semana/Bloco</label><input id="chk-edit-bloco-${it.id}" value="${safeText(chkBloco(it))}"></div>
-        <div class="form-field"><label>Tipo</label><select id="chk-edit-tipo-${it.id}">${tipos.map(t=>`<option value="${t}" ${chkTipo(it)===t?"selected":""}>${t}</option>`).join("")}</select></div>
-      </div>
+      <div class="form-row"><div class="form-field"><label>Planejamento</label><input id="chk-edit-plano-${it.id}" value="${safeText(chkPlano(it))}"></div><div class="form-field"><label>Matéria</label><input id="chk-edit-materia-${it.id}" value="${safeText(chkMateria(it))}"></div></div>
+      <div class="form-row"><div class="form-field"><label>Semana/Bloco</label><input id="chk-edit-bloco-${it.id}" value="${safeText(chkBloco(it))}"></div><div class="form-field"><label>Tipo</label><select id="chk-edit-tipo-${it.id}">${tipos.map(t=>`<option value="${t}" ${chkTipo(it)===t?"selected":""}>${t}</option>`).join("")}</select></div></div>
       <div class="form-field"><label>Tópico</label><input id="chk-edit-texto-${it.id}" value="${safeText(it.texto||"")}"></div>
-      <div class="form-row">
-        <div class="form-field"><label>Prazo</label><input type="date" id="chk-edit-prazo-${it.id}" value="${safeText(it.prazo||"")}"></div>
-        <div class="form-field"><label>Tempo previsto</label><input id="chk-edit-carga-${it.id}" value="${safeText(chkCarga(it))}"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-field"><label>Prioridade</label><select id="chk-edit-prioridade-${it.id}"><option value="baixa" ${it.prioridade==="baixa"?"selected":""}>Baixa</option><option value="media" ${(!it.prioridade||it.prioridade==="media")?"selected":""}>Média</option><option value="alta" ${it.prioridade==="alta"?"selected":""}>Alta</option></select></div>
-        <div class="form-field"><label>Observação</label><input id="chk-edit-obs-${it.id}" value="${safeText(it.obs||"")}"></div>
-      </div>
+      <div class="form-row"><div class="form-field"><label>Prazo</label><input type="date" id="chk-edit-prazo-${it.id}" value="${safeText(it.prazo||"")}"></div><div class="form-field"><label>Tempo previsto</label><input id="chk-edit-carga-${it.id}" value="${safeText(chkCarga(it))}"></div></div>
+      <div class="form-row"><div class="form-field"><label>Prioridade</label><select id="chk-edit-prioridade-${it.id}"><option value="baixa" ${it.prioridade==="baixa"?"selected":""}>Baixa</option><option value="media" ${(!it.prioridade||it.prioridade==="media")?"selected":""}>Média</option><option value="alta" ${it.prioridade==="alta"?"selected":""}>Alta</option></select></div><div class="form-field"><label>Observação</label><input id="chk-edit-obs-${it.id}" value="${safeText(it.obs||"")}"></div></div>
       <button class="btn-small primary" onclick="saveChecklistEdit('${it.id}','${uid}')">Salvar</button>
     </div>`:""}
   </div>`;
@@ -6372,45 +6441,76 @@ function renderChecklistItem(it){
 function renderStudySchedule(list){
   const el=document.getElementById("study-plan-schedule"); if(!el)return;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>📅</div>O cronograma aparece quando você adicionar tópicos.</div>';return}
-  const grupos={};
-  list.forEach(it=>{const key=chkBloco(it);(grupos[key] ||= []).push(it)});
+  const grupos={}; list.forEach(it=>{const key=chkBloco(it);(grupos[key] ||= []).push(it)});
+  const dayOrder={"Segunda":1,"Terça":2,"Quarta":3,"Quinta":4,"Sexta":5,"Sábado":6,"Domingo":7};
   const entries=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0],"pt-BR",{numeric:true}));
   el.innerHTML=entries.map(([bloco,itens])=>{
-    const done=itens.filter(x=>x.feito).length;
-    const ordered=itens.slice().sort((a,b)=>(a.prazo||"").localeCompare(b.prazo||"") || chkMateria(a).localeCompare(chkMateria(b),"pt-BR"));
-    return `<div class="study-schedule-group"><div class="study-schedule-head"><strong>${safeText(bloco)}</strong><span>${done}/${itens.length}</span></div>${ordered.map(it=>`<div class="study-schedule-item ${it.feito?"done":""}"><div class="study-schedule-dot"></div><div><strong>${safeText(chkMateria(it))}: ${safeText(it.texto)}</strong><small>${it.prazo?formatDate(it.prazo)+" · ":""}${safeText(chkTipo(it))}${chkCarga(it)?" · "+safeText(chkCarga(it)):""}</small></div></div>`).join("")}</div>`;
+    const done=itens.filter(x=>x.feito).length, pct=itens.length?Math.round(done/itens.length*100):0;
+    const ordered=itens.slice().sort((a,b)=>(dayOrder[chkDia(a)]||99)-(dayOrder[chkDia(b)]||99) || (a.ordem||0)-(b.ordem||0));
+    return `<div class="ifes-week-card"><div class="ifes-week-head"><strong>${safeText(bloco)}</strong><span>${done}/${itens.length} · ${pct}%</span></div><div class="ifes-week-items">${ordered.map(it=>`<div class="ifes-week-line ${it.feito?"done":""}"><div class="ifes-day">${safeText(chkDia(it)||"—")}</div><div><strong>${safeText(chkMateria(it))}: ${safeText(it.texto)}</strong><small>${safeText(chkTipo(it))}${chkCarga(it)?" · "+safeText(chkCarga(it)):""}${it.obs?" · "+safeText(it.obs):""}</small></div><div class="ifes-xp">+${chkXP(it)} XP</div></div>`).join("")}</div></div>`;
   }).join("");
 }
+function ifesLevelByXP(xp){
+  if(xp>=5000)return ["Modo Aprovação","Você chegou ao ritmo de prova. Agora é manter constância e revisar erros."];
+  if(xp>=3500)return ["Federal em Construção","A preparação está consistente. Foque nos pontos fracos."];
+  if(xp>=2000)return ["Quase Federal","Você já passou da metade da jornada de revisão."];
+  if(xp>=1000)return ["Candidato Focado","A rotina engrenou. Continue marcando simulados e correções."];
+  if(xp>=500)return ["Candidato em Ritmo","Você começou bem. Mantenha as missões da semana."];
+  return ["Iniciante IFES","Comece pelas missões da semana e acompanhe o XP."];
+}
+function updateIfesDashboard(list){
+  const all=filteredChecklistPlanList();
+  const done=all.filter(x=>x.feito);
+  const xp=done.reduce((s,it)=>s+chkXP(it),0);
+  const [level,desc]=ifesLevelByXP(xp);
+  const set=(id,txt)=>{const el=document.getElementById(id);if(el)el.textContent=txt};
+  set("ifes-level-title","Nível: "+level); set("ifes-level-desc",desc); set("ifes-xp-pill",xp+" XP");
+  const next=all.filter(x=>!x.feito).sort((a,b)=>(a.ordem||999)-(b.ordem||999) || chkBloco(a).localeCompare(chkBloco(b),"pt-BR",{numeric:true}))[0];
+  set("ifes-week-pill",next?`Semana atual: ${chkBloco(next).replace("Semana ","")}`:"Plano completo");
+  set("ifes-streak-pill",`Concluídas: ${done.length}/${all.length}`);
+  const mission=document.getElementById("ifes-next-mission");
+  if(mission)mission.innerHTML=next?`${safeText(chkBloco(next))} · ${safeText(chkDia(next)||"próxima sessão")}<br><b>${safeText(chkMateria(next))}</b>: ${safeText(next.texto)}<br><span style="color:var(--verde-dark)">+${chkXP(next)} XP · ${safeText(chkCarga(next)||"tempo livre")}</span>`:"Todas as missões filtradas foram concluídas. Excelente!";
+  const badges=document.getElementById("ifes-badges");
+  if(badges){
+    const simDone=done.filter(x=>chkTipo(x)==="Simulado").length;
+    const sem1=all.filter(x=>chkBloco(x)==="Semana 1"), sem1Done=sem1.length&&sem1.every(x=>x.feito);
+    const matDone=done.filter(x=>/Matemática/i.test(chkMateria(x))).length;
+    const portDone=done.filter(x=>/Português/i.test(chkMateria(x))).length;
+    const corrDone=done.filter(x=>chkTipo(x)==="Correção de erros").length;
+    const data=[
+      [simDone>=1,"🏁 Primeiro simulado"],[sem1Done,"🔥 Semana perfeita"],[matDone>=5,"📐 Matemática em dia"],[portDone>=5,"📖 Português forte"],[corrDone>=3,"🧠 Caderno de erros ativo"],[all.some(x=>chkBloco(x)==="Semana 10"&&x.feito),"🚀 Reta final IFES"]
+    ];
+    badges.innerHTML=data.map(([ok,t])=>`<span class="ifes-badge ${ok?"unlocked":""}">${ok?"✅":"🔒"} ${t}</span>`).join("");
+  }
+  window.__nextIfesMissionId=next?.id||null;
+}
+function scrollToNextIfesMission(){const id=window.__nextIfesMissionId; if(!id)return; document.getElementById("chk-item-"+id)?.scrollIntoView({behavior:"smooth",block:"center"})}
 function renderChecklist(){
-  const base=checklistVisibleList();
-  updatePlanFilters(base);
-  const list=filteredChecklistPlanList();
+  const base=checklistVisibleList(); updatePlanFilters(base); const list=filteredChecklistPlanList();
   const total=list.length, feitos=list.filter(x=>x.feito).length, pendentes=total-feitos, pct=total?Math.round(feitos/total*100):0;
   const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
   setText("chk-total",total);setText("chk-feitos",feitos);setText("chk-pendentes",pendentes);setText("chk-pct",pct+"%");setText("chk-pct-label",pct+"%");
   const bar=document.getElementById("chk-progress-bar"); if(bar)bar.style.width=pct+"%";
   const summary=document.getElementById("study-plan-mini-summary");
   if(summary){
-    const planos=[...new Set(list.map(chkPlano))].length;
-    const materias=[...new Set(list.map(chkMateria))].length;
+    const planos=[...new Set(list.map(chkPlano))].length, materias=[...new Set(list.map(chkMateria))].length;
     const atrasados=list.filter(x=>x.prazo&&!x.feito&&prazoTarefaInfo(x.prazo,"")?.cls==="prazo-atrasado").length;
-    summary.innerHTML=`<span class="study-mini-pill">${planos} planejamento(s)</span><span class="study-mini-pill">${materias} matéria(s)</span><span class="study-mini-pill">${atrasados} prazo(s) atrasado(s)</span>`;
+    const xp=list.filter(x=>x.feito).reduce((s,it)=>s+chkXP(it),0);
+    const simulados=list.filter(x=>["Simulado","Prova antiga"].includes(chkTipo(x))).length;
+    summary.innerHTML=`<span class="study-mini-pill">${planos} planejamento(s)</span><span class="study-mini-pill">${materias} matéria(s)</span><span class="study-mini-pill">${simulados} simulado(s)/prova(s)</span><span class="study-mini-pill">${xp} XP conquistados</span><span class="study-mini-pill">${atrasados} prazo(s) atrasado(s)</span>`;
   }
+  updateIfesDashboard(list);
   const el=document.getElementById("lista-checklist"); if(!el)return;
-  if(!list.length){el.innerHTML='<div class="empty-state"><div>🧭</div>Nenhum tópico planejado ainda.</div>';renderStudySchedule(list);return}
-  const grupos={};
-  list.forEach(it=>{const cat=chkMateria(it);(grupos[cat] ||= []).push(it)});
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>🧭</div>Nenhum tópico planejado ainda. Clique em “Gerar plano IFES 12 semanas”.</div>';renderStudySchedule(list);return}
+  const grupos={}; list.forEach(it=>{const cat=chkMateria(it);(grupos[cat] ||= []).push(it)});
   el.innerHTML=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0],"pt-BR")).map(([cat,itens])=>{
-    const done=itens.filter(x=>x.feito).length, pctCat=itens.length?Math.round(done/itens.length*100):0;
-    const ordered=itens.slice().sort((a,b)=>(a.feito===b.feito?0:a.feito?1:-1) || chkBloco(a).localeCompare(chkBloco(b),"pt-BR",{numeric:true}) || (a.prazo||"").localeCompare(b.prazo||""));
-    return `<div class="study-subject-box">
-      <div class="study-subject-head"><div><strong>📚 ${safeText(cat)}</strong><small>${safeText([...new Set(itens.map(chkPlano))].join(" · "))}</small></div><div class="study-subject-pct">${done}/${itens.length} · ${pctCat}%</div></div>
-      <div class="study-subject-progress"><span style="width:${pctCat}%"></span></div>
-      <div class="study-topic-list">${ordered.map(renderChecklistItem).join("")}</div>
-    </div>`;
+    const done=itens.filter(x=>x.feito).length, pctCat=itens.length?Math.round(done/itens.length*100):0, xp=itens.filter(x=>x.feito).reduce((s,it)=>s+chkXP(it),0);
+    const ordered=itens.slice().sort((a,b)=>(a.feito===b.feito?0:a.feito?1:-1) || (a.ordem||999)-(b.ordem||999) || chkBloco(a).localeCompare(chkBloco(b),"pt-BR",{numeric:true}));
+    return `<div class="study-subject-box"><div class="study-subject-head"><div><strong>📚 ${safeText(cat)}</strong><small>${safeText([...new Set(itens.map(chkPlano))].join(" · "))}</small></div><div class="study-subject-pct">${done}/${itens.length} · ${pctCat}% · ${xp} XP</div></div><div class="study-subject-progress"><span style="width:${pctCat}%"></span></div><div class="study-topic-list">${ordered.map(renderChecklistItem).join("")}</div></div>`;
   }).join("");
   renderStudySchedule(list);
 }
+
 
 function initFinanceiroInputs(){const mes=document.getElementById("fin-mes"),ano=document.getElementById("fin-ano"); if(!mes||!ano)return; const d=new Date(),m=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; if(!mes.value)mes.value=m;if(!ano.value)ano.value=d.getFullYear()}
 function aulaLiquido(a){return Number(a.valor||0)-Number(a.repasseProfessor||0)}
