@@ -2458,11 +2458,21 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
   <div class="auth-card">
     <div class="auth-brand"><div class="logo-mark">¼</div><strong>Trocar senha</strong></div>
     <h2>Primeiro acesso</h2>
-    <p class="subtitle">Por segurança, crie uma nova senha antes de continuar.</p>
-    <div class="form-group"><label>Nova senha</label><input type="password" id="first-pass-1" placeholder="Mínimo 6 caracteres"></div>
-    <div class="form-group"><label>Confirmar nova senha</label><input type="password" id="first-pass-2" placeholder="Repita a senha"></div>
-    <button class="btn-full" onclick="changeFirstPassword()">Salvar nova senha</button>
-    <p id="first-pass-error" style="color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none"></p>
+    <p class="subtitle">Por segurança, confirme a senha provisória usada no login e crie uma nova senha.</p>
+    <div class="form-group">
+      <label for="first-current-pass">Senha atual/provisória</label>
+      <input type="password" id="first-current-pass" placeholder="Digite a senha usada para entrar" autocomplete="current-password">
+    </div>
+    <div class="form-group">
+      <label for="first-pass-1">Nova senha</label>
+      <input type="password" id="first-pass-1" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+    </div>
+    <div class="form-group">
+      <label for="first-pass-2">Confirmar nova senha</label>
+      <input type="password" id="first-pass-2" placeholder="Repita a nova senha" autocomplete="new-password">
+    </div>
+    <button id="first-pass-submit" class="btn-full" onclick="changeFirstPassword()">Salvar nova senha</button>
+    <p id="first-pass-error" role="alert" aria-live="polite" style="color:var(--danger);font-size:13px;text-align:center;margin-top:12px;display:none"></p>
     <button class="btn-small" style="margin-top:14px;width:100%" onclick="doLogout()">Sair</button>
   </div>
 </div>
@@ -3916,26 +3926,100 @@ async function activateTeacherMode(){
 }
 
 async function changeFirstPassword(){
-  const p1=document.getElementById("first-pass-1").value;
-  const p2=document.getElementById("first-pass-2").value;
+  const currentPass=document.getElementById("first-current-pass")?.value||"";
+  const p1=document.getElementById("first-pass-1")?.value||"";
+  const p2=document.getElementById("first-pass-2")?.value||"";
   const err=document.getElementById("first-pass-error");
-  if(err)err.style.display="none";
+  const submitBtn=document.getElementById("first-pass-submit");
+
+  const showFirstPasswordError=message=>{
+    if(!err)return;
+    err.textContent=message;
+    err.style.display="block";
+  };
+
+  if(err){
+    err.textContent="";
+    err.style.display="none";
+  }
+
+  if(!currentPass){
+    showFirstPasswordError("Digite a senha atual/provisória usada para entrar.");
+    return;
+  }
   if(!p1 || p1.length<6){
-    if(err){err.textContent="A nova senha precisa ter pelo menos 6 caracteres.";err.style.display="block";}
+    showFirstPasswordError("A nova senha precisa ter pelo menos 6 caracteres.");
     return;
   }
   if(p1!==p2){
-    if(err){err.textContent="As senhas não conferem.";err.style.display="block";}
+    showFirstPasswordError("As novas senhas não conferem.");
     return;
   }
+  if(currentPass===p1){
+    showFirstPasswordError("A nova senha deve ser diferente da senha atual/provisória.");
+    return;
+  }
+
+  const user=auth?.currentUser||currentUser;
+  if(!user || !user.email){
+    showFirstPasswordError("Sua sessão expirou. Saia e entre novamente.");
+    return;
+  }
+
+  if(submitBtn){
+    submitBtn.disabled=true;
+    submitBtn.textContent="Salvando...";
+  }
+
   try{
-    await currentUser.updatePassword(p1);
-    await db.ref("users/"+ownUid()).update({mustChangePassword:false,passwordChangedAt:Date.now()});
+    // Alterar senha é uma operação sensível no Firebase. Primeiro confirma
+    // novamente a identidade do usuário com a senha atual/provisória.
+    const credential=firebase.auth.EmailAuthProvider.credential(user.email,currentPass);
+    await user.reauthenticateWithCredential(credential);
+    await user.updatePassword(p1);
+
+    await db.ref("users/"+user.uid).update({
+      mustChangePassword:false,
+      passwordChangedAt:Date.now()
+    });
+
+    currentUser=user;
     currentProfile={...currentProfile,mustChangePassword:false};
+
+    ["first-current-pass","first-pass-1","first-pass-2"].forEach(id=>{
+      const input=document.getElementById(id);
+      if(input)input.value="";
+    });
+
     alert("Senha alterada com sucesso!");
+
+    const savedMode=sessionStorage.getItem("uq_access_mode");
+    if(hasTeacherPermission() && !savedMode){
+      showScreen("role");
+      return;
+    }
+    currentAccessMode=hasTeacherPermission()?(savedMode||"teacher"):"student";
     showScreen("app");
   }catch(e){
-    if(err){err.textContent=firebaseErrorMessage(e);err.style.display="block";}
+    console.error("Erro ao alterar senha do primeiro acesso:",e);
+    const code=String(e?.code||"").toLowerCase();
+
+    if(code.includes("wrong-password") || code.includes("invalid-credential") || code.includes("invalid-login-credentials")){
+      showFirstPasswordError("A senha atual/provisória está incorreta.");
+    }else if(code.includes("too-many-requests")){
+      showFirstPasswordError("Muitas tentativas. Aguarde alguns minutos e tente novamente.");
+    }else if(code.includes("network-request-failed")){
+      showFirstPasswordError("Falha de conexão. Verifique a internet e tente novamente.");
+    }else if(code.includes("requires-recent-login")){
+      showFirstPasswordError("Por segurança, saia, entre novamente e tente trocar a senha.");
+    }else{
+      showFirstPasswordError(firebaseErrorMessage(e));
+    }
+  }finally{
+    if(submitBtn){
+      submitBtn.disabled=false;
+      submitBtn.textContent="Salvar nova senha";
+    }
   }
 }
 async function createStudentLogin(){
