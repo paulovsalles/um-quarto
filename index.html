@@ -2446,6 +2446,10 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .study-task-list{display:grid;gap:8px}.study-task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;border:1.5px solid var(--borda);border-radius:15px;background:#fff;padding:12px 13px;transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;cursor:pointer;position:relative}.study-task-row:hover{border-color:#cfe5df;box-shadow:0 8px 20px rgba(40,71,84,.055);transform:translateY(-1px)}.study-task-row.done{background:#f8fbfa}.study-task-row.late:not(.done){border-left:4px solid #e56a6a}.study-task-row.today:not(.done){border-left:4px solid var(--verde)}
 .study-task-check{width:30px;height:30px;border:2px solid #d9e5e3;border-radius:10px;background:#fff;color:transparent;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 30px}.study-task-check:hover{border-color:var(--verde)}.study-task-check.done{background:var(--verde);border-color:var(--verde);color:#fff}.study-task-main{min-width:0}.study-task-kicker{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:4px}.study-task-subject{font-size:11px;color:var(--verde-dark);font-weight:900}.study-task-type{font-size:10px;color:var(--cinza);font-weight:900;background:#f4f7f6;padding:3px 7px;border-radius:999px}.study-task-title{font-size:14px;line-height:1.35;font-weight:900;color:var(--azul);overflow-wrap:anywhere}.study-task-row.done .study-task-title{text-decoration:line-through;color:#91a8b2}.study-task-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:10px;font-weight:800;color:var(--cinza)}.study-task-meta span{display:inline-flex;align-items:center;gap:4px}.study-task-side{text-align:right;display:grid;justify-items:end;gap:5px;min-width:90px}.study-task-date{font-size:11px;font-weight:900;color:var(--azul)}.study-task-date small{display:block;color:var(--cinza);font-size:9px;margin-top:2px}.study-task-state{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:9px;font-weight:900;background:#f2f6f5;color:var(--cinza)}.study-task-state.today{background:#e8f5f3;color:var(--verde-dark)}.study-task-state.late{background:#fff0f0;color:#c74343}.study-task-state.done{background:#edf2f1;color:#7e969f}.study-task-open{font-size:10px;font-weight:900;color:var(--verde-dark);background:transparent;padding:2px 0}
 .study-task-empty{border:1.5px dashed var(--borda);border-radius:16px;padding:34px 16px;text-align:center;color:var(--cinza);font-size:12px;font-weight:800}.study-task-empty b{display:block;color:var(--azul);font-size:14px;margin-bottom:4px}
+.study-task-tools{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap}.study-task-page-size{display:flex;align-items:center;gap:7px;white-space:nowrap;font-size:10px;font-weight:900;color:var(--cinza);background:#f7faf9;border:1px solid var(--borda);border-radius:12px;padding:5px 7px 5px 10px}.study-task-page-size select{width:auto;min-width:64px;height:30px;padding:4px 26px 4px 8px;border:0;background:#fff;border-radius:8px;font-size:11px;font-weight:900;color:var(--azul);box-shadow:0 0 0 1px var(--borda)}.study-task-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:13px;padding-top:12px;border-top:1px solid var(--borda)}.study-task-page-summary{font-size:10px;font-weight:800;color:var(--cinza)}.study-task-page-summary b{color:var(--azul)}.study-task-page-controls{display:flex;align-items:center;gap:7px}.study-task-page-btn{width:34px;height:34px;border-radius:10px;background:#f4f7f6;color:var(--azul);border:1px solid var(--borda);font-size:19px;font-weight:900;display:inline-flex;align-items:center;justify-content:center;transition:.16s ease}.study-task-page-btn:hover:not(:disabled){background:#e8f5f3;color:var(--verde-dark);border-color:#cfe5df}.study-task-page-btn:disabled{opacity:.38;cursor:not-allowed}.study-task-page-label{min-width:92px;text-align:center;font-size:10px;font-weight:900;color:var(--cinza);background:#fbfdfc;border:1px solid var(--borda);border-radius:10px;padding:8px 9px}.study-task-page-label b{color:var(--azul)}
+
+@media(max-width:720px){.study-task-tools{width:100%;display:grid;grid-template-columns:1fr auto}.study-task-search{width:100%}.study-task-pagination{align-items:stretch;flex-direction:column}.study-task-page-controls{justify-content:space-between}.study-task-page-label{flex:1}.study-task-page-size{justify-content:space-between}}
+@media(max-width:480px){.study-task-tools{grid-template-columns:1fr}.study-task-page-size{width:100%}}
 .study-view-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.study-view-heading strong{display:block;font-size:15px;color:var(--azul)}.study-view-heading span{display:block;margin-top:2px;font-size:11px;color:var(--cinza);font-weight:700}
 .study-agenda-list{display:grid;gap:10px}.study-agenda-day{border:1px solid var(--borda);border-radius:16px;overflow:hidden;background:#fff}.study-agenda-day-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 13px;background:#fbfdfc;border-bottom:1px solid var(--borda)}.study-agenda-day-head strong{font-size:13px;color:var(--azul)}.study-agenda-day-head span{font-size:10px;font-weight:900;color:var(--cinza);background:#fff;border:1px solid var(--borda);border-radius:999px;padding:4px 8px}.study-agenda-task{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 13px;border-bottom:1px solid #edf1f0;cursor:pointer}.study-agenda-task:last-child{border-bottom:0}.study-agenda-task:hover{background:#fbfdfc}.study-agenda-dot{width:8px;height:8px;border-radius:50%;background:var(--verde)}.study-agenda-task.done .study-agenda-dot{background:#b8c7cb}.study-agenda-task strong{font-size:12px;color:var(--azul);display:block;line-height:1.35}.study-agenda-task.done strong{text-decoration:line-through;color:#91a8b2}.study-agenda-task small{font-size:10px;color:var(--cinza);font-weight:800;display:block;margin-top:2px}.study-agenda-time{font-size:10px;font-weight:900;color:var(--cinza);background:#f4f7f6;border-radius:999px;padding:5px 8px;white-space:nowrap}
 .study-subject-overview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.study-subject-summary{border:1px solid var(--borda);border-radius:16px;padding:13px;background:#fff}.study-subject-summary-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.study-subject-summary h4{font-size:14px;color:var(--azul);line-height:1.3}.study-subject-summary-pct{font-size:11px;font-weight:900;color:var(--verde-dark);background:#e8f5f3;border-radius:999px;padding:4px 8px}.study-subject-summary small{display:block;font-size:10px;color:var(--cinza);font-weight:800;margin-top:4px}.study-subject-summary .prog-bar-track{height:7px;margin:10px 0 8px}.study-subject-next{font-size:10px;color:var(--azul-light);line-height:1.4}.study-subject-next b{color:var(--azul)}
@@ -3772,7 +3776,19 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
                   <button class="study-task-status-tab" id="study-task-filter-late" type="button" onclick="setStudyTaskFilter('late')">Atrasadas</button>
                   <button class="study-task-status-tab" id="study-task-filter-done" type="button" onclick="setStudyTaskFilter('done')">Concluídas</button>
                 </div>
-                <label class="study-task-search"><span>⌕</span><input id="study-task-search" type="search" placeholder="Buscar tarefa ou disciplina..." oninput="renderStudyTaskView()"></label>
+                <div class="study-task-tools">
+                  <label class="study-task-search"><span>⌕</span><input id="study-task-search" type="search" placeholder="Buscar tarefa ou disciplina..." oninput="studyTaskSearchChanged()"></label>
+                  <label class="study-task-page-size">Exibir
+                    <select id="study-task-page-size" onchange="setStudyTaskPageSize(this.value)" aria-label="Tarefas por página">
+                      <option value="5">5</option>
+                      <option value="10" selected>10</option>
+                      <option value="15">15</option>
+                      <option value="20">20</option>
+                      <option value="30">30</option>
+                    </select>
+                    por página
+                  </label>
+                </div>
               </div>
               <div id="lista-checklist"><div class="empty-state"><div>☑</div>Adicione seus conteúdos e gere o primeiro plano.</div></div>
             </div>
@@ -8098,6 +8114,9 @@ setTimeout(()=>{
 /* ===== CHECKLIST POR TAREFA · UX 2026 ===== */
 let studyWorkspaceView='tasks';
 let studyTaskFilter='all';
+let studyTaskPage=1;
+let studyTaskPageSize=Number(localStorage.getItem('studyTaskPageSize')||10);
+if(![5,10,15,20,30].includes(studyTaskPageSize))studyTaskPageSize=10;
 
 function studyLocalDateKey(d=new Date()){
   const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
@@ -8126,8 +8145,22 @@ function setStudyWorkspaceView(view){
 }
 function setStudyTaskFilter(filter){
   studyTaskFilter=['all','today','upcoming','late','done'].includes(filter)?filter:'all';
+  studyTaskPage=1;
   ['all','today','upcoming','late','done'].forEach(v=>document.getElementById('study-task-filter-'+v)?.classList.toggle('active',v===studyTaskFilter));
   renderStudyTaskView();
+}
+function studyTaskSearchChanged(){studyTaskPage=1;renderStudyTaskView()}
+function setStudyTaskPageSize(value){
+  const size=Number(value);
+  studyTaskPageSize=[5,10,15,20,30].includes(size)?size:10;
+  studyTaskPage=1;
+  try{localStorage.setItem('studyTaskPageSize',String(studyTaskPageSize))}catch(e){}
+  renderStudyTaskView();
+}
+function changeStudyTaskPage(delta){
+  studyTaskPage=Math.max(1,studyTaskPage+Number(delta||0));
+  renderStudyTaskView();
+  document.getElementById('study-view-tasks')?.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function studyTaskMatchesSearch(it,q){
   if(!q)return true;
@@ -8172,11 +8205,24 @@ function renderStudyTaskView(){
   if(studyTaskFilter!=='all')list=list.filter(it=>studyTaskStatus(it)===studyTaskFilter);
   if(q)list=list.filter(it=>studyTaskMatchesSearch(it,q));
   list.sort(studyTaskSort);
+  const sizeSelect=document.getElementById('study-task-page-size');if(sizeSelect)sizeSelect.value=String(studyTaskPageSize);
   if(!list.length){
+    studyTaskPage=1;
     const msg=studyTaskFilter==='today'?'Nenhuma tarefa marcada para hoje.':studyTaskFilter==='late'?'Nenhuma tarefa atrasada.':studyTaskFilter==='done'?'Nenhuma tarefa concluída neste filtro.':'Nenhuma tarefa encontrada.';
     el.innerHTML=`<div class="study-task-empty"><b>${msg}</b>Use os filtros acima ou gere um novo plano.</div>`;return;
   }
-  el.innerHTML=`<div class="study-task-list">${list.map(renderStudyTaskCard).join('')}</div>`;
+  const total=list.length,totalPages=Math.max(1,Math.ceil(total/studyTaskPageSize));
+  if(studyTaskPage>totalPages)studyTaskPage=totalPages;
+  const start=(studyTaskPage-1)*studyTaskPageSize,end=Math.min(start+studyTaskPageSize,total),pageItems=list.slice(start,end);
+  el.innerHTML=`<div class="study-task-list">${pageItems.map(renderStudyTaskCard).join('')}</div>
+    <div class="study-task-pagination" aria-label="Paginação das tarefas">
+      <div class="study-task-page-summary">Mostrando <b>${start+1}–${end}</b> de <b>${total}</b> tarefa${total===1?'':'s'}</div>
+      <div class="study-task-page-controls">
+        <button class="study-task-page-btn" type="button" onclick="changeStudyTaskPage(-1)" ${studyTaskPage<=1?'disabled':''} aria-label="Página anterior">‹</button>
+        <span class="study-task-page-label">Página <b>${studyTaskPage}</b> de ${totalPages}</span>
+        <button class="study-task-page-btn" type="button" onclick="changeStudyTaskPage(1)" ${studyTaskPage>=totalPages?'disabled':''} aria-label="Próxima página">›</button>
+      </div>
+    </div>`;
 }
 function renderStudySubjectOverview(list){
   const el=document.getElementById('study-subject-overview');if(!el)return;
@@ -8243,7 +8289,7 @@ async function saveStudyTaskModal(){
 async function toggleStudyTaskModalDone(){const id=document.getElementById('study-task-modal-id')?.value,uid=document.getElementById('study-task-modal-uid')?.value||ownUid();await toggleChecklistItem(id,uid);closeStudyTaskModal()}
 async function deleteStudyTaskModal(){const id=document.getElementById('study-task-modal-id')?.value,uid=document.getElementById('study-task-modal-uid')?.value||ownUid();await delChecklistItem(id,uid);closeStudyTaskModal()}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeStudyTaskModal()});
-setTimeout(()=>{if(document.getElementById('study-view-tasks')){setStudyWorkspaceView('tasks');renderChecklist()}},350);
+setTimeout(()=>{const ps=document.getElementById('study-task-page-size');if(ps)ps.value=String(studyTaskPageSize);if(document.getElementById('study-view-tasks')){setStudyWorkspaceView('tasks');renderChecklist()}},350);
 </script>
 </body>
 </html>
