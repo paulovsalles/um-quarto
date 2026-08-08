@@ -2329,6 +2329,87 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 @media(max-width:1160px){.sim-studio-shell{grid-template-columns:260px minmax(0,1fr)}.sim-question-builder{grid-template-columns:1fr}.sim-question-media{display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:center}.sim-media-title{grid-column:1/-1}.sim-add-question-btn{margin-top:0;height:100%}.sim-question-media .simulado-img-preview{grid-column:1/-1}.sim-audience-list{grid-template-columns:1fr}}
 @media(max-width:900px){.sim-studio-stats{grid-template-columns:1fr 1fr}.sim-studio-shell{grid-template-columns:1fr}.sim-library-panel{position:static;max-height:none;min-height:auto}.sim-library-list{grid-template-columns:repeat(2,minmax(0,1fr));max-height:360px}.sim-editor-head{flex-direction:column}.sim-editor-head-actions{justify-content:flex-start}.sim-form-grid-3{grid-template-columns:1fr 1fr}.sim-form-grid-3>div:last-child{grid-column:1/-1}.sim-results-studio .simulados-results-list{grid-template-columns:1fr}}
 @media(max-width:620px){.sim-studio-heading{align-items:flex-start;flex-direction:column}.sim-primary-action{width:100%}.sim-studio-stats{grid-template-columns:1fr 1fr}.sim-library-list{grid-template-columns:1fr}.sim-editor-tabs{padding:0 8px;overflow:auto}.sim-editor-tab{padding:12px 9px;white-space:nowrap}.sim-form-section,.sim-question-builder,.sim-question-list-section{padding-left:13px;padding-right:13px}.sim-form-grid-3,.sim-audience-modes{grid-template-columns:1fr}.sim-form-grid-3>div:last-child{grid-column:auto}.sim-audience-toolbar{align-items:stretch;flex-direction:column}.sim-search-box.wide{min-width:0}.sim-editor-footer{align-items:flex-start;flex-direction:column}.sim-footer-actions{width:100%}.sim-footer-actions .btn-small{flex:1}.sim-question-media{grid-template-columns:1fr}.sim-media-title,.sim-question-media .simulado-img-preview{grid-column:auto}.sim-question-row{grid-template-columns:34px minmax(0,1fr)}.sim-question-row-actions{grid-column:2;justify-content:flex-end}.sim-results-studio-head{align-items:flex-start;flex-direction:column}}
+
+
+/* ===== PLANO DE ESTUDOS PERSONALIZADO · REDESIGN 2026 ===== */
+.study-builder-page{display:grid;gap:16px;padding-bottom:8px}
+.study-builder-intro{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr);gap:18px;align-items:center;background:#fff;border:1px solid var(--borda);border-radius:24px;padding:28px;box-shadow:0 14px 34px rgba(40,71,84,.06)}
+.study-builder-intro h2{font-size:clamp(26px,3vw,36px);line-height:1.08;color:var(--azul);letter-spacing:-.025em;margin-bottom:10px}
+.study-builder-intro p{font-size:14px;line-height:1.65;color:var(--cinza);max-width:760px}
+.study-builder-eyebrow{display:inline-flex;align-items:center;gap:7px;color:var(--verde-dark);font-weight:900;font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.study-builder-visual{min-height:150px;border-radius:22px;background:linear-gradient(135deg,#eef9f6,#f7fbfa);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.study-builder-target{width:100px;height:100px;border:13px solid rgba(35,184,166,.18);border-radius:50%;position:relative;box-shadow:inset 0 0 0 13px #fff, inset 0 0 0 26px rgba(35,184,166,.28)}
+.study-builder-target:before{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:var(--verde);left:50%;top:50%;transform:translate(-50%,-50%)}
+.study-builder-target:after{content:"✓";position:absolute;right:-44px;top:-27px;width:46px;height:46px;border-radius:15px;background:#fff;border:1px solid var(--borda);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;color:var(--verde-dark);font-size:24px;font-weight:900;transform:rotate(6deg)}
+.study-builder-main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,.65fr);gap:16px;align-items:start}
+.study-builder-stack{display:grid;gap:16px}
+.study-builder-card{background:#fff;border:1px solid var(--borda);border-radius:22px;padding:20px;box-shadow:0 10px 28px rgba(40,71,84,.05)}
+.study-builder-card-head{display:flex;align-items:flex-start;gap:11px;margin-bottom:18px}
+.study-builder-step{width:34px;height:34px;border-radius:11px;background:#e8f5f3;color:var(--verde-dark);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;flex:0 0 34px}
+.study-builder-card-head h3{font-size:17px;color:var(--azul);margin-bottom:3px}
+.study-builder-card-head p{font-size:12px;color:var(--cinza);line-height:1.45}
+.study-content-head,.study-builder-row{display:grid;grid-template-columns:minmax(130px,.48fr) minmax(220px,1.15fr) 120px 38px;gap:10px;align-items:start}
+.study-content-head{padding:0 2px 7px;color:var(--cinza);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em}
+.study-builder-row{padding:10px 0;border-top:1px solid #f0f3f2}
+.study-builder-row:first-of-type{border-top:0}
+.study-builder-row input,.study-builder-row textarea,.study-builder-row select{margin:0;min-height:44px}
+.study-builder-row textarea{min-height:44px;height:44px;resize:vertical;line-height:1.35}
+.study-row-remove{width:36px;height:36px;border-radius:10px;background:#fff5f5;color:var(--danger);font-size:18px;font-weight:900;margin-top:4px}
+.study-row-remove:hover{background:#ffe9e9}
+.study-add-content{background:transparent;color:var(--verde-dark);font-size:13px;font-weight:900;padding:10px 2px;margin-top:4px}
+.study-time-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.study-time-grid .form-field{margin-bottom:0}
+.study-builder-total{margin-top:14px;background:#f3fbf8;border:1px solid rgba(35,184,166,.24);border-radius:15px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.study-builder-total strong{display:block;font-size:13px;color:var(--verde-dark)}
+.study-builder-total span{display:block;font-size:12px;color:var(--azul-light);font-weight:800;margin-top:2px}
+.study-builder-total b{font-size:23px;color:var(--azul);white-space:nowrap}
+.study-generate-card{position:sticky;top:90px}
+.study-generate-box{background:linear-gradient(145deg,#f3fbf8,#eef8f7);border:1px solid rgba(35,184,166,.18);border-radius:18px;padding:16px;margin-bottom:14px}
+.study-generate-feature{display:grid;grid-template-columns:32px 1fr;gap:10px;margin-bottom:14px;align-items:start}
+.study-generate-feature:last-child{margin-bottom:0}
+.study-generate-feature i{width:32px;height:32px;border-radius:10px;background:#fff;color:var(--verde-dark);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:900;box-shadow:0 4px 12px rgba(40,71,84,.05)}
+.study-generate-feature strong{display:block;font-size:13px;color:var(--azul);margin-bottom:2px}
+.study-generate-feature span{display:block;font-size:11px;color:var(--cinza);line-height:1.45;font-weight:700}
+.study-generate-btn{width:100%;min-height:48px;border-radius:14px;background:var(--verde);color:#fff;font-size:14px;font-weight:900;box-shadow:0 10px 24px rgba(35,184,166,.18);transition:.18s ease}
+.study-generate-btn:hover{background:var(--verde-dark);transform:translateY(-1px)}
+.study-generate-btn:disabled{opacity:.6;cursor:wait;transform:none}
+.study-builder-note{margin-top:12px;padding:12px 13px;border-radius:14px;background:#f6f9ff;border:1px solid #deebfb;color:#53708a;font-size:11px;line-height:1.5;font-weight:700}
+.study-teacher-target{background:#fff;border:1px solid var(--borda);border-radius:18px;padding:14px 16px;box-shadow:var(--shadow);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+.study-teacher-target .form-field{margin:0}
+.study-teacher-target small{display:block;color:var(--cinza);font-size:11px;font-weight:800;margin-top:6px}
+.study-plan-results{display:grid;gap:14px;margin-top:2px}
+.study-results-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.study-results-head h3{font-size:20px;color:var(--azul);margin-bottom:3px}
+.study-results-head p{font-size:12px;color:var(--cinza)}
+.study-results-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:end}
+.study-results-filters .form-field{margin:0;min-width:190px}
+.study-results-filters select{min-height:40px;padding:8px 10px}
+.study-result-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.study-result-stat{background:#fff;border:1px solid var(--borda);border-radius:17px;padding:14px;text-align:left;box-shadow:0 8px 20px rgba(40,71,84,.04)}
+.study-result-stat .num{font-size:24px;font-weight:900;color:var(--azul);line-height:1}
+.study-result-stat .label{font-size:11px;font-weight:900;color:var(--cinza);margin-top:6px}
+.study-progress-card{background:#fff;border:1px solid var(--borda);border-radius:18px;padding:15px 16px;box-shadow:var(--shadow)}
+.study-progress-card .prog-bar-track{margin-bottom:8px}
+.study-plan-layout-clean{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(340px,.95fr);gap:14px;align-items:start}
+.study-plan-layout-clean>.card{margin:0;border:1px solid var(--borda);box-shadow:0 8px 24px rgba(40,71,84,.05)}
+.study-plan-layout-clean .card-title{text-transform:none;letter-spacing:0;color:var(--azul);font-size:14px;margin-bottom:12px}
+.study-tip-strip{background:#fff;border:1px solid var(--borda);border-radius:20px;padding:16px 18px;box-shadow:0 8px 24px rgba(40,71,84,.04)}
+.study-tip-title{font-size:13px;font-weight:900;color:var(--azul);margin-bottom:12px}
+.study-tip-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.study-tip{display:grid;grid-template-columns:36px 1fr;gap:9px;padding:8px 14px;border-right:1px solid var(--borda)}
+.study-tip:first-child{padding-left:0}.study-tip:last-child{border-right:0;padding-right:0}
+.study-tip i{font-style:normal;width:34px;height:34px;border-radius:11px;background:#eef8f5;display:flex;align-items:center;justify-content:center;color:var(--verde-dark);font-weight:900}
+.study-tip strong{display:block;font-size:12px;color:var(--azul);margin-bottom:2px}.study-tip span{display:block;font-size:10px;line-height:1.4;color:var(--cinza);font-weight:700}
+.study-topic-card{grid-template-columns:auto 1fr!important;padding:12px 13px!important}
+.study-topic-actions{margin-top:9px}
+.study-topic-meta .badge.warn{background:#f6f8f8;color:var(--cinza)}
+.study-session-date{font-size:11px;color:var(--verde-dark);font-weight:900;margin-bottom:5px}
+.study-subject-box{box-shadow:none!important}
+.ifes-week-card{box-shadow:none!important}
+@media(max-width:1080px){.study-builder-main,.study-plan-layout-clean{grid-template-columns:1fr}.study-generate-card{position:static}.study-builder-intro{grid-template-columns:1fr .45fr}}
+@media(max-width:760px){.study-builder-intro{grid-template-columns:1fr;padding:20px}.study-builder-visual{min-height:105px}.study-builder-main{gap:12px}.study-builder-card{padding:15px}.study-content-head{display:none}.study-builder-row{grid-template-columns:1fr 92px 36px}.study-builder-row .study-row-subject{grid-column:1/-1}.study-builder-row .study-row-content{grid-column:1/3}.study-builder-row .study-row-priority{grid-column:1}.study-row-remove{grid-column:3;grid-row:2;align-self:start}.study-time-grid{grid-template-columns:1fr 1fr}.study-time-grid .form-field:first-child{grid-column:1/-1}.study-result-stats{grid-template-columns:1fr 1fr}.study-tip-grid{grid-template-columns:1fr 1fr}.study-tip{border-right:0;border-bottom:1px solid var(--borda);padding:10px}.study-tip:nth-last-child(-n+2){border-bottom:0}.study-tip:first-child{padding-left:10px}.study-tip:last-child{padding-right:10px}.study-results-filters{width:100%}.study-results-filters .form-field{min-width:0;flex:1}.study-teacher-target{grid-template-columns:1fr}}
+@media(max-width:480px){.study-time-grid,.study-result-stats,.study-tip-grid{grid-template-columns:1fr}.study-time-grid .form-field:first-child{grid-column:auto}.study-tip{border-bottom:1px solid var(--borda)!important}.study-tip:last-child{border-bottom:0!important}.study-builder-total{align-items:flex-start;flex-direction:column}.study-builder-row{grid-template-columns:1fr 36px}.study-builder-row .study-row-content{grid-column:1/-1}.study-builder-row .study-row-priority{grid-column:1}.study-row-remove{grid-column:2;grid-row:3}.study-results-filters{display:grid;grid-template-columns:1fr;width:100%}}
+
 </style>
 </head>
 <body>
@@ -3497,114 +3578,130 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
     </div>
 
     <div id="tab-checklist" class="tab-panel">
-      <div class="study-plan-hero">
-        <div>
-          <span class="study-plan-kicker">Checklist gamificado</span>
-          <h2>Plano IFES — 12 semanas 🧭</h2>
-          <p>Checklist organizado por semana, matéria, tempo de estudo, simulados, XP, níveis e conquistas. As 5 primeiras semanas passam por todo o conteúdo; as 7 seguintes focam revisão, Português, Matemática e provas antigas.</p>
-        </div>
-        <button class="btn-small primary" onclick="fillIfesPlanPreset()">Gerar plano IFES 12 semanas</button>
-      </div>
-
-      <div class="linked-student-filter teacher-only" style="display:none">
-        <div class="filter-head">
-          <strong>Filtro do planejamento por aluno</strong>
-          <span id="checklist-filter-count">Filtro por aluno</span>
-        </div>
-        <div class="linked-student-filter-grid">
-          <div class="form-field" style="margin-bottom:0">
-            <label>Ver planejamento de</label>
-            <select id="checklist-student-filter" onchange="setGlobalStudentFilter(this.value)">
-              <option value="all">Todos os alunos</option>
-            </select>
+      <div class="study-builder-page">
+        <section class="study-builder-intro">
+          <div>
+            <span class="study-builder-eyebrow">✓ Planejamento inteligente</span>
+            <h2>Crie seu plano de estudos personalizado</h2>
+            <p>Adicione tudo o que precisa estudar, informe quanto tempo você realmente tem disponível e gere uma rotina individualizada com conteúdo, exercícios, revisões e simulados — pensada para prova, vestibular ou concurso.</p>
           </div>
-          <button class="btn-small primary" onclick="syncStudentSelectWithGlobalFilter('chk-student','chk-texto')" style="min-height:42px">Usar este aluno no formulário</button>
-        </div>
-        <p>Filtre por aluno e use o mesmo aluno ao adicionar novos tópicos ao planejamento.</p>
-      </div>
+          <div class="study-builder-visual" aria-hidden="true"><div class="study-builder-target"></div></div>
+        </section>
 
-      <div class="study-plan-controls card">
-        <div class="form-row">
+        <div class="study-teacher-target teacher-only" style="display:none">
           <div class="form-field">
-            <label>Filtrar por planejamento</label>
-            <select id="chk-plano-filter" onchange="renderChecklist()"><option value="all">Todos os planejamentos</option></select>
+            <label>Planejar para o aluno</label>
+            <select id="chk-student" onchange="studyStudentChanged(this.value)"></select>
+            <small>O plano gerado será salvo diretamente no perfil do aluno selecionado.</small>
           </div>
-          <div class="form-field">
-            <label>Filtrar por matéria</label>
-            <select id="chk-materia-filter" onchange="renderChecklist()"><option value="all">Todas as matérias</option></select>
+          <button class="btn-small" type="button" onclick="renderChecklist()">Atualizar planos</button>
+        </div>
+
+        <div class="study-builder-main">
+          <div class="study-builder-stack">
+            <section class="study-builder-card">
+              <div class="study-builder-card-head">
+                <span class="study-builder-step">1</span>
+                <div><h3>Adicione os conteúdos que precisa estudar</h3><p>Use uma linha por disciplina. No conteúdo, você pode detalhar por linhas ou separar assuntos com ponto e vírgula.</p></div>
+              </div>
+              <div class="study-content-head"><span>Disciplina</span><span>Conteúdo detalhado</span><span>Prioridade</span><span></span></div>
+              <div id="study-content-rows">
+                <div class="study-builder-row">
+                  <input class="study-row-subject" type="text" placeholder="Ex: Matemática">
+                  <textarea class="study-row-content" placeholder="Ex: Conjuntos; Regra de 3"></textarea>
+                  <select class="study-row-priority"><option value="alta">Alta</option><option value="media" selected>Média</option><option value="baixa">Baixa</option></select>
+                  <button class="study-row-remove" type="button" onclick="removeStudyContentRow(this)" title="Remover">×</button>
+                </div>
+                <div class="study-builder-row">
+                  <input class="study-row-subject" type="text" placeholder="Ex: Português">
+                  <textarea class="study-row-content" placeholder="Ex: Gramática; Morfologia"></textarea>
+                  <select class="study-row-priority"><option value="alta">Alta</option><option value="media" selected>Média</option><option value="baixa">Baixa</option></select>
+                  <button class="study-row-remove" type="button" onclick="removeStudyContentRow(this)" title="Remover">×</button>
+                </div>
+              </div>
+              <button class="study-add-content" type="button" onclick="addStudyContentRow()">＋ Adicionar disciplina</button>
+            </section>
+
+            <section class="study-builder-card">
+              <div class="study-builder-card-head">
+                <span class="study-builder-step">2</span>
+                <div><h3>Informe seu tempo disponível</h3><p>O site usa esses dados para distribuir a carga de forma realista ao longo das semanas.</p></div>
+              </div>
+              <div class="form-field">
+                <label>Objetivo / prova / concurso</label>
+                <input id="study-goal" type="text" placeholder="Ex: IFES, ENEM, concurso da prefeitura, prova final..." oninput="updateStudyCapacity()">
+              </div>
+              <div class="study-time-grid">
+                <div class="form-field"><label>Horas por dia</label><input id="study-hours-day" type="number" min="0.25" max="12" step="0.25" value="2" oninput="updateStudyCapacity()"></div>
+                <div class="form-field"><label>Dias por semana</label><input id="study-days-week" type="number" min="1" max="7" step="1" value="5" oninput="updateStudyCapacity()"></div>
+                <div class="form-field"><label>Duração do plano</label><div style="display:grid;grid-template-columns:1fr 92px;gap:7px"><input id="study-duration" type="number" min="1" max="52" step="1" value="8" oninput="updateStudyCapacity()"><select id="study-duration-unit" onchange="updateStudyCapacity()"><option value="weeks">semanas</option><option value="months">meses</option></select></div></div>
+              </div>
+              <div class="form-field" style="margin-top:12px;margin-bottom:0"><label>Começar em</label><input id="study-start-date" type="date" onchange="updateStudyCapacity()"></div>
+              <div class="study-builder-total">
+                <div><strong>Tempo total disponível</strong><span id="study-capacity-detail">—</span></div>
+                <b id="study-capacity-total">—</b>
+              </div>
+            </section>
           </div>
+
+          <aside class="study-builder-card study-generate-card">
+            <div class="study-builder-card-head">
+              <span class="study-builder-step">3</span>
+              <div><h3>Gere seu plano personalizado</h3><p>O cronograma é montado com foco em retenção e desempenho em prova.</p></div>
+            </div>
+            <div class="study-generate-box">
+              <div class="study-generate-feature"><i>▣</i><div><strong>Distribuição individualizada</strong><span>Os assuntos são repetidos em ciclos de estudo, questões, revisão e correção.</span></div></div>
+              <div class="study-generate-feature"><i>◎</i><div><strong>Foco no que mais importa</strong><span>Conteúdos marcados como prioridade alta aparecem com maior frequência.</span></div></div>
+              <div class="study-generate-feature"><i>↻</i><div><strong>Revisão e prova</strong><span>O plano inclui revisões periódicas e simulados quando houver carga suficiente.</span></div></div>
+            </div>
+            <button class="study-generate-btn" id="study-generate-btn" type="button" onclick="generatePersonalizedStudyPlan()">✦ Gerar meu plano de estudos</button>
+            <div class="study-builder-note"><strong>Como funciona?</strong><br>O plano usa apenas os conteúdos e o tempo que você informar. Não depende de IA externa: a distribuição é feita pelo próprio site e fica salva no seu checklist.</div>
+          </aside>
         </div>
-        <div class="ifes-phase-tabs" style="margin-top:12px;margin-bottom:0">
-          <button class="ifes-phase-tab active" id="chk-fase-all" onclick="setChecklistPhaseFilter('all')">Tudo</button>
-          <button class="ifes-phase-tab" id="chk-fase-conteudo" onclick="setChecklistPhaseFilter('conteudo')">Semanas 1–5 · Conteúdo</button>
-          <button class="ifes-phase-tab" id="chk-fase-revisao" onclick="setChecklistPhaseFilter('revisao')">Semanas 6–12 · Revisão</button>
-          <button class="ifes-phase-tab" id="chk-fase-simulado" onclick="setChecklistPhaseFilter('simulado')">Simulados</button>
-        </div>
-      </div>
 
-      <div class="result-grid">
-        <div class="result-card"><div class="num" id="chk-total">0</div><div class="label">tópicos planejados</div></div>
-        <div class="result-card"><div class="num" id="chk-feitos">0</div><div class="label">concluídos</div></div>
-        <div class="result-card"><div class="num" id="chk-pendentes">0</div><div class="label">pendentes</div></div>
-        <div class="result-card"><div class="num" id="chk-pct">0%</div><div class="label">progresso geral</div></div>
-      </div>
-
-      <div class="card">
-        <div class="prog-bar-label"><span>Progresso do planejamento</span><span id="chk-pct-label">0%</span></div>
-        <div class="prog-bar-track"><div class="prog-bar-fill" id="chk-progress-bar"></div></div>
-        <div id="study-plan-mini-summary" class="study-mini-summary"></div>
-      </div>
-
-      <div class="ifes-dashboard" id="ifes-dashboard">
-        <div class="ifes-status-card">
-          <h3 id="ifes-level-title">Nível: Iniciante IFES</h3>
-          <p id="ifes-level-desc">Complete missões para ganhar XP, abrir conquistas e acompanhar sua evolução rumo à prova.</p>
-          <div class="ifes-level-row">
-            <span class="ifes-level-pill" id="ifes-xp-pill">0 XP</span>
-            <span class="ifes-level-pill" id="ifes-week-pill">Semana atual: —</span>
-            <span class="ifes-level-pill" id="ifes-streak-pill">Sequência: 0</span>
+        <section class="study-plan-results" id="study-plan-results">
+          <div class="study-results-head">
+            <div><h3>Seu planejamento</h3><p>Acompanhe o que foi concluído, filtre por plano ou disciplina e ajuste cada sessão quando precisar.</p></div>
+            <div class="study-results-filters">
+              <div class="form-field"><label>Plano</label><select id="chk-plano-filter" onchange="renderChecklist()"><option value="all">Todos os planos</option></select></div>
+              <div class="form-field"><label>Disciplina</label><select id="chk-materia-filter" onchange="renderChecklist()"><option value="all">Todas as disciplinas</option></select></div>
+            </div>
           </div>
-          <div class="ifes-badges" id="ifes-badges"></div>
-        </div>
-        <div class="ifes-mission-card">
-          <h3>Próxima missão 🎯</h3>
-          <p id="ifes-next-mission">Gere o plano IFES 12 semanas para aparecer a próxima atividade.</p>
-          <button class="btn-small primary" onclick="scrollToNextIfesMission()">Ir para próxima missão</button>
-        </div>
-      </div>
 
-      <div class="add-form study-plan-form">
-        <h3>+ Adicionar tópico ao planejamento</h3>
-        <div class="form-field teacher-only" style="display:none"><label>Vincular aluno</label><select id="chk-student"></select></div>
-        <div class="form-row">
-          <div class="form-field"><label>Nome do planejamento</label><input type="text" id="chk-plano" placeholder="Ex: Planejamento de Estudos do IFES" list="chk-planos-existentes"><datalist id="chk-planos-existentes"></datalist></div>
-          <div class="form-field"><label>Matéria</label><input type="text" id="chk-materia" placeholder="Ex: Matemática, Português, Ciências..." list="chk-categorias-existentes"><datalist id="chk-categorias-existentes"></datalist></div>
-        </div>
-        <div class="form-row">
-          <div class="form-field"><label>Semana/Bloco</label><input type="text" id="chk-bloco" placeholder="Ex: Semana 1, Bloco 2, Revisão final"></div>
-          <div class="form-field"><label>Tipo de estudo</label><select id="chk-tipo"><option value="Lista de exercícios">Lista de exercícios</option><option value="Aula expositiva">Aula expositiva</option><option value="Revisão">Revisão</option><option value="Simulado">Simulado</option><option value="Prova antiga">Prova antiga</option><option value="Correção de erros">Correção de erros</option><option value="Leitura/resumo">Leitura/resumo</option></select></div>
-        </div>
-        <div class="form-field"><label>Tópico / objetivo da sessão</label><input type="text" id="chk-texto" placeholder="Ex: Resolver lista de razão e proporção / revisar interpretação de gráficos"></div>
-        <div class="form-row">
-          <div class="form-field"><label>Prazo ou data da sessão</label><input type="date" id="chk-prazo"></div>
-          <div class="form-field"><label>Tempo previsto</label><input type="text" id="chk-carga" placeholder="Ex: 30 min, 1h, 2 aulas"></div>
-        </div>
-        <div class="form-row">
-          <div class="form-field"><label>Prioridade</label><select id="chk-prioridade"><option value="media">Média</option><option value="alta">Alta</option><option value="baixa">Baixa</option></select></div>
-          <div class="form-field"><label>Observação / material</label><input type="text" id="chk-obs" placeholder="Ex: páginas do livro, link, lista 1, caderno..."></div>
-        </div>
-        <button class="btn-add" onclick="addChecklistItem()">Adicionar ao planejamento</button>
-      </div>
+          <div class="study-result-stats">
+            <div class="study-result-stat"><div class="num" id="chk-total">0</div><div class="label">sessões planejadas</div></div>
+            <div class="study-result-stat"><div class="num" id="chk-feitos">0</div><div class="label">concluídas</div></div>
+            <div class="study-result-stat"><div class="num" id="chk-pendentes">0</div><div class="label">pendentes</div></div>
+            <div class="study-result-stat"><div class="num" id="chk-pct">0%</div><div class="label">progresso geral</div></div>
+          </div>
 
-      <div class="study-plan-layout">
-        <div class="card">
-          <div class="card-title">Matérias em caixas</div>
-          <div id="lista-checklist"><div class="empty-state"><div>🧭</div>Nenhum tópico planejado ainda.</div></div>
-        </div>
-        <div class="card">
-          <div class="card-title">Cronograma por semana/bloco</div>
-          <div id="study-plan-schedule"><div class="empty-state"><div>📅</div>O cronograma aparece quando você adicionar tópicos.</div></div>
-        </div>
+          <div class="study-progress-card">
+            <div class="prog-bar-label"><span>Progresso do plano</span><span id="chk-pct-label">0%</span></div>
+            <div class="prog-bar-track"><div class="prog-bar-fill" id="chk-progress-bar"></div></div>
+            <div id="study-plan-mini-summary" class="study-mini-summary"></div>
+          </div>
+
+          <div class="study-plan-layout-clean">
+            <div class="card">
+              <div class="card-title">Conteúdos e sessões</div>
+              <div id="lista-checklist"><div class="empty-state"><div>📚</div>Adicione seus conteúdos e gere o primeiro plano.</div></div>
+            </div>
+            <div class="card">
+              <div class="card-title">Cronograma por semana</div>
+              <div id="study-plan-schedule"><div class="empty-state"><div>📅</div>Seu cronograma aparecerá aqui.</div></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="study-tip-strip">
+          <div class="study-tip-title">★ Dicas para um plano eficiente</div>
+          <div class="study-tip-grid">
+            <div class="study-tip"><i>◷</i><div><strong>Seja realista</strong><span>Informe um tempo que você realmente consegue cumprir.</span></div></div>
+            <div class="study-tip"><i>◎</i><div><strong>Priorize o importante</strong><span>Marque como alta prioridade os conteúdos mais cobrados ou mais difíceis.</span></div></div>
+            <div class="study-tip"><i>↻</i><div><strong>Revise sempre</strong><span>Não pule as sessões de revisão e correção de erros.</span></div></div>
+            <div class="study-tip"><i>↗</i><div><strong>Acompanhe o progresso</strong><span>Conclua as sessões e ajuste o plano conforme sua evolução.</span></div></div>
+          </div>
+        </section>
       </div>
     </div>
 
@@ -3674,7 +3771,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
         <button class="nav-item clean-primary" id="nav-calendario" onclick="switchTab('calendario')">📅<span>Calendário</span></button>
         <button class="nav-item clean-primary" id="nav-forum" onclick="switchTab('forum')">💬<span>Bate-papo</span></button>
         <button class="nav-item clean-primary" id="nav-simulados" onclick="switchTab('simulados')">🧪<span>Provas/Simulados</span></button>
-        <button class="nav-item clean-primary" id="nav-checklist" onclick="switchTab('checklist')">📋<span>Checklist de Estudos</span></button>
+        <button class="nav-item clean-primary" id="nav-checklist" onclick="switchTab('checklist')">📋<span>Plano de Estudos</span></button>
       </div>
     </div>
 
@@ -6732,7 +6829,7 @@ function renderChecklist(){
   }
   updateIfesDashboard(list);
   const el=document.getElementById("lista-checklist"); if(!el)return;
-  if(!list.length){el.innerHTML='<div class="empty-state"><div>🧭</div>Nenhum tópico planejado ainda. Clique em “Gerar plano IFES 12 semanas”.</div>';renderStudySchedule(list);return}
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>🧭</div>Nenhuma sessão planejada ainda. Adicione seus conteúdos e gere um plano personalizado.</div>';renderStudySchedule(list);return}
   const grupos={}; list.forEach(it=>{const cat=chkMateria(it);(grupos[cat] ||= []).push(it)});
   el.innerHTML=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0],"pt-BR")).map(([cat,itens])=>{
     const done=itens.filter(x=>x.feito).length, pctCat=itens.length?Math.round(done/itens.length*100):0, xp=itens.filter(x=>x.feito).reduce((s,it)=>s+chkXP(it),0);
@@ -7405,6 +7502,247 @@ visibleSimuladosTeacher=function(){
   if(globalStudentFilter&&globalStudentFilter!=="all")base=base.filter(s=>simuladoAudienceIncludes(s,globalStudentFilter));
   return base;
 };
+
+
+/* ===== PLANO DE ESTUDOS PERSONALIZADO · LÓGICA 2026 ===== */
+function studyTodayLocal(){
+  const d=new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function studyDateFromISO(s){
+  const [y,m,d]=String(s||"").split("-").map(Number);
+  return y&&m&&d?new Date(y,m-1,d,12,0,0):new Date();
+}
+function studyISODate(d){
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function studyFormatShortDate(s){
+  if(!s)return "";
+  const d=studyDateFromISO(s);
+  return d.toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit"});
+}
+function studyDurationWeeks(){
+  const n=Math.max(1,Number(document.getElementById("study-duration")?.value||1));
+  return document.getElementById("study-duration-unit")?.value==="months"?Math.max(1,Math.round(n*4.345)):Math.round(n);
+}
+function updateStudyCapacity(){
+  const hours=Math.max(.25,Number(document.getElementById("study-hours-day")?.value||0));
+  const days=Math.min(7,Math.max(1,Number(document.getElementById("study-days-week")?.value||1)));
+  const weeks=studyDurationWeeks();
+  const total=hours*days*weeks;
+  const totalEl=document.getElementById("study-capacity-total"), detail=document.getElementById("study-capacity-detail");
+  if(totalEl)totalEl.textContent=`${Number.isInteger(total)?total:total.toFixed(1).replace(".",",")} h`;
+  if(detail)detail.textContent=`${String(hours).replace(".",",")}h/dia × ${days} dia${days===1?"":"s"}/semana × ${weeks} semana${weeks===1?"":"s"}`;
+}
+function addStudyContentRow(subject="",content="",priority="media"){
+  const box=document.getElementById("study-content-rows");if(!box)return;
+  const row=document.createElement("div");row.className="study-builder-row";
+  row.innerHTML=`<input class="study-row-subject" type="text" placeholder="Ex: Matemática" value="${safeText(subject)}"><textarea class="study-row-content" placeholder="Ex: Conjuntos; Regra de 3">${safeText(content)}</textarea><select class="study-row-priority"><option value="alta" ${priority==="alta"?"selected":""}>Alta</option><option value="media" ${priority==="media"?"selected":""}>Média</option><option value="baixa" ${priority==="baixa"?"selected":""}>Baixa</option></select><button class="study-row-remove" type="button" onclick="removeStudyContentRow(this)" title="Remover">×</button>`;
+  box.appendChild(row);
+}
+function removeStudyContentRow(btn){
+  const box=document.getElementById("study-content-rows");if(!box)return;
+  const rows=box.querySelectorAll(".study-builder-row");
+  if(rows.length<=1){rows[0]?.querySelector(".study-row-subject")&&(rows[0].querySelector(".study-row-subject").value="");rows[0]?.querySelector(".study-row-content")&&(rows[0].querySelector(".study-row-content").value="");return;}
+  btn.closest(".study-builder-row")?.remove();
+}
+function studyReadTopics(){
+  const rows=[...document.querySelectorAll("#study-content-rows .study-builder-row")];
+  const topics=[];
+  rows.forEach(row=>{
+    const materia=row.querySelector(".study-row-subject")?.value.trim();
+    const raw=row.querySelector(".study-row-content")?.value.trim();
+    const prioridade=row.querySelector(".study-row-priority")?.value||"media";
+    if(!materia||!raw)return;
+    const parts=raw.split(/\n|;/).map(x=>x.replace(/^[-•*\d.)\s]+/,"").trim()).filter(Boolean);
+    (parts.length?parts:[raw]).forEach(texto=>topics.push({materia,texto,prioridade}));
+  });
+  return topics;
+}
+function studyWeightedTopics(topics){
+  const weights={alta:3,media:2,baixa:1}, pool=[];
+  /* Intercala os assuntos por rodadas para aumentar o espaçamento entre repetições. */
+  for(let round=0;round<3;round++)topics.forEach((t,i)=>{if((weights[t.prioridade]||2)>round)pool.push({...t,key:`${i}:${t.materia}:${t.texto}`})});
+  return pool.length?pool:topics.map((t,i)=>({...t,key:String(i)}));
+}
+function studyDayOffsets(days){
+  const map={1:[0],2:[0,3],3:[0,2,4],4:[0,1,3,5],5:[0,1,2,3,4],6:[0,1,2,3,4,5],7:[0,1,2,3,4,5,6]};
+  return map[Math.min(7,Math.max(1,days))];
+}
+function studyBlockMinutes(hours){
+  const total=Math.max(15,Math.round(hours*60));
+  const count=total>=150?3:total>=90?2:1;
+  const base=Math.floor(total/count), rem=total-base*count;
+  return Array.from({length:count},(_,i)=>base+(i<rem?1:0));
+}
+function studyStageFor(repetition){
+  const stages=[
+    {tipo:"Leitura/resumo",label:"Estudo ativo + teoria",obs:"Entenda a teoria, faça anotações curtas e feche com 2–3 questões."},
+    {tipo:"Lista de exercícios",label:"Aplicação em questões",obs:"Resolva questões sem consultar a teoria e marque os erros."},
+    {tipo:"Revisão",label:"Revisão espaçada",obs:"Revise de memória, confira pontos frágeis e resolva novas questões."},
+    {tipo:"Correção de erros",label:"Questões de prova + caderno de erros",obs:"Refaça erros, registre o motivo e resolva questões semelhantes."}
+  ];
+  return stages[Math.min(repetition,stages.length-1)];
+}
+function studyCreateGeneratedItems(topics,{planName,goal,hours,days,weeks,start}){
+  const pool=studyWeightedTopics(topics), blocks=studyBlockMinutes(hours), offsets=studyDayOffsets(days), counts={};
+  const items=[];let cursor=0,order=1;
+  const subjects=[...new Set(topics.map(t=>t.materia))];
+  for(let w=0;w<weeks;w++){
+    const weekSlots=offsets.length*blocks.length;
+    let localSlot=0;
+    for(let di=0;di<offsets.length;di++){
+      const date=new Date(start);date.setDate(start.getDate()+w*7+offsets[di]);
+      const dateISO=studyISODate(date),dia=date.toLocaleDateString("pt-BR",{weekday:"long"}).replace(/^./,c=>c.toUpperCase());
+      for(let bi=0;bi<blocks.length;bi++){
+        localSlot++;
+        const isLast=localSlot===weekSlots;
+        const checkpoint=weekSlots>=4&&isLast;
+        const isSim=checkpoint&&(w===weeks-1 || (w+1)%4===0);
+        if(checkpoint){
+          items.push({
+            plano:planName,planejamento:planName,goal,semanaNum:w+1,bloco:`Semana ${w+1}`,dia,carga:`${blocks[bi]} min`,materia:isSim?"Simulado":"Revisão geral",categoria:isSim?"Simulado":"Revisão geral",tipo:isSim?"Simulado":"Revisão",prioridade:"alta",prazo:dateISO,sessionDate:dateISO,
+            texto:isSim?`Simulado misto de ${subjects.join(", ")} + correção completa`:`Revisão semanal dos conteúdos estudados + questões dos pontos com mais erro`,
+            obs:isSim?"Faça em tempo controlado. Corrija no mesmo dia e atualize o caderno de erros.":"Use recuperação ativa: tente lembrar antes de consultar o material.",fase:"revisao",xp:isSim?120:60,ordem:order++
+          });
+          continue;
+        }
+        const t=pool[cursor%pool.length];cursor++;
+        const c=counts[t.key]||0;counts[t.key]=c+1;
+        const stage=studyStageFor(c);
+        items.push({
+          plano:planName,planejamento:planName,goal,semanaNum:w+1,bloco:`Semana ${w+1}`,dia,carga:`${blocks[bi]} min`,materia:t.materia,categoria:t.materia,tipo:stage.tipo,prioridade:t.prioridade,prazo:dateISO,sessionDate:dateISO,
+          texto:`${stage.label}: ${t.texto}`,obs:stage.obs,fase:c===0?"conteudo":"revisao",xp:40,ordem:order++
+        });
+      }
+    }
+  }
+  return items;
+}
+async function generatePersonalizedStudyPlan(){
+  const btn=document.getElementById("study-generate-btn");
+  const topics=studyReadTopics();
+  if(!topics.length)return alert("Adicione pelo menos uma disciplina e um conteúdo para montar o plano.");
+  const hours=Number(document.getElementById("study-hours-day")?.value||0),days=Number(document.getElementById("study-days-week")?.value||0),weeks=studyDurationWeeks();
+  if(!(hours>0))return alert("Informe quantas horas por dia você consegue estudar.");
+  if(!(days>=1&&days<=7))return alert("Informe de 1 a 7 dias de estudo por semana.");
+  if(!(weeks>=1&&weeks<=226))return alert("Informe uma duração válida para o plano.");
+  const startISO=document.getElementById("study-start-date")?.value||studyTodayLocal();
+  const start=studyDateFromISO(startISO);
+  const goal=document.getElementById("study-goal")?.value.trim()||"Prova / concurso";
+  const studentUid=selectedStudentOrSelf("chk-student");
+  if(!studentUid)return alert("Selecione o aluno que receberá o plano.");
+  const stamp=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"2-digit",year:"2-digit"});
+  const planName=`${goal} · ${weeks} sem · ${stamp}`;
+  const generated=studyCreateGeneratedItems(topics,{planName,goal,hours,days:Math.round(days),weeks,start});
+  if(!generated.length)return alert("Não foi possível montar sessões com os dados informados.");
+  const existing=checklistVisibleList().filter(x=>(x.studentUid||ownUid())===studentUid&&chkPlano(x)===planName).length;
+  if(existing&&!confirm(`Já existe um plano com este nome e ${existing} sessões. Deseja criar outra cópia?`))return;
+  try{
+    if(btn){btn.disabled=true;btn.textContent="Gerando seu plano...";}
+    await ensureTeacherStudentLink(studentUid);
+    const updates={},refBase=db.ref("checklist/"+studentUid);
+    generated.forEach((it,i)=>{
+      const key=refBase.push().key;
+      updates[key]={...it,feito:false,studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),createdBy:ownUid(),createdByEmail:userEmail(),generatedPlan:true,createdAt:Date.now()+i};
+    });
+    await refBase.update(updates);
+    checklistPhaseFilter="all";
+    if(isTeacher())globalStudentFilter=studentUid;
+    const pf=document.getElementById("chk-plano-filter"),mf=document.getElementById("chk-materia-filter");
+    if(pf)pf.value="all";if(mf)mf.value="all";
+    setTimeout(()=>{
+      updatePlanFilters(checklistVisibleList());
+      const planFilter=document.getElementById("chk-plano-filter");if(planFilter&&[...planFilter.options].some(o=>o.value===planName))planFilter.value=planName;
+      renderChecklist();document.getElementById("study-plan-results")?.scrollIntoView({behavior:"smooth",block:"start"});
+    },350);
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+  finally{if(btn){btn.disabled=false;btn.textContent="✦ Gerar meu plano de estudos";}}
+}
+function studyStudentChanged(uid){
+  if(uid&&uid!=="all")setGlobalStudentFilter(uid);
+  else renderChecklist();
+}
+function studyMinutesFromCarga(v){
+  const s=String(v||"").toLowerCase().replace(",",".");
+  const hm=s.match(/(\d+(?:\.\d+)?)\s*h/),mm=s.match(/(\d+)\s*min/);
+  if(hm)return Math.round(Number(hm[1])*60)+(mm?Number(mm[1]):0);
+  const n=s.match(/\d+/);return n?Number(n[0]):0;
+}
+
+/* Visualização limpa do checklist antigo e dos novos planos. */
+renderChecklistItem=function(it){
+  const uid=it.studentUid||ownUid(),canManage=uid===ownUid()||teacherCanManageItem(it);
+  const prazoInfo=it.prazo?prazoTarefaInfo(it.prazo,it.feito?"concluida":""):null;
+  const tipos=["Lista de exercícios","Aula expositiva","Revisão","Simulado","Prova antiga","Correção de erros","Leitura/resumo"];
+  return `<div class="study-topic-card ${it.feito?"done":""}" id="chk-item-${it.id}">
+    <div class="study-topic-check ${it.feito?"done":""}" onclick="toggleChecklistItem('${it.id}','${uid}')">✓</div>
+    <div>
+      ${it.prazo?`<div class="study-session-date">${safeText(chkBloco(it))} · ${safeText(chkDia(it)||"")} · ${studyFormatShortDate(it.prazo)}</div>`:""}
+      <div class="study-topic-title">${safeText(it.texto)}</div>
+      <div class="study-topic-meta">
+        ${isTeacher()?`<span class="badge ok">👤 ${safeText(it.studentName||getUserName(uid))}</span>`:""}
+        <span class="badge">${safeText(chkTipo(it))}</span>
+        ${chkCarga(it)?`<span class="badge">⏱ ${safeText(chkCarga(it))}</span>`:""}
+        <span class="badge ${prioridadeBadgeClass(it.prioridade)}">${priorityLabel(it.prioridade||"media")}</span>
+        ${it.prazo?`<span class="badge ${prazoInfo?prazoInfo.cls:""}">📅 ${formatDate(it.prazo)}</span>`:""}
+      </div>
+      ${it.obs?`<div class="item-text">${safeText(it.obs)}</div>`:""}
+      ${canManage?`<div class="study-topic-actions"><button class="btn-small" onclick="toggleChecklistEdit('${it.id}')">Editar</button><button class="btn-small" onclick="delChecklistItem('${it.id}','${uid}')">Excluir</button></div>`:""}
+    </div>
+    ${canManage?`<div class="study-topic-edit" id="chk-edit-${it.id}" style="display:none">
+      <div class="form-row"><div class="form-field"><label>Planejamento</label><input id="chk-edit-plano-${it.id}" value="${safeText(chkPlano(it))}"></div><div class="form-field"><label>Disciplina</label><input id="chk-edit-materia-${it.id}" value="${safeText(chkMateria(it))}"></div></div>
+      <div class="form-row"><div class="form-field"><label>Semana/Bloco</label><input id="chk-edit-bloco-${it.id}" value="${safeText(chkBloco(it))}"></div><div class="form-field"><label>Tipo</label><select id="chk-edit-tipo-${it.id}">${tipos.map(t=>`<option value="${t}" ${chkTipo(it)===t?"selected":""}>${t}</option>`).join("")}</select></div></div>
+      <div class="form-field"><label>Sessão</label><input id="chk-edit-texto-${it.id}" value="${safeText(it.texto||"")}"></div>
+      <div class="form-row"><div class="form-field"><label>Data</label><input type="date" id="chk-edit-prazo-${it.id}" value="${safeText(it.prazo||"")}"></div><div class="form-field"><label>Tempo previsto</label><input id="chk-edit-carga-${it.id}" value="${safeText(chkCarga(it))}"></div></div>
+      <div class="form-row"><div class="form-field"><label>Prioridade</label><select id="chk-edit-prioridade-${it.id}"><option value="baixa" ${it.prioridade==="baixa"?"selected":""}>Baixa</option><option value="media" ${(!it.prioridade||it.prioridade==="media")?"selected":""}>Média</option><option value="alta" ${it.prioridade==="alta"?"selected":""}>Alta</option></select></div><div class="form-field"><label>Observação</label><input id="chk-edit-obs-${it.id}" value="${safeText(it.obs||"")}"></div></div>
+      <button class="btn-small primary" onclick="saveChecklistEdit('${it.id}','${uid}')">Salvar alterações</button>
+    </div>`:""}
+  </div>`;
+};
+
+renderChecklist=function(){
+  const base=checklistVisibleList();updatePlanFilters(base);const list=filteredChecklistPlanList();
+  const total=list.length,feitos=list.filter(x=>x.feito).length,pendentes=total-feitos,pct=total?Math.round(feitos/total*100):0;
+  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  setText("chk-total",total);setText("chk-feitos",feitos);setText("chk-pendentes",pendentes);setText("chk-pct",pct+"%");setText("chk-pct-label",pct+"%");
+  const bar=document.getElementById("chk-progress-bar");if(bar)bar.style.width=pct+"%";
+  const summary=document.getElementById("study-plan-mini-summary");
+  if(summary){
+    const planos=[...new Set(list.map(chkPlano))].length,materias=[...new Set(list.map(chkMateria))].length;
+    const mins=list.reduce((s,it)=>s+studyMinutesFromCarga(chkCarga(it)),0),simulados=list.filter(x=>["Simulado","Prova antiga"].includes(chkTipo(x))).length;
+    summary.innerHTML=`<span class="study-mini-pill">${planos} plano${planos===1?"":"s"}</span><span class="study-mini-pill">${materias} disciplina${materias===1?"":"s"}</span><span class="study-mini-pill">${Math.round(mins/60*10)/10} h planejadas</span><span class="study-mini-pill">${simulados} simulado${simulados===1?"":"s"}</span>`;
+  }
+  const el=document.getElementById("lista-checklist");if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma sessão neste filtro. Adicione seus conteúdos e gere um plano personalizado.</div>';renderStudySchedule(list);return;}
+  const grupos={};list.forEach(it=>{const cat=chkMateria(it);(grupos[cat] ||= []).push(it)});
+  el.innerHTML=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0],"pt-BR")).map(([cat,itens])=>{
+    const done=itens.filter(x=>x.feito).length,pctCat=itens.length?Math.round(done/itens.length*100):0;
+    const ordered=itens.slice().sort((a,b)=>(a.feito===b.feito?0:a.feito?1:-1)||(a.ordem||999)-(b.ordem||999)||String(a.prazo||"").localeCompare(String(b.prazo||"")));
+    return `<div class="study-subject-box"><div class="study-subject-head"><div><strong>${safeText(cat)}</strong><small>${done} de ${itens.length} sessões concluídas</small></div><div class="study-subject-pct">${pctCat}%</div></div><div class="study-subject-progress"><span style="width:${pctCat}%"></span></div><div class="study-topic-list">${ordered.map(renderChecklistItem).join("")}</div></div>`;
+  }).join("");
+  renderStudySchedule(list);
+};
+
+/* Cronograma genérico: mantém semanas, datas e tempo sem linguagem específica de IFES/XP. */
+renderStudySchedule=function(list){
+  const el=document.getElementById("study-plan-schedule");if(!el)return;
+  if(!list.length){el.innerHTML='<div class="empty-state"><div>📅</div>O cronograma aparece quando você gerar um plano.</div>';return;}
+  const grupos={};list.forEach(it=>{const key=chkBloco(it);(grupos[key] ||= []).push(it)});
+  const entries=Object.entries(grupos).sort((a,b)=>a[0].localeCompare(b[0],"pt-BR",{numeric:true}));
+  el.innerHTML=entries.map(([bloco,itens])=>{
+    const done=itens.filter(x=>x.feito).length,pct=itens.length?Math.round(done/itens.length*100):0;
+    const ordered=itens.slice().sort((a,b)=>String(a.prazo||"").localeCompare(String(b.prazo||""))||(a.ordem||0)-(b.ordem||0));
+    return `<div class="ifes-week-card"><div class="ifes-week-head"><strong>${safeText(bloco)}</strong><span>${done}/${itens.length} · ${pct}%</span></div><div class="ifes-week-items">${ordered.map(it=>`<div class="ifes-week-line ${it.feito?"done":""}"><div class="ifes-day">${safeText(chkDia(it)||"—")}${it.prazo?`<small style="display:block;margin-top:2px">${studyFormatShortDate(it.prazo)}</small>`:""}</div><div><strong>${safeText(chkMateria(it))}: ${safeText(it.texto)}</strong><small>${safeText(chkTipo(it))}${chkCarga(it)?" · "+safeText(chkCarga(it)):""}</small></div><div class="ifes-xp" style="background:#f4f7f6;color:var(--azul-light)">${safeText(chkCarga(it)||"")}</div></div>`).join("")}</div></div>`;
+  }).join("");
+};
+
+/* Inicializa os campos novos sempre que a tela existir. */
+setTimeout(()=>{
+  const start=document.getElementById("study-start-date");if(start&&!start.value)start.value=studyTodayLocal();
+  updateStudyCapacity();
+},0);
+
 </script>
 
 <div class="kanban-edit-overlay" id="kanban-edit-overlay" onclick="if(event.target.id==='kanban-edit-overlay')closeTarefaEdit()">
