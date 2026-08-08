@@ -2436,6 +2436,22 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 @media(max-width:760px){.study-free-head{flex-direction:column}.study-free-actions{align-items:stretch}.study-free-btn{flex:1}.study-free-example{width:100%;margin-left:0}.study-weekdays{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:480px){.study-weekdays{grid-template-columns:repeat(2,minmax(0,1fr))}.study-free-actions{display:grid;grid-template-columns:1fr}.study-free-btn{width:100%}}
 
+
+/* ===== PLANO DE ESTUDOS · CHECKLIST POR TAREFA ===== */
+.study-workspace-card{background:#fff;border:1px solid var(--borda);border-radius:22px;box-shadow:0 10px 30px rgba(40,71,84,.055);overflow:hidden}
+.study-workspace-tabs{display:flex;gap:6px;padding:10px;border-bottom:1px solid var(--borda);background:#fbfdfc;overflow-x:auto;scrollbar-width:none}.study-workspace-tabs::-webkit-scrollbar{display:none}
+.study-workspace-tab{display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;background:transparent;color:var(--cinza);border-radius:12px;padding:10px 14px;font-size:13px;font-weight:900;transition:.18s ease}.study-workspace-tab:hover{background:#f1f7f5;color:var(--azul)}.study-workspace-tab.active{background:#eaf7f4;color:var(--verde-dark)}.study-workspace-tab span{min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:10px;border:1px solid var(--borda)}
+.study-workspace-view{display:none;padding:16px}.study-workspace-view.active{display:block}
+.study-task-toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}.study-task-status-tabs{display:flex;gap:6px;flex-wrap:wrap}.study-task-status-tab{background:#f4f7f6;color:var(--cinza);border:1px solid transparent;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:900;white-space:nowrap}.study-task-status-tab:hover{color:var(--azul);background:#edf4f2}.study-task-status-tab.active{background:var(--azul);color:#fff}.study-task-search{width:min(310px,100%);height:40px;border:1.5px solid var(--borda);border-radius:12px;background:#fff;display:flex;align-items:center;gap:8px;padding:0 11px;margin:0}.study-task-search:focus-within{border-color:var(--verde);box-shadow:0 0 0 3px rgba(35,184,166,.09)}.study-task-search span{font-size:17px;color:var(--cinza)}.study-task-search input{border:0!important;padding:0!important;box-shadow:none!important;background:transparent!important;font-size:12px;height:auto}
+.study-task-list{display:grid;gap:8px}.study-task-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;border:1.5px solid var(--borda);border-radius:15px;background:#fff;padding:12px 13px;transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;cursor:pointer;position:relative}.study-task-row:hover{border-color:#cfe5df;box-shadow:0 8px 20px rgba(40,71,84,.055);transform:translateY(-1px)}.study-task-row.done{background:#f8fbfa}.study-task-row.late:not(.done){border-left:4px solid #e56a6a}.study-task-row.today:not(.done){border-left:4px solid var(--verde)}
+.study-task-check{width:30px;height:30px;border:2px solid #d9e5e3;border-radius:10px;background:#fff;color:transparent;font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;flex:0 0 30px}.study-task-check:hover{border-color:var(--verde)}.study-task-check.done{background:var(--verde);border-color:var(--verde);color:#fff}.study-task-main{min-width:0}.study-task-kicker{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:4px}.study-task-subject{font-size:11px;color:var(--verde-dark);font-weight:900}.study-task-type{font-size:10px;color:var(--cinza);font-weight:900;background:#f4f7f6;padding:3px 7px;border-radius:999px}.study-task-title{font-size:14px;line-height:1.35;font-weight:900;color:var(--azul);overflow-wrap:anywhere}.study-task-row.done .study-task-title{text-decoration:line-through;color:#91a8b2}.study-task-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:6px;font-size:10px;font-weight:800;color:var(--cinza)}.study-task-meta span{display:inline-flex;align-items:center;gap:4px}.study-task-side{text-align:right;display:grid;justify-items:end;gap:5px;min-width:90px}.study-task-date{font-size:11px;font-weight:900;color:var(--azul)}.study-task-date small{display:block;color:var(--cinza);font-size:9px;margin-top:2px}.study-task-state{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:9px;font-weight:900;background:#f2f6f5;color:var(--cinza)}.study-task-state.today{background:#e8f5f3;color:var(--verde-dark)}.study-task-state.late{background:#fff0f0;color:#c74343}.study-task-state.done{background:#edf2f1;color:#7e969f}.study-task-open{font-size:10px;font-weight:900;color:var(--verde-dark);background:transparent;padding:2px 0}
+.study-task-empty{border:1.5px dashed var(--borda);border-radius:16px;padding:34px 16px;text-align:center;color:var(--cinza);font-size:12px;font-weight:800}.study-task-empty b{display:block;color:var(--azul);font-size:14px;margin-bottom:4px}
+.study-view-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.study-view-heading strong{display:block;font-size:15px;color:var(--azul)}.study-view-heading span{display:block;margin-top:2px;font-size:11px;color:var(--cinza);font-weight:700}
+.study-agenda-list{display:grid;gap:10px}.study-agenda-day{border:1px solid var(--borda);border-radius:16px;overflow:hidden;background:#fff}.study-agenda-day-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 13px;background:#fbfdfc;border-bottom:1px solid var(--borda)}.study-agenda-day-head strong{font-size:13px;color:var(--azul)}.study-agenda-day-head span{font-size:10px;font-weight:900;color:var(--cinza);background:#fff;border:1px solid var(--borda);border-radius:999px;padding:4px 8px}.study-agenda-task{display:grid;grid-template-columns:8px minmax(0,1fr) auto;gap:10px;align-items:center;padding:10px 13px;border-bottom:1px solid #edf1f0;cursor:pointer}.study-agenda-task:last-child{border-bottom:0}.study-agenda-task:hover{background:#fbfdfc}.study-agenda-dot{width:8px;height:8px;border-radius:50%;background:var(--verde)}.study-agenda-task.done .study-agenda-dot{background:#b8c7cb}.study-agenda-task strong{font-size:12px;color:var(--azul);display:block;line-height:1.35}.study-agenda-task.done strong{text-decoration:line-through;color:#91a8b2}.study-agenda-task small{font-size:10px;color:var(--cinza);font-weight:800;display:block;margin-top:2px}.study-agenda-time{font-size:10px;font-weight:900;color:var(--cinza);background:#f4f7f6;border-radius:999px;padding:5px 8px;white-space:nowrap}
+.study-subject-overview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.study-subject-summary{border:1px solid var(--borda);border-radius:16px;padding:13px;background:#fff}.study-subject-summary-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.study-subject-summary h4{font-size:14px;color:var(--azul);line-height:1.3}.study-subject-summary-pct{font-size:11px;font-weight:900;color:var(--verde-dark);background:#e8f5f3;border-radius:999px;padding:4px 8px}.study-subject-summary small{display:block;font-size:10px;color:var(--cinza);font-weight:800;margin-top:4px}.study-subject-summary .prog-bar-track{height:7px;margin:10px 0 8px}.study-subject-next{font-size:10px;color:var(--azul-light);line-height:1.4}.study-subject-next b{color:var(--azul)}
+.study-task-modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,49,59,.42);backdrop-filter:blur(5px);z-index:9999;align-items:center;justify-content:center;padding:18px}.study-task-modal-overlay.open{display:flex}.study-task-modal{width:min(660px,100%);max-height:min(760px,92vh);overflow:auto;background:#fff;border:1px solid rgba(255,255,255,.9);border-radius:24px;box-shadow:0 30px 80px rgba(30,56,67,.22)}.study-task-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px 20px 14px;border-bottom:1px solid var(--borda);position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);z-index:2}.study-task-modal-head h3{font-size:20px;color:var(--azul);line-height:1.25}.study-task-modal-head p{font-size:11px;color:var(--cinza);font-weight:800;margin-top:4px}.study-task-modal-close{width:36px;height:36px;border-radius:12px;background:#f4f7f6;color:var(--azul);font-size:22px;flex:0 0 36px}.study-task-modal-body{padding:18px 20px}.study-task-modal-summary{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}.study-task-modal-summary span{font-size:10px;font-weight:900;background:#f4f7f6;color:var(--cinza);padding:5px 8px;border-radius:999px}.study-task-modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.study-task-modal-body textarea{min-height:86px}.study-task-modal-footer{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:14px 20px 18px;border-top:1px solid var(--borda);background:#fbfdfc}.study-task-modal-footer-left,.study-task-modal-footer-right{display:flex;gap:8px;flex-wrap:wrap}.study-task-modal-done{background:#e8f5f3;color:var(--verde-dark);border-radius:12px;padding:10px 13px;font-size:12px;font-weight:900}.study-task-modal-delete{background:#fff1f1;color:#c74343;border-radius:12px;padding:10px 13px;font-size:12px;font-weight:900}.study-task-modal-save{background:var(--verde);color:#fff;border-radius:12px;padding:10px 15px;font-size:12px;font-weight:900}.study-task-modal-cancel{background:#f0f4f3;color:var(--azul);border-radius:12px;padding:10px 13px;font-size:12px;font-weight:900}
+@media(max-width:760px){.study-workspace-view{padding:12px}.study-task-toolbar{align-items:stretch;flex-direction:column}.study-task-search{width:100%}.study-task-status-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.study-task-row{grid-template-columns:auto minmax(0,1fr)}.study-task-side{grid-column:2;text-align:left;justify-items:start;grid-template-columns:auto auto auto;align-items:center;min-width:0}.study-task-date small{display:inline;margin-left:4px}.study-subject-overview-grid{grid-template-columns:1fr}.study-task-modal-grid{grid-template-columns:1fr}.study-task-modal-footer{align-items:stretch;flex-direction:column}.study-task-modal-footer-left,.study-task-modal-footer-right{width:100%}.study-task-modal-footer button{flex:1}.study-task-modal{border-radius:20px}.study-task-modal-body{padding:15px}.study-task-modal-head{padding:15px}}
+@media(max-width:480px){.study-workspace-tabs{padding:8px}.study-workspace-tab{padding:9px 11px}.study-task-row{padding:11px 10px;gap:9px}.study-task-title{font-size:13px}.study-task-side{grid-template-columns:1fr;gap:3px}.study-task-open{display:none}.study-agenda-task{grid-template-columns:8px 1fr}.study-agenda-time{grid-column:2;justify-self:start}}
 </style>
 </head>
 <body>
@@ -3728,9 +3744,9 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
           </div>
 
           <div class="study-result-stats">
-            <div class="study-result-stat"><div class="num" id="chk-total">0</div><div class="label">sessões planejadas</div></div>
-            <div class="study-result-stat"><div class="num" id="chk-feitos">0</div><div class="label">concluídas</div></div>
-            <div class="study-result-stat"><div class="num" id="chk-pendentes">0</div><div class="label">pendentes</div></div>
+            <div class="study-result-stat"><div class="num" id="chk-total">0</div><div class="label">tarefas planejadas</div></div>
+            <div class="study-result-stat"><div class="num" id="chk-feitos">0</div><div class="label">tarefas concluídas</div></div>
+            <div class="study-result-stat"><div class="num" id="chk-pendentes">0</div><div class="label">tarefas pendentes</div></div>
             <div class="study-result-stat"><div class="num" id="chk-pct">0%</div><div class="label">progresso geral</div></div>
           </div>
 
@@ -3740,14 +3756,35 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
             <div id="study-plan-mini-summary" class="study-mini-summary"></div>
           </div>
 
-          <div class="study-plan-layout-clean">
-            <div class="card">
-              <div class="card-title">Conteúdos e sessões</div>
-              <div id="lista-checklist"><div class="empty-state"><div>📚</div>Adicione seus conteúdos e gere o primeiro plano.</div></div>
+          <div class="study-workspace-card">
+            <div class="study-workspace-tabs" role="tablist" aria-label="Visualização do planejamento">
+              <button class="study-workspace-tab active" id="study-view-tab-tasks" type="button" onclick="setStudyWorkspaceView('tasks')">☑ Tarefas <span id="study-tab-tasks-count">0</span></button>
+              <button class="study-workspace-tab" id="study-view-tab-agenda" type="button" onclick="setStudyWorkspaceView('agenda')">📅 Agenda</button>
+              <button class="study-workspace-tab" id="study-view-tab-subjects" type="button" onclick="setStudyWorkspaceView('subjects')">📚 Conteúdos</button>
             </div>
-            <div class="card">
-              <div class="card-title">Cronograma por semana</div>
+
+            <div class="study-workspace-view active" id="study-view-tasks">
+              <div class="study-task-toolbar">
+                <div class="study-task-status-tabs" aria-label="Filtrar tarefas">
+                  <button class="study-task-status-tab active" id="study-task-filter-all" type="button" onclick="setStudyTaskFilter('all')">Todas</button>
+                  <button class="study-task-status-tab" id="study-task-filter-today" type="button" onclick="setStudyTaskFilter('today')">Hoje</button>
+                  <button class="study-task-status-tab" id="study-task-filter-upcoming" type="button" onclick="setStudyTaskFilter('upcoming')">Próximas</button>
+                  <button class="study-task-status-tab" id="study-task-filter-late" type="button" onclick="setStudyTaskFilter('late')">Atrasadas</button>
+                  <button class="study-task-status-tab" id="study-task-filter-done" type="button" onclick="setStudyTaskFilter('done')">Concluídas</button>
+                </div>
+                <label class="study-task-search"><span>⌕</span><input id="study-task-search" type="search" placeholder="Buscar tarefa ou disciplina..." oninput="renderStudyTaskView()"></label>
+              </div>
+              <div id="lista-checklist"><div class="empty-state"><div>☑</div>Adicione seus conteúdos e gere o primeiro plano.</div></div>
+            </div>
+
+            <div class="study-workspace-view" id="study-view-agenda">
+              <div class="study-view-heading"><div><strong>Agenda do plano</strong><span>As tarefas aparecem por data, sem obrigar você a navegar semana por semana.</span></div></div>
               <div id="study-plan-schedule"><div class="empty-state"><div>📅</div>Seu cronograma aparecerá aqui.</div></div>
+            </div>
+
+            <div class="study-workspace-view" id="study-view-subjects">
+              <div class="study-view-heading"><div><strong>Progresso por conteúdo</strong><span>Veja rapidamente o que avançou em cada disciplina.</span></div></div>
+              <div id="study-subject-overview"><div class="empty-state"><div>📚</div>Os conteúdos aparecerão aqui quando houver um plano.</div></div>
             </div>
           </div>
         </section>
@@ -8021,5 +8058,192 @@ setTimeout(()=>{
 </div>
 
 
+
+
+<div class="study-task-modal-overlay" id="study-task-modal-overlay" onclick="if(event.target===this)closeStudyTaskModal()">
+  <div class="study-task-modal" role="dialog" aria-modal="true" aria-labelledby="study-task-modal-title">
+    <div class="study-task-modal-head">
+      <div><h3 id="study-task-modal-title">Detalhes da tarefa</h3><p id="study-task-modal-subtitle">Edite os detalhes sem poluir o checklist.</p></div>
+      <button class="study-task-modal-close" type="button" onclick="closeStudyTaskModal()" aria-label="Fechar">×</button>
+    </div>
+    <div class="study-task-modal-body">
+      <input type="hidden" id="study-task-modal-id"><input type="hidden" id="study-task-modal-uid">
+      <div class="study-task-modal-summary" id="study-task-modal-summary"></div>
+      <div class="form-field"><label>Tarefa</label><textarea id="study-task-modal-texto" placeholder="O que precisa ser feito?"></textarea></div>
+      <div class="study-task-modal-grid">
+        <div class="form-field"><label>Disciplina</label><input id="study-task-modal-materia" type="text"></div>
+        <div class="form-field"><label>Tipo de estudo</label><select id="study-task-modal-tipo"><option>Lista de exercícios</option><option>Aula expositiva</option><option>Revisão</option><option>Simulado</option><option>Prova antiga</option><option>Correção de erros</option><option>Leitura/resumo</option></select></div>
+        <div class="form-field"><label>Data</label><input id="study-task-modal-prazo" type="date"></div>
+        <div class="form-field"><label>Tempo previsto</label><input id="study-task-modal-carga" type="text" placeholder="Ex: 45 min"></div>
+        <div class="form-field"><label>Prioridade</label><select id="study-task-modal-prioridade"><option value="baixa">Baixa</option><option value="media">Média</option><option value="alta">Alta</option></select></div>
+        <div class="form-field"><label>Plano</label><input id="study-task-modal-plano" type="text"></div>
+      </div>
+      <div class="form-field"><label>Observação / orientação</label><textarea id="study-task-modal-obs" placeholder="Ex: resolver sem consultar a teoria, revisar erros..."></textarea></div>
+      <input id="study-task-modal-bloco" type="hidden">
+    </div>
+    <div class="study-task-modal-footer">
+      <div class="study-task-modal-footer-left">
+        <button class="study-task-modal-delete" id="study-task-modal-delete" type="button" onclick="deleteStudyTaskModal()">Excluir</button>
+      </div>
+      <div class="study-task-modal-footer-right">
+        <button class="study-task-modal-done" id="study-task-modal-done" type="button" onclick="toggleStudyTaskModalDone()">✓ Marcar como concluída</button>
+        <button class="study-task-modal-cancel" type="button" onclick="closeStudyTaskModal()">Cancelar</button>
+        <button class="study-task-modal-save" id="study-task-modal-save" type="button" onclick="saveStudyTaskModal()">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== CHECKLIST POR TAREFA · UX 2026 ===== */
+let studyWorkspaceView='tasks';
+let studyTaskFilter='all';
+
+function studyLocalDateKey(d=new Date()){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+function studyTaskStatus(it){
+  if(it.feito)return 'done';
+  const today=studyLocalDateKey(),date=String(it.prazo||'');
+  if(date&&date<today)return 'late';
+  if(date===today)return 'today';
+  return 'upcoming';
+}
+function studyTaskStatusLabel(it){
+  const st=studyTaskStatus(it);
+  return st==='done'?'Concluída':st==='late'?'Atrasada':st==='today'?'Hoje':'Agendada';
+}
+function setStudyWorkspaceView(view){
+  studyWorkspaceView=['tasks','agenda','subjects'].includes(view)?view:'tasks';
+  ['tasks','agenda','subjects'].forEach(v=>{
+    document.getElementById('study-view-'+v)?.classList.toggle('active',v===studyWorkspaceView);
+    document.getElementById('study-view-tab-'+v)?.classList.toggle('active',v===studyWorkspaceView);
+  });
+  if(studyWorkspaceView==='tasks')renderStudyTaskView();
+  if(studyWorkspaceView==='agenda')renderStudySchedule(filteredChecklistPlanList());
+  if(studyWorkspaceView==='subjects')renderStudySubjectOverview(filteredChecklistPlanList());
+}
+function setStudyTaskFilter(filter){
+  studyTaskFilter=['all','today','upcoming','late','done'].includes(filter)?filter:'all';
+  ['all','today','upcoming','late','done'].forEach(v=>document.getElementById('study-task-filter-'+v)?.classList.toggle('active',v===studyTaskFilter));
+  renderStudyTaskView();
+}
+function studyTaskMatchesSearch(it,q){
+  if(!q)return true;
+  const hay=[it.texto,chkMateria(it),chkTipo(it),chkPlano(it),it.obs,chkBloco(it),chkDia(it)].join(' ').toLocaleLowerCase('pt-BR');
+  return hay.includes(q);
+}
+function studyTaskSort(a,b){
+  const order={late:0,today:1,upcoming:2,done:3};
+  const sa=studyTaskStatus(a),sb=studyTaskStatus(b);
+  if(order[sa]!==order[sb])return order[sa]-order[sb];
+  const da=String(a.prazo||'9999-12-31'),db=String(b.prazo||'9999-12-31');
+  return da.localeCompare(db)||(a.ordem||9999)-(b.ordem||9999);
+}
+function studyTaskDateLabel(it){
+  if(!it.prazo)return {main:'Sem data',sub:chkDia(it)||''};
+  const d=new Date(it.prazo+'T12:00:00');
+  const main=d.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}).replace('.','');
+  const sub=d.toLocaleDateString('pt-BR',{weekday:'short'}).replace('.','');
+  return {main,sub:sub.charAt(0).toUpperCase()+sub.slice(1)};
+}
+function renderStudyTaskCard(it){
+  const uid=it.studentUid||ownUid(),st=studyTaskStatus(it),date=studyTaskDateLabel(it);
+  return `<div class="study-task-row ${st}" id="chk-item-${it.id}" onclick="openStudyTaskModal('${it.id}','${uid}')">
+    <button class="study-task-check ${it.feito?'done':''}" type="button" aria-label="${it.feito?'Reabrir tarefa':'Concluir tarefa'}" onclick="event.stopPropagation();toggleChecklistItem('${it.id}','${uid}')">✓</button>
+    <div class="study-task-main">
+      <div class="study-task-kicker"><span class="study-task-subject">${safeText(chkMateria(it))}</span><span class="study-task-type">${safeText(chkTipo(it))}</span></div>
+      <div class="study-task-title">${safeText(it.texto||'Tarefa de estudo')}</div>
+      <div class="study-task-meta">
+        ${chkCarga(it)?`<span>◷ ${safeText(chkCarga(it))}</span>`:''}
+        <span>Prioridade ${safeText(priorityLabel(it.prioridade||'media').toLowerCase())}</span>
+        ${isTeacher()?`<span>👤 ${safeText(it.studentName||getUserName(uid))}</span>`:''}
+        ${it.obs?'<span>📝 Tem orientação</span>':''}
+      </div>
+    </div>
+    <div class="study-task-side"><div class="study-task-date">${safeText(date.main)}${date.sub?`<small>${safeText(date.sub)}</small>`:''}</div><span class="study-task-state ${st}">${studyTaskStatusLabel(it)}</span><button type="button" class="study-task-open" onclick="event.stopPropagation();openStudyTaskModal('${it.id}','${uid}')">Detalhes →</button></div>
+  </div>`;
+}
+function renderStudyTaskView(){
+  const el=document.getElementById('lista-checklist');if(!el)return;
+  let list=filteredChecklistPlanList().slice();
+  const q=(document.getElementById('study-task-search')?.value||'').trim().toLocaleLowerCase('pt-BR');
+  if(studyTaskFilter!=='all')list=list.filter(it=>studyTaskStatus(it)===studyTaskFilter);
+  if(q)list=list.filter(it=>studyTaskMatchesSearch(it,q));
+  list.sort(studyTaskSort);
+  if(!list.length){
+    const msg=studyTaskFilter==='today'?'Nenhuma tarefa marcada para hoje.':studyTaskFilter==='late'?'Nenhuma tarefa atrasada.':studyTaskFilter==='done'?'Nenhuma tarefa concluída neste filtro.':'Nenhuma tarefa encontrada.';
+    el.innerHTML=`<div class="study-task-empty"><b>${msg}</b>Use os filtros acima ou gere um novo plano.</div>`;return;
+  }
+  el.innerHTML=`<div class="study-task-list">${list.map(renderStudyTaskCard).join('')}</div>`;
+}
+function renderStudySubjectOverview(list){
+  const el=document.getElementById('study-subject-overview');if(!el)return;
+  if(!list.length){el.innerHTML='<div class="study-task-empty"><b>Nenhum conteúdo ainda.</b>Gere um plano para acompanhar o avanço por disciplina.</div>';return;}
+  const groups={};list.forEach(it=>{const k=chkMateria(it);(groups[k]||=[]).push(it)});
+  el.innerHTML=`<div class="study-subject-overview-grid">${Object.entries(groups).sort((a,b)=>a[0].localeCompare(b[0],'pt-BR')).map(([name,items])=>{
+    const done=items.filter(x=>x.feito).length,pct=items.length?Math.round(done/items.length*100):0;
+    const next=items.filter(x=>!x.feito).sort(studyTaskSort)[0];
+    return `<div class="study-subject-summary"><div class="study-subject-summary-top"><div><h4>${safeText(name)}</h4><small>${done} de ${items.length} tarefas concluídas</small></div><span class="study-subject-summary-pct">${pct}%</span></div><div class="prog-bar-track"><div class="prog-bar-fill" style="width:${pct}%"></div></div><div class="study-subject-next">${next?`<b>Próxima:</b> ${safeText(next.texto)}`:'✓ Conteúdo concluído neste plano.'}</div></div>`;
+  }).join('')}</div>`;
+}
+renderStudySchedule=function(list){
+  const el=document.getElementById('study-plan-schedule');if(!el)return;
+  if(!list.length){el.innerHTML='<div class="study-task-empty"><b>Agenda vazia.</b>Gere um plano e as tarefas aparecerão por data.</div>';return;}
+  const groups={};
+  list.slice().sort(studyTaskSort).forEach(it=>{const key=it.prazo||'sem-data';(groups[key]||=[]).push(it)});
+  const keys=Object.keys(groups).sort((a,b)=>a==='sem-data'?1:b==='sem-data'?-1:a.localeCompare(b));
+  const today=studyLocalDateKey();
+  el.innerHTML=`<div class="study-agenda-list">${keys.map(key=>{
+    const items=groups[key];let label='Sem data definida';
+    if(key!=='sem-data'){
+      const d=new Date(key+'T12:00:00');
+      label=key===today?'Hoje · '+d.toLocaleDateString('pt-BR',{day:'2-digit',month:'long'}):d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'long'});
+      label=label.charAt(0).toUpperCase()+label.slice(1);
+    }
+    return `<div class="study-agenda-day"><div class="study-agenda-day-head"><strong>${safeText(label)}</strong><span>${items.filter(x=>x.feito).length}/${items.length} concluídas</span></div>${items.map(it=>{const uid=it.studentUid||ownUid();return `<div class="study-agenda-task ${it.feito?'done':''}" onclick="openStudyTaskModal('${it.id}','${uid}')"><i class="study-agenda-dot"></i><div><strong>${safeText(it.texto)}</strong><small>${safeText(chkMateria(it))} · ${safeText(chkTipo(it))}${chkBloco(it)?' · '+safeText(chkBloco(it)):''}</small></div><span class="study-agenda-time">${safeText(chkCarga(it)||'')}</span></div>`}).join('')}</div>`;
+  }).join('')}</div>`;
+};
+renderChecklist=function(){
+  const base=checklistVisibleList();updatePlanFilters(base);const list=filteredChecklistPlanList();
+  const total=list.length,feitos=list.filter(x=>x.feito).length,pendentes=total-feitos,pct=total?Math.round(feitos/total*100):0;
+  const setText=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  setText('chk-total',total);setText('chk-feitos',feitos);setText('chk-pendentes',pendentes);setText('chk-pct',pct+'%');setText('chk-pct-label',pct+'%');setText('study-tab-tasks-count',total);
+  const bar=document.getElementById('chk-progress-bar');if(bar)bar.style.width=pct+'%';
+  const summary=document.getElementById('study-plan-mini-summary');
+  if(summary){
+    const planos=[...new Set(list.map(chkPlano))].length,materias=[...new Set(list.map(chkMateria))].length;
+    const mins=list.reduce((sum,it)=>sum+studyMinutesFromCarga(chkCarga(it)),0),today=list.filter(x=>studyTaskStatus(x)==='today').length,late=list.filter(x=>studyTaskStatus(x)==='late').length;
+    summary.innerHTML=`<span class="study-mini-pill">${planos} plano${planos===1?'':'s'}</span><span class="study-mini-pill">${materias} disciplina${materias===1?'':'s'}</span><span class="study-mini-pill">${Math.round(mins/60*10)/10} h planejadas</span><span class="study-mini-pill">${today} para hoje</span><span class="study-mini-pill">${late} atrasada${late===1?'':'s'}</span>`;
+  }
+  renderStudyTaskView();renderStudySchedule(list);renderStudySubjectOverview(list);
+};
+function openStudyTaskModal(id,uid){
+  const item=checklistVisibleList().find(x=>x.id===id&&(x.studentUid||ownUid())===(uid||ownUid()));if(!item)return;
+  const canManage=(item.studentUid||ownUid())===ownUid()||teacherCanManageItem(item);
+  const set=(id,val)=>{const e=document.getElementById(id);if(e)e.value=val??''};
+  set('study-task-modal-id',item.id);set('study-task-modal-uid',item.studentUid||ownUid());set('study-task-modal-texto',item.texto||'');set('study-task-modal-materia',chkMateria(item));set('study-task-modal-tipo',chkTipo(item));set('study-task-modal-prazo',item.prazo||'');set('study-task-modal-carga',chkCarga(item));set('study-task-modal-prioridade',item.prioridade||'media');set('study-task-modal-plano',chkPlano(item));set('study-task-modal-obs',item.obs||'');set('study-task-modal-bloco',chkBloco(item));
+  document.getElementById('study-task-modal-title').textContent=item.feito?'Tarefa concluída':'Detalhes da tarefa';
+  const summary=document.getElementById('study-task-modal-summary');if(summary)summary.innerHTML=`<span>${safeText(chkMateria(item))}</span><span>${safeText(chkTipo(item))}</span>${chkCarga(item)?`<span>◷ ${safeText(chkCarga(item))}</span>`:''}${item.prazo?`<span>📅 ${safeText(formatDate(item.prazo))}</span>`:''}<span>${safeText(chkBloco(item))}</span>`;
+  const doneBtn=document.getElementById('study-task-modal-done');if(doneBtn){doneBtn.textContent=item.feito?'↶ Reabrir tarefa':'✓ Marcar como concluída';doneBtn.disabled=!canManage}
+  const saveBtn=document.getElementById('study-task-modal-save'),delBtn=document.getElementById('study-task-modal-delete');if(saveBtn)saveBtn.disabled=!canManage;if(delBtn)delBtn.style.display=canManage?'inline-flex':'none';
+  ['study-task-modal-texto','study-task-modal-materia','study-task-modal-tipo','study-task-modal-prazo','study-task-modal-carga','study-task-modal-prioridade','study-task-modal-plano','study-task-modal-obs'].forEach(fid=>{const e=document.getElementById(fid);if(e)e.disabled=!canManage});
+  document.getElementById('study-task-modal-overlay')?.classList.add('open');document.body.style.overflow='hidden';
+}
+function closeStudyTaskModal(){document.getElementById('study-task-modal-overlay')?.classList.remove('open');document.body.style.overflow=''}
+async function saveStudyTaskModal(){
+  const id=document.getElementById('study-task-modal-id')?.value,uid=document.getElementById('study-task-modal-uid')?.value||ownUid();
+  const item=checklistVisibleList().find(x=>x.id===id&&(x.studentUid||ownUid())===uid);if(!item)return;
+  if(uid!==ownUid()&&!teacherCanManageItem(item))return alert('Você só pode editar itens vinculados a você.');
+  const texto=document.getElementById('study-task-modal-texto')?.value.trim(),materia=document.getElementById('study-task-modal-materia')?.value.trim();if(!texto||!materia)return alert('Preencha a tarefa e a disciplina.');
+  const plano=document.getElementById('study-task-modal-plano')?.value.trim()||chkPlano(item);
+  try{await db.ref('checklist/'+uid+'/'+id).update({texto,materia,categoria:materia,plano,planejamento:plano,tipo:document.getElementById('study-task-modal-tipo')?.value||chkTipo(item),prazo:document.getElementById('study-task-modal-prazo')?.value||'',carga:document.getElementById('study-task-modal-carga')?.value.trim()||'',prioridade:document.getElementById('study-task-modal-prioridade')?.value||'media',obs:document.getElementById('study-task-modal-obs')?.value.trim()||'',bloco:document.getElementById('study-task-modal-bloco')?.value||chkBloco(item)});closeStudyTaskModal();}catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+}
+async function toggleStudyTaskModalDone(){const id=document.getElementById('study-task-modal-id')?.value,uid=document.getElementById('study-task-modal-uid')?.value||ownUid();await toggleChecklistItem(id,uid);closeStudyTaskModal()}
+async function deleteStudyTaskModal(){const id=document.getElementById('study-task-modal-id')?.value,uid=document.getElementById('study-task-modal-uid')?.value||ownUid();await delChecklistItem(id,uid);closeStudyTaskModal()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeStudyTaskModal()});
+setTimeout(()=>{if(document.getElementById('study-view-tasks')){setStudyWorkspaceView('tasks');renderChecklist()}},350);
+</script>
 </body>
 </html>
