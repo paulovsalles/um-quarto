@@ -2006,6 +2006,25 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .simulado-gabarito-resposta.correta{border-color:rgba(35,184,166,.36);background:#eef9f6}
 .simulado-gabarito-resposta b{color:var(--azul)}
 @media(max-width:520px){.simulado-gabarito-head{align-items:flex-start;flex-direction:column}}
+
+/* Conferência persistente do simulado: questão completa + alternativas + gabarito */
+.sim-review-btn{background:#eef9f6!important;color:var(--verde-dark)!important;border:1px solid rgba(35,184,166,.30)!important}
+.sim-review-btn:hover{background:#dff4ef!important}
+.sim-review-shell{padding:22px}
+.sim-review-toolbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:16px;margin-bottom:8px;border-bottom:1px solid var(--borda)}
+.sim-review-kicker{display:block;font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--verde-dark);margin-bottom:5px}
+.sim-review-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.sim-review-options{display:grid;gap:7px;margin:12px 0}
+.sim-review-option{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:9px;align-items:start;border:1.5px solid var(--borda);border-radius:12px;padding:10px 11px;background:#fff;color:var(--azul-light);font-size:13px;line-height:1.4}
+.sim-review-option.correct,.sim-review-option.chosen-correct{border-color:rgba(35,184,166,.42);background:#eef9f6}
+.sim-review-option.chosen-wrong{border-color:rgba(232,64,64,.32);background:#fff0f0}
+.sim-review-letter{font-weight:900;color:var(--azul);min-width:24px}
+.sim-review-option-text{min-width:0}
+.sim-review-tag{white-space:nowrap;border-radius:999px;padding:3px 7px;font-size:10px;font-weight:900}
+.sim-review-tag.correct{background:#d9f2eb;color:var(--verde-dark)}
+.sim-review-tag.wrong{background:#ffe0e0;color:#d83232}
+.simulado-gabarito-item .simulado-img{display:block;max-width:min(100%,720px);max-height:440px;object-fit:contain;margin:10px auto 14px;border-radius:12px;border:1px solid var(--borda);background:#fff}
+@media(max-width:720px){.sim-review-toolbar{flex-direction:column}.sim-review-actions{width:100%;justify-content:stretch}.sim-review-actions .btn-small{flex:1}.sim-review-option{grid-template-columns:auto minmax(0,1fr)}.sim-review-tag{grid-column:2;justify-self:start}.sim-review-shell{padding:14px}}
 .manual-questions-hero{background:#fff;border:1.5px solid var(--borda);border-left:5px solid var(--verde);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.manual-questions-hero h3{font-size:18px;color:var(--azul);margin-bottom:5px}.manual-questions-hero p{font-size:13px;color:var(--cinza);line-height:1.45}.manual-list{display:grid;gap:10px}.manual-item{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}.manual-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}.manual-item-head strong{font-size:14px;color:var(--azul)}.manual-item-head small{font-size:11px;color:var(--cinza);font-weight:900;white-space:nowrap}.manual-item p{font-size:12px;color:var(--cinza);line-height:1.45;margin-top:4px}.manual-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.manual-summary-card{background:#fff;border:1px solid var(--borda);border-radius:15px;padding:12px;text-align:center}.manual-summary-card strong{display:block;font-size:22px;color:var(--verde-dark)}.manual-summary-card span{display:block;font-size:10px;font-weight:900;color:var(--cinza);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}@media(max-width:720px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr 1fr}.manual-item-head{flex-direction:column}.manual-item-head small{white-space:normal}}@media(max-width:460px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr}}
 
 @media(max-width:720px){.linked-student-filter-grid[style]{grid-template-columns:1fr!important}}
@@ -6565,9 +6584,16 @@ async function submitSimulado(simId){
   }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
 }
 function simuladoResultQuestions(r){
-  if(Array.isArray(r?.questoesSnapshot)&&r.questoesSnapshot.length)return r.questoesSnapshot;
   const sim=getSimuladoById(r?.simuladoId);
-  if(sim)return simuladoQuestoes(sim);
+  const atuais=sim?simuladoQuestoes(sim):[];
+  const atualPorId=Object.fromEntries(atuais.map(q=>[String(q.id),q]));
+  if(Array.isArray(r?.questoesSnapshot)&&r.questoesSnapshot.length){
+    return r.questoesSnapshot.map(q=>{
+      const atual=atualPorId[String(q.id)]||{};
+      return {...q,imagemData:q.imagemData||atual.imagemData||"",imagemUrl:q.imagemUrl||atual.imagemUrl||""};
+    });
+  }
+  if(sim)return atuais;
   return Object.entries(r?.respostas||{}).map(([id,resp],i)=>({id,ordem:i+1,tipo:resp?.tipo||"multipla",area:resp?.area||"Geral",enunciado:"",alternativas:{},correta:resp?.corretaEsperada||""}));
 }
 function renderSimuladoGabarito(r){
@@ -6579,16 +6605,45 @@ function renderSimuladoGabarito(r){
     const discursiva=q.tipo==="discursiva"||resp.tipo==="discursiva";
     if(discursiva){
       const respostaAluno=resp.resposta||"Sem resposta registrada";
-      return `<div class="simulado-gabarito-item pending"><div class="simulado-gabarito-head"><strong>Questão ${i+1} · ${safeText(q.area||resp.area||"Geral")}</strong><span class="simulado-gabarito-status pending">⏳ Aguardando correção</span></div>${q.enunciado?`<p class="simulado-gabarito-enunciado">${safeText(q.enunciado)}</p>`:""}<div class="simulado-gabarito-respostas"><div class="simulado-gabarito-resposta sua"><b>Sua resposta:</b> ${safeText(respostaAluno)}</div></div></div>`;
+      return `<div class="simulado-gabarito-item pending"><div class="simulado-gabarito-head"><strong>Questão ${i+1} · ${safeText(q.area||resp.area||"Geral")}</strong><span class="simulado-gabarito-status pending">⏳ Aguardando correção</span></div><p class="simulado-gabarito-enunciado">${safeText(q.enunciado||"Questão sem enunciado disponível.")}</p>${simQuestionImageHtml(q)}<div class="simulado-gabarito-respostas"><div class="simulado-gabarito-resposta sua"><b>Sua resposta:</b> ${safeText(respostaAluno)}</div>${q.respostaEsperada?`<div class="simulado-gabarito-resposta correta"><b>Resposta esperada / critério:</b> ${safeText(q.respostaEsperada)}</div>`:""}</div></div>`;
     }
     const marcada=String(resp.resposta||"");
     const correta=String(resp.corretaEsperada||q.correta||"");
     const acertou=typeof resp.correta==="boolean"?resp.correta:(marcada!==""&&correta!==""&&marcada===correta);
     const alts=q.alternativas||{};
-    const textoMarcada=marcada&&alts[marcada]?` — ${alts[marcada]}`:"";
-    const textoCorreta=correta&&alts[correta]?` — ${alts[correta]}`:"";
-    return `<div class="simulado-gabarito-item ${acertou?"ok":"wrong"}"><div class="simulado-gabarito-head"><strong>Questão ${i+1} · ${safeText(q.area||resp.area||"Geral")}</strong><span class="simulado-gabarito-status ${acertou?"ok":"wrong"}">${acertou?"✅ Acertou":"❌ Errou"}</span></div>${q.enunciado?`<p class="simulado-gabarito-enunciado">${safeText(q.enunciado)}</p>`:""}<div class="simulado-gabarito-respostas"><div class="simulado-gabarito-resposta sua ${acertou?"ok":"wrong"}"><b>Sua resposta:</b> ${safeText(marcada||"—")}${safeText(textoMarcada)}</div>${!acertou?`<div class="simulado-gabarito-resposta correta"><b>Resposta correta:</b> ${safeText(correta||"—")}${safeText(textoCorreta)}</div>`:`<div class="simulado-gabarito-resposta correta"><b>Resposta correta:</b> ${safeText(correta||marcada||"—")}${safeText(textoCorreta||textoMarcada)}</div>`}</div></div>`;
+    const alternativasHtml=Object.entries(alts).map(([letra,texto])=>{
+      const isCorreta=String(letra)===correta;
+      const isMarcada=String(letra)===marcada;
+      let cls="sim-review-option";
+      let tag="";
+      if(isCorreta){cls+=" correct";tag='<span class="sim-review-tag correct">✓ correta</span>';}
+      if(isMarcada&&!isCorreta){cls+=" chosen-wrong";tag='<span class="sim-review-tag wrong">✕ sua resposta</span>';}
+      if(isMarcada&&isCorreta){cls+=" chosen-correct";tag='<span class="sim-review-tag correct">✓ sua resposta</span>';}
+      return `<div class="${cls}"><span class="sim-review-letter">${safeText(letra)})</span><span class="sim-review-option-text">${safeText(texto)}</span>${tag}</div>`;
+    }).join("");
+    return `<div class="simulado-gabarito-item ${acertou?"ok":"wrong"}"><div class="simulado-gabarito-head"><strong>Questão ${i+1} · ${safeText(q.area||resp.area||"Geral")}</strong><span class="simulado-gabarito-status ${acertou?"ok":"wrong"}">${acertou?"✅ Acertou":"❌ Errou"}</span></div><p class="simulado-gabarito-enunciado">${safeText(q.enunciado||"Questão sem enunciado disponível.")}</p>${simQuestionImageHtml(q)}<div class="sim-review-options">${alternativasHtml||'<div class="simulado-gabarito-resposta">Alternativas não disponíveis nesta tentativa antiga.</div>'}</div><div class="simulado-gabarito-respostas"><div class="simulado-gabarito-resposta sua ${acertou?"ok":"wrong"}"><b>Você marcou:</b> ${safeText(marcada||"—")}${marcada&&alts[marcada]?` — ${safeText(alts[marcada])}`:""}</div><div class="simulado-gabarito-resposta correta"><b>Gabarito:</b> ${safeText(correta||"—")}${correta&&alts[correta]?` — ${safeText(alts[correta])}`:""}</div></div></div>`;
   }).join("")}</div>`;
+}
+function latestSimuladoAttempt(simId){
+  return (respostasSimulados||[]).filter(r=>String(r.simuladoId)===String(simId)).sort((a,b)=>Number(b.enviadoEm||0)-Number(a.enviadoEm||0))[0]||null;
+}
+function openSimuladoReview(simId){
+  if(isTeacher())return;
+  const sim=getSimuladoById(simId);
+  const tentativa=latestSimuladoAttempt(simId);
+  if(!tentativa)return alert("Nenhuma tentativa encontrada para este simulado.");
+  if(sim&&sim.showResult===false)return alert("O professor não liberou a conferência deste simulado.");
+  const el=document.getElementById("simulado-student-result");
+  if(!el)return;
+  const res=tentativa.resultado||{};
+  const data=tentativa.enviadoEm?new Date(tentativa.enviadoEm).toLocaleString("pt-BR"):"";
+  el.innerHTML=`<div class="simulado-result-box sim-review-shell"><div class="sim-review-toolbar"><div><span class="sim-review-kicker">CONFERÊNCIA DO SIMULADO</span><h3>${safeText(tentativa.simuladoTitulo||sim?.titulo||"Simulado")}</h3><p>${data?`Tentativa enviada em <b>${safeText(data)}</b> · `:""}Acertos: <b>${res.acertosObjetivas||0}/${res.totalObjetivas||0}</b> · Aproveitamento: <b>${res.aproveitamento||0}%</b>.</p></div><div class="sim-review-actions"><button class="btn-small" onclick="closeSimuladoReview()">← Voltar</button>${sim?`<button class="btn-small primary" onclick="startSimulado('${sim.id}')">Refazer simulado</button>`:""}</div></div><h4 class="result-section-title">Questões, sua resposta e gabarito</h4>${renderSimuladoGabarito(tentativa)}</div>`;
+  el.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function closeSimuladoReview(){
+  const el=document.getElementById("simulado-student-result");
+  if(el)el.innerHTML="";
+  document.getElementById("simulados-list")?.scrollIntoView({behavior:"smooth",block:"start"});
 }
 function renderSimuladoResult(r,show=true){
   const el=document.getElementById("simulado-student-result"); if(!el)return;
@@ -6616,7 +6671,7 @@ function renderSimuladoCard(sim){
   const qs=simuladoQuestoes(sim); const status=sim.status||"rascunho"; const tentativas=(allRespostasSimulados||[]).filter(r=>r.simuladoId===sim.id).length;
   const jaFez=(respostasSimulados||[]).some(r=>r.simuladoId===sim.id);
   const meta=`<div class="simulado-meta"><span class="badge ${status==="publicado"?"ok":status==="rascunho"?"warn":""}">${safeText(status)}</span><span class="badge">${qs.length} questões</span>${sim.tempoMinutos?`<span class="badge warn">⏱️ ${sim.tempoMinutos} min</span>`:""}<span class="badge">${safeText(sim.studentName||"Todos os alunos")}</span>${isTeacher()?`<span class="badge ok">${tentativas} envio(s)</span>`:""}${jaFez&&!isTeacher()?`<span class="badge ok">Já enviado</span>`:""}</div>`;
-  const teacherActions=isTeacher()?`<button class="btn-small" onclick="document.getElementById('sim-question-simulado').value='${sim.id}';switchTab('simulados');document.getElementById('sim-q-enunciado')?.focus()">+ questão</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','publicado')">Publicar</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','rascunho')">Rascunho</button><button class="btn-small" onclick="delSimulado('${sim.id}')">Excluir</button>`:`<button class="btn-small primary" onclick="startSimulado('${sim.id}')">${jaFez?"Refazer":"Iniciar simulado"}</button>`;
+  const teacherActions=isTeacher()?`<button class="btn-small" onclick="document.getElementById('sim-question-simulado').value='${sim.id}';switchTab('simulados');document.getElementById('sim-q-enunciado')?.focus()">+ questão</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','publicado')">Publicar</button><button class="btn-small" onclick="updateSimuladoStatus('${sim.id}','rascunho')">Rascunho</button><button class="btn-small" onclick="delSimulado('${sim.id}')">Excluir</button>`:`<button class="btn-small primary" onclick="startSimulado('${sim.id}')">${jaFez?"Refazer":"Iniciar simulado"}</button>${jaFez&&sim.showResult!==false?`<button class="btn-small sim-review-btn" onclick="openSimuladoReview('${sim.id}')">✅ Conferir certas e erradas</button>`:""}`;
   const questoesTeacher=isTeacher()&&qs.length?`<div class="simulado-question-list">${qs.map((q,i)=>`<div class="simulado-question-card"><strong>Q${i+1} · ${safeText(q.area||"Geral")} · ${q.tipo==="discursiva"?"Discursiva":"Objetiva"}${q.imagemData||q.imagemUrl?" · com imagem":""}</strong><p>${safeText(q.enunciado||"")}</p>${simQuestionImageHtml(q)}<small>${q.tipo==="multipla"?`Correta: ${safeText(q.correta||"")}`:"Correção manual"}</small><button class="btn-small" style="margin-top:8px" onclick="delQuestaoSimulado('${sim.id}','${q.id}')">Remover questão</button></div>`).join("")}</div>`:"";
   return `<div class="simulado-card ${safeText(status)}"><h3>${safeText(sim.titulo||"Simulado")}</h3><p>${safeText(sim.desc||"Sem descrição.")}</p>${meta}<div class="simulado-actions">${teacherActions}</div>${questoesTeacher}</div>`;
 }
