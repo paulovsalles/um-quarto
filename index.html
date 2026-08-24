@@ -1986,6 +1986,26 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 @media(max-width:720px){.simulado-hero{padding:18px 16px}.simulado-hero h2{font-size:21px}.simulado-actions{flex-direction:column}.simulado-actions .btn-small{width:100%}}
 .simulado-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}.simulado-tab{background:#fff;border:1.5px solid var(--borda);color:var(--azul);border-radius:999px;padding:10px 14px;font-size:13px;font-weight:900;box-shadow:var(--shadow)}.simulado-tab.active{background:var(--verde);color:#fff;border-color:var(--verde)}
 .simulado-analysis-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}.simulado-analysis-card{background:#f8fbfa;border:1px solid var(--borda);border-radius:16px;padding:13px}.simulado-analysis-card strong{display:block;color:var(--azul);font-size:14px;margin-bottom:4px}.simulado-analysis-card span{font-size:12px;color:var(--cinza);font-weight:800;line-height:1.4}.simulado-action-plan{display:grid;gap:8px;margin-top:12px}.simulado-action-step{background:#fff;border:1.5px solid var(--borda);border-radius:14px;padding:11px 12px;font-size:13px;color:var(--azul-light);font-weight:800}.simulado-action-step b{color:var(--verde-dark)}
+/* Gabarito do aluno após o envio do simulado */
+.simulado-gabarito-list{display:grid;gap:10px;margin-top:12px}
+.simulado-gabarito-item{border:1.5px solid var(--borda);border-radius:16px;padding:14px;background:#fff}
+.simulado-gabarito-item.ok{border-color:rgba(35,184,166,.42);background:#f5fbfa}
+.simulado-gabarito-item.wrong{border-color:rgba(232,64,64,.32);background:#fff8f8}
+.simulado-gabarito-item.pending{border-color:#e8eded;background:#fbfcfc}
+.simulado-gabarito-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.simulado-gabarito-head strong{font-size:14px;color:var(--azul)}
+.simulado-gabarito-status{display:inline-flex;align-items:center;border-radius:999px;padding:5px 10px;font-size:11px;font-weight:900}
+.simulado-gabarito-status.ok{background:#e8f5f3;color:var(--verde-dark)}
+.simulado-gabarito-status.wrong{background:#ffecec;color:#d83232}
+.simulado-gabarito-status.pending{background:var(--bg);color:var(--cinza)}
+.simulado-gabarito-enunciado{font-size:13px!important;color:var(--azul-light)!important;margin:0 0 10px!important;white-space:pre-wrap}
+.simulado-gabarito-respostas{display:grid;gap:7px}
+.simulado-gabarito-resposta{border-radius:11px;padding:9px 10px;font-size:12px;font-weight:800;line-height:1.4;background:#fff;border:1px solid var(--borda);color:var(--azul-light)}
+.simulado-gabarito-resposta.sua.ok{border-color:rgba(35,184,166,.36);background:#eef9f6}
+.simulado-gabarito-resposta.sua.wrong{border-color:rgba(232,64,64,.26);background:#fff0f0}
+.simulado-gabarito-resposta.correta{border-color:rgba(35,184,166,.36);background:#eef9f6}
+.simulado-gabarito-resposta b{color:var(--azul)}
+@media(max-width:520px){.simulado-gabarito-head{align-items:flex-start;flex-direction:column}}
 .manual-questions-hero{background:#fff;border:1.5px solid var(--borda);border-left:5px solid var(--verde);border-radius:20px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.manual-questions-hero h3{font-size:18px;color:var(--azul);margin-bottom:5px}.manual-questions-hero p{font-size:13px;color:var(--cinza);line-height:1.45}.manual-list{display:grid;gap:10px}.manual-item{background:#fff;border:1.5px solid var(--borda);border-radius:16px;padding:14px;box-shadow:0 8px 20px rgba(40,71,84,.04)}.manual-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}.manual-item-head strong{font-size:14px;color:var(--azul)}.manual-item-head small{font-size:11px;color:var(--cinza);font-weight:900;white-space:nowrap}.manual-item p{font-size:12px;color:var(--cinza);line-height:1.45;margin-top:4px}.manual-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}.manual-summary-card{background:#fff;border:1px solid var(--borda);border-radius:15px;padding:12px;text-align:center}.manual-summary-card strong{display:block;font-size:22px;color:var(--verde-dark)}.manual-summary-card span{display:block;font-size:10px;font-weight:900;color:var(--cinza);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}@media(max-width:720px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr 1fr}.manual-item-head{flex-direction:column}.manual-item-head small{white-space:normal}}@media(max-width:460px){.simulado-analysis-grid,.manual-summary-grid{grid-template-columns:1fr}}
 
 @media(max-width:720px){.linked-student-filter-grid[style]{grid-template-columns:1fr!important}}
@@ -6532,19 +6552,51 @@ async function submitSimulado(simId){
   }
   const aproveitamento=pontosTotais?Math.round((pontosObtidos/pontosTotais)*100):0;
   Object.keys(areaMap).forEach(a=>{const it=areaMap[a];it.aproveitamento=it.pontosTotais?Math.round((it.pontos/it.pontosTotais)*100):0;});
-  const payload={simuladoId:sim.id,simuladoTitulo:sim.titulo||"Simulado",studentUid:ownUid(),studentName:currentProfile?.name||currentUser?.email,studentEmail:currentUser?.email,respostas,resultado:{totalQuestoes:qs.length,totalObjetivas,discursivas,acertosObjetivas:acertos,pontosObtidos,pontosTotais,aproveitamento},desempenhoPorArea:areaMap,enviadoEm:Date.now(),createdBy:sim.createdBy,createdByEmail:sim.createdByEmail};
+  const questoesSnapshot=qs.map(q=>({
+    id:q.id,ordem:q.ordem||0,tipo:q.tipo||"multipla",area:q.area||"Geral",
+    enunciado:q.enunciado||"",alternativas:q.tipo==="multipla"?(q.alternativas||{}):{},
+    correta:q.tipo==="multipla"?(q.correta||""):"",respostaEsperada:q.tipo==="discursiva"?(q.respostaEsperada||""):""
+  }));
+  const payload={simuladoId:sim.id,simuladoTitulo:sim.titulo||"Simulado",studentUid:ownUid(),studentName:currentProfile?.name||currentUser?.email,studentEmail:currentUser?.email,respostas,questoesSnapshot,resultado:{totalQuestoes:qs.length,totalObjetivas,discursivas,acertosObjetivas:acertos,pontosObtidos,pontosTotais,aproveitamento},desempenhoPorArea:areaMap,enviadoEm:Date.now(),createdBy:sim.createdBy,createdByEmail:sim.createdByEmail};
   try{
     await db.ref("respostasSimulados/"+ownUid()).push(payload);
     simuladoAtual=null;
     renderSimuladoResult(payload,sim.showResult!==false);
   }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
 }
+function simuladoResultQuestions(r){
+  if(Array.isArray(r?.questoesSnapshot)&&r.questoesSnapshot.length)return r.questoesSnapshot;
+  const sim=getSimuladoById(r?.simuladoId);
+  if(sim)return simuladoQuestoes(sim);
+  return Object.entries(r?.respostas||{}).map(([id,resp],i)=>({id,ordem:i+1,tipo:resp?.tipo||"multipla",area:resp?.area||"Geral",enunciado:"",alternativas:{},correta:resp?.corretaEsperada||""}));
+}
+function renderSimuladoGabarito(r){
+  const respostas=r?.respostas||{};
+  const qs=simuladoResultQuestions(r);
+  if(!qs.length)return '<div class="empty-state"><div>📝</div>Não foi possível carregar o detalhamento das questões.</div>';
+  return `<div class="simulado-gabarito-list">${qs.map((q,i)=>{
+    const resp=respostas[q.id]||{};
+    const discursiva=q.tipo==="discursiva"||resp.tipo==="discursiva";
+    if(discursiva){
+      const respostaAluno=resp.resposta||"Sem resposta registrada";
+      return `<div class="simulado-gabarito-item pending"><div class="simulado-gabarito-head"><strong>Questão ${i+1} · ${safeText(q.area||resp.area||"Geral")}</strong><span class="simulado-gabarito-status pending">⏳ Aguardando correção</span></div>${q.enunciado?`<p class="simulado-gabarito-enunciado">${safeText(q.enunciado)}</p>`:""}<div class="simulado-gabarito-respostas"><div class="simulado-gabarito-resposta sua"><b>Sua resposta:</b> ${safeText(respostaAluno)}</div></div></div>`;
+    }
+    const marcada=String(resp.resposta||"");
+    const correta=String(resp.corretaEsperada||q.correta||"");
+    const acertou=typeof resp.correta==="boolean"?resp.correta:(marcada!==""&&correta!==""&&marcada===correta);
+    const alts=q.alternativas||{};
+    const textoMarcada=marcada&&alts[marcada]?` — ${alts[marcada]}`:"";
+    const textoCorreta=correta&&alts[correta]?` — ${alts[correta]}`:"";
+    return `<div class="simulado-gabarito-item ${acertou?"ok":"wrong"}"><div class="simulado-gabarito-head"><strong>Questão ${i+1} · ${safeText(q.area||resp.area||"Geral")}</strong><span class="simulado-gabarito-status ${acertou?"ok":"wrong"}">${acertou?"✅ Acertou":"❌ Errou"}</span></div>${q.enunciado?`<p class="simulado-gabarito-enunciado">${safeText(q.enunciado)}</p>`:""}<div class="simulado-gabarito-respostas"><div class="simulado-gabarito-resposta sua ${acertou?"ok":"wrong"}"><b>Sua resposta:</b> ${safeText(marcada||"—")}${safeText(textoMarcada)}</div>${!acertou?`<div class="simulado-gabarito-resposta correta"><b>Resposta correta:</b> ${safeText(correta||"—")}${safeText(textoCorreta)}</div>`:`<div class="simulado-gabarito-resposta correta"><b>Resposta correta:</b> ${safeText(correta||marcada||"—")}${safeText(textoCorreta||textoMarcada)}</div>`}</div></div>`;
+  }).join("")}</div>`;
+}
 function renderSimuladoResult(r,show=true){
   const el=document.getElementById("simulado-student-result"); if(!el)return;
   if(!show){el.innerHTML='<div class="simulado-result-box"><h3>Simulado enviado ✅</h3><p>Suas respostas foram enviadas. O professor poderá acompanhar o resultado.</p></div>';return;}
   const res=r.resultado||{}; const areas=r.desempenhoPorArea||{};
   const analise=buildSimuladoAnalysis(r);
-  el.innerHTML=`<div class="simulado-result-box"><h3>Resultado: ${safeText(r.simuladoTitulo||"Simulado")}</h3><p>Você acertou <b>${res.acertosObjetivas||0}</b> de <b>${res.totalObjetivas||0}</b> questões objetivas. Aproveitamento parcial: <b>${res.aproveitamento||0}%</b> — <b>${safeText(analise.perfil)}</b>.</p>${res.discursivas?`<p><b>${res.discursivas}</b> questão(ões) discursiva(s) ficaram pendentes de correção do professor.</p>`:""}<div class="simulado-analysis-grid"><div class="simulado-analysis-card"><strong>Diagnóstico</strong><span>${safeText(analise.diagnostico)}</span></div><div class="simulado-analysis-card"><strong>Pontos fortes</strong><span>${analise.fortes.length?safeText(analise.fortes.join(", ")):"Ainda não houve área acima de 80%."}</span></div><div class="simulado-analysis-card"><strong>Prioridade</strong><span>${analise.fracas.length?safeText(analise.fracas.join(", ")):"Manter revisão e constância."}</span></div></div><div class="area-bars">${Object.entries(areas).map(([area,v])=>`<div class="area-row"><div class="area-row-top"><span>${safeText(area)}</span><span>${v.aproveitamento||0}%</span></div><div class="area-bar-track"><div class="area-bar-fill" style="width:${v.aproveitamento||0}%"></div></div></div>`).join("")}</div><h4 class="result-section-title">Plano de ação</h4><div class="simulado-action-plan">${analise.plano.map((p,i)=>`<div class="simulado-action-step"><b>${i+1}.</b> ${safeText(p)}</div>`).join("")}</div><h4 class="result-section-title">Dicas de estudo</h4><div class="simulado-action-plan">${analise.dicas.map(d=>`<div class="simulado-action-step">💡 ${safeText(d)}</div>`).join("")}</div></div>`;
+  const gabarito=renderSimuladoGabarito(r);
+  el.innerHTML=`<div class="simulado-result-box"><h3>Resultado: ${safeText(r.simuladoTitulo||"Simulado")}</h3><p>Você acertou <b>${res.acertosObjetivas||0}</b> de <b>${res.totalObjetivas||0}</b> questões objetivas. Aproveitamento parcial: <b>${res.aproveitamento||0}%</b> — <b>${safeText(analise.perfil)}</b>.</p>${res.discursivas?`<p><b>${res.discursivas}</b> questão(ões) discursiva(s) ficaram pendentes de correção do professor.</p>`:""}<h4 class="result-section-title">Gabarito da sua tentativa</h4>${gabarito}<div class="simulado-analysis-grid"><div class="simulado-analysis-card"><strong>Diagnóstico</strong><span>${safeText(analise.diagnostico)}</span></div><div class="simulado-analysis-card"><strong>Pontos fortes</strong><span>${analise.fortes.length?safeText(analise.fortes.join(", ")):"Ainda não houve área acima de 80%."}</span></div><div class="simulado-analysis-card"><strong>Prioridade</strong><span>${analise.fracas.length?safeText(analise.fracas.join(", ")):"Manter revisão e constância."}</span></div></div><div class="area-bars">${Object.entries(areas).map(([area,v])=>`<div class="area-row"><div class="area-row-top"><span>${safeText(area)}</span><span>${v.aproveitamento||0}%</span></div><div class="area-bar-track"><div class="area-bar-fill" style="width:${v.aproveitamento||0}%"></div></div></div>`).join("")}</div><h4 class="result-section-title">Plano de ação</h4><div class="simulado-action-plan">${analise.plano.map((p,i)=>`<div class="simulado-action-step"><b>${i+1}.</b> ${safeText(p)}</div>`).join("")}</div><h4 class="result-section-title">Dicas de estudo</h4><div class="simulado-action-plan">${analise.dicas.map(d=>`<div class="simulado-action-step">💡 ${safeText(d)}</div>`).join("")}</div></div>`;
 }
 function renderSimulados(){
   const listEl=document.getElementById("simulados-list"); if(!listEl)return;
