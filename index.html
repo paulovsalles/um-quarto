@@ -1815,7 +1815,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 }
 .aulas-clean-grid{
   display:grid;
-  grid-template-columns:repeat(2,minmax(140px,1fr)) minmax(190px,.8fr) auto;
+  grid-template-columns:repeat(4,minmax(0,1fr));
   gap:10px;
   align-items:end;
 }
@@ -2933,7 +2933,7 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
           <div class="form-field"><label>Valor repassado ao professor (R$)</label><input type="number" id="a-repasse" placeholder="Ex: 40" min="0" step="0.01"></div>
         </div>
         <div class="form-row finance-only" style="display:none">
-          <div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Aula Prevista</option><option value="recebido">Aula Concluída</option></select></div>
+          <div class="form-field"><label>Status financeiro</label><select id="a-status"><option value="previsto">Aula Prevista</option><option value="recebido">Aula Dada</option></select></div>
           <div class="form-field"><label>Valor líquido</label><input type="text" id="a-liquido-preview" placeholder="Calculado automaticamente" readonly></div>
         </div>
         <button class="btn-add" onclick="addAula()">Registrar aula</button>
@@ -2947,13 +2947,25 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
           <span id="aulas-clean-count">0 aulas</span>
         </div>
         <div class="aulas-clean-grid">
-          <div class="form-field">
-            <label>De</label>
-            <input type="date" id="aula-filtro-inicio" onchange="renderAulas()">
+          <div class="form-field teacher-only" style="display:none">
+            <label>Aluno</label>
+            <select id="aula-filtro-aluno" onchange="renderAulas()">
+              <option value="all">Todos os alunos</option>
+            </select>
+          </div>
+          <div class="form-field teacher-only" style="display:none">
+            <label>Professor</label>
+            <select id="aula-filtro-professor" onchange="renderAulas()">
+              <option value="all">Todos os professores</option>
+            </select>
           </div>
           <div class="form-field">
-            <label>Até</label>
-            <input type="date" id="aula-filtro-fim" onchange="renderAulas()">
+            <label>Status da aula</label>
+            <select id="aula-filtro-status" onchange="renderAulas()">
+              <option value="all">Todas as aulas</option>
+              <option value="previsto">Aulas previstas</option>
+              <option value="recebido">Aulas dadas</option>
+            </select>
           </div>
           <div class="form-field">
             <label>Ordenar</label>
@@ -2962,8 +2974,17 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
               <option value="asc">Mais antiga primeiro</option>
             </select>
           </div>
+          <div class="form-field">
+            <label>De</label>
+            <input type="date" id="aula-filtro-inicio" onchange="renderAulas()">
+          </div>
+          <div class="form-field">
+            <label>Até</label>
+            <input type="date" id="aula-filtro-fim" onchange="renderAulas()">
+          </div>
           <button class="btn-small primary" style="min-height:42px" onclick="limparFiltrosAulas()">Limpar filtros</button>
         </div>
+        <p style="font-size:11px;color:var(--cinza);font-weight:800;margin-top:10px">Os filtros podem ser combinados: aluno + professor + status + período.</p>
       </div>
       <div id="lista-aulas"><div class="empty-state"><div>📚</div>Nenhuma aula registrada.</div></div>
     </div>
@@ -4809,6 +4830,7 @@ function populateStudentSelects(){
       filter.value=globalStudentFilter;
     }
   });
+  try{populateAulaCleanFilters()}catch(e){}
   const finProf=document.getElementById("financeiro-teacher-filter");
   if(finProf){
     finProf.innerHTML=(isPauloMaster()?`<option value="all">Todos os professores</option>`:`<option value="${ownUid()}">Meu acesso</option>`)+teacherOptions;
@@ -5441,10 +5463,83 @@ async function updateAulaFinanceiro(studentUid,id,campo,valor){
   if(campo==="valor" || campo==="repasseProfessor")up.valorLiquido=novoValor-novoRepasse;
   await ref.update(up);
 }
+function aulaFiltroNorm(v){
+  return String(v||"").trim().toLocaleLowerCase("pt-BR");
+}
+function populateAulaCleanFilters(){
+  const alunoSel=document.getElementById("aula-filtro-aluno");
+  const profSel=document.getElementById("aula-filtro-professor");
+  const source=(allAulas||[]);
+
+  if(alunoSel){
+    const prev=alunoSel.value||"all";
+    const map=new Map();
+    users.filter(u=>(u.role||"")!=="teacher" && u.email!==PROFESSOR_EMAIL).forEach(u=>{
+      if(u.id)map.set(String(u.id),u.name||u.email||"Aluno");
+    });
+    source.forEach(a=>{
+      const uid=String(a.studentUid||a.ownerUid||a.userId||"");
+      if(uid && !map.has(uid))map.set(uid,a.studentName||a.userName||getUserName(uid)||"Aluno");
+    });
+    const opts=[...map.entries()].sort((a,b)=>String(a[1]).localeCompare(String(b[1]),"pt-BR"));
+    alunoSel.innerHTML='<option value="all">Todos os alunos</option>'+opts.map(([uid,nome])=>`<option value="${safeText(uid)}">${safeText(nome)}</option>`).join("");
+    alunoSel.value=opts.some(([uid])=>uid===prev)?prev:"all";
+  }
+
+  if(profSel){
+    const prev=profSel.value||"all";
+    const opts=[];
+    const seenUid=new Set();
+    const seenName=new Set();
+    users.filter(u=>(u.role||"")==="teacher" || u.email===PROFESSOR_EMAIL).forEach(u=>{
+      if(!u.id)return;
+      const nome=u.name||u.email||"Professor";
+      seenUid.add(String(u.id));
+      seenName.add(aulaFiltroNorm(nome));
+      opts.push({value:`uid:${u.id}`,label:nome});
+    });
+    source.forEach(a=>{
+      const uid=String(a.professorUid||a.teacherUid||a.ownerTeacherUid||"");
+      const nome=String(a.professorNome||"").trim();
+      if(uid && !seenUid.has(uid)){
+        seenUid.add(uid);
+        if(nome)seenName.add(aulaFiltroNorm(nome));
+        opts.push({value:`uid:${uid}`,label:nome||getUserName(uid)||"Professor"});
+      }else if(!uid && nome && !seenName.has(aulaFiltroNorm(nome))){
+        seenName.add(aulaFiltroNorm(nome));
+        opts.push({value:`name:${aulaFiltroNorm(nome)}`,label:nome});
+      }
+    });
+    opts.sort((a,b)=>String(a.label).localeCompare(String(b.label),"pt-BR"));
+    profSel.innerHTML='<option value="all">Todos os professores</option>'+opts.map(o=>`<option value="${safeText(o.value)}">${safeText(o.label)}</option>`).join("");
+    profSel.value=opts.some(o=>o.value===prev)?prev:"all";
+  }
+}
+function aulaMatchesProfessorFilter(a,filtro){
+  if(!filtro || filtro==="all")return true;
+  if(String(filtro).startsWith("uid:")){
+    const uid=String(filtro).slice(4);
+    const aulaUid=String(a.professorUid||a.teacherUid||a.ownerTeacherUid||"");
+    if(aulaUid)return aulaUid===uid;
+    const u=users.find(x=>String(x.id)===uid);
+    const nomeFiltro=aulaFiltroNorm(u?.name||u?.email||"");
+    return nomeFiltro && aulaFiltroNorm(a.professorNome)===nomeFiltro;
+  }
+  if(String(filtro).startsWith("name:")){
+    return aulaFiltroNorm(a.professorNome)===String(filtro).slice(5);
+  }
+  return true;
+}
 function limparFiltrosAulas(){
+  const aluno=document.getElementById("aula-filtro-aluno");
+  const professor=document.getElementById("aula-filtro-professor");
+  const status=document.getElementById("aula-filtro-status");
   const inicio=document.getElementById("aula-filtro-inicio");
   const fim=document.getElementById("aula-filtro-fim");
   const ordem=document.getElementById("aula-filtro-ordem");
+  if(aluno)aluno.value="all";
+  if(professor)professor.value="all";
+  if(status)status.value="all";
   if(inicio)inicio.value="";
   if(fim)fim.value="";
   if(ordem)ordem.value="desc";
@@ -5460,13 +5555,22 @@ function renderAulas(){
   try{updateLinkedFilterCounts()}catch(e){}
 
   const el=document.getElementById("lista-aulas"); if(!el)return;
+  try{populateAulaCleanFilters()}catch(e){console.warn("Falha ao atualizar filtros de aulas",e)}
   const base=isTeacher()?visibleByFilter(allAulas):aulas;
+  const alunoFiltro=document.getElementById("aula-filtro-aluno")?.value||"all";
+  const professorFiltro=document.getElementById("aula-filtro-professor")?.value||"all";
+  const statusFiltro=document.getElementById("aula-filtro-status")?.value||"all";
   const inicio=document.getElementById("aula-filtro-inicio")?.value||"";
   const fim=document.getElementById("aula-filtro-fim")?.value||"";
   const ordem=document.getElementById("aula-filtro-ordem")?.value||"desc";
 
   let list=[...base].filter(a=>{
     const data=aulaDataKey(a);
+    const alunoUid=String(a.studentUid||a.ownerUid||a.userId||"");
+    const status=String(a.statusFinanceiro||"previsto");
+    if(alunoFiltro!=="all" && alunoUid!==String(alunoFiltro))return false;
+    if(!aulaMatchesProfessorFilter(a,professorFiltro))return false;
+    if(statusFiltro!=="all" && status!==statusFiltro)return false;
     if(inicio && data<inicio)return false;
     if(fim && data>fim)return false;
     return true;
@@ -5482,7 +5586,7 @@ function renderAulas(){
   if(countEl)countEl.textContent=`${list.length} aula${list.length===1?"":"s"}`;
 
   if(!list.length){
-    el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula encontrada nesse período.</div>';
+    el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula encontrada com os filtros selecionados.</div>';
     return;
   }
 
@@ -5492,7 +5596,7 @@ function renderAulas(){
     const canEdit=isTeacher() && teacherOwnsItem(a);
     const conteudo=a.conteudo||a.obs||"Sem conteúdo informado";
     const horario=`${a.inicio||"--:--"} às ${a.fim||"--:--"}`;
-    const statusLabel=status==="recebido"?"Aula concluída":"Aula prevista";
+    const statusLabel=status==="recebido"?"Aula dada":"Aula prevista";
     return `<div class="aula-clean-row" id="aula-card-${a.id}">
       <div class="aula-clean-main">
         <strong>📚 ${safeText(a.materia||"Aula")}</strong>
@@ -5525,7 +5629,7 @@ function renderAulas(){
         <div class="finance-mini"><label>Faturamento</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div>
         <div class="finance-mini"><label>Repasse</label><input type="number" min="0" step="0.01" value="${Number(a.repasseProfessor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','repasseProfessor',this.value)"></div>
         <div class="finance-mini"><label>Líquido</label><input type="text" readonly value="${formatMoney(Number(a.valor||0)-Number(a.repasseProfessor||0))}"></div>
-        <div class="finance-mini"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Concluída</option></select></div>
+        <div class="finance-mini"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Dada</option></select></div>
       </div>`:""}
     </div>`;
   }).join("")}</div>`;
@@ -5557,7 +5661,7 @@ function renderAulaEditBox(a,uid){
 
     <div class="form-row">
       <div class="form-field"><label>Matéria/tema</label><input id="edit-aula-materia-${a.id}" value="${safeText(a.materia||"")}"></div>
-      <div class="form-field"><label>Status da aula</label><select id="edit-aula-status-${a.id}"><option value="previsto" ${(a.statusFinanceiro||"previsto")!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${(a.statusFinanceiro||"")==="recebido"?"selected":""}>Aula Concluída</option></select></div>
+      <div class="form-field"><label>Status da aula</label><select id="edit-aula-status-${a.id}"><option value="previsto" ${(a.statusFinanceiro||"previsto")!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${(a.statusFinanceiro||"")==="recebido"?"selected":""}>Aula Dada</option></select></div>
     </div>
 
     <div class="form-row">
@@ -5669,7 +5773,7 @@ function exportAulasCSV(){
   if(!isTeacher())return alert("Exportação disponível apenas para professor.");
   const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Resumo_da_aula","Faturamento","Repasse_Professor","Valor_Liquido","Status_financeiro"];
   const rows=visibleByFilter(allAulas).map(a=>[
-    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),Number(a.repasseProfessor||0).toFixed(2).replace(".",","),aulaLiquido(a).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"
+    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),Number(a.repasseProfessor||0).toFixed(2).replace(".",","),aulaLiquido(a).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Dada":"Aula Prevista"
   ]);
   const csv=[header,...rows].map(row=>row.map(csvEscape).join(";")).join("\n");
   const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
@@ -7224,7 +7328,7 @@ function renderFinanceiroLista(){
   const mes=document.getElementById("fin-mes")?.value;
   const base=financeiroBaseAulas(); const list=mes?base.filter(a=>(a.data||"").slice(0,7)===mes):base;
   if(!list.length){el.innerHTML='<div class="empty-state"><div>💰</div>Nenhum lançamento financeiro.</div>';return}
-  el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Professor</th><th>Horas</th><th>Faturamento</th><th>Repasse</th><th>Líquido</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}<br><small>${safeText(a.escola||"")}</small></td><td>${safeText(a.professorNome||"")}</td><td>${formatDuracao(aulaMinutos(a))}</td><td>${formatMoney(a.valor||0)}</td><td>${formatMoney(a.repasseProfessor||0)}</td><td>${formatMoney(aulaLiquido(a))}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Concluída":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`;
+  el.innerHTML=`<table class="finance-table"><thead><tr><th>Data</th><th>Aula</th><th>Aluno</th><th>Professor</th><th>Horas</th><th>Faturamento</th><th>Repasse</th><th>Líquido</th><th>Status</th></tr></thead><tbody>${list.map(a=>`<tr><td>${formatDate(a.data)}<br><small>${a.inicio||"--:--"} às ${a.fim||"--:--"}</small></td><td><strong>${safeText(a.materia)}</strong><br><small>${safeText(a.conteudo)}</small></td><td>${safeText(a.studentName||getUserName(a.studentUid))}<br><small>${safeText(a.escola||"")}</small></td><td>${safeText(a.professorNome||"")}</td><td>${formatDuracao(aulaMinutos(a))}</td><td>${formatMoney(a.valor||0)}</td><td>${formatMoney(a.repasseProfessor||0)}</td><td>${formatMoney(aulaLiquido(a))}</td><td><span class="finance-pill ${(a.statusFinanceiro||"previsto")==="recebido"?"recebido":""}">${(a.statusFinanceiro||"previsto")==="recebido"?"Aula Dada":"Aula Prevista"}</span></td></tr>`).join("")}</tbody></table>`;
 }
 
 const MODES={quarto:{sec:900,label:"Um Quarto"},pomo:{sec:1500,label:"Pomodoro"},pausa:{sec:300,label:"Pausa"},custom:{sec:900,label:"Personalizado"}};
