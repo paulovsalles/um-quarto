@@ -2530,6 +2530,74 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 @media(max-width:760px){.study-workspace-view{padding:12px}.study-task-toolbar{align-items:stretch;flex-direction:column}.study-task-search{width:100%}.study-task-status-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px}.study-task-row{grid-template-columns:auto minmax(0,1fr)}.study-task-side{grid-column:2;text-align:left;justify-items:start;grid-template-columns:auto auto auto;align-items:center;min-width:0}.study-task-date small{display:inline;margin-left:4px}.study-subject-overview-grid{grid-template-columns:1fr}.study-task-modal-grid{grid-template-columns:1fr}.study-task-modal-footer{align-items:stretch;flex-direction:column}.study-task-modal-footer-left,.study-task-modal-footer-right{width:100%}.study-task-modal-footer button{flex:1}.study-task-modal{border-radius:20px}.study-task-modal-body{padding:15px}.study-task-modal-head{padding:15px}}
 @media(max-width:480px){.study-workspace-tabs{padding:8px}.study-workspace-tab{padding:9px 11px}.study-task-row{padding:11px 10px;gap:9px}.study-task-title{font-size:13px}.study-task-side{grid-template-columns:1fr;gap:3px}.study-task-open{display:none}.study-agenda-task{grid-template-columns:8px 1fr}.study-agenda-time{grid-column:2;justify-self:start}}
 </style>
+
+<style id="sim-bulk-import-style">
+/* ===== Simulados · importação rápida de questões por texto ===== */
+.sim-question-workspace-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
+.sim-bulk-import-open{background:#eef9f7!important;color:var(--verde-dark)!important;border:1px solid rgba(35,184,166,.24)!important;white-space:nowrap}
+.sim-bulk-import-open:hover{background:#def4ef!important}
+.sim-bulk-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(24,48,57,.48);backdrop-filter:blur(5px)}
+.sim-bulk-modal.open{display:flex}
+.sim-bulk-dialog{width:min(1050px,96vw);max-height:92vh;background:#fff;border:1px solid var(--borda);border-radius:24px;box-shadow:0 28px 80px rgba(20,45,55,.24);display:flex;flex-direction:column;overflow:hidden}
+.sim-bulk-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:20px 22px 16px;border-bottom:1px solid var(--borda);background:linear-gradient(180deg,#fff,#fbfdfd)}
+.sim-bulk-head span{display:block;color:var(--verde-dark);font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px}
+.sim-bulk-head h3{font-size:21px;color:var(--azul);margin:0 0 5px}
+.sim-bulk-head p{font-size:13px;color:var(--cinza);line-height:1.45;margin:0;max-width:760px}
+.sim-bulk-close{width:36px;height:36px;flex:0 0 36px;border-radius:12px;background:var(--bg);color:var(--cinza);font-size:22px;font-weight:900}
+.sim-bulk-body{padding:18px 22px;overflow:auto}
+.sim-bulk-tip{display:grid;grid-template-columns:auto 1fr;gap:10px;background:#f2faf8;border:1px solid #d7f0ea;border-radius:14px;padding:12px 14px;margin-bottom:14px;color:var(--azul);font-size:12px;line-height:1.5}
+.sim-bulk-tip b{font-weight:900}
+.sim-bulk-example{margin-top:7px;padding:9px 11px;background:#fff;border:1px solid var(--borda);border-radius:10px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;white-space:pre-wrap;color:var(--azul-light)}
+.sim-bulk-textarea{min-height:230px!important;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace!important;line-height:1.55!important;font-size:13px!important}
+.sim-bulk-options{display:grid;grid-template-columns:minmax(190px,1fr) 150px auto;gap:10px;align-items:end;margin:12px 0 4px}
+.sim-bulk-options .form-field{margin:0}
+.sim-bulk-convert{height:43px;padding:0 18px!important;border-radius:12px!important}
+.sim-bulk-feedback{font-size:12px;font-weight:800;color:var(--cinza);margin:10px 0 0}
+.sim-bulk-feedback.ok{color:var(--verde-dark)}
+.sim-bulk-feedback.bad{color:var(--danger)}
+.sim-bulk-preview-wrap{margin-top:18px;display:none}
+.sim-bulk-preview-wrap.visible{display:block}
+.sim-bulk-preview-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.sim-bulk-preview-head strong{color:var(--azul);font-size:14px}
+.sim-bulk-preview-head small{color:var(--cinza);font-size:12px;font-weight:800}
+.sim-bulk-preview{display:grid;gap:12px}
+.sim-bulk-card{border:1.5px solid var(--borda);border-radius:16px;padding:14px;background:#fff}
+.sim-bulk-card.missing-key{border-color:#f0b17c;box-shadow:0 0 0 3px rgba(240,177,124,.12)}
+.sim-bulk-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+.sim-bulk-card-head strong{font-size:14px;color:var(--azul)}
+.sim-bulk-key-state{font-size:11px;font-weight:900;border-radius:999px;padding:4px 8px;background:#fff3e8;color:#b76c21}
+.sim-bulk-key-state.done{background:#e8f5f3;color:var(--verde-dark)}
+.sim-bulk-enunciado{font-size:13px;line-height:1.5;color:var(--azul);white-space:pre-wrap;margin-bottom:10px}
+.sim-bulk-alts{display:grid;gap:6px}
+.sim-bulk-alt{display:grid;grid-template-columns:auto 28px 1fr;align-items:start;gap:8px;padding:8px 10px;border:1.5px solid var(--borda);border-radius:11px;cursor:pointer;background:#fcfdfd;transition:.15s}
+.sim-bulk-alt:hover{border-color:#b9ddd7;background:#f7fcfb}
+.sim-bulk-alt.selected{border-color:var(--verde);background:#effaf7}
+.sim-bulk-alt input{width:auto;margin:3px 0 0}
+.sim-bulk-alt-letter{width:26px;height:26px;border-radius:8px;background:var(--bg);display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--azul);font-size:12px}
+.sim-bulk-alt.selected .sim-bulk-alt-letter{background:var(--verde);color:#fff}
+.sim-bulk-alt-text{font-size:12.5px;line-height:1.45;color:var(--azul-light);white-space:pre-wrap;padding-top:3px}
+.sim-bulk-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 22px;border-top:1px solid var(--borda);background:#fbfcfc}
+.sim-bulk-footer-info{font-size:12px;color:var(--cinza);font-weight:800}
+.sim-bulk-footer-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.sim-bulk-save{background:var(--verde)!important;color:#fff!important}
+.sim-bulk-save:disabled{opacity:.48;cursor:not-allowed}
+body.sim-bulk-modal-open{overflow:hidden}
+@media(max-width:720px){
+  .sim-question-workspace-head{align-items:flex-start!important}
+  .sim-question-workspace-actions{width:100%;justify-content:space-between}
+  .sim-bulk-modal{padding:8px;align-items:stretch}
+  .sim-bulk-dialog{width:100%;max-height:calc(100vh - 16px);border-radius:18px}
+  .sim-bulk-head{padding:16px}
+  .sim-bulk-body{padding:14px}
+  .sim-bulk-options{grid-template-columns:1fr 1fr}
+  .sim-bulk-options .sim-bulk-convert{grid-column:1/-1;width:100%}
+  .sim-bulk-footer{padding:12px 14px;align-items:stretch;flex-direction:column}
+  .sim-bulk-footer-actions{justify-content:stretch}
+  .sim-bulk-footer-actions button{flex:1}
+}
+@media(max-width:460px){.sim-bulk-options{grid-template-columns:1fr}.sim-bulk-options .sim-bulk-convert{grid-column:auto}}
+</style>
+
 </head>
 <body>
 
@@ -3626,7 +3694,10 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
                 <div id="sim-question-editor-content" style="display:none">
                   <div class="sim-question-workspace-head">
                     <div><span>EDITOR DE QUESTÕES</span><strong id="sim-current-question-title">Simulado</strong></div>
-                    <div class="sim-question-count" id="sim-current-question-count">0 questões</div>
+                    <div class="sim-question-workspace-actions">
+                      <div class="sim-question-count" id="sim-current-question-count">0 questões</div>
+                      <button class="btn-small sim-bulk-import-open" type="button" onclick="openSimBulkImport()">⚡ Importar texto</button>
+                    </div>
                   </div>
 
                   <select id="sim-question-simulado" style="display:none"><option value="">Selecione um simulado</option></select>
@@ -8639,5 +8710,233 @@ async function deleteStudyTaskModal(){const id=document.getElementById('study-ta
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeStudyTaskModal()});
 setTimeout(()=>{const ps=document.getElementById('study-task-page-size');if(ps)ps.value=String(studyTaskPageSize);if(document.getElementById('study-view-tasks')){setStudyWorkspaceView('tasks');renderChecklist()}},350);
 </script>
+
+<div id="sim-bulk-import-modal" class="sim-bulk-modal" aria-hidden="true" onclick="simBulkBackdropClose(event)">
+  <div class="sim-bulk-dialog" role="dialog" aria-modal="true" aria-labelledby="sim-bulk-title">
+    <div class="sim-bulk-head">
+      <div>
+        <span>IMPORTAÇÃO RÁPIDA</span>
+        <h3 id="sim-bulk-title">Cole várias questões de uma vez</h3>
+        <p>O sistema identifica Questão 1, Questão 2... e as alternativas A, B, C, D e E. Depois, você só marca o gabarito de cada questão e salva.</p>
+      </div>
+      <button class="sim-bulk-close" type="button" onclick="closeSimBulkImport()" aria-label="Fechar">×</button>
+    </div>
+    <div class="sim-bulk-body">
+      <div class="sim-bulk-tip">
+        <div>💡</div>
+        <div><b>Formato aceito:</b> pode usar “Questão 1.”, “Questao 1”, “1.” e alternativas como “a)”, “A.” ou “B -”. Linhas maiores também são mantidas dentro do enunciado ou da alternativa.
+          <div class="sim-bulk-example">Questão 1. Jorge comprou 2 caixas...\na) 2\nb) 4\nc) 5\nd) 6\ne) 8\n\nQuestão 2. Um carro percorre...</div>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Texto das questões</label>
+        <textarea id="sim-bulk-text" class="sim-bulk-textarea" placeholder="Cole aqui todas as questões..." spellcheck="false"></textarea>
+      </div>
+      <div class="sim-bulk-options">
+        <div class="form-field"><label>Área / conteúdo para todas</label><input id="sim-bulk-area" placeholder="Ex: Cinemática (opcional)"></div>
+        <div class="form-field"><label>Valor por questão</label><input id="sim-bulk-value" type="number" min="0" step="0.5" value="1"></div>
+        <button class="btn-small primary sim-bulk-convert" type="button" onclick="convertSimBulkText()">⚡ Converter texto</button>
+      </div>
+      <div id="sim-bulk-feedback" class="sim-bulk-feedback">Cole o texto e clique em “Converter texto”.</div>
+      <div id="sim-bulk-preview-wrap" class="sim-bulk-preview-wrap">
+        <div class="sim-bulk-preview-head"><strong>Prévia das questões</strong><small id="sim-bulk-preview-count"></small></div>
+        <div id="sim-bulk-preview" class="sim-bulk-preview"></div>
+      </div>
+    </div>
+    <div class="sim-bulk-footer">
+      <div id="sim-bulk-footer-info" class="sim-bulk-footer-info">Nenhuma questão convertida.</div>
+      <div class="sim-bulk-footer-actions">
+        <button class="btn-small" type="button" onclick="closeSimBulkImport()">Cancelar</button>
+        <button id="sim-bulk-save" class="btn-small sim-bulk-save" type="button" onclick="saveSimBulkQuestions()" disabled>Adicionar questões ao simulado</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script id="sim-bulk-import-script">
+/* ===== Simulados · importação rápida por texto ===== */
+let simBulkParsedQuestions=[];
+
+function simBulkNormalizeText(value){
+  return String(value||"")
+    .replace(/\r\n?/g,"\n")
+    .replace(/\u00a0/g," ")
+    .replace(/[ \t]+$/gm,"")
+    .trim();
+}
+function simBulkQuestionStart(line){
+  const s=String(line||"").trim();
+  let m=s.match(/^quest(?:ã|a)o\s*(\d+)\s*[\).:\-–—]?\s*(.*)$/i);
+  if(m)return {numero:Number(m[1]),resto:(m[2]||"").trim()};
+  m=s.match(/^q(?:uest(?:ã|a)o)?\.?\s*(\d+)\s*[\).:\-–—]?\s*(.*)$/i);
+  if(m)return {numero:Number(m[1]),resto:(m[2]||"").trim()};
+  m=s.match(/^(\d+)\s*[\).:]\s+(.+)$/);
+  if(m)return {numero:Number(m[1]),resto:(m[2]||"").trim()};
+  return null;
+}
+function simBulkAlternativeStart(line){
+  const m=String(line||"").match(/^\s*([A-Ea-e])\s*[\)\].:\-–—]\s*(.*)$/);
+  return m?{letra:m[1].toUpperCase(),texto:(m[2]||"").trim()}:null;
+}
+function simBulkKeyLine(line){
+  const m=String(line||"").trim().match(/^(?:gabarito|resposta(?:\s+correta)?|correta)\s*[:\-]?\s*([A-E])\b/i);
+  return m?m[1].toUpperCase():null;
+}
+function parseSimBulkQuestions(raw){
+  const text=simBulkNormalizeText(raw);
+  if(!text)return [];
+  const lines=text.split("\n");
+  const result=[];
+  let q=null,currentAlt=null;
+  function finish(){
+    if(!q)return;
+    q.enunciado=q.enunciadoLines.join("\n").replace(/^\s+|\s+$/g,"");
+    Object.keys(q.alternativas).forEach(k=>{q.alternativas[k]=String(q.alternativas[k]||"").trim();if(!q.alternativas[k])delete q.alternativas[k];});
+    delete q.enunciadoLines;
+    if(q.enunciado || Object.keys(q.alternativas).length)result.push(q);
+    q=null;currentAlt=null;
+  }
+  for(const original of lines){
+    const line=original.replace(/\s+$/g,"");
+    const qStart=simBulkQuestionStart(line);
+    if(qStart){
+      finish();
+      q={numero:qStart.numero,enunciadoLines:qStart.resto?[qStart.resto]:[],alternativas:{},correta:""};
+      currentAlt=null;
+      continue;
+    }
+    if(!q){
+      // Permite um texto com apenas uma questão, mesmo sem o rótulo "Questão 1".
+      if(simBulkAlternativeStart(line)){
+        q={numero:1,enunciadoLines:[],alternativas:{},correta:""};
+      }else{
+        if(!line.trim())continue;
+        q={numero:1,enunciadoLines:[line.trim()],alternativas:{},correta:""};
+        continue;
+      }
+    }
+    const key=simBulkKeyLine(line);
+    if(key){q.correta=key;currentAlt=null;continue;}
+    const alt=simBulkAlternativeStart(line);
+    if(alt){
+      currentAlt=alt.letra;
+      q.alternativas[currentAlt]=alt.texto;
+      continue;
+    }
+    if(currentAlt){
+      if(line.trim())q.alternativas[currentAlt]+=(q.alternativas[currentAlt]?"\n":"")+line.trim();
+    }else{
+      if(line.trim() || q.enunciadoLines.length)q.enunciadoLines.push(line.trim());
+    }
+  }
+  finish();
+  return result;
+}
+function openSimBulkImport(){
+  if(!isTeacher())return alert("Apenas professor pode importar questões.");
+  if(!simStudioEditingId)return alert("Salve ou selecione um simulado antes de importar questões.");
+  const sim=getSimuladoById(simStudioEditingId);
+  if(!sim||!teacherCanManageItem(sim))return alert("Você não pode editar este simulado.");
+  const modal=document.getElementById("sim-bulk-import-modal");if(!modal)return;
+  modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.classList.add("sim-bulk-modal-open");
+  setTimeout(()=>document.getElementById("sim-bulk-text")?.focus(),40);
+}
+function closeSimBulkImport(){
+  const modal=document.getElementById("sim-bulk-import-modal");if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true");}
+  document.body.classList.remove("sim-bulk-modal-open");
+}
+function simBulkBackdropClose(event){if(event?.target?.id==="sim-bulk-import-modal")closeSimBulkImport();}
+function resetSimBulkImport(){
+  simBulkParsedQuestions=[];
+  const t=document.getElementById("sim-bulk-text");if(t)t.value="";
+  const area=document.getElementById("sim-bulk-area");if(area)area.value="";
+  const val=document.getElementById("sim-bulk-value");if(val)val.value="1";
+  renderSimBulkPreview();
+  simBulkSetFeedback('Cole o texto e clique em “Converter texto”.',"");
+}
+function simBulkSetFeedback(text,type){
+  const el=document.getElementById("sim-bulk-feedback");if(!el)return;
+  el.textContent=text||"";el.className="sim-bulk-feedback"+(type?` ${type}`:"");
+}
+function convertSimBulkText(){
+  const raw=document.getElementById("sim-bulk-text")?.value||"";
+  const parsed=parseSimBulkQuestions(raw);
+  if(!parsed.length){simBulkParsedQuestions=[];renderSimBulkPreview();simBulkSetFeedback("Não consegui identificar questões. Use 'Questão 1.' e alternativas 'a)', 'b)', 'c)'...","bad");return;}
+  simBulkParsedQuestions=parsed.map((q,i)=>({...q,numero:q.numero||i+1,correta:q.correta||""}));
+  const valid=simBulkParsedQuestions.filter(q=>q.enunciado&&Object.keys(q.alternativas||{}).length>=2).length;
+  simBulkSetFeedback(`${parsed.length} questão(ões) identificada(s). ${valid<parsed.length?`${parsed.length-valid} precisa(m) de revisão.`:"Agora marque o gabarito de cada uma."}`,valid===parsed.length?"ok":"bad");
+  renderSimBulkPreview();
+}
+function setSimBulkKey(index,letter){
+  const q=simBulkParsedQuestions[index];if(!q)return;q.correta=String(letter||"").toUpperCase();renderSimBulkPreview();
+}
+function renderSimBulkPreview(){
+  const wrap=document.getElementById("sim-bulk-preview-wrap"),el=document.getElementById("sim-bulk-preview"),count=document.getElementById("sim-bulk-preview-count"),save=document.getElementById("sim-bulk-save"),foot=document.getElementById("sim-bulk-footer-info");
+  const qs=simBulkParsedQuestions||[];
+  if(wrap)wrap.classList.toggle("visible",!!qs.length);
+  if(count)count.textContent=qs.length?`${qs.length} questão(ões) encontrada(s)`:"";
+  const missing=qs.filter(q=>!q.correta || !q.alternativas?.[q.correta]).length;
+  const invalid=qs.filter(q=>!q.enunciado || Object.keys(q.alternativas||{}).length<2).length;
+  if(save)save.disabled=!qs.length||missing>0||invalid>0;
+  if(foot)foot.textContent=!qs.length?"Nenhuma questão convertida.":invalid?`${invalid} questão(ões) precisa(m) de enunciado e pelo menos 2 alternativas.`:missing?`Marque o gabarito de ${missing} questão(ões).`:`Tudo pronto: ${qs.length} questão(ões) serão adicionadas.`;
+  if(!el)return;
+  if(!qs.length){el.innerHTML="";return;}
+  el.innerHTML=qs.map((q,i)=>{
+    const letters=Object.keys(q.alternativas||{}).filter(l=>/^[A-E]$/.test(l)).sort();
+    const good=q.enunciado&&letters.length>=2;
+    const keyOk=q.correta&&q.alternativas?.[q.correta];
+    return `<div class="sim-bulk-card ${!keyOk?"missing-key":""}">
+      <div class="sim-bulk-card-head"><strong>Questão ${safeText(q.numero||i+1)}</strong><span class="sim-bulk-key-state ${keyOk?"done":""}">${keyOk?`✓ Gabarito ${safeText(q.correta)}`:good?"Marque o gabarito":"Revise a questão"}</span></div>
+      <div class="sim-bulk-enunciado">${safeText(q.enunciado||"⚠ Enunciado não identificado")}</div>
+      <div class="sim-bulk-alts">${letters.map(letter=>`<label class="sim-bulk-alt ${q.correta===letter?"selected":""}"><input type="radio" name="sim-bulk-key-${i}" value="${letter}" ${q.correta===letter?"checked":""} onchange="setSimBulkKey(${i},'${letter}')"><span class="sim-bulk-alt-letter">${letter}</span><span class="sim-bulk-alt-text">${safeText(q.alternativas[letter])}</span></label>`).join("") || '<div class="sim-bulk-feedback bad">Nenhuma alternativa identificada.</div>'}</div>
+    </div>`;
+  }).join("");
+}
+async function saveSimBulkQuestions(){
+  if(!isTeacher())return alert("Apenas professor pode adicionar questões.");
+  const simId=simStudioEditingId;
+  const sim=getSimuladoById(simId);
+  if(!sim||!teacherCanManageItem(sim))return alert("Selecione um simulado que você possa editar.");
+  const qs=simBulkParsedQuestions||[];
+  if(!qs.length)return alert("Converta o texto antes de salvar.");
+  const invalid=qs.find(q=>!q.enunciado||Object.keys(q.alternativas||{}).length<2);
+  if(invalid)return alert("Revise as questões: todas precisam de enunciado e pelo menos duas alternativas.");
+  const noKey=qs.find(q=>!q.correta||!q.alternativas?.[q.correta]);
+  if(noKey)return alert("Marque o gabarito de todas as questões antes de adicionar.");
+  const area=document.getElementById("sim-bulk-area")?.value.trim()||"Geral";
+  const valor=Math.max(0,Number(document.getElementById("sim-bulk-value")?.value||1));
+  const btn=document.getElementById("sim-bulk-save");
+  if(btn){btn.disabled=true;btn.textContent="Adicionando...";}
+  try{
+    const updates={};
+    const now=Date.now();
+    qs.forEach((q,i)=>{
+      const ref=db.ref(`simulados/${simId}/questoes`).push();
+      updates[`simulados/${simId}/questoes/${ref.key}`]={
+        enunciado:q.enunciado,
+        tipo:"multipla",
+        area,
+        valor,
+        alternativas:q.alternativas,
+        correta:q.correta,
+        comentarioGabarito:"",
+        ordem:now+i,
+        createdBy:ownUid(),
+        createdAt:now+i
+      };
+    });
+    await db.ref().update(updates);
+    const total=qs.length;
+    closeSimBulkImport();
+    resetSimBulkImport();
+    renderSimStudioQuestionList();
+    alert(`${total} questão(ões) adicionada(s) ao simulado com sucesso.`);
+  }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
+  finally{if(btn){btn.disabled=false;btn.textContent="Adicionar questões ao simulado";}renderSimBulkPreview();}
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&document.getElementById("sim-bulk-import-modal")?.classList.contains("open"))closeSimBulkImport();});
+</script>
+
 </body>
 </html>
