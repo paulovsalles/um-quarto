@@ -2536,6 +2536,20 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
 .sim-question-workspace-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;flex-wrap:wrap}
 .sim-bulk-import-open{background:#eef9f7!important;color:var(--verde-dark)!important;border:1px solid rgba(35,184,166,.24)!important;white-space:nowrap}
 .sim-bulk-import-open:hover{background:#def4ef!important}
+.sim-bulk-word-open{background:#fff!important;color:var(--azul)!important;border:1px solid var(--borda)!important;white-space:nowrap}
+.sim-bulk-word-open:hover{background:#f4f8f7!important;border-color:#c9dcda!important}
+.sim-bulk-word-tools{display:flex;align-items:center;justify-content:space-between;gap:14px;border:1.5px dashed #b9d9d4;background:#fbfefd;border-radius:14px;padding:12px 14px;margin-bottom:14px}
+.sim-bulk-word-tools-main{min-width:0}.sim-bulk-word-tools-main strong{display:block;font-size:13px;color:var(--azul);margin-bottom:3px}.sim-bulk-word-tools-main small{display:block;font-size:11.5px;color:var(--cinza);font-weight:800;line-height:1.4}
+.sim-bulk-word-btn{flex:0 0 auto;background:#fff!important;color:var(--azul)!important;border:1.5px solid var(--borda)!important;border-radius:12px!important;padding:10px 14px!important;font-weight:900!important}
+.sim-bulk-word-btn:hover{border-color:var(--verde)!important;color:var(--verde-dark)!important;background:#f5fbfa!important}
+.sim-bulk-word-input{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important}
+.sim-bulk-word-status{display:none;margin:-5px 0 14px;padding:9px 11px;border-radius:11px;background:#f4f7f6;color:var(--cinza);font-size:11.5px;font-weight:800;line-height:1.4}
+.sim-bulk-word-status.visible{display:block}.sim-bulk-word-status.loading{background:#fff7ed;color:#a56621}.sim-bulk-word-status.ok{background:#eaf8f5;color:var(--verde-dark)}.sim-bulk-word-status.bad{background:#fff0f0;color:#c74343}
+.sim-bulk-card-image-wrap{margin:9px 0 11px;border:1px solid var(--borda);border-radius:12px;padding:8px;background:#fbfdfc}.sim-bulk-card-image{display:block;width:100%;max-height:340px;object-fit:contain;border-radius:8px;background:#fff}.sim-bulk-card-image-wrap small{display:block;margin-top:6px;color:var(--cinza);font-size:10.5px;font-weight:800}
+.sim-bulk-discursive-note{padding:10px 11px;border:1.5px solid var(--borda);border-radius:11px;background:#f7faf9;color:var(--cinza);font-size:12px;font-weight:800;line-height:1.4}
+.sim-bulk-source-pill{display:inline-flex;align-items:center;gap:5px;background:#eef6f4;color:var(--verde-dark);border-radius:999px;padding:3px 7px;font-size:9.5px;font-weight:900;margin-left:6px;vertical-align:middle}
+@media(max-width:620px){.sim-bulk-word-tools{align-items:stretch;flex-direction:column}.sim-bulk-word-btn{width:100%}}
+
 .sim-bulk-modal{position:fixed;inset:0;z-index:10050;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(24,48,57,.48);backdrop-filter:blur(5px)}
 .sim-bulk-modal.open{display:flex}
 .sim-bulk-dialog{width:min(1050px,96vw);max-height:92vh;background:#fff;border:1px solid var(--borda);border-radius:24px;box-shadow:0 28px 80px rgba(20,45,55,.24);display:flex;flex-direction:column;overflow:hidden}
@@ -2598,6 +2612,7 @@ body.sim-bulk-modal-open{overflow:hidden}
 @media(max-width:460px){.sim-bulk-options{grid-template-columns:1fr}.sim-bulk-options .sim-bulk-convert{grid-column:auto}}
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
 </head>
 <body>
 
@@ -3697,6 +3712,7 @@ body.sim-bulk-modal-open{overflow:hidden}
                     <div class="sim-question-workspace-actions">
                       <div class="sim-question-count" id="sim-current-question-count">0 questões</div>
                       <button class="btn-small sim-bulk-import-open" type="button" onclick="openSimBulkImport()">⚡ Importar texto</button>
+                      <button class="btn-small sim-bulk-word-open" type="button" onclick="openSimBulkWordPicker()">📄 Importar Word</button>
                     </div>
                   </div>
 
@@ -8716,8 +8732,8 @@ setTimeout(()=>{const ps=document.getElementById('study-task-page-size');if(ps)p
     <div class="sim-bulk-head">
       <div>
         <span>IMPORTAÇÃO RÁPIDA</span>
-        <h3 id="sim-bulk-title">Cole várias questões de uma vez</h3>
-        <p>O sistema identifica Questão 1, Questão 2... e as alternativas A, B, C, D e E. Depois, você só marca o gabarito de cada questão e salva.</p>
+        <h3 id="sim-bulk-title">Cole questões ou importe um Word</h3>
+        <p>Cole o texto normalmente ou importe um arquivo .docx. O sistema identifica as questões e alternativas, preserva as imagens vinculadas a cada questão e depois você só confere o gabarito e salva.</p>
       </div>
       <button class="sim-bulk-close" type="button" onclick="closeSimBulkImport()" aria-label="Fechar">×</button>
     </div>
@@ -8728,6 +8744,15 @@ setTimeout(()=>{const ps=document.getElementById('study-task-page-size');if(ps)p
           <div class="sim-bulk-example">Questão 1. Jorge comprou 2 caixas...\na) 2\nb) 4\nc) 5\nd) 6\ne) 8\n\nQuestão 2. Um carro percorre...</div>
         </div>
       </div>
+      <div class="sim-bulk-word-tools">
+        <div class="sim-bulk-word-tools-main">
+          <strong>📄 Questões em Word com imagens?</strong>
+          <small>Importe um arquivo .docx. O sistema lê o texto, identifica A–E e traz a imagem da questão para a prévia.</small>
+        </div>
+        <button class="btn-small sim-bulk-word-btn" type="button" onclick="openSimBulkWordPicker()">Selecionar Word (.docx)</button>
+        <input id="sim-bulk-word-file" class="sim-bulk-word-input" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onchange="handleSimBulkWordFile(event)">
+      </div>
+      <div id="sim-bulk-word-status" class="sim-bulk-word-status"></div>
       <div class="form-field">
         <label>Texto das questões</label>
         <textarea id="sim-bulk-text" class="sim-bulk-textarea" placeholder="Cole aqui todas as questões..." spellcheck="false"></textarea>
@@ -8737,7 +8762,7 @@ setTimeout(()=>{const ps=document.getElementById('study-task-page-size');if(ps)p
         <div class="form-field"><label>Valor por questão</label><input id="sim-bulk-value" type="number" min="0" step="0.5" value="1"></div>
         <button class="btn-small primary sim-bulk-convert" type="button" onclick="convertSimBulkText()">⚡ Converter texto</button>
       </div>
-      <div id="sim-bulk-feedback" class="sim-bulk-feedback">Cole o texto e clique em “Converter texto”.</div>
+      <div id="sim-bulk-feedback" class="sim-bulk-feedback">Cole o texto e clique em “Converter texto” ou selecione um arquivo Word.</div>
       <div id="sim-bulk-preview-wrap" class="sim-bulk-preview-wrap">
         <div class="sim-bulk-preview-head"><strong>Prévia das questões</strong><small id="sim-bulk-preview-count"></small></div>
         <div id="sim-bulk-preview" class="sim-bulk-preview"></div>
@@ -8755,8 +8780,10 @@ setTimeout(()=>{const ps=document.getElementById('study-task-page-size');if(ps)p
 
 
 <script id="sim-bulk-import-script">
-/* ===== Simulados · importação rápida por texto ===== */
+/* ===== Simulados · importação rápida por texto + Word (.docx) com imagens ===== */
 let simBulkParsedQuestions=[];
+let simBulkImportSource="text";
+let simBulkWordFileName="";
 
 function simBulkNormalizeText(value){
   return String(value||"")
@@ -8771,7 +8798,7 @@ function simBulkQuestionStart(line){
   if(m)return {numero:Number(m[1]),resto:(m[2]||"").trim()};
   m=s.match(/^q(?:uest(?:ã|a)o)?\.?\s*(\d+)\s*[\).:\-–—]?\s*(.*)$/i);
   if(m)return {numero:Number(m[1]),resto:(m[2]||"").trim()};
-  m=s.match(/^(\d+)\s*[\).:]\s+(.+)$/);
+  m=s.match(/^(\d+)\s*[\).:]\s*(.*)$/);
   if(m)return {numero:Number(m[1]),resto:(m[2]||"").trim()};
   return null;
 }
@@ -8783,55 +8810,58 @@ function simBulkKeyLine(line){
   const m=String(line||"").trim().match(/^(?:gabarito|resposta(?:\s+correta)?|correta)\s*[:\-]?\s*([A-E])\b/i);
   return m?m[1].toUpperCase():null;
 }
+function simBulkFinalizeQuestion(q){
+  if(!q)return null;
+  q.enunciado=Array.isArray(q.enunciadoLines)?q.enunciadoLines.join("\n").replace(/^\s+|\s+$/g,""):String(q.enunciado||"").trim();
+  q.alternativas=q.alternativas||{};
+  Object.keys(q.alternativas).forEach(k=>{
+    q.alternativas[k]=String(q.alternativas[k]||"").trim();
+    if(!q.alternativas[k])delete q.alternativas[k];
+  });
+  delete q.enunciadoLines;
+  const altCount=Object.keys(q.alternativas).length;
+  q.tipo=altCount?"multipla":"discursiva";
+  q.imagens=Array.isArray(q.imagens)?q.imagens.filter(Boolean):[];
+  return (q.enunciado||altCount||q.imagens.length)?q:null;
+}
 function parseSimBulkQuestions(raw){
   const text=simBulkNormalizeText(raw);
   if(!text)return [];
   const lines=text.split("\n");
   const result=[];
   let q=null,currentAlt=null;
-  function finish(){
-    if(!q)return;
-    q.enunciado=q.enunciadoLines.join("\n").replace(/^\s+|\s+$/g,"");
-    Object.keys(q.alternativas).forEach(k=>{q.alternativas[k]=String(q.alternativas[k]||"").trim();if(!q.alternativas[k])delete q.alternativas[k];});
-    delete q.enunciadoLines;
-    if(q.enunciado || Object.keys(q.alternativas).length)result.push(q);
-    q=null;currentAlt=null;
-  }
+  function finish(){const ready=simBulkFinalizeQuestion(q);if(ready)result.push(ready);q=null;currentAlt=null;}
   for(const original of lines){
     const line=original.replace(/\s+$/g,"");
     const qStart=simBulkQuestionStart(line);
     if(qStart){
       finish();
-      q={numero:qStart.numero,enunciadoLines:qStart.resto?[qStart.resto]:[],alternativas:{},correta:""};
-      currentAlt=null;
+      q={numero:qStart.numero,enunciadoLines:qStart.resto?[qStart.resto]:[],alternativas:{},correta:"",imagens:[]};
       continue;
     }
     if(!q){
-      // Permite um texto com apenas uma questão, mesmo sem o rótulo "Questão 1".
-      if(simBulkAlternativeStart(line)){
-        q={numero:1,enunciadoLines:[],alternativas:{},correta:""};
-      }else{
+      if(simBulkAlternativeStart(line))q={numero:1,enunciadoLines:[],alternativas:{},correta:"",imagens:[]};
+      else{
         if(!line.trim())continue;
-        q={numero:1,enunciadoLines:[line.trim()],alternativas:{},correta:""};
+        q={numero:1,enunciadoLines:[line.trim()],alternativas:{},correta:"",imagens:[]};
         continue;
       }
     }
     const key=simBulkKeyLine(line);
     if(key){q.correta=key;currentAlt=null;continue;}
     const alt=simBulkAlternativeStart(line);
-    if(alt){
-      currentAlt=alt.letra;
-      q.alternativas[currentAlt]=alt.texto;
-      continue;
-    }
-    if(currentAlt){
-      if(line.trim())q.alternativas[currentAlt]+=(q.alternativas[currentAlt]?"\n":"")+line.trim();
-    }else{
-      if(line.trim() || q.enunciadoLines.length)q.enunciadoLines.push(line.trim());
-    }
+    if(alt){currentAlt=alt.letra;q.alternativas[currentAlt]=alt.texto;continue;}
+    if(currentAlt){if(line.trim())q.alternativas[currentAlt]+=(q.alternativas[currentAlt]?"\n":"")+line.trim();}
+    else if(line.trim() || q.enunciadoLines.length)q.enunciadoLines.push(line.trim());
   }
   finish();
   return result;
+}
+
+function simBulkWordStatus(text,type=""){
+  const el=document.getElementById("sim-bulk-word-status");if(!el)return;
+  el.textContent=text||"";
+  el.className="sim-bulk-word-status"+(text?" visible":"")+(type?` ${type}`:"");
 }
 function openSimBulkImport(){
   if(!isTeacher())return alert("Apenas professor pode importar questões.");
@@ -8842,54 +8872,211 @@ function openSimBulkImport(){
   modal.classList.add("open");modal.setAttribute("aria-hidden","false");document.body.classList.add("sim-bulk-modal-open");
   setTimeout(()=>document.getElementById("sim-bulk-text")?.focus(),40);
 }
+function openSimBulkWordPicker(){
+  if(!isTeacher())return alert("Apenas professor pode importar questões.");
+  if(!simStudioEditingId)return alert("Salve ou selecione um simulado antes de importar questões.");
+  openSimBulkImport();
+  const input=document.getElementById("sim-bulk-word-file");
+  if(input){input.value="";input.click();}
+}
 function closeSimBulkImport(){
   const modal=document.getElementById("sim-bulk-import-modal");if(modal){modal.classList.remove("open");modal.setAttribute("aria-hidden","true");}
   document.body.classList.remove("sim-bulk-modal-open");
 }
 function simBulkBackdropClose(event){if(event?.target?.id==="sim-bulk-import-modal")closeSimBulkImport();}
 function resetSimBulkImport(){
-  simBulkParsedQuestions=[];
+  simBulkParsedQuestions=[];simBulkImportSource="text";simBulkWordFileName="";
   const t=document.getElementById("sim-bulk-text");if(t)t.value="";
+  const w=document.getElementById("sim-bulk-word-file");if(w)w.value="";
   const area=document.getElementById("sim-bulk-area");if(area)area.value="";
   const val=document.getElementById("sim-bulk-value");if(val)val.value="1";
+  simBulkWordStatus("");
   renderSimBulkPreview();
-  simBulkSetFeedback('Cole o texto e clique em “Converter texto”.',"");
+  simBulkSetFeedback('Cole o texto e clique em “Converter texto” ou selecione um arquivo Word.',"");
 }
 function simBulkSetFeedback(text,type){
   const el=document.getElementById("sim-bulk-feedback");if(!el)return;
   el.textContent=text||"";el.className="sim-bulk-feedback"+(type?` ${type}`:"");
 }
+function simBulkQuestionIsInvalid(q){
+  if(!q?.enunciado)return true;
+  if(q.tipo==="discursiva")return false;
+  return Object.keys(q.alternativas||{}).length<2;
+}
+function simBulkQuestionNeedsKey(q){
+  return q?.tipo!=="discursiva"&&(!q.correta||!q.alternativas?.[q.correta]);
+}
 function convertSimBulkText(){
   const raw=document.getElementById("sim-bulk-text")?.value||"";
   const parsed=parseSimBulkQuestions(raw);
+  simBulkImportSource="text";simBulkWordFileName="";simBulkWordStatus("");
   if(!parsed.length){simBulkParsedQuestions=[];renderSimBulkPreview();simBulkSetFeedback("Não consegui identificar questões. Use 'Questão 1.' e alternativas 'a)', 'b)', 'c)'...","bad");return;}
-  simBulkParsedQuestions=parsed.map((q,i)=>({...q,numero:q.numero||i+1,correta:q.correta||""}));
-  const valid=simBulkParsedQuestions.filter(q=>q.enunciado&&Object.keys(q.alternativas||{}).length>=2).length;
-  simBulkSetFeedback(`${parsed.length} questão(ões) identificada(s). ${valid<parsed.length?`${parsed.length-valid} precisa(m) de revisão.`:"Agora marque o gabarito de cada uma."}`,valid===parsed.length?"ok":"bad");
+  simBulkParsedQuestions=parsed.map((q,i)=>({...q,numero:q.numero||i+1,correta:q.correta||"",imagemData:q.imagemData||""}));
+  const invalid=simBulkParsedQuestions.filter(simBulkQuestionIsInvalid).length;
+  const objectives=simBulkParsedQuestions.filter(q=>q.tipo!=="discursiva").length;
+  const discursives=simBulkParsedQuestions.length-objectives;
+  simBulkSetFeedback(`${parsed.length} questão(ões) identificada(s)${discursives?` · ${discursives} discursiva(s)`:""}. ${invalid?`${invalid} precisa(m) de revisão.`:objectives?"Agora marque o gabarito das objetivas.":"Pronto para adicionar."}`,invalid?"bad":"ok");
   renderSimBulkPreview();
 }
 function setSimBulkKey(index,letter){
   const q=simBulkParsedQuestions[index];if(!q)return;q.correta=String(letter||"").toUpperCase();renderSimBulkPreview();
+}
+
+function simBulkTextFromElement(el){
+  const clone=el.cloneNode(true);
+  clone.querySelectorAll("img").forEach(x=>x.remove());
+  clone.querySelectorAll("br").forEach(br=>br.replaceWith("\n"));
+  return simBulkNormalizeText(clone.textContent||"");
+}
+function simBulkWordHtmlToBlocks(html){
+  const root=document.createElement("div");root.innerHTML=html||"";
+  const blocks=[];
+  const blockTags=new Set(["P","LI","H1","H2","H3","H4","H5","H6"]);
+  function walk(node){
+    if(!node||node.nodeType!==1)return;
+    if(node.tagName==="IMG"){
+      const src=node.getAttribute("src")||"";if(src)blocks.push({type:"image",src});return;
+    }
+    if(blockTags.has(node.tagName)){
+      const text=simBulkTextFromElement(node);
+      if(text)text.split("\n").forEach(line=>{if(line.trim())blocks.push({type:"text",text:line.trim()});});
+      node.querySelectorAll("img").forEach(img=>{const src=img.getAttribute("src")||"";if(src)blocks.push({type:"image",src});});
+      return;
+    }
+    Array.from(node.children||[]).forEach(walk);
+  }
+  Array.from(root.children).forEach(walk);
+  return blocks;
+}
+function parseSimBulkWordBlocks(blocks){
+  const result=[];let q=null,currentAlt=null;
+  function finish(){const ready=simBulkFinalizeQuestion(q);if(ready)result.push(ready);q=null;currentAlt=null;}
+  for(const block of blocks||[]){
+    if(block.type==="image"){
+      // Ignora imagens de cabeçalho/logotipo antes da primeira questão.
+      if(q)q.imagens.push(block.src);
+      continue;
+    }
+    const line=String(block.text||"").trim();if(!line)continue;
+    const qStart=simBulkQuestionStart(line);
+    if(qStart){finish();q={numero:qStart.numero,enunciadoLines:qStart.resto?[qStart.resto]:[],alternativas:{},correta:"",imagens:[]};continue;}
+    if(!q){continue;}
+    const key=simBulkKeyLine(line);if(key){q.correta=key;currentAlt=null;continue;}
+    const alt=simBulkAlternativeStart(line);
+    if(alt){currentAlt=alt.letra;q.alternativas[currentAlt]=alt.texto;continue;}
+    if(currentAlt)q.alternativas[currentAlt]+=(q.alternativas[currentAlt]?"\n":"")+line;
+    else q.enunciadoLines.push(line);
+  }
+  finish();
+  return result;
+}
+function simBulkLoadImage(src){
+  return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});
+}
+async function simBulkCompressImageData(src,targetChars=650*1024,maxDimension=1500){
+  if(!String(src||"").startsWith("data:image/"))return "";
+  try{
+    const img=await simBulkLoadImage(src);
+    let scale=Math.min(1,maxDimension/Math.max(img.naturalWidth||1,img.naturalHeight||1));
+    let width=Math.max(1,Math.round(img.naturalWidth*scale)),height=Math.max(1,Math.round(img.naturalHeight*scale));
+    let quality=.9,data="";
+    for(let attempt=0;attempt<8;attempt++){
+      const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
+      const ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,width,height);ctx.drawImage(img,0,0,width,height);
+      data=canvas.toDataURL("image/webp",quality);
+      if(data.length<=targetChars)return data;
+      if(quality>.58)quality-=.08;else{width=Math.max(320,Math.round(width*.82));height=Math.max(220,Math.round(height*.82));}
+    }
+    return data;
+  }catch(e){console.warn("Não foi possível preparar uma imagem do Word",e);return "";}
+}
+async function simBulkMergeQuestionImages(images){
+  const list=(images||[]).filter(x=>String(x||"").startsWith("data:image/"));
+  if(!list.length)return "";
+  if(list.length===1)return await simBulkCompressImageData(list[0]);
+  try{
+    const loaded=[];
+    for(const src of list){try{loaded.push(await simBulkLoadImage(src));}catch(_){}}
+    if(!loaded.length)return "";
+    const maxW=1450,gap=18,pad=14;
+    const sizes=loaded.map(img=>{const s=Math.min(1,maxW/(img.naturalWidth||1));return {w:Math.max(1,Math.round(img.naturalWidth*s)),h:Math.max(1,Math.round(img.naturalHeight*s))};});
+    const width=Math.max(...sizes.map(x=>x.w))+pad*2;
+    const height=sizes.reduce((s,x)=>s+x.h,0)+gap*(sizes.length-1)+pad*2;
+    const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;
+    const ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,width,height);
+    let y=pad;
+    loaded.forEach((img,i)=>{const sz=sizes[i];ctx.drawImage(img,pad,y,sz.w,sz.h);y+=sz.h+gap;});
+    return await simBulkCompressImageData(canvas.toDataURL("image/webp",.9));
+  }catch(e){console.warn(e);return await simBulkCompressImageData(list[0]);}
+}
+async function handleSimBulkWordFile(event){
+  const file=event?.target?.files?.[0];if(!file)return;
+  if(!/\.docx$/i.test(file.name||"")){simBulkWordStatus("Selecione um arquivo .docx.","bad");return;}
+  if(file.size>20*1024*1024){simBulkWordStatus("O Word está muito grande. Use um arquivo com até 20 MB.","bad");return;}
+  if(typeof mammoth==="undefined"){
+    simBulkWordStatus("O leitor de Word não carregou. Verifique sua conexão e abra a página novamente.","bad");
+    return;
+  }
+  simBulkImportSource="word";simBulkWordFileName=file.name;
+  simBulkWordStatus(`Lendo ${file.name}...`,"loading");
+  simBulkSetFeedback("Extraindo texto e imagens do Word...","");
+  try{
+    const arrayBuffer=await file.arrayBuffer();
+    const result=await mammoth.convertToHtml({arrayBuffer},{
+      convertImage:mammoth.images.imgElement(async image=>{
+        try{const base64=await image.read("base64");return {src:`data:${image.contentType||"image/png"};base64,${base64}`};}
+        catch(_){return {src:""};}
+      })
+    });
+    const blocks=simBulkWordHtmlToBlocks(result.value||"");
+    let parsed=parseSimBulkWordBlocks(blocks);
+    if(!parsed.length){simBulkParsedQuestions=[];renderSimBulkPreview();simBulkWordStatus("Não encontrei questões numeradas no Word. Use títulos como 'Questão 1' ou '1.'.","bad");simBulkSetFeedback("Nenhuma questão identificada no Word.","bad");return;}
+    simBulkWordStatus(`Preparando ${parsed.length} questão(ões) e suas imagens...`,"loading");
+    for(let i=0;i<parsed.length;i++){
+      parsed[i].numero=parsed[i].numero||i+1;
+      parsed[i].imagemData=await simBulkMergeQuestionImages(parsed[i].imagens||[]);
+      delete parsed[i].imagens;
+    }
+    simBulkParsedQuestions=parsed;
+    const textForBox=blocks.filter(b=>b.type==="text").map(b=>b.text).join("\n");
+    const textarea=document.getElementById("sim-bulk-text");if(textarea)textarea.value=textForBox;
+    const images=simBulkParsedQuestions.filter(q=>q.imagemData).length;
+    const objectives=simBulkParsedQuestions.filter(q=>q.tipo!=="discursiva").length;
+    const discursives=simBulkParsedQuestions.length-objectives;
+    const invalid=simBulkParsedQuestions.filter(simBulkQuestionIsInvalid).length;
+    const warnings=(result.messages||[]).length;
+    simBulkWordStatus(`✓ ${file.name}: ${parsed.length} questão(ões), ${images} com imagem${warnings?` · ${warnings} aviso(s) de conversão`:""}.`,"ok");
+    simBulkSetFeedback(`${parsed.length} questão(ões) importada(s) do Word · ${objectives} objetiva(s)${discursives?` · ${discursives} discursiva(s)`:""}. ${invalid?"Revise os itens destacados.":objectives?"Marque o gabarito das objetivas e salve.":"Pronto para salvar."}`,invalid?"bad":"ok");
+    renderSimBulkPreview();
+  }catch(e){
+    console.error(e);simBulkParsedQuestions=[];renderSimBulkPreview();
+    simBulkWordStatus("Não foi possível ler esse arquivo Word. Confirme se ele é .docx e tente novamente.","bad");
+    simBulkSetFeedback("Erro ao importar o Word.","bad");
+  }
 }
 function renderSimBulkPreview(){
   const wrap=document.getElementById("sim-bulk-preview-wrap"),el=document.getElementById("sim-bulk-preview"),count=document.getElementById("sim-bulk-preview-count"),save=document.getElementById("sim-bulk-save"),foot=document.getElementById("sim-bulk-footer-info");
   const qs=simBulkParsedQuestions||[];
   if(wrap)wrap.classList.toggle("visible",!!qs.length);
   if(count)count.textContent=qs.length?`${qs.length} questão(ões) encontrada(s)`:"";
-  const missing=qs.filter(q=>!q.correta || !q.alternativas?.[q.correta]).length;
-  const invalid=qs.filter(q=>!q.enunciado || Object.keys(q.alternativas||{}).length<2).length;
+  const missing=qs.filter(simBulkQuestionNeedsKey).length;
+  const invalid=qs.filter(simBulkQuestionIsInvalid).length;
   if(save)save.disabled=!qs.length||missing>0||invalid>0;
-  if(foot)foot.textContent=!qs.length?"Nenhuma questão convertida.":invalid?`${invalid} questão(ões) precisa(m) de enunciado e pelo menos 2 alternativas.`:missing?`Marque o gabarito de ${missing} questão(ões).`:`Tudo pronto: ${qs.length} questão(ões) serão adicionadas.`;
+  if(foot)foot.textContent=!qs.length?"Nenhuma questão convertida.":invalid?`${invalid} questão(ões) precisa(m) de revisão.`:missing?`Marque o gabarito de ${missing} questão(ões) objetiva(s).`:`Tudo pronto: ${qs.length} questão(ões) serão adicionadas.`;
   if(!el)return;
   if(!qs.length){el.innerHTML="";return;}
   el.innerHTML=qs.map((q,i)=>{
     const letters=Object.keys(q.alternativas||{}).filter(l=>/^[A-E]$/.test(l)).sort();
-    const good=q.enunciado&&letters.length>=2;
-    const keyOk=q.correta&&q.alternativas?.[q.correta];
-    return `<div class="sim-bulk-card ${!keyOk?"missing-key":""}">
-      <div class="sim-bulk-card-head"><strong>Questão ${safeText(q.numero||i+1)}</strong><span class="sim-bulk-key-state ${keyOk?"done":""}">${keyOk?`✓ Gabarito ${safeText(q.correta)}`:good?"Marque o gabarito":"Revise a questão"}</span></div>
+    const good=!simBulkQuestionIsInvalid(q);
+    const keyOk=q.tipo==="discursiva"||!simBulkQuestionNeedsKey(q);
+    const state=q.tipo==="discursiva"?"Discursiva":keyOk?`✓ Gabarito ${safeText(q.correta)}`:good?"Marque o gabarito":"Revise a questão";
+    const image=q.imagemData?`<div class="sim-bulk-card-image-wrap"><img class="sim-bulk-card-image" src="${q.imagemData}" alt="Imagem importada da questão"><small>🖼️ Imagem importada do Word e otimizada para o simulado.</small></div>`:"";
+    const source=simBulkImportSource==="word"?'<span class="sim-bulk-source-pill">📄 Word</span>':"";
+    const options=q.tipo==="discursiva"?'<div class="sim-bulk-discursive-note">Questão sem alternativas: será cadastrada como <b>discursiva</b> e ficará para correção manual.</div>':`<div class="sim-bulk-alts">${letters.map(letter=>`<label class="sim-bulk-alt ${q.correta===letter?"selected":""}"><input type="radio" name="sim-bulk-key-${i}" value="${letter}" ${q.correta===letter?"checked":""} onchange="setSimBulkKey(${i},'${letter}')"><span class="sim-bulk-alt-letter">${letter}</span><span class="sim-bulk-alt-text">${safeText(q.alternativas[letter])}</span></label>`).join("") || '<div class="sim-bulk-feedback bad">Nenhuma alternativa identificada.</div>'}</div>`;
+    return `<div class="sim-bulk-card ${!keyOk||!good?"missing-key":""}">
+      <div class="sim-bulk-card-head"><strong>Questão ${safeText(q.numero||i+1)} ${source}</strong><span class="sim-bulk-key-state ${keyOk&&good?"done":""}">${state}</span></div>
       <div class="sim-bulk-enunciado">${safeText(q.enunciado||"⚠ Enunciado não identificado")}</div>
-      <div class="sim-bulk-alts">${letters.map(letter=>`<label class="sim-bulk-alt ${q.correta===letter?"selected":""}"><input type="radio" name="sim-bulk-key-${i}" value="${letter}" ${q.correta===letter?"checked":""} onchange="setSimBulkKey(${i},'${letter}')"><span class="sim-bulk-alt-letter">${letter}</span><span class="sim-bulk-alt-text">${safeText(q.alternativas[letter])}</span></label>`).join("") || '<div class="sim-bulk-feedback bad">Nenhuma alternativa identificada.</div>'}</div>
+      ${image}${options}
     </div>`;
   }).join("");
 }
@@ -8899,39 +9086,32 @@ async function saveSimBulkQuestions(){
   const sim=getSimuladoById(simId);
   if(!sim||!teacherCanManageItem(sim))return alert("Selecione um simulado que você possa editar.");
   const qs=simBulkParsedQuestions||[];
-  if(!qs.length)return alert("Converta o texto antes de salvar.");
-  const invalid=qs.find(q=>!q.enunciado||Object.keys(q.alternativas||{}).length<2);
-  if(invalid)return alert("Revise as questões: todas precisam de enunciado e pelo menos duas alternativas.");
-  const noKey=qs.find(q=>!q.correta||!q.alternativas?.[q.correta]);
-  if(noKey)return alert("Marque o gabarito de todas as questões antes de adicionar.");
+  if(!qs.length)return alert("Converta o texto ou importe um Word antes de salvar.");
+  const invalid=qs.find(simBulkQuestionIsInvalid);
+  if(invalid)return alert("Revise as questões destacadas antes de adicionar.");
+  const noKey=qs.find(simBulkQuestionNeedsKey);
+  if(noKey)return alert("Marque o gabarito de todas as questões objetivas antes de adicionar.");
   const area=document.getElementById("sim-bulk-area")?.value.trim()||"Geral";
   const valor=Math.max(0,Number(document.getElementById("sim-bulk-value")?.value||1));
   const btn=document.getElementById("sim-bulk-save");
   if(btn){btn.disabled=true;btn.textContent="Adicionando...";}
   try{
-    const updates={};
-    const now=Date.now();
+    const updates={};const now=Date.now();
     qs.forEach((q,i)=>{
       const ref=db.ref(`simulados/${simId}/questoes`).push();
-      updates[`simulados/${simId}/questoes/${ref.key}`]={
-        enunciado:q.enunciado,
-        tipo:"multipla",
-        area,
-        valor,
-        alternativas:q.alternativas,
-        correta:q.correta,
-        comentarioGabarito:"",
-        ordem:now+i,
-        createdBy:ownUid(),
-        createdAt:now+i
+      const payload={
+        enunciado:q.enunciado,tipo:q.tipo||"multipla",area,valor,
+        comentarioGabarito:"",ordem:now+i,createdBy:ownUid(),createdAt:now+i
       };
+      if(q.imagemData)payload.imagemData=q.imagemData;
+      if(payload.tipo==="discursiva")payload.respostaEsperada="";
+      else{payload.alternativas=q.alternativas;payload.correta=q.correta;}
+      updates[`simulados/${simId}/questoes/${ref.key}`]=payload;
     });
     await db.ref().update(updates);
     const total=qs.length;
-    closeSimBulkImport();
-    resetSimBulkImport();
-    renderSimStudioQuestionList();
-    alert(`${total} questão(ões) adicionada(s) ao simulado com sucesso.`);
+    closeSimBulkImport();resetSimBulkImport();renderSimStudioQuestionList();
+    alert(`${total} questão(ões) adicionada(s) ao simulado com sucesso${simBulkWordFileName?" a partir do Word":""}.`);
   }catch(e){console.error(e);alert(firebaseErrorMessage(e));}
   finally{if(btn){btn.disabled=false;btn.textContent="Adicionar questões ao simulado";}renderSimBulkPreview();}
 }
