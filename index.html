@@ -2612,6 +2612,9 @@ body.sim-bulk-modal-open{overflow:hidden}
 @media(max-width:460px){.sim-bulk-options{grid-template-columns:1fr}.sim-bulk-options .sim-bulk-convert{grid-column:auto}}
 
 /* ===== GUIA IFES SETEMBRO 2026 · UM QUARTO ===== */
+/* ===== MISSÃO IFES · SETEMBRO 2026 ===== */
+#tab-ifes-setembro{width:100%;max-width:none;min-width:0;margin:0;box-sizing:border-box}
+#tab-ifes-setembro>*{min-width:0;box-sizing:border-box}
 .ifes26-hero{background:linear-gradient(135deg,var(--azul),var(--azul-light));color:#fff;border-radius:24px;padding:24px;margin-bottom:14px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);gap:18px;align-items:center;box-shadow:0 18px 40px rgba(40,71,84,.10)}
 .ifes26-hero h2{font-size:28px;line-height:1.05;margin-bottom:8px}.ifes26-hero p{font-size:13px;line-height:1.55;opacity:.88;max-width:740px}.ifes26-kicker{font-size:11px;font-weight:900;letter-spacing:.13em;text-transform:uppercase;color:#9be6dc;margin-bottom:9px}.ifes26-hero-side{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ifes26-metric{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:13px}.ifes26-metric strong{display:block;font-size:24px}.ifes26-metric span{font-size:11px;font-weight:800;opacity:.78}
 .ifes26-manager{background:#fff;border:1.5px solid var(--borda);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:var(--shadow)}.ifes26-manager-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.ifes26-manager-head strong{font-size:16px}.ifes26-manager-head span{font-size:12px;color:var(--cinza);line-height:1.4}.ifes26-manager-row{display:grid;grid-template-columns:minmax(240px,1fr) auto auto;gap:9px;align-items:end}.ifes26-manager-status{margin-top:10px;font-size:12px;font-weight:800;color:var(--cinza)}
@@ -4037,6 +4040,44 @@ body.sim-bulk-modal-open{overflow:hidden}
       </div>
     </div>
 
+    <div id="tab-ifes-setembro" class="tab-panel">
+      <section class="ifes26-hero">
+        <div>
+          <div class="ifes26-kicker">Plano acompanhado · Setembro 2026</div>
+          <h2>Missão IFES 🎯</h2>
+          <p>Um cronograma guiado, com prioridade estratégica em Matemática, cobertura de todo o edital, prática, correção de erros e simulados. Cada missão só fica concluída quando os checks do dia forem realmente entregues.</p>
+        </div>
+        <div class="ifes26-hero-side">
+          <div class="ifes26-metric"><strong id="ifes26-progress-number">0%</strong><span>progresso do plano</span></div>
+          <div class="ifes26-metric"><strong id="ifes26-session-number">0/26</strong><span>missões concluídas</span></div>
+          <div class="ifes26-metric"><strong>4</strong><span>simulados completos</span></div>
+          <div class="ifes26-metric"><strong>61%</strong><span>do dirigido em Matemática</span></div>
+        </div>
+      </section>
+
+      <div class="ifes26-manager teacher-only" id="ifes26-manager" style="display:none">
+        <div class="ifes26-manager-head"><div><strong>Vincular este cronograma a um aluno</strong><br><span>O aluno passa a ver a guia “Missão IFES” no próprio acesso e o progresso fica salvo no mesmo checklist do Firebase.</span></div><span class="badge ok">Professor</span></div>
+        <div class="ifes26-manager-row">
+          <div class="form-field" style="margin:0"><label>Aluno</label><select id="ifes26-student" onchange="ifes26StudentChanged(this.value)"><option value="">Selecione um aluno</option></select></div>
+          <button class="btn-small primary" type="button" onclick="assignIfesSeptemberGuide()">✓ Vincular / atualizar</button>
+          <button class="btn-small" type="button" onclick="removeIfesSeptemberGuide()">Remover guia</button>
+        </div>
+        <div class="ifes26-manager-status" id="ifes26-manager-status">Selecione um aluno para visualizar ou aplicar o plano.</div>
+      </div>
+
+      <div class="ifes26-student-banner student-guide-note" id="ifes26-student-note" style="display:none">✓ Plano liberado pela Um Quarto. Marque cada etapa conforme concluir e use os simulados para acompanhar sua evolução.</div>
+
+      <div class="ifes26-tabs" role="tablist" aria-label="Visões da Missão IFES">
+        <button class="ifes26-tab active" id="ifes26-tab-cronograma" type="button" onclick="setIfesSeptemberView('cronograma')">📅 Cronograma</button>
+        <button class="ifes26-tab" id="ifes26-tab-matematica" type="button" onclick="setIfesSeptemberView('matematica')">∑ Checklist Matemática</button>
+        <button class="ifes26-tab" id="ifes26-tab-geral" type="button" onclick="setIfesSeptemberView('geral')">📚 Outras matérias</button>
+        <button class="ifes26-tab" id="ifes26-tab-simulados" type="button" onclick="setIfesSeptemberView('simulados')">🧪 Simulados</button>
+      </div>
+
+      <div id="ifes26-content"><div class="ifes26-empty"><strong>Carregando plano…</strong>O conteúdo aparecerá assim que o vínculo do aluno for identificado.</div></div>
+    </div>
+
+
     <div id="tab-financeiro" class="tab-panel finance-only" style="display:none">
       <div class="linked-student-filter">
         <div class="filter-head">
@@ -4087,42 +4128,6 @@ body.sim-bulk-modal-open{overflow:hidden}
   </div>
 
 
-    <div id="tab-ifes-setembro" class="tab-panel">
-      <section class="ifes26-hero">
-        <div>
-          <div class="ifes26-kicker">Plano acompanhado · Setembro 2026</div>
-          <h2>Missão IFES 🎯</h2>
-          <p>Um cronograma guiado, com prioridade estratégica em Matemática, cobertura de todo o edital, prática, correção de erros e simulados. Cada missão só fica concluída quando os checks do dia forem realmente entregues.</p>
-        </div>
-        <div class="ifes26-hero-side">
-          <div class="ifes26-metric"><strong id="ifes26-progress-number">0%</strong><span>progresso do plano</span></div>
-          <div class="ifes26-metric"><strong id="ifes26-session-number">0/26</strong><span>missões concluídas</span></div>
-          <div class="ifes26-metric"><strong>4</strong><span>simulados completos</span></div>
-          <div class="ifes26-metric"><strong>61%</strong><span>do dirigido em Matemática</span></div>
-        </div>
-      </section>
-
-      <div class="ifes26-manager teacher-only" id="ifes26-manager" style="display:none">
-        <div class="ifes26-manager-head"><div><strong>Vincular este cronograma a um aluno</strong><br><span>O aluno passa a ver a guia “Missão IFES” no próprio acesso e o progresso fica salvo no mesmo checklist do Firebase.</span></div><span class="badge ok">Professor</span></div>
-        <div class="ifes26-manager-row">
-          <div class="form-field" style="margin:0"><label>Aluno</label><select id="ifes26-student" onchange="ifes26StudentChanged(this.value)"><option value="">Selecione um aluno</option></select></div>
-          <button class="btn-small primary" type="button" onclick="assignIfesSeptemberGuide()">✓ Vincular / atualizar</button>
-          <button class="btn-small" type="button" onclick="removeIfesSeptemberGuide()">Remover guia</button>
-        </div>
-        <div class="ifes26-manager-status" id="ifes26-manager-status">Selecione um aluno para visualizar ou aplicar o plano.</div>
-      </div>
-
-      <div class="ifes26-student-banner student-guide-note" id="ifes26-student-note" style="display:none">✓ Plano liberado pela Um Quarto. Marque cada etapa conforme concluir e use os simulados para acompanhar sua evolução.</div>
-
-      <div class="ifes26-tabs" role="tablist" aria-label="Visões da Missão IFES">
-        <button class="ifes26-tab active" id="ifes26-tab-cronograma" type="button" onclick="setIfesSeptemberView('cronograma')">📅 Cronograma</button>
-        <button class="ifes26-tab" id="ifes26-tab-matematica" type="button" onclick="setIfesSeptemberView('matematica')">∑ Checklist Matemática</button>
-        <button class="ifes26-tab" id="ifes26-tab-geral" type="button" onclick="setIfesSeptemberView('geral')">📚 Outras matérias</button>
-        <button class="ifes26-tab" id="ifes26-tab-simulados" type="button" onclick="setIfesSeptemberView('simulados')">🧪 Simulados</button>
-      </div>
-
-      <div id="ifes26-content"><div class="ifes26-empty"><strong>Carregando plano…</strong>O conteúdo aparecerá assim que o vínculo do aluno for identificado.</div></div>
-    </div>
 
   <nav class="bottom-nav">
     <div class="side-nav-head">
