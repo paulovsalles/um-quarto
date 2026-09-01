@@ -7737,22 +7737,50 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
     }).join("");
   }
 
+  // Alunos que um professor pode escolher para CRIAR o primeiro vínculo.
+  // Antes deste ajuste, professor novo só enxergava aluno que já estivesse
+  // vinculado a ele; por isso ficava preso em "Nenhum aluno encontrado".
+  function getLinkableStudentUsers(){
+    const map=new Map();
+
+    (users||[]).forEach(u=>{
+      if(!u || !u.id)return;
+      if(uqIsStudentLike(u))uqPushStudent(map,u.id,u);
+    });
+
+    return [...map.values()]
+      .filter(u=>String(u.id)!==String(ownUid()))
+      .sort((a,b)=>
+        String(a.name||a.email||a.username||"Aluno")
+          .localeCompare(String(b.name||b.email||b.username||"Aluno"),"pt-BR")
+      );
+  }
+
   const __uqPopulateStudentSelectsBase = populateStudentSelects;
   populateStudentSelects=function(){
     try{__uqPopulateStudentSelectsBase()}catch(e){console.warn("populateStudentSelects original falhou:",e)}
+
+    // studentUsers = alunos já vinculados / já pertencentes aos registros do professor.
+    // linkableStudentUsers = todos os alunos disponíveis para o professor criar o PRIMEIRO vínculo.
     const studentUsers=getStudentUsersForSelect();
+    const linkableStudentUsers=isTeacher() ? getLinkableStudentUsers() : studentUsers;
+
     const options=uqStudentOptions(studentUsers);
+    const linkableOptions=uqStudentOptions(linkableStudentUsers);
     const myName=safeText(currentProfile?.name||currentUser?.email||"Meu acesso");
 
+    // Campos usados para criar aula/tarefa/avaliação etc. precisam mostrar
+    // também alunos ainda não vinculados. Ao salvar, ensureTeacherStudentLink()
+    // grava linkedTeachers automaticamente.
     ["a-student","av-student","res-student","nota-student","cal-student","sim-student","chk-student"].forEach(id=>{
       const el=document.getElementById(id);
-      if(el)el.innerHTML=options || '<option value="">Nenhum aluno encontrado</option>';
+      if(el)el.innerHTML=linkableOptions || '<option value="">Nenhum aluno encontrado</option>';
     });
 
     const taskSel=document.getElementById("t-student");
     if(taskSel){
       const previous=taskSel.value;
-      taskSel.innerHTML=`<option value="${ownUid()}">Geral / meu acesso — ${myName}</option>`+(options || "");
+      taskSel.innerHTML=`<option value="${ownUid()}">Geral / meu acesso — ${myName}</option>`+(linkableOptions || "");
       if(previous && [...taskSel.options].some(o=>o.value===previous))taskSel.value=previous;
       else if(taskStudentFilter && taskStudentFilter!=="all" && [...taskSel.options].some(o=>o.value===taskStudentFilter))taskSel.value=taskStudentFilter;
     }
