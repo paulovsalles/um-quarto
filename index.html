@@ -3052,7 +3052,7 @@ body.sim-bulk-modal-open{overflow:hidden}
       <div class="aulas-clean-tools">
         <div class="aulas-clean-tools-head">
           <strong>Filtros e visualização</strong>
-          <span id="aulas-clean-count">0 aulas · 0 min</span>
+          <span id="aulas-clean-count">0 aulas · 0 min · R$ 0,00</span>
         </div>
         <div class="aulas-clean-grid">
           <div class="form-field teacher-only" style="display:none">
@@ -5737,7 +5737,8 @@ function renderAulas(){
 
   const countEl=document.getElementById("aulas-clean-count");
   const totalMinutos=list.reduce((total,a)=>total+aulaMinutos(a),0);
-  if(countEl)countEl.textContent=`${list.length} aula${list.length===1?"":"s"} · ${formatDuracao(totalMinutos)}`;
+  const totalValor=list.reduce((total,a)=>total+Number(a.valor||0),0);
+  if(countEl)countEl.textContent=`${list.length} aula${list.length===1?"":"s"} · ${formatDuracao(totalMinutos)} · ${formatMoney(totalValor)}`;
 
   if(!list.length){
     el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula encontrada com os filtros selecionados.</div>';
