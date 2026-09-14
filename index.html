@@ -9047,22 +9047,68 @@ function simBulkWordHtmlToBlocks(html){
 function parseSimBulkWordBlocks(blocks){
   const result=[];let q=null,currentAlt=null;
   function finish(){const ready=simBulkFinalizeQuestion(q);if(ready)result.push(ready);q=null;currentAlt=null;}
+
   for(const block of blocks||[]){
     if(block.type==="image"){
-      // Ignora imagens de cabeçalho/logotipo antes da primeira questão.
       if(q)q.imagens.push(block.src);
       continue;
     }
-    const line=String(block.text||"").trim();if(!line)continue;
+
+    const line=String(block.text||"").trim();
+    if(!line)continue;
+
+    // NOVO PADRÃO UM QUARTO: [QUESTAO 1]
+    const padrao = line.match(/^\[QUESTAO\s*(\d+)\]\s*(.*)$/i);
+    if(padrao){
+      finish();
+      q={
+        numero:Number(padrao[1]),
+        enunciadoLines:[],
+        alternativas:{},
+        correta:"",
+        imagens:[]
+      };
+      if(padrao[2]) q.enunciadoLines.push(padrao[2]);
+      continue;
+    }
+
     const qStart=simBulkQuestionStart(line);
-    if(qStart){finish();q={numero:qStart.numero,enunciadoLines:qStart.resto?[qStart.resto]:[],alternativas:{},correta:"",imagens:[]};continue;}
-    if(!q){continue;}
-    const key=simBulkKeyLine(line);if(key){q.correta=key;currentAlt=null;continue;}
+    if(qStart){
+      finish();
+      q={numero:qStart.numero,enunciadoLines:qStart.resto?[qStart.resto]:[],alternativas:{},correta:"",imagens:[]};
+      continue;
+    }
+
+    if(!q) continue;
+
+    const keyPadrao=line.match(/^\[GABARITO\]\s*([A-E])?$/i);
+    if(keyPadrao){
+      currentAlt=null;
+      if(keyPadrao[1]) q.correta=keyPadrao[1].toUpperCase();
+      continue;
+    }
+
+    const key=simBulkKeyLine(line);
+    if(key){q.correta=key;currentAlt=null;continue;}
+
+    const altPadrao=line.match(/^\[([A-E])\]\s*(.*)$/i);
+    if(altPadrao){
+      currentAlt=altPadrao[1].toUpperCase();
+      q.alternativas[currentAlt]=altPadrao[2]||"";
+      continue;
+    }
+
     const alt=simBulkAlternativeStart(line);
-    if(alt){currentAlt=alt.letra;q.alternativas[currentAlt]=alt.texto;continue;}
-    if(currentAlt)q.alternativas[currentAlt]+=(q.alternativas[currentAlt]?"\n":"")+line;
+    if(alt){
+      currentAlt=alt.letra;
+      q.alternativas[currentAlt]=alt.texto;
+      continue;
+    }
+
+    if(currentAlt) q.alternativas[currentAlt]+=(q.alternativas[currentAlt]?"\n":"")+line;
     else q.enunciadoLines.push(line);
   }
+
   finish();
   return result;
 }
