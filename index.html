@@ -9462,6 +9462,66 @@ if(typeof applyPermissions==="function"){
   applyPermissions=function(){const r=__ifes26ApplyPermissions.apply(this,arguments);try{renderIfesSeptemberGuide();}catch(e){}return r;};
 }
 
+
+/* ===== PATCH UM QUARTO - IMPORTAÇÃO PADRÃO ===== */
+(function(){
+  const __legacyParseSimBulkQuestions = window.parseSimBulkQuestions;
+
+  function parseFormatoUmQuarto(raw){
+    const result=[];
+    const blocos = String(raw||"").split(/\[QUESTAO\s*\d+\]/i);
+
+    blocos.slice(1).forEach((bloco,index)=>{
+      const q={
+        numero:index+1,
+        enunciadoLines:[],
+        alternativas:{},
+        correta:"",
+        imagens:[]
+      };
+
+      const partes=bloco.split(/\[GABARITO\]/i);
+      const corpo=partes[0]||"";
+      const gab=(partes[1]||"").match(/[A-E]/i);
+      if(gab) q.correta=gab[0].toUpperCase();
+
+      const linhas=corpo.split(/\n/);
+      let altAtual=null;
+
+      linhas.forEach(l=>{
+        const linha=l.trim();
+        if(!linha)return;
+
+        const alt=linha.match(/^\[([A-E])\]\s*(.*)/i);
+        if(alt){
+          altAtual=alt[1].toUpperCase();
+          q.alternativas[altAtual]=alt[2]||"";
+          return;
+        }
+
+        if(altAtual){
+          q.alternativas[altAtual]+="\n"+linha;
+        }else{
+          q.enunciadoLines.push(linha);
+        }
+      });
+
+      q.enunciado=q.enunciadoLines.join("\n").trim();
+      if(q.enunciado) result.push(q);
+    });
+
+    return result;
+  }
+
+  window.parseSimBulkQuestions=function(raw){
+    if(String(raw||"").includes("[QUESTAO")){
+      return parseFormatoUmQuarto(raw);
+    }
+    return __legacyParseSimBulkQuestions(raw);
+  };
+
+})();
+
 </script>
 
 </body>
