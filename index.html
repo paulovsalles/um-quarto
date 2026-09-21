@@ -3052,7 +3052,7 @@ body.sim-bulk-modal-open{overflow:hidden}
       <div class="aulas-clean-tools">
         <div class="aulas-clean-tools-head">
           <strong>Filtros e visualização</strong>
-          <span id="aulas-clean-count">0 aulas · 0 min · R$ 0,00</span>
+          <span id="aulas-clean-count">0 aulas · 0 min</span>
         </div>
         <div class="aulas-clean-grid">
           <div class="form-field teacher-only" style="display:none">
@@ -4222,10 +4222,16 @@ let calendarAgendaVisible = true;
 let users=[],tarefas=[],allTarefas=[],aulas=[],allAulas=[],avaliacoes=[],allAvaliacoes=[],resultados=[],allResultados=[],notas=[],allNotas=[],calendario=[],allCalendario=[],forumPosts=[],habitos=[],minsMap={},planejamento={},cronogramaSemana=[],programTopics={ifes:[],enem:[]},programAccess={ifes:false,enem:false},programProgress={ifes:{},enem:{}},currentProgramView="ifes",forumFilter="all",unsubscribers=[];
 let simulados=[],allSimulados=[],respostasSimulados=[],allRespostasSimulados=[],simuladoAtual=null,registrosManuaisQuestoes=[],allRegistrosManuaisQuestoes=[];
 let checklist=[],allChecklist=[];
+// Financeiro das aulas fica em um nó privado separado. Nunca deve ser necessário para professores comuns.
+let aulaFinancePrivate={};
+let financePrivateLoaded=false;
+let rawAulasForFinanceMigration=null;
+let financeMigrationStarted=false;
 let globalStudentFilter="all";
 let parentStudentUid="",parentAulas=[],parentTarefas=[],parentMessages=[];
 let taskStudentFilter="all";
 let kanbanArchiveFilter="active"; // active | archived | all
+// DONO ÚNICO: acesso financeiro é amarrado estritamente a este e-mail, nunca apenas ao campo admin do perfil.
 const PROFESSOR_EMAIL="salles.paulo@hotmail.com";
 const STUDENT_CODE="1Q2026";
 const TEACHER_CODE=""; // Professor não é mais ativado por código no front-end.
@@ -4269,9 +4275,10 @@ function normalizeLogin(login){return String(login||"").trim().toLowerCase().rep
 function loginToEmail(login){return `${normalizeLogin(login)}@${STUDENT_LOGIN_DOMAIN}`}
 function teacherLoginToEmail(login){return `${normalizeLogin(login)}@${TEACHER_LOGIN_DOMAIN}`}
 function parentLoginToEmail(login){return `${normalizeLogin(login)}@${PARENT_LOGIN_DOMAIN}`}
-function hasTeacherPermission(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.role==="teacher" || currentProfile?.financeiro===true}
-function isPauloMaster(){return userEmail()===PROFESSOR_EMAIL || currentProfile?.admin===true}
-function isMacroUser(){return isPauloMaster()}
+function isPauloOwner(){return userEmail()===PROFESSOR_EMAIL}
+function hasTeacherPermission(){return isPauloOwner() || currentProfile?.role==="teacher"}
+function isPauloMaster(){return isPauloOwner()}
+function isMacroUser(){return isPauloOwner()}
 function teacherOwnsItem(x){
   if(isPauloMaster())return true;
   const uid=ownUid();
@@ -4320,7 +4327,7 @@ function requireAulaStudentLink(){
 function teacherCanManageItem(x){return isTeacher() && teacherOwnsItem(x)}
 function isTeacher(){return hasTeacherPermission() && currentAccessMode==="teacher"}
 function isStudentMode(){return !isTeacher()}
-function isFinanceUser(){return currentAccessMode==="teacher" && (userEmail()===PROFESSOR_EMAIL || currentProfile?.admin===true)}
+function isFinanceUser(){return currentAccessMode==="teacher" && isPauloOwner()}
 function ownUid(){return currentUser?.uid||""}
 function safeText(t){return String(t??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function attachmentBadge(url,nome,label="Anexo"){
@@ -4331,6 +4338,72 @@ function attachmentBadge(url,nome,label="Anexo"){
 }
 function formatDate(str){if(!str)return"";const [y,m,d]=str.split("-");return`${d}/${m}/${y}`}
 function formatMoney(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+
+// ===== SEGURANÇA FINANCEIRA DAS AULAS =====
+// Valores, repasses e líquido ficam em /financeiroAulas/{aulaId}, acessível somente ao dono.
+function aulaFinanceLegacy(a){
+  return {
+    valor:Number(a?.valor||0),
+    repasseProfessor:Number(a?.repasseProfessor||0),
+    valorLiquido:Number(a?.valorLiquido ?? (Number(a?.valor||0)-Number(a?.repasseProfessor||0)))
+  };
+}
+function stripAulaFinanceFields(a){
+  const copy={...(a||{})};
+  delete copy.valor;
+  delete copy.repasseProfessor;
+  delete copy.valorLiquido;
+  return copy;
+}
+function secureAulaForCurrentUser(a){
+  const base=stripAulaFinanceFields(a);
+  if(!isPauloOwner())return base;
+  const id=String(a?.id||"");
+  const priv=(id && aulaFinancePrivate && aulaFinancePrivate[id]) ? aulaFinancePrivate[id] : null;
+  const fin=priv ? {
+    valor:Number(priv.valor||0),
+    repasseProfessor:Number(priv.repasseProfessor||0),
+    valorLiquido:Number(priv.valorLiquido ?? (Number(priv.valor||0)-Number(priv.repasseProfessor||0)))
+  } : aulaFinanceLegacy(a);
+  return {...base,...fin};
+}
+function refreshAulasFinanceOverlay(){
+  allAulas=(allAulas||[]).map(secureAulaForCurrentUser);
+  aulas=(aulas||[]).map(secureAulaForCurrentUser);
+}
+async function maybeMigrateLegacyAulaFinance(){
+  if(!isPauloOwner() || financeMigrationStarted || !financePrivateLoaded || !rawAulasForFinanceMigration)return;
+  financeMigrationStarted=true;
+  try{
+    const updates={};
+    const now=Date.now();
+    Object.entries(rawAulasForFinanceMigration||{}).forEach(([studentUid,obj])=>{
+      Object.entries(obj||{}).forEach(([id,a])=>{
+        if(!a || typeof a!=="object")return;
+        const hasLegacy=Object.prototype.hasOwnProperty.call(a,"valor") || Object.prototype.hasOwnProperty.call(a,"repasseProfessor") || Object.prototype.hasOwnProperty.call(a,"valorLiquido");
+        if(!hasLegacy)return;
+        if(!aulaFinancePrivate?.[id]){
+          const valor=Number(a.valor||0);
+          const repasseProfessor=Number(a.repasseProfessor||0);
+          updates[`financeiroAulas/${id}`]={
+            aulaId:id,studentUid,valor,repasseProfessor,valorLiquido:valor-repasseProfessor,migratedAt:now
+          };
+        }
+        // Remove os valores do nó acadêmico, que é lido por professores/alunos.
+        updates[`aulas/${studentUid}/${id}/valor`]=null;
+        updates[`aulas/${studentUid}/${id}/repasseProfessor`]=null;
+        updates[`aulas/${studentUid}/${id}/valorLiquido`]=null;
+      });
+    });
+    if(Object.keys(updates).length){
+      await db.ref().update(updates);
+      console.info("Financeiro legado migrado para nó privado.");
+    }
+  }catch(e){
+    financeMigrationStarted=false;
+    console.error("Falha ao migrar financeiro legado:",e);
+  }
+}
 function objToArray(obj){return obj?Object.entries(obj).map(([id,value])=>({id,...value})):[]}
 function clearFirebaseListeners(){unsubscribers.forEach(fn=>{try{fn()}catch(e){}});unsubscribers=[]}
 function requireFirebase(){if(firebaseReady)return true;showError("Firebase não configurado.");return false}
@@ -4823,13 +4896,38 @@ function attachRealtimeListeners(){
     renderTarefas();renderPainelTarefas();updateStats();updateProgresso();
   },e=>{console.error(e);alert("Erro ao carregar tarefas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>tarefasRef.off());
 
+  // Financeiro privado: só o dono conecta neste nó.
+  if(isPauloOwner()){
+    const financeAulasRef=db.ref("financeiroAulas");
+    financeAulasRef.on("value",s=>{
+      aulaFinancePrivate=s.val()||{};
+      financePrivateLoaded=true;
+      refreshAulasFinanceOverlay();
+      renderAulas();
+      updateFinanceiro();
+      maybeMigrateLegacyAulaFinance();
+    },e=>{console.error("Erro ao carregar financeiro privado:",e)});
+    unsubscribers.push(()=>financeAulasRef.off());
+  }else{
+    aulaFinancePrivate={};
+    financePrivateLoaded=false;
+  }
+
   const aulasRef=isTeacher()?db.ref("aulas"):db.ref("aulas/"+uid);
   aulasRef.on("value",s=>{
     if(isTeacher()){
-      const data=s.val()||{};let list=[];Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,a])=>list.push({id,studentUid,ownerUid:studentUid,...a})));
-      allAulas=list.filter(a=>isPauloMaster()||teacherOwnsItem(a)).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));aulas=allAulas.filter(a=>a.studentUid===uid);
-    }else{aulas=objToArray(s.val()).map(a=>({...a,studentUid:uid,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));allAulas=aulas}
+      const data=s.val()||{};
+      if(isPauloOwner())rawAulasForFinanceMigration=data;
+      let list=[];
+      Object.entries(data).forEach(([studentUid,obj])=>Object.entries(obj||{}).forEach(([id,a])=>list.push(secureAulaForCurrentUser({id,studentUid,ownerUid:studentUid,...a}))));
+      allAulas=list.filter(a=>isPauloMaster()||teacherOwnsItem(a)).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));
+      aulas=allAulas.filter(a=>a.studentUid===uid);
+    }else{
+      aulas=objToArray(s.val()).map(a=>secureAulaForCurrentUser({...a,studentUid:uid,ownerUid:uid})).sort((a,b)=>`${b.data||""} ${b.inicio||""}`.localeCompare(`${a.data||""} ${a.inicio||""}`));
+      allAulas=aulas;
+    }
     renderAulas();updateStats();updateProgresso();updateFinanceiro();
+    maybeMigrateLegacyAulaFinance();
   },e=>{console.error(e);alert("Erro ao carregar aulas. Confira as regras do Realtime Database.")});unsubscribers.push(()=>aulasRef.off());
 
   const avRef=isTeacher()?db.ref("avaliacoes"):db.ref("avaliacoes/"+uid);
@@ -5560,60 +5658,65 @@ async function addAula(){
     professorNome=getUserName(professorUid) || (currentProfile?.name || currentUser?.email || "");
   if(!mat||!inicio||!fim||!cont)return alert("Preencha matéria/tema, início, fim e conteúdo.");
   const dur=calcularDuracao(inicio,fim); if(dur<=0)return alert("O horário final precisa ser maior que o inicial.");
+
+  // Dados acadêmicos: NENHUM valor financeiro fica em /aulas.
   const aula={
-    studentUid,
-    studentName:getUserName(studentUid),
-    studentEmail:getUserEmail(studentUid),
-    escola,
-    professorUid,
-    professorNome,
-    lancadoPorUid: ownUid(),
-    lancadoPorNome: currentProfile?.name || currentUser?.email || "",
-    lancadoPorEmail: userEmail(),
-    ownerTeacherUid: professorUid,
-    teacherUid: professorUid,
-    userId:studentUid,
-    userEmail:getUserEmail(studentUid),
-    userName:getUserName(studentUid),
-    materia:mat,
-    data,
-    inicio,
-    fim,
-    dur,
-    conteudo:cont,
+    studentUid,studentName:getUserName(studentUid),studentEmail:getUserEmail(studentUid),escola,
+    professorUid,professorNome,lancadoPorUid:ownUid(),lancadoPorNome:currentProfile?.name || currentUser?.email || "",
+    lancadoPorEmail:userEmail(),ownerTeacherUid:professorUid,teacherUid:professorUid,userId:studentUid,
+    userEmail:getUserEmail(studentUid),userName:getUserName(studentUid),materia:mat,data,inicio,fim,dur,conteudo:cont,
     obs:document.getElementById("a-obs").value.trim(),
     interesse:Number(document.getElementById("a-interesse")?.value||0),
     desempenho:Number(document.getElementById("a-desempenho")?.value||0),
     autonomia:Number(document.getElementById("a-autonomia")?.value||0),
     notaSimulado:document.getElementById("a-simulado")?.value||"",
     orientacao:document.getElementById("a-orientacao")?.value.trim()||"",
-    valor:isFinanceUser()?Number(document.getElementById("a-valor").value||0):0,
-    repasseProfessor:isFinanceUser()?Number(document.getElementById("a-repasse").value||0):0,
-    valorLiquido:isFinanceUser()?(Number(document.getElementById("a-valor").value||0)-Number(document.getElementById("a-repasse").value||0)):0,
+    // Mantido como status operacional da aula, sem qualquer valor monetário.
     statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",
-    createdBy:ownUid(),
-    createdByEmail:userEmail(),
-    createdAt:Date.now()
+    createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
   };
   try{
-    await db.ref("aulas/"+studentUid).push(aula);
-    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-simulado","a-orientacao","a-valor","a-repasse","a-liquido-preview"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""}); const st=document.getElementById("a-status"); if(st)st.value="previsto";["a-interesse","a-desempenho","a-autonomia"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    const aulaRef=db.ref("aulas/"+studentUid).push();
+    await aulaRef.set(aula);
+
+    // Somente Paulo/dono grava o financeiro no nó privado.
+    if(isFinanceUser()){
+      const valor=Number(document.getElementById("a-valor")?.value||0);
+      const repasseProfessor=Number(document.getElementById("a-repasse")?.value||0);
+      await db.ref("financeiroAulas/"+aulaRef.key).set({
+        aulaId:aulaRef.key,studentUid,valor,repasseProfessor,valorLiquido:valor-repasseProfessor,updatedAt:Date.now()
+      });
+    }
+
+    ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-simulado","a-orientacao","a-valor","a-repasse","a-liquido-preview"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
+    const st=document.getElementById("a-status"); if(st)st.value="previsto";
+    ["a-interesse","a-desempenho","a-autonomia"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     alert("Aula salva com sucesso!");
   }catch(e){alert(firebaseErrorMessage(e));}
 }
-async function delAula(id,studentUid){const uid=studentUid||ownUid(); const item=allAulas.find(a=>a.id===id&&a.studentUid===uid); if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode excluir aulas vinculadas a você."); await db.ref("aulas/"+uid+"/"+id).remove()}
+async function delAula(id,studentUid){
+  const uid=studentUid||ownUid();
+  const item=allAulas.find(a=>a.id===id&&a.studentUid===uid);
+  if(uid!==ownUid()&&!teacherCanManageItem(item))return alert("Você só pode excluir aulas vinculadas a você.");
+  await db.ref("aulas/"+uid+"/"+id).remove();
+  if(isPauloOwner())await db.ref("financeiroAulas/"+id).remove();
+}
 async function updateAulaFinanceiro(studentUid,id,campo,valor){
   if(!isFinanceUser())return;
-  const ref=db.ref("aulas/"+studentUid+"/"+id);
+  const ref=db.ref("financeiroAulas/"+id);
   const snap=await ref.once("value");
-  const aula=snap.val()||{};
-  const up={};
+  const fin=snap.val()||{};
+  const up={aulaId:id,studentUid:studentUid||fin.studentUid||"",updatedAt:Date.now()};
   if(campo==="valor")up.valor=Number(valor||0);
   if(campo==="repasseProfessor")up.repasseProfessor=Number(valor||0);
-  if(campo==="statusFinanceiro")up.statusFinanceiro=valor;
-  const novoValor = campo==="valor" ? Number(valor||0) : Number(aula.valor||0);
-  const novoRepasse = campo==="repasseProfessor" ? Number(valor||0) : Number(aula.repasseProfessor||0);
-  if(campo==="valor" || campo==="repasseProfessor")up.valorLiquido=novoValor-novoRepasse;
+  // statusFinanceiro é acadêmico/operacional e continua em /aulas.
+  if(campo==="statusFinanceiro"){
+    await db.ref("aulas/"+studentUid+"/"+id+"/statusFinanceiro").set(valor);
+    return;
+  }
+  const novoValor=campo==="valor"?Number(valor||0):Number(fin.valor||0);
+  const novoRepasse=campo==="repasseProfessor"?Number(valor||0):Number(fin.repasseProfessor||0);
+  up.valorLiquido=novoValor-novoRepasse;
   await ref.update(up);
 }
 function aulaFiltroNorm(v){
@@ -5737,8 +5840,12 @@ function renderAulas(){
 
   const countEl=document.getElementById("aulas-clean-count");
   const totalMinutos=list.reduce((total,a)=>total+aulaMinutos(a),0);
-  const totalValor=list.reduce((total,a)=>total+Number(a.valor||0),0);
-  if(countEl)countEl.textContent=`${list.length} aula${list.length===1?"":"s"} · ${formatDuracao(totalMinutos)} · ${formatMoney(totalValor)}`;
+  const totalValor=isFinanceUser()?list.reduce((total,a)=>total+Number(a.valor||0),0):0;
+  if(countEl){
+    countEl.textContent=isFinanceUser()
+      ? `${list.length} aula${list.length===1?"":"s"} · ${formatDuracao(totalMinutos)} · ${formatMoney(totalValor)}`
+      : `${list.length} aula${list.length===1?"":"s"} · ${formatDuracao(totalMinutos)}`;
+  }
 
   if(!list.length){
     el.innerHTML='<div class="empty-state"><div>📚</div>Nenhuma aula encontrada com os filtros selecionados.</div>';
@@ -5873,8 +5980,9 @@ async function saveAulaEdit(studentUid,id){
 
   await ensureTeacherStudentLink(newStudentUid);
 
+  const safeExisting=stripAulaFinanceFields(item||{});
   const updateData={
-    ...(item||{}),
+    ...safeExisting,
     studentUid:newStudentUid,
     studentName:getUserName(newStudentUid),
     studentEmail:getUserEmail(newStudentUid),
@@ -5906,13 +6014,14 @@ async function saveAulaEdit(studentUid,id){
 
   try{
     if(newStudentUid!==studentUid){
-      await db.ref(`aulas/${newStudentUid}/${id}`).set(updateData);
+      await db.ref(`aulas/${newStudentUid}/${id}`).set(stripAulaFinanceFields(updateData));
       await db.ref(`aulas/${studentUid}/${id}`).remove();
+      if(isPauloOwner())await db.ref(`financeiroAulas/${id}/studentUid`).set(newStudentUid);
       const gf=document.getElementById("global-student-filter");
       if(gf && gf.value===studentUid)gf.value=newStudentUid;
       globalStudentFilter = (globalStudentFilter===studentUid) ? newStudentUid : globalStudentFilter;
     }else{
-      await db.ref(`aulas/${studentUid}/${id}`).update(updateData);
+      await db.ref(`aulas/${studentUid}/${id}`).update(stripAulaFinanceFields(updateData));
     }
     alert("Aula atualizada com sucesso!");
   }catch(e){
@@ -5926,10 +6035,21 @@ function csvEscape(value){
 }
 function exportAulasCSV(){
   if(!isTeacher())return alert("Exportação disponível apenas para professor.");
-  const header=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Resumo_da_aula","Faturamento","Repasse_Professor","Valor_Liquido","Status_financeiro"];
-  const rows=visibleByFilter(allAulas).map(a=>[
-    a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",Number(a.valor||0).toFixed(2).replace(".",","),Number(a.repasseProfessor||0).toFixed(2).replace(".",","),aulaLiquido(a).toFixed(2).replace(".",","),(a.statusFinanceiro||"previsto")==="recebido"?"Aula Dada":"Aula Prevista"
-  ]);
+  const podeFinanceiro=isFinanceUser();
+  const headerBase=["Data","Inicio","Fim","Duracao_min","Aluno","Email_aluno","Escola","Professor_Aula","Lancado_por","Materia_Tema","Conteudo","Resumo_da_aula","Status_aula"];
+  const header=podeFinanceiro
+    ? [...headerBase,"Faturamento","Repasse_Professor","Valor_Liquido"]
+    : headerBase;
+  const rows=visibleByFilter(allAulas).map(a=>{
+    const base=[
+      a.data||"",a.inicio||"",a.fim||"",a.dur||"",a.studentName||getUserName(a.studentUid),
+      a.studentEmail||getUserEmail(a.studentUid),a.escola||"",a.professorNome||"",
+      a.lancadoPorNome||a.createdByEmail||"",a.materia||"",a.conteudo||"",a.obs||"",
+      (a.statusFinanceiro||"previsto")==="recebido"?"Aula Dada":"Aula Prevista"
+    ];
+    if(!podeFinanceiro)return base;
+    return [...base,Number(a.valor||0).toFixed(2).replace(".",","),Number(a.repasseProfessor||0).toFixed(2).replace(".",","),aulaLiquido(a).toFixed(2).replace(".",",")];
+  });
   const csv=[header,...rows].map(row=>row.map(csvEscape).join(";")).join("\n");
   const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8;"});
   const url=URL.createObjectURL(blob);
@@ -7392,6 +7512,7 @@ function aulaMinutos(a){
   return calcularDuracao(a.inicio||"",a.fim||"");
 }
 function financeiroBaseAulas(){
+  if(!isFinanceUser())return [];
   let base=visibleByFilter(allAulas||[]);
   if(financeiroTeacherFilter && financeiroTeacherFilter!=="all"){
     base=base.filter(a=>(a.professorUid||a.teacherUid||a.ownerTeacherUid||a.lancadoPorUid||a.createdBy)===financeiroTeacherFilter);
