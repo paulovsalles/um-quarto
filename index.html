@@ -1915,6 +1915,8 @@ body.sidebar-collapsed .side-menu-group{margin:2px 0}
   min-height:38px;
   padding:8px 10px;
 }
+.aula-clean-finance .uq-money-input{font-weight:900;color:var(--azul)}
+.aula-clean-finance input[readonly]{background:#f8fbfa;font-weight:900;color:var(--verde-dark)}
 .aula-edit-box{grid-column:1/-1}
 @media(max-width:980px){
   .aulas-clean-grid{grid-template-columns:1fr 1fr}
@@ -4338,6 +4340,66 @@ function attachmentBadge(url,nome,label="Anexo"){
 }
 function formatDate(str){if(!str)return"";const [y,m,d]=str.split("-");return`${d}/${m}/${y}`}
 function formatMoney(v){return Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function moneyToNumber(v){
+  if(typeof v==="number")return Number.isFinite(v)?v:0;
+  let s=String(v??"").trim();
+  if(!s)return 0;
+  s=s.replace(/\s/g,"").replace(/R\$/gi,"");
+  const hasComma=s.includes(",");
+  const hasDot=s.includes(".");
+  if(hasComma){
+    s=s.replace(/\./g,"").replace(",",".");
+  }else if(hasDot){
+    const parts=s.split(".");
+    if(parts.length>2){
+      const dec=parts.pop();
+      s=parts.join("")+"."+dec;
+    }
+  }
+  s=s.replace(/[^0-9.-]/g,"");
+  const n=Number(s);
+  return Number.isFinite(n)?n:0;
+}
+function formatMoneyEdit(v){
+  const n=moneyToNumber(v);
+  return n? n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}) : "";
+}
+function focusAulaMoneyInput(el){
+  if(!el)return;
+  el.value=formatMoneyEdit(el.value);
+  setTimeout(()=>{try{el.select()}catch(e){}},0);
+}
+function applyAulaFinanceLocal(studentUid,id,campo,valor){
+  if(!id || !isFinanceUser())return;
+  const n=moneyToNumber(valor);
+  const current=aulaFinancePrivate?.[id] || {};
+  const next={...current,aulaId:id,studentUid:studentUid||current.studentUid||""};
+  if(campo==="valor")next.valor=n;
+  if(campo==="repasseProfessor")next.repasseProfessor=n;
+  next.valorLiquido=moneyToNumber(next.valor)-moneyToNumber(next.repasseProfessor);
+  aulaFinancePrivate={...(aulaFinancePrivate||{}),[id]:next};
+  const merge=(a)=>String(a?.id||"")===String(id)?{...a,valor:moneyToNumber(next.valor),repasseProfessor:moneyToNumber(next.repasseProfessor),valorLiquido:next.valorLiquido}:a;
+  allAulas=(allAulas||[]).map(merge);
+  aulas=(aulas||[]).map(merge);
+  document.querySelectorAll(`[data-aula-fin-liquido="${String(id).replaceAll('"','\\"')}"]`).forEach(out=>{out.value=formatMoney(next.valorLiquido)});
+  updatePainelFinanceiro();
+  updateFinanceiro();
+}
+function previewAulaFinanceiro(studentUid,id,campo,el){
+  applyAulaFinanceLocal(studentUid,id,campo,el?.value ?? 0);
+}
+async function commitAulaFinanceiro(studentUid,id,campo,el){
+  if(!isFinanceUser())return;
+  const n=moneyToNumber(el?.value ?? 0);
+  applyAulaFinanceLocal(studentUid,id,campo,n);
+  if(el)el.value=formatMoney(n);
+  try{
+    await updateAulaFinanceiro(studentUid,id,campo,n);
+  }catch(e){
+    console.error("Erro ao salvar financeiro da aula:",e);
+    alert("Não consegui salvar o valor financeiro. Confira as regras do Firebase e tente novamente.");
+  }
+}
 
 // ===== SEGURANÇA FINANCEIRA DAS AULAS =====
 // Valores, repasses e líquido ficam em /financeiroAulas/{aulaId}, acessível somente ao dono.
@@ -5703,21 +5765,33 @@ async function delAula(id,studentUid){
 }
 async function updateAulaFinanceiro(studentUid,id,campo,valor){
   if(!isFinanceUser())return;
-  const ref=db.ref("financeiroAulas/"+id);
-  const snap=await ref.once("value");
-  const fin=snap.val()||{};
-  const up={aulaId:id,studentUid:studentUid||fin.studentUid||"",updatedAt:Date.now()};
-  if(campo==="valor")up.valor=Number(valor||0);
-  if(campo==="repasseProfessor")up.repasseProfessor=Number(valor||0);
   // statusFinanceiro é acadêmico/operacional e continua em /aulas.
   if(campo==="statusFinanceiro"){
     await db.ref("aulas/"+studentUid+"/"+id+"/statusFinanceiro").set(valor);
+    const mergeStatus=(a)=>String(a?.id||"")===String(id)?{...a,statusFinanceiro:valor}:a;
+    allAulas=(allAulas||[]).map(mergeStatus);
+    aulas=(aulas||[]).map(mergeStatus);
+    updateFinanceiro();
+    updatePainelFinanceiro();
     return;
   }
-  const novoValor=campo==="valor"?Number(valor||0):Number(fin.valor||0);
-  const novoRepasse=campo==="repasseProfessor"?Number(valor||0):Number(fin.repasseProfessor||0);
-  up.valorLiquido=novoValor-novoRepasse;
+  const ref=db.ref("financeiroAulas/"+id);
+  const snap=await ref.once("value");
+  const fin={...(snap.val()||{}),...(aulaFinancePrivate?.[id]||{})};
+  const novoValor=campo==="valor"?moneyToNumber(valor):moneyToNumber(fin.valor);
+  const novoRepasse=campo==="repasseProfessor"?moneyToNumber(valor):moneyToNumber(fin.repasseProfessor);
+  const up={
+    aulaId:id,
+    studentUid:studentUid||fin.studentUid||"",
+    valor:novoValor,
+    repasseProfessor:novoRepasse,
+    valorLiquido:novoValor-novoRepasse,
+    updatedBy:ownUid(),
+    updatedByEmail:userEmail(),
+    updatedAt:Date.now()
+  };
   await ref.update(up);
+  applyAulaFinanceLocal(studentUid,id,campo,valor);
 }
 function aulaFiltroNorm(v){
   return String(v||"").trim().toLocaleLowerCase("pt-BR");
@@ -5887,10 +5961,10 @@ function renderAulas(){
 
       ${canEdit?renderAulaEditBox(a,uid):""}
 
-      ${(currentAccessMode==="teacher"&&isFinanceUser())?`<div class="aula-clean-finance">
-        <div class="finance-mini"><label>Faturamento</label><input type="number" min="0" step="0.01" value="${Number(a.valor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','valor',this.value)"></div>
-        <div class="finance-mini"><label>Repasse</label><input type="number" min="0" step="0.01" value="${Number(a.repasseProfessor||0)}" onchange="updateAulaFinanceiro('${uid}','${a.id}','repasseProfessor',this.value)"></div>
-        <div class="finance-mini"><label>Líquido</label><input type="text" readonly value="${formatMoney(Number(a.valor||0)-Number(a.repasseProfessor||0))}"></div>
+      ${(currentAccessMode==="teacher"&&isFinanceUser())?`<div class="aula-clean-finance" data-aula-finance-card="${a.id}">
+        <div class="finance-mini"><label>Faturamento</label><input class="uq-money-input" type="text" inputmode="decimal" value="${formatMoney(a.valor||0)}" onfocus="focusAulaMoneyInput(this)" oninput="previewAulaFinanceiro('${uid}','${a.id}','valor',this)" onblur="commitAulaFinanceiro('${uid}','${a.id}','valor',this)"></div>
+        <div class="finance-mini"><label>Repasse</label><input class="uq-money-input" type="text" inputmode="decimal" value="${formatMoney(a.repasseProfessor||0)}" onfocus="focusAulaMoneyInput(this)" oninput="previewAulaFinanceiro('${uid}','${a.id}','repasseProfessor',this)" onblur="commitAulaFinanceiro('${uid}','${a.id}','repasseProfessor',this)"></div>
+        <div class="finance-mini"><label>Líquido</label><input type="text" data-aula-fin-liquido="${a.id}" readonly value="${formatMoney(aulaLiquido(a))}"></div>
         <div class="finance-mini"><label>Status</label><select onchange="updateAulaFinanceiro('${uid}','${a.id}','statusFinanceiro',this.value)"><option value="previsto" ${status!=="recebido"?"selected":""}>Aula Prevista</option><option value="recebido" ${status==="recebido"?"selected":""}>Aula Dada</option></select></div>
       </div>`:""}
     </div>`;
@@ -9689,6 +9763,18 @@ if(typeof applyPermissions==="function"){
 
 })();
 
+
+
+/* ===== PATCH FINANCEIRO PAULO: valores privados, máscara monetária e atualização imediata ===== */
+(function(){
+  const oldRenderRoleUI=window.renderRoleUI;
+  if(typeof oldRenderRoleUI==="function"){
+    window.renderRoleUI=function(){
+      oldRenderRoleUI.apply(this,arguments);
+      document.querySelectorAll(".finance-only").forEach(el=>{el.style.display=isFinanceUser()?"":"none"});
+    };
+  }
+})();
 </script>
 
 </body>
