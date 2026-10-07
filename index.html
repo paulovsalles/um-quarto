@@ -9777,5 +9777,372 @@ if(typeof applyPermissions==="function"){
 })();
 </script>
 
+<script id="uq-student-duplicate-merge-patch">
+/* ===== PATCH UM QUARTO: consolidação segura de alunos duplicados =====
+   - Esconde duplicidades de login nos selects.
+   - Impede novo cadastro com login já existente.
+   - Exibe, para o acesso mestre, um botão de mesclagem.
+   - Antes de mover dados, cria backup em /studentMergeBackups.
+   - Migra os dados para o cadastro canônico e mantém os perfis antigos marcados como mesclados.
+*/
+(function(){
+  const KEYED_STUDENT_ROOTS=[
+    "aulas","tarefas","avaliacoes","resultados","notas","calendario",
+    "habitos","mins","planejamento","programAccess","respostasSimulados",
+    "registrosManuaisQuestoes","checklist","studyProgress","parentMessages",
+    "sessoes","parentAccess"
+  ];
+  const GLOBAL_REFERENCE_ROOTS=["financeiroAulas","simulados","forumPosts"];
+
+  function allProfiles(){
+    try{return Array.isArray(users)?users:[]}catch(e){return []}
+  }
+  function studentLoginKey(u){
+    if(!u)return "";
+    let key="";
+    try{key=normalizeLogin(u.username||u.login||"")}catch(e){key=String(u.username||u.login||"").trim().toLowerCase().replace(/\s+/g,"")}
+    if(!key){
+      const email=String(u.email||"").trim().toLowerCase();
+      try{
+        if(email.endsWith("@"+STUDENT_LOGIN_DOMAIN))key=email.slice(0,email.indexOf("@"));
+      }catch(e){}
+    }
+    return key;
+  }
+  function activeStudentProfiles(){
+    return allProfiles().filter(u=>{
+      if(!u||u.role!=="student")return false;
+      if(u.mergedInto||u.hiddenMerged===true)return false;
+      return !!studentLoginKey(u);
+    });
+  }
+  function duplicateGroups(){
+    const map=new Map();
+    activeStudentProfiles().forEach(u=>{
+      const key=studentLoginKey(u);
+      if(!key)return;
+      if(!map.has(key))map.set(key,[]);
+      map.get(key).push(u);
+    });
+    return [...map.entries()].filter(([_,arr])=>arr.length>1).map(([login,items])=>({login,items}));
+  }
+  function chooseCanonical(items,login){
+    const expected=String(loginToEmail(login)||"").toLowerCase();
+    return [...items].sort((a,b)=>{
+      const ae=String(a.email||"").toLowerCase()===expected?1:0;
+      const be=String(b.email||"").toLowerCase()===expected?1:0;
+      if(ae!==be)return be-ae;
+      const au=studentLoginKey(a)===login?1:0;
+      const bu=studentLoginKey(b)===login?1:0;
+      if(au!==bu)return bu-au;
+      const ac=Number(a.createdAt||Number.MAX_SAFE_INTEGER);
+      const bc=Number(b.createdAt||Number.MAX_SAFE_INTEGER);
+      if(ac!==bc)return ac-bc;
+      return String(a.id||"").localeCompare(String(b.id||""));
+    })[0];
+  }
+  function buildAliasMap(){
+    const map=new Map();
+    allProfiles().forEach(u=>{
+      if(u?.mergedInto)map.set(String(u.id),String(u.mergedInto));
+    });
+    duplicateGroups().forEach(g=>{
+      const canonical=chooseCanonical(g.items,g.login);
+      g.items.forEach(u=>{if(String(u.id)!==String(canonical.id))map.set(String(u.id),String(canonical.id));});
+    });
+    return map;
+  }
+  function canonicalProfileForId(uid){
+    return allProfiles().find(u=>String(u.id)===String(uid))||null;
+  }
+
+  function clone(v){
+    if(v===undefined)return undefined;
+    if(v===null)return null;
+    try{return JSON.parse(JSON.stringify(v))}catch(e){return v}
+  }
+  function isPlainObject(v){return !!v && typeof v==="object" && !Array.isArray(v)}
+  function mergePreferTarget(target,source){
+    if(target===undefined||target===null)return clone(source);
+    if(source===undefined||source===null)return clone(target);
+    if(Array.isArray(target)&&Array.isArray(source)){
+      const out=clone(target)||[];
+      const seen=new Set(out.map(x=>{try{return JSON.stringify(x)}catch(e){return String(x)}}));
+      source.forEach(x=>{let k;try{k=JSON.stringify(x)}catch(e){k=String(x)}if(!seen.has(k)){seen.add(k);out.push(clone(x));}});
+      return out;
+    }
+    if(isPlainObject(target)&&isPlainObject(source)){
+      const out=clone(target)||{};
+      Object.keys(source).forEach(k=>{out[k]=Object.prototype.hasOwnProperty.call(out,k)?mergePreferTarget(out[k],source[k]):clone(source[k]);});
+      return out;
+    }
+    if(typeof target==="boolean"&&typeof source==="boolean")return target||source;
+    return clone(target);
+  }
+  function mergeMinutes(target,source){
+    const out=isPlainObject(target)?clone(target):{};
+    if(!isPlainObject(source))return out;
+    Object.entries(source).forEach(([k,v])=>{
+      if(typeof v==="number"||(!isNaN(Number(v))&&v!==null&&v!==""))out[k]=Number(out[k]||0)+Number(v||0);
+      else out[k]=Object.prototype.hasOwnProperty.call(out,k)?mergePreferTarget(out[k],v):clone(v);
+    });
+    return out;
+  }
+  function replaceUidDeep(value,oldUid,newUid,canonical){
+    if(Array.isArray(value))return value.map(v=>replaceUidDeep(v,oldUid,newUid,canonical));
+    if(!isPlainObject(value))return (typeof value==="string"&&value===oldUid)?newUid:value;
+    const out={};
+    Object.entries(value).forEach(([k,v])=>{
+      const nk=k===oldUid?newUid:k;
+      const nv=replaceUidDeep(v,oldUid,newUid,canonical);
+      if(Object.prototype.hasOwnProperty.call(out,nk))out[nk]=mergePreferTarget(out[nk],nv);
+      else out[nk]=nv;
+    });
+    const directStudent=String(out.studentUid||out.alunoUid||out.uidAluno||"")===String(newUid);
+    if(directStudent&&canonical){
+      if(Object.prototype.hasOwnProperty.call(out,"studentName"))out.studentName=canonical.name||out.studentName||"Aluno";
+      if(Object.prototype.hasOwnProperty.call(out,"alunoNome"))out.alunoNome=canonical.name||out.alunoNome||"Aluno";
+      if(Object.prototype.hasOwnProperty.call(out,"studentEmail"))out.studentEmail=canonical.email||out.studentEmail||"";
+      if(Object.prototype.hasOwnProperty.call(out,"alunoEmail"))out.alunoEmail=canonical.email||out.alunoEmail||"";
+    }
+    return out;
+  }
+  function jsonDiff(a,b){
+    try{return JSON.stringify(a)!==JSON.stringify(b)}catch(e){return true}
+  }
+
+  function dedupeStudentList(list){
+    const profiles=allProfiles();
+    const aliases=buildAliasMap();
+    const visible=(list||[]).filter(u=>u&&!u.mergedInto&&u.hiddenMerged!==true);
+    const byId=new Map(visible.map(u=>[String(u.id),u]));
+    const skipped=new Set();
+    aliases.forEach((canonical,old)=>{if(byId.has(old)&&byId.has(canonical))skipped.add(old)});
+    const out=[]; const loginSeen=new Set();
+    visible.forEach(u=>{
+      if(skipped.has(String(u.id)))return;
+      const key=studentLoginKey(u);
+      if(key&&loginSeen.has(key))return;
+      if(key)loginSeen.add(key);
+      out.push(u);
+    });
+    return out;
+  }
+
+  if(typeof getStudentUsersForSelect==="function"){
+    const baseGetStudents=getStudentUsersForSelect;
+    const wrapped=function(){return dedupeStudentList(baseGetStudents.apply(this,arguments)||[])};
+    try{getStudentUsersForSelect=wrapped}catch(e){}
+    window.getStudentUsersForSelect=wrapped;
+  }
+
+  function cleanupStudentOptions(){
+    const aliases=buildAliasMap();
+    if(!aliases.size)return;
+    document.querySelectorAll("select").forEach(sel=>{
+      const previous=sel.value;
+      const options=[...sel.options];
+      options.forEach(opt=>{
+        const canonical=aliases.get(String(opt.value));
+        if(!canonical)return;
+        const canonicalOpt=[...sel.options].find(o=>String(o.value)===String(canonical));
+        if(canonicalOpt)opt.remove();
+        else opt.value=canonical;
+      });
+      const mapped=aliases.get(String(previous));
+      if(mapped&&[...sel.options].some(o=>String(o.value)===String(mapped)))sel.value=mapped;
+    });
+  }
+
+  function duplicateBoxHost(){return document.getElementById("lista-alunos")?.parentElement||null}
+  function renderDuplicateRepairBox(){
+    const host=duplicateBoxHost();
+    if(!host)return;
+    let box=document.getElementById("uq-duplicate-students-box");
+    if(!box){
+      box=document.createElement("div");
+      box.id="uq-duplicate-students-box";
+      box.style.cssText="margin-bottom:14px;padding:13px 14px;border:1.5px solid #ffd7a3;background:#fff8ef;border-radius:14px;color:var(--azul);font-size:12px;line-height:1.45";
+      const list=document.getElementById("lista-alunos");
+      host.insertBefore(box,list);
+    }
+    const groups=duplicateGroups();
+    if(!groups.length||!isPauloMaster()){
+      box.style.display="none";
+      return;
+    }
+    box.style.display="block";
+    box.innerHTML=`<div style="font-weight:900;color:#9c5a0b;margin-bottom:7px">⚠️ Cadastros duplicados detectados</div>`+
+      groups.map(g=>{
+        const canonical=chooseCanonical(g.items,g.login);
+        const details=g.items.map(u=>`${safeText(u.name||"Aluno")} · ${safeText(u.email||u.id)}`).join("<br>");
+        return `<div style="padding:10px 0;border-top:1px solid #f0d7b9"><div><strong>${g.items.length} cadastros</strong> usam o login <b>${safeText(g.login)}</b>.</div><div style="color:var(--cinza);margin:5px 0 8px">O cadastro principal será <b>${safeText(canonical.name||canonical.email||canonical.id)}</b> (${safeText(canonical.email||canonical.id)}).<br>${details}</div><button class="btn-small primary" type="button" onclick="mergeStudentDuplicatesByLogin('${g.login}')">Mesclar ${g.items.length} cadastros em 1</button></div>`;
+      }).join("");
+  }
+
+  if(typeof populateStudentSelects==="function"){
+    const basePopulate=populateStudentSelects;
+    const wrappedPopulate=function(){
+      const r=basePopulate.apply(this,arguments);
+      try{cleanupStudentOptions();renderDuplicateRepairBox()}catch(e){console.warn("Ajuste de duplicidades:",e)}
+      return r;
+    };
+    try{populateStudentSelects=wrappedPopulate}catch(e){}
+    window.populateStudentSelects=wrappedPopulate;
+  }
+  if(typeof renderAlunos==="function"){
+    const baseRenderAlunos=renderAlunos;
+    const wrappedRender=function(){
+      const r=baseRenderAlunos.apply(this,arguments);
+      try{cleanupStudentOptions();renderDuplicateRepairBox()}catch(e){}
+      return r;
+    };
+    try{renderAlunos=wrappedRender}catch(e){}
+    window.renderAlunos=wrappedRender;
+  }
+
+  if(typeof createStudentLogin==="function"){
+    const baseCreateStudent=createStudentLogin;
+    const wrappedCreate=async function(){
+      const input=document.getElementById("new-student-login");
+      const login=normalizeLogin(input?.value||"");
+      if(login){
+        const local=allProfiles().find(u=>u?.role==="student"&&studentLoginKey(u)===login);
+        if(local){
+          alert(`Já existe um aluno com o login ${login}. Use o cadastro existente em vez de criar outro.`);
+          return;
+        }
+        try{
+          const snap=await db.ref("users").orderByChild("username").equalTo(login).once("value");
+          if(snap.exists()){
+            const found=Object.values(snap.val()||{}).find(u=>u?.role==="student");
+            if(found){alert(`Já existe um aluno com o login ${login}. Use o cadastro existente.`);return;}
+          }
+        }catch(e){console.warn("Não foi possível conferir duplicidade no Firebase; o Auth ainda impedirá e-mail repetido.",e)}
+      }
+      return baseCreateStudent.apply(this,arguments);
+    };
+    try{createStudentLogin=wrappedCreate}catch(e){}
+    window.createStudentLogin=wrappedCreate;
+  }
+
+  window.mergeStudentDuplicatesByLogin=async function(loginRaw){
+    if(!isPauloMaster())return alert("Apenas o acesso mestre pode mesclar cadastros de alunos.");
+    const login=normalizeLogin(loginRaw||"");
+    const group=duplicateGroups().find(g=>g.login===login);
+    if(!group||group.items.length<2){renderDuplicateRepairBox();return alert("Essa duplicidade não existe mais.");}
+    const canonical=chooseCanonical(group.items,login);
+    const duplicates=group.items.filter(u=>String(u.id)!==String(canonical.id));
+    const canonicalUid=String(canonical.id);
+    const oldUids=duplicates.map(u=>String(u.id));
+    const ok=confirm(`Mesclar ${group.items.length} cadastros de ${login} em um só?\n\nPrincipal: ${canonical.name||canonical.email||canonicalUid}\n${canonical.email||canonicalUid}\n\nOs dados dos outros cadastros serão movidos para este. Antes da alteração será criado um backup no Firebase.`);
+    if(!ok)return;
+
+    const box=document.getElementById("uq-duplicate-students-box");
+    if(box)box.innerHTML=`<strong>Mesclando ${safeText(login)}…</strong><br><span style="color:var(--cinza)">Criando backup e reunindo aulas, tarefas, avaliações, resultados, calendário, progresso e acessos da família.</span>`;
+
+    try{
+      const uids=[canonicalUid,...oldUids];
+      const pathReads=[];
+      KEYED_STUDENT_ROOTS.forEach(root=>uids.forEach(uid=>pathReads.push(
+        db.ref(`${root}/${uid}`).once("value").then(s=>({root,uid,value:s.val()}))
+      )));
+      const pathResults=await Promise.all(pathReads);
+      const dataByRoot={};
+      pathResults.forEach(r=>{dataByRoot[r.root]??={};dataByRoot[r.root][r.uid]=r.value;});
+
+      const globalResults=await Promise.all(GLOBAL_REFERENCE_ROOTS.map(root=>db.ref(root).once("value").then(s=>({root,value:s.val()||{}}))));
+      const globalData=Object.fromEntries(globalResults.map(x=>[x.root,x.value]));
+
+      const backupId=`${Date.now()}_${login.replace(/[^a-z0-9_-]/g,"_")}`;
+      const backup={
+        login,
+        createdAt:Date.now(),
+        createdBy:ownUid(),
+        canonicalUid,
+        duplicateUids:oldUids,
+        profiles:{},
+        keyed:{},
+        global:{}
+      };
+      group.items.forEach(u=>{backup.profiles[u.id]=clone(u)});
+      KEYED_STUDENT_ROOTS.forEach(root=>{
+        const picked={};uids.forEach(uid=>{const v=dataByRoot[root]?.[uid];if(v!==null&&v!==undefined)picked[uid]=v;});
+        if(Object.keys(picked).length)backup.keyed[root]=picked;
+      });
+
+      const updates={};
+      KEYED_STUDENT_ROOTS.forEach(root=>{
+        let merged=clone(dataByRoot[root]?.[canonicalUid]);
+        let changed=false;
+        oldUids.forEach(oldUid=>{
+          const source=dataByRoot[root]?.[oldUid];
+          if(source===null||source===undefined)return;
+          const src=replaceUidDeep(source,oldUid,canonicalUid,canonical);
+          merged=replaceUidDeep(merged,oldUid,canonicalUid,canonical);
+          merged=root==="mins"?mergeMinutes(merged,src):mergePreferTarget(merged,src);
+          updates[`${root}/${oldUid}`]=null;
+          changed=true;
+        });
+        if(changed)updates[`${root}/${canonicalUid}`]=merged;
+      });
+
+      GLOBAL_REFERENCE_ROOTS.forEach(root=>{
+        const obj=globalData[root]||{};
+        Object.entries(obj).forEach(([id,item])=>{
+          let transformed=clone(item);
+          oldUids.forEach(oldUid=>{transformed=replaceUidDeep(transformed,oldUid,canonicalUid,canonical)});
+          if(jsonDiff(item,transformed)){
+            backup.global[root]??={};backup.global[root][id]=item;
+            updates[`${root}/${id}`]=transformed;
+          }
+        });
+      });
+
+      const profiles=allProfiles();
+      profiles.forEach(profile=>{
+        if(!profile?.id||oldUids.includes(String(profile.id)))return;
+        let transformed=clone(profile);
+        oldUids.forEach(oldUid=>{transformed=replaceUidDeep(transformed,oldUid,canonicalUid,canonical)});
+        if(jsonDiff(profile,transformed))updates[`users/${profile.id}`]=transformed;
+      });
+
+      const mergedFrom={...(canonical.mergedFrom||{})};
+      duplicates.forEach(u=>{
+        mergedFrom[u.id]={name:u.name||"",email:u.email||"",username:u.username||"",mergedAt:Date.now()};
+        updates[`users/${u.id}`]={
+          ...clone(u),
+          hiddenMerged:true,
+          mergedInto:canonicalUid,
+          mergedLogin:login,
+          mergedAt:Date.now()
+        };
+      });
+      updates[`users/${canonicalUid}`]={
+        ...clone(canonical),
+        role:"student",
+        username:login,
+        mergedFrom,
+        lastMergeAt:Date.now()
+      };
+
+      await db.ref(`studentMergeBackups/${backupId}`).set(backup);
+      await db.ref().update(updates);
+
+      alert(`Cadastros mesclados com sucesso!\n\nLogin final: ${login}\nCadastro principal: ${canonical.name||canonical.email||canonicalUid}\nBackup: studentMergeBackups/${backupId}\n\nOs registros antigos ficaram marcados como mesclados e não aparecerão mais nas listas.`);
+      setTimeout(()=>{try{populateStudentSelects();renderAlunos();}catch(e){}},300);
+    }catch(e){
+      console.error("Erro ao mesclar alunos:",e);
+      alert("Não consegui concluir a mesclagem. Nenhum dado deve ser apagado antes da etapa de backup. Erro: "+(e?.message||e));
+      try{renderDuplicateRepairBox()}catch(_){}
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    setTimeout(()=>{try{cleanupStudentOptions();renderDuplicateRepairBox()}catch(e){}},900);
+  });
+})();
+</script>
+
 </body>
 </html>
