@@ -5707,9 +5707,16 @@ function renderPainelTarefas(){
 
 function calcularDuracao(inicio,fim){if(!inicio||!fim)return 0;const[hi,mi]=inicio.split(":").map(Number),[hf,mf]=fim.split(":").map(Number);let i=hi*60+mi,f=hf*60+mf;if(f<i)f+=1440;return f-i}
 function formatDuracao(min){const n=Number(min||0),h=Math.floor(n/60),m=n%60;if(h&&m)return`${h}h${String(m).padStart(2,"0")}`;if(h)return`${h}h`;return`${m} min`}
+let uqAulaSalvando=false;
 async function addAula(){
-  const studentUid=requireAulaStudentLink(); if(!studentUid)return;
-  await ensureTeacherStudentLink(studentUid);
+  if(uqAulaSalvando)return alert("Já existe um lançamento em andamento. Aguarde.");
+  const studentUid=requireAulaStudentLink();
+  if(!studentUid)return;
+  const perfilEscolhido=(users||[]).find(u=>String(u.id)===String(studentUid));
+  if(perfilEscolhido?.mergedInto || perfilEscolhido?.hiddenMerged===true){
+    alert("Este cadastro foi marcado como mesclado. Escolha o cadastro principal antes de registrar a aula.");
+    return;
+  }
   const mat=document.getElementById("a-materia").value.trim(),
     data=document.getElementById("a-data").value||today(),
     inicio=document.getElementById("a-inicio").value,
@@ -5737,25 +5744,49 @@ async function addAula(){
     statusFinanceiro:isFinanceUser()?document.getElementById("a-status").value:"previsto",
     createdBy:ownUid(),createdByEmail:userEmail(),createdAt:Date.now()
   };
+  uqAulaSalvando=true;
+  let aulaAcademicaSalva=false;
+  let etapaLancamento="aulas/"+studentUid;
+  let aulaId="";
+  let falhaFinanceira=null;
   try{
+    await ensureTeacherStudentLink(studentUid);
     const aulaRef=db.ref("aulas/"+studentUid).push();
+    aulaId=aulaRef.key;
+    etapaLancamento="aulas/"+studentUid+"/"+aulaId;
     await aulaRef.set(aula);
+    aulaAcademicaSalva=true;
 
-    // Somente Paulo/dono grava o financeiro no nó privado.
+    // Se o financeiro falhar, a aula NÃO deve ser cadastrada uma segunda vez.
     if(isFinanceUser()){
-      const valor=Number(document.getElementById("a-valor")?.value||0);
-      const repasseProfessor=Number(document.getElementById("a-repasse")?.value||0);
-      await db.ref("financeiroAulas/"+aulaRef.key).set({
-        aulaId:aulaRef.key,studentUid,valor,repasseProfessor,valorLiquido:valor-repasseProfessor,updatedAt:Date.now()
-      });
+      const valor=moneyToNumber(document.getElementById("a-valor")?.value||0);
+      const repasseProfessor=moneyToNumber(document.getElementById("a-repasse")?.value||0);
+      etapaLancamento="financeiroAulas/"+aulaId;
+      try{
+        await db.ref(etapaLancamento).set({
+          aulaId,studentUid,valor,repasseProfessor,
+          valorLiquido:valor-repasseProfessor,updatedAt:Date.now()
+        });
+      }catch(e){falhaFinanceira=e;console.error("Financeiro da aula não salvo",{etapa:etapaLancamento,aulaId,studentUid,erro:e});}
     }
 
+    // A parte acadêmica já foi salva. Limpar para evitar repetição involuntária.
     ["a-materia","a-data","a-escola","a-inicio","a-fim","a-conteudo","a-obs","a-simulado","a-orientacao","a-valor","a-repasse","a-liquido-preview"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
     const st=document.getElementById("a-status"); if(st)st.value="previsto";
     ["a-interesse","a-desempenho","a-autonomia"].forEach(id=>{const el=document.getElementById(id);if(el)el.value=""});
-    alert("Aula salva com sucesso!");
-  }catch(e){alert(firebaseErrorMessage(e));}
+    if(falhaFinanceira){
+      alert("A AULA FOI SALVA, mas os dados financeiros NÃO foram registrados.\n\nNÃO lance novamente (evite duplicidade). Confira o financeiro desta aula quando as permissões forem corrigidas.\n\nID da aula: "+aulaId+"\nCaminho: "+etapaLancamento+"\n"+firebaseErrorMessage(falhaFinanceira));
+    }else{
+      alert("Aula salva com sucesso!");
+    }
+  }catch(e){
+    console.error("Falha no lançamento da aula",{etapa:etapaLancamento,aulaId,studentUid,aulaAcademicaSalva,erro:e});
+    alert((aulaAcademicaSalva?"A aula acadêmica FOI salva. Não lance novamente sem conferir a lista.":"A aula NÃO foi salva.")+"\n\nCaminho: "+etapaLancamento+"\n"+firebaseErrorMessage(e));
+  }finally{
+    uqAulaSalvando=false;
+  }
 }
+
 async function delAula(id,studentUid){
   const uid=studentUid||ownUid();
   const item=allAulas.find(a=>a.id===id&&a.studentUid===uid);
@@ -7925,10 +7956,18 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
   };
 
   function uqStudentOptions(studentUsers){
-    return (studentUsers||[]).map(u=>{
+    const lista=(studentUsers||[]);
+    const loginCounts=new Map();
+    lista.forEach(u=>{
+      const login=normalizeLogin(u.username||u.login||u.email||"");
+      if(login)loginCounts.set(login,(loginCounts.get(login)||0)+1);
+    });
+    return lista.map(u=>{
       const nome=safeText(u.name||u.nome||u.email||u.username||"Aluno");
       const sub=safeText(u.username||u.login||u.email||"");
-      return `<option value="${safeText(u.id)}">${nome}${sub?` — ${sub}`:""}</option>`;
+      const login=normalizeLogin(u.username||u.login||u.email||"");
+      const label=(loginCounts.get(login)||0)>1?` · cadastro ${safeText(String(u.id||"").slice(-7))}`:"";
+      return `<option value="${safeText(u.id)}">${nome}${sub?` — ${sub}`:""}${label}</option>`;
     }).join("");
   }
 
@@ -7944,7 +7983,7 @@ document.addEventListener("DOMContentLoaded",()=>{restoreSidebarState();
     });
 
     return [...map.values()]
-      .filter(u=>String(u.id)!==String(ownUid()))
+      .filter(u=>String(u.id)!==String(ownUid()) && !u.mergedInto && u.hiddenMerged!==true)
       .sort((a,b)=>
         String(a.name||a.email||a.username||"Aluno")
           .localeCompare(String(b.name||b.email||b.username||"Aluno"),"pt-BR")
@@ -9846,10 +9885,9 @@ if(typeof applyPermissions==="function"){
     allProfiles().forEach(u=>{
       if(u?.mergedInto)map.set(String(u.id),String(u.mergedInto));
     });
-    duplicateGroups().forEach(g=>{
-      const canonical=chooseCanonical(g.items,g.login);
-      g.items.forEach(u=>{if(String(u.id)!==String(canonical.id))map.set(String(u.id),String(canonical.id));});
-    });
+    // Não vincular IDs de cadastros diferentes somente porque compartilham login.
+    // A resolução de alias só é válida quando 'mergedInto' está salvo no Firebase.
+
     return map;
   }
   function canonicalProfileForId(uid){
@@ -9918,15 +9956,8 @@ if(typeof applyPermissions==="function"){
     const byId=new Map(visible.map(u=>[String(u.id),u]));
     const skipped=new Set();
     aliases.forEach((canonical,old)=>{if(byId.has(old)&&byId.has(canonical))skipped.add(old)});
-    const out=[]; const loginSeen=new Set();
-    visible.forEach(u=>{
-      if(skipped.has(String(u.id)))return;
-      const key=studentLoginKey(u);
-      if(key&&loginSeen.has(key))return;
-      if(key)loginSeen.add(key);
-      out.push(u);
-    });
-    return out;
+    // Antes da mesclagem, mostrar ambos os IDs: não esconder aulas do duplicado.
+    return visible.filter(u=>!skipped.has(String(u.id)));
   }
 
   if(typeof getStudentUsersForSelect==="function"){
@@ -9972,7 +10003,7 @@ if(typeof applyPermissions==="function"){
       return;
     }
     box.style.display="block";
-    box.innerHTML=`<div style="font-weight:900;color:#9c5a0b;margin-bottom:7px">⚠️ Cadastros duplicados detectados</div>`+
+    box.innerHTML=`<div style="font-weight:900;color:#9c5a0b;margin-bottom:7px">⚠️ Cadastros duplicados — ainda não mesclados</div>`+
       groups.map(g=>{
         const canonical=chooseCanonical(g.items,g.login);
         const details=g.items.map(u=>`${safeText(u.name||"Aluno")} · ${safeText(u.email||u.id)}`).join("<br>");
@@ -10041,6 +10072,7 @@ if(typeof applyPermissions==="function"){
     const box=document.getElementById("uq-duplicate-students-box");
     if(box)box.innerHTML=`<strong>Mesclando ${safeText(login)}…</strong><br><span style="color:var(--cinza)">Criando backup e reunindo aulas, tarefas, avaliações, resultados, calendário, progresso e acessos da família.</span>`;
 
+    let mergeStage="leitura dos registros";
     try{
       const uids=[canonicalUid,...oldUids];
       const pathReads=[];
@@ -10126,14 +10158,16 @@ if(typeof applyPermissions==="function"){
         lastMergeAt:Date.now()
       };
 
+      mergeStage=`criação do backup studentMergeBackups/${backupId}`;
       await db.ref(`studentMergeBackups/${backupId}`).set(backup);
+      mergeStage="migração atômica dos cadastros";
       await db.ref().update(updates);
 
       alert(`Cadastros mesclados com sucesso!\n\nLogin final: ${login}\nCadastro principal: ${canonical.name||canonical.email||canonicalUid}\nBackup: studentMergeBackups/${backupId}\n\nOs registros antigos ficaram marcados como mesclados e não aparecerão mais nas listas.`);
       setTimeout(()=>{try{populateStudentSelects();renderAlunos();}catch(e){}},300);
     }catch(e){
       console.error("Erro ao mesclar alunos:",e);
-      alert("Não consegui concluir a mesclagem. Nenhum dado deve ser apagado antes da etapa de backup. Erro: "+(e?.message||e));
+      alert(`Mesclagem NÃO concluída na etapa: ${mergeStage}.\n\nNão exclua nenhum cadastro manualmente.\n\n${firebaseErrorMessage(e)}\nDetalhe: ${e?.code||e?.message||e}`);
       try{renderDuplicateRepairBox()}catch(_){}
     }
   };
