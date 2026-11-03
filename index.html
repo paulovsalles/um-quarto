@@ -468,7 +468,7 @@ function lessonModal(a=null){
   const schoolNames=registeredSchools();
   modal(`${formHead('DIÁRIO DE BORDO',a?'Editar aula':'Registrar aula','Registre o conteúdo e a evolução real do aluno.')}
   <form id="form-lesson"><input type="hidden" name="id" value="${escapeAttr(a?.id||'')}"><input type="hidden" name="originalStudent" value="${escapeAttr(a?.studentUid||'')}">
-  <div class="form-grid"><div class="field"><label for="lesson-student">Aluno</label><select id="lesson-student" name="studentUid" required ${a?'disabled':''}><option value="">Selecione...</option>${studentOptions(firstStudent)}</select>${a?`<input type="hidden" name="studentUid" value="${escapeAttr(a.studentUid)}">`:''}</div>
+  <div class="form-grid"><div class="field"><label for="lesson-student">Aluno ${a&&owner()?'— corrigir vínculo':''}</label><select id="lesson-student" name="studentUid" required ${a&&!owner()?'disabled':''}><option value="">Selecione...</option>${studentOptions(firstStudent)}</select>${a&&!owner()?`<input type="hidden" name="studentUid" value="${escapeAttr(a.studentUid)}">`:''}${a&&owner()?`<div class="field-note" style="color:#166f58">✓ Administrador: você pode transferir esta aula para o aluno correto. O professor responsável e os valores financeiros serão mantidos.</div>`:''}</div>
   <div class="field"><label>Matéria</label><input name="materia" required value="${escapeAttr(initial.materia||'')}" placeholder="Ex.: Matemática"></div></div>
   <div class="form-grid"><div class="field"><label>Data</label><input type="date" name="data" value="${escapeAttr(day)}" required></div>
   <div class="field"><label for="lesson-school">Escola do aluno</label><input id="lesson-school" name="escola" list="school-options" value="${escapeAttr(schoolValue)}" placeholder="Selecione uma escola ou digite uma nova" ${fixedSchool?'readonly':''} autocomplete="off" maxlength="150">
@@ -478,8 +478,8 @@ function lessonModal(a=null){
   <div class="field"><label>Orientação / tarefa para casa</label><textarea name="orientacao" maxlength="5000" placeholder="Próximo passo para o aluno">${esc(initial.orientacao||'')}</textarea></div>
   <div class="field"><label>Observações importantes da aula</label><textarea name="observacoesImportantes" maxlength="5000" rows="4" placeholder="Dificuldades percebidas, avanços, erros recorrentes, participação, pontos para retomar...">${esc(initial.observacoesImportantes||initial.observacoes||initial.obs||'')}</textarea><div class="field-note">Registro pedagógico: evite informações pessoais sensíveis desnecessárias.</div></div>
   <div class="form-grid rating-grid-new"><div class="field"><label>Desempenho</label><select name="desempenho">${ratingOptions(initial.desempenho)}</select></div>
-  <div class="field"><label>Interesse do aluno (1 a 5)</label><select name="interesse" required>${ratingOptions(initial.interesse??initial.avaliacaoInteresse, true)}</select></div>
-  <div class="field"><label>Autonomia do aluno (1 a 5)</label><select name="autonomia" required>${ratingOptions(initial.autonomia??initial.avaliacaoAutonomia, true)}</select></div>
+  <div class="field"><label>Interesse do aluno (1 a 5)</label><select name="interesse" required>${ratingOptions(initial.interesse??initial.avaliacaoInteresse, !a)}</select></div>
+  <div class="field"><label>Autonomia do aluno (1 a 5)</label><select name="autonomia" required>${ratingOptions(initial.autonomia??initial.avaliacaoAutonomia, !a)}</select></div>
   <div class="field"><label>Status da aula</label><select name="statusFinanceiro"><option value="recebido" ${initial.statusFinanceiro==='recebido'||!a?'selected':''}>Aula realizada</option><option value="previsto" ${initial.statusFinanceiro==='previsto'?'selected':''}>Aula prevista</option></select></div></div>
    ${financeViewer()?`<div class="money-fields"><h3>💰 Financeiro desta aula</h3><div class="money-tip">Privado da administração. Esses valores NÃO são gravados no histórico acadêmico do aluno.</div><div class="form-grid"><div class="field"><label for="lesson-value">Faturamento (R$)</label><input id="lesson-value" name="valor" type="text" inputmode="decimal" value="${escapeAttr(financeValue(initial).valor.toFixed(2).replace('.',','))}" placeholder="0,00"></div><div class="field"><label for="lesson-transfer">Valor repassado (R$)</label><input id="lesson-transfer" name="repasseProfessor" type="text" inputmode="decimal" value="${escapeAttr(financeValue(initial).repasse.toFixed(2).replace('.',','))}" placeholder="0,00"></div></div><div class="money-preview">Valor líquido: <span id="lesson-net">${brl(financeValue(initial).liquido)}</span></div></div>`:''}
    <div class="form-actions">${a?`<button type="button" class="btn ghost" data-action="delete-lesson" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}">Excluir aula</button>`:''}<button type="button" class="btn soft" data-action="close-modal">Cancelar</button><button class="btn primary" type="submit">${a?'Salvar alterações':'Registrar aula'} ↗</button></div></form>`);
@@ -542,6 +542,13 @@ async function writeLesson(f){
  if(!teacher()||previewReadOnly())return toast('Somente professores autorizados registram aulas.',true);
  const v=Object.fromEntries(new FormData(f).entries()),id=v.id,studentUid=v.studentUid,old=v.originalStudent;
  if(!studentUid)return toast('Selecione um aluno.',true);
+ const moving=Boolean(id&&old&&studentUid!==old);
+ if(moving&&!owner())return toast('Somente a conta administradora pode trocar o aluno de uma aula já registrada.',true);
+ if(moving){
+  const de=userName(old)||state.aulas.find(a=>a.id===id&&a.studentUid===old)?.studentName||'aluno anterior';
+  const para=userName(studentUid)||'novo aluno';
+  if(!confirm(`Corrigir o aluno desta aula de "${de}" para "${para}"?\n\nA aula continuará com o mesmo professor e o mesmo ID. O histórico e o financeiro serão preservados.`))return;
+ }
  if(dur(v.inicio,v.fim)<=0)return toast('Verifique o horário da aula.',true);
  const existing=state.aulas.find(a=>a.id===id&&a.studentUid===old);
  if(id&&(!existing||!canManage(existing)))return toast('Sem permissão para editar.',true);
@@ -551,7 +558,8 @@ async function writeLesson(f){
  const escola=escolaVinculada||schoolInput;
  if(escola.length>150)return toast('Nome da escola muito longo.',true);
  const interest=Number(v.interesse),autonomy=Number(v.autonomia);
- if(!Number.isInteger(interest)||interest<1||interest>5||!Number.isInteger(autonomy)||autonomy<1||autonomy>5)return toast('Avalie interesse e autonomia de 1 a 5.',true);
+ const validRating=n=>Number.isInteger(n)&&n>=1&&n<=5;
+ if((!id||interest!==0)&&!validRating(interest) || (!id||autonomy!==0)&&!validRating(autonomy))return toast('Avalie interesse e autonomia de 1 a 5.',true);
  const obs=String(v.observacoesImportantes||'').trim();
  let money=null;
  if(financeViewer()&&!state.demo&&!state.financeLoaded)return toast('Aguarde o carregamento do financeiro privado antes de registrar ou editar valores. Se não carregar, confira as permissões do Firebase.',true);
@@ -560,28 +568,57 @@ async function writeLesson(f){
   if(!Number.isFinite(valor)||!Number.isFinite(repasse)||valor<0||repasse<0)return toast('Confira faturamento e repasse (valores em R$).',true);
   money={valor,repasseProfessor:repasse,valorLiquido:Math.round((valor-repasse)*100)/100};
  }
- const p={studentUid,studentName:userName(studentUid)||'',studentEmail:perfil?.email||'',userId:studentUid,userName:userName(studentUid),userEmail:perfil?.email||'',materia:v.materia,data:v.data,inicio:v.inicio,fim:v.fim,dur:dur(v.inicio,v.fim),conteudo:v.conteudo,escola,orientacao:v.orientacao||'',observacoesImportantes:obs,interesse:interest,autonomia:autonomy,desempenho:Number(v.desempenho||0),statusFinanceiro:v.statusFinanceiro,professorUid:existing?.professorUid||uid(),professorNome:existing?.professorNome||state.profile?.name||'',teacherUid:existing?.teacherUid||uid(),ownerTeacherUid:existing?.ownerTeacherUid||uid(),lancadoPorUid:existing?.lancadoPorUid||uid(),lancadoPorEmail:existing?.lancadoPorEmail||state.user?.email||'',createdBy:existing?.createdBy||uid(),createdByEmail:existing?.createdByEmail||state.user?.email||'',createdAt:existing?.createdAt||Date.now()};
+ const p={studentUid,studentName:userName(studentUid)||'',studentEmail:perfil?.email||'',userId:studentUid,userName:userName(studentUid),userEmail:perfil?.email||'',materia:v.materia,data:v.data,inicio:v.inicio,fim:v.fim,dur:dur(v.inicio,v.fim),conteudo:v.conteudo,escola,orientacao:v.orientacao||'',observacoesImportantes:obs,...(validRating(interest)?{interesse:interest}:{}),...(validRating(autonomy)?{autonomia:autonomy}:{}),desempenho:Number(v.desempenho||0),statusFinanceiro:v.statusFinanceiro,
+ // Em edições, não substituir nem inventar autoria, professor ou data de criação.
+ ...(existing?{}:{professorUid:uid(),professorNome:state.profile?.name||'',teacherUid:uid(),ownerTeacherUid:uid(),lancadoPorUid:uid(),lancadoPorEmail:state.user?.email||'',createdBy:uid(),createdByEmail:state.user?.email||'',createdAt:Date.now()}),
+ updatedAt:Date.now(),updatedByUid:uid()};
  const btn=f.querySelector('button[type=submit]');if(btn)btn.disabled=true;
  if(state.demo){
   const aulaId=id||'demo-aula-'+Date.now();
-  if(id)state.aulas=state.aulas.map(a=>a.id===id&&a.studentUid===studentUid?{...a,...p}:a);else state.aulas.push({id:aulaId,...p});
-  if(money)state.financeRecords[aulaId]={aulaId,studentUid,...money,updatedAt:Date.now()};
-  closeModal();render();toast('Aula salva na demonstração (sem enviar dados ao Firebase).');return;
+  if(id)state.aulas=state.aulas.map(a=>a.id===id&&a.studentUid===old?{...a,...p}:a);else state.aulas.push({id:aulaId,...p});
+  if(money)state.financeRecords[aulaId]={...(state.financeRecords[aulaId]||{}),aulaId,studentUid,...money,updatedAt:Date.now()};
+  closeModal();render();toast(moving?'Aluno da aula corrigido na demonstração, sem duplicação.':'Aula salva na demonstração (sem enviar dados ao Firebase).');return;
  }
  let academicSaved=false,aulaId=id||'';
  try{
   await ensureLink(studentUid);
-  if(id){if(studentUid!==old){await state.db.ref(`aulas/${studentUid}/${id}`).set({...existing,...p});await state.db.ref(`aulas/${old}/${id}`).remove()}else await state.db.ref(`aulas/${old}/${id}`).update(p)}
-  else{const newRef=state.db.ref(`aulas/${studentUid}`).push();aulaId=newRef.key;await newRef.set(p)}
-  academicSaved=true;
   let moneyError=null;
-  if(money){try{await state.db.ref(`financeiroAulas/${aulaId}`).update({aulaId,studentUid,...money,updatedAt:firebase.database.ServerValue.TIMESTAMP})}catch(err){console.error('Falha em financeiroAulas:',err);moneyError=err}}
+  if(moving){
+    // A movimentação é atômica: a aula não pode ser copiada sem excluir a origem.
+    // O apontamento financeiro privado é atualizado na mesma operação.
+    if(!owner()||!state.financeLoaded)throw new Error('O financeiro privado precisa estar carregado para transferir esta aula com segurança.');
+    const oldRef=state.db.ref(`aulas/${old}/${id}`),destRef=state.db.ref(`aulas/${studentUid}/${id}`);
+    const [origSnap,destSnap]=await Promise.all([oldRef.once('value'),destRef.once('value')]);
+    if(!origSnap.exists())throw new Error('A aula original não existe mais. Atualize a lista antes de tentar de novo.');
+    if(destSnap.exists())throw new Error('Já existe uma aula com este identificador no cadastro de destino. Nenhum dado foi alterado.');
+    // Não substituir autoria, professor, campos legados ou outros dados acadêmicos.
+    const stored=origSnap.val();
+    const financeBefore=state.financeRecords?.[id];
+    const changes={
+      [`aulas/${old}/${id}`]:null,
+      [`aulas/${studentUid}/${id}`]:{...stored,...p}
+    };
+    if(money){
+      // Conserva campos adicionais (ex.: anotações financeiras antigas).
+      changes[`financeiroAulas/${id}`]={...(financeBefore||{}),aulaId:id,studentUid,...money,updatedAt:firebase.database.ServerValue.TIMESTAMP};
+    }else if(financeBefore){changes[`financeiroAulas/${id}/studentUid`]=studentUid}
+    // Atualização multi-caminho do Realtime Database: tudo ou nada.
+    await state.db.ref().update(changes);
+    academicSaved=true;
+    state.aulas=state.aulas.map(a=>a.id===id&&a.studentUid===old?{...stored,...p,id}:a);
+    if(money)state.financeRecords[id]={...(financeBefore||{}),aulaId:id,studentUid,...money,updatedAt:Date.now()};
+  }else{
+    if(id)await state.db.ref(`aulas/${old}/${id}`).update(p);
+    else{const newRef=state.db.ref(`aulas/${studentUid}`).push();aulaId=newRef.key;await newRef.set(p)}
+    academicSaved=true;
+    if(money){try{await state.db.ref(`financeiroAulas/${aulaId}`).update({aulaId,studentUid,...money,updatedAt:firebase.database.ServerValue.TIMESTAMP})}catch(err){console.error('Falha em financeiroAulas:',err);moneyError=err}}
+  }
   let schoolMsg='';
   if(escola&&!profileSchool(perfil))try{await state.db.ref(`users/${studentUid}/escola`).transaction(current=>typeof current==='string'&&current.trim()?undefined:escola)}catch(err){schoolMsg=' Não foi possível vincular a escola ao cadastro.';console.warn(err)}
   closeModal();render();
   if(moneyError)alert('A AULA FOI SALVA, mas o financeiro NÃO foi gravado. Não cadastre a aula novamente: edite este lançamento após conferir as regras do banco.\nID: '+aulaId+'\n'+errorText(moneyError));
-  else toast('Aula salva com sucesso! ✦'+schoolMsg,Boolean(schoolMsg));
- }catch(err){console.error(err);if(academicSaved)alert('A aula foi gravada. Confira o histórico antes de tentar novamente. '+errorText(err));else toast('Não foi possível salvar: '+errorText(err),true);if(btn)btn.disabled=false}
+  else toast((moving?'Aluno corrigido e aula transferida com segurança! ✦':'Aula salva com sucesso! ✦')+schoolMsg,Boolean(schoolMsg));
+ }catch(err){console.error(err);if(academicSaved)alert('A aula foi gravada. Confira o histórico antes de tentar novamente. '+errorText(err));else toast((moving?'A aula NÃO foi transferida; nenhum dos vínculos foi alterado. ':'Não foi possível salvar: ')+errorText(err),true);if(btn)btn.disabled=false}
 }
 
 async function writeMission(f){if(parent())return;const v=Object.fromEntries(new FormData(f).entries()),old=v.originalStudent,studentUid=teacher()?v.studentUid:uid(),existing=state.plano.find(x=>x.id===v.id&&x.studentUid===old);if(!studentUid)return toast('Selecione um aluno.',true);if(v.id&&(!existing||!canManage(existing)))return toast('Sem permissão.',true);let p={studentUid,studentName:teacher()?userName(studentUid):state.profile?.name||'',studentEmail:teacher()?(state.users.find(u=>u.id===studentUid)?.email||''):state.user.email,plano:v.plano||'Minha jornada',planejamento:v.plano||'Minha jornada',materia:v.materia,categoria:v.materia,texto:v.texto,bloco:'Jornada',tipo:v.tipo,carga:'',prioridade:'media',prazo:v.prazo||'',xp:v.tipo==='Simulado'?230:v.tipo==='Correção de erros'?80:50,feito:existing?.feito||false,createdBy:existing?.createdBy||uid(),createdByEmail:existing?.createdByEmail||state.user.email,createdAt:existing?.createdAt||Date.now()};if(state.demo)return safeWrite(()=>{});try{f.querySelector('button[type=submit]').disabled=true;if(teacher())await ensureLink(studentUid);if(v.id){if(studentUid!==old){await state.db.ref(`checklist/${studentUid}/${v.id}`).set({...existing,...p});await state.db.ref(`checklist/${old}/${v.id}`).remove()}else await state.db.ref(`checklist/${old}/${v.id}`).update(p)}else await state.db.ref(`checklist/${studentUid}`).push(p);closeModal();toast('Missão salva! ✳')}catch(e){toast(errorText(e),true);f.querySelector('button[type=submit]').disabled=false}}
