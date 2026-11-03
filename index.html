@@ -352,7 +352,7 @@ function switchRole(role){
  toast(role==='student'?'Modo Aluno ativado para sua própria conta.':'Modo Professor ativado.');
 }
 function shell(){const name=state.profile?.name||state.user?.email?.split('@')[0]||'Visitante';$('mini-name').textContent=name;$('mini-role').textContent=teacher()?'Professor':parent()?'Família':'Estudante';renderRoleControl();$('mini-avatar').textContent=name.slice(0,1).toUpperCase();$('demo-label').classList.toggle('hidden',!state.demo);$('student-picker').classList.toggle('hidden',!teacher());renderStudentPicker();renderNav();refreshAvatar();$('landing').style.display='none';$('auth-screen').classList.add('hidden');$('app').style.display='block';render()}
-function renderStudentPicker(){let el=$('student-picker');if(!teacher())return;let options=state.users.filter(x=>x.role==='student'&&!x.mergedInto&&!x.hiddenMerged&&(owner()||linked(x.id))).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));if(state.target!=='all'&&!options.some(x=>x.id===state.target))state.target='all';el.innerHTML=`<option value="all">Todos os alunos</option>`+options.map(x=>`<option value="${escapeAttr(x.id)}">${esc(x.name||x.email||'Aluno')}</option>`).join('');el.value=state.target}
+function renderStudentPicker(){let el=$('student-picker');if(!teacher())return;let options=state.users.filter(x=>x.role==='student'&&!x.mergedInto&&!x.hiddenMerged).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));if(state.target!=='all'&&!options.some(x=>x.id===state.target))state.target='all';el.innerHTML=`<option value="all">Todos os alunos</option>`+options.map(x=>`<option value="${escapeAttr(x.id)}">${esc(x.name||x.email||'Aluno')}</option>`).join('');el.value=state.target}
 function closeModal(){$('modal-cover').classList.remove('open');$('modal').classList.remove('drive-preview-modal');$('modal').innerHTML=''}
 function modal(html){$('modal').classList.remove('drive-preview-modal');$('modal').innerHTML=`<button class="modal-close" data-action="close-modal" aria-label="Fechar">×</button>${html}`;$('modal-cover').classList.add('open');const first=$('modal').querySelector('input:not([type=hidden]),select,textarea');if(first)setTimeout(()=>first.focus(),20)}
 function safeWrite(callback){if(previewReadOnly()){toast('Prévia de aluno: alterações desativadas.',true);return Promise.resolve(false)}if(state.demo){toast('Demonstração: explore à vontade. Para salvar de verdade, entre na sua conta.');return Promise.resolve(false)}return callback()}
@@ -530,7 +530,7 @@ function financeExport(){
 
 function render(){if($('app').style.display==='none')return;const el=$('view');if(!el)return;el.innerHTML=state.quiz?quizPage():state.review?reviewPage():({home,aulas,tarefas:tasksPage,simulados:simuladosPage,plano:planPage,materiais:materialsPage,ifes:ifesPage,enem:enemPage,financeiro:financePage}[state.section]||home)()}
 // Forms. Mantém os campos principais e a estrutura original do Realtime Database.
-function studentOptions(value=''){let students=state.users.filter(u=>u.role==='student'&&!u.mergedInto&&!u.hiddenMerged&&(owner()||linked(u.id))).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));return students.map(u=>`<option value="${escapeAttr(u.id)}" ${value===u.id?'selected':''}>${esc(u.name||u.email||'Aluno')}</option>`).join('')}
+function studentOptions(value=''){let students=state.users.filter(u=>u.role==='student'&&!u.mergedInto&&!u.hiddenMerged).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));return students.map(u=>`<option value="${escapeAttr(u.id)}" ${value===u.id?'selected':''}>${esc(u.name||u.email||'Aluno')}</option>`).join('')}
 function formHead(tag,title,subtitle){return `<span class="eyebrow">${tag}</span><h2>${title}</h2><p class="sub">${subtitle}</p>`}
 
 const brl=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(Number(v)||0);
@@ -686,7 +686,12 @@ async function login(e){e.preventDefault();if(!state.auth)return showAuthError('
 async function register(e){e.preventDefault();const name=$('reg-name').value.trim(),email=$('reg-email').value.trim().toLowerCase(),pass=$('reg-password').value,code=$('reg-code').value.trim();if(!name||!email.includes('@')||pass.length<6)return showAuthError('Preencha nome, e-mail e senha de no mínimo 6 caracteres.');if(code!==STUDENT_CODE)return showAuthError('Código de aluno inválido.');try{const c=await state.auth.createUserWithEmailAndPassword(email,pass);await state.db.ref('users/'+c.user.uid).set({name,email,role:'student',financeiro:false,admin:false,createdAt:Date.now()});state.profile={name,email,role:'student'};state.user=c.user;state.target='all';connectData();shell()}catch(e){showAuthError(errorText(e))}}
 function showAuthError(msg){$('auth-error').textContent=msg;$('auth-error').classList.remove('hidden')}
 function showAuth(which='login'){$('landing').style.display='none';$('auth-screen').classList.remove('hidden');$('auth-error').classList.add('hidden');$('login-form').classList.toggle('hidden',which!=='login');$('register-form').classList.toggle('hidden',which!=='register');$('auth-head').textContent=which==='login'?'Bem-vindo de volta.':'Sua jornada começa aqui.';$('auth-subtitle').textContent=which==='login'?'Entre para continuar sua aventura.':'Crie seu acesso de estudante.';window.scrollTo(0,0)}
-async function ensureLink(studentUid){if(!teacher()||owner()||studentUid===uid())return;await state.db.ref(`users/${studentUid}/linkedTeachers/${uid()}`).set(true);await state.db.ref(`users/${studentUid}/lastLinkedTeacherUid`).set(uid())}
+async function ensureLink(studentUid){
+  // Correção de compatibilidade V15: o professor não deve precisar editar /users/$studentUid
+  // para registrar aula, tarefa ou simulado. O vínculo acadêmico já fica no próprio registro.
+  // As regras do Firebase continuam protegendo os dados e a gestão financeira.
+  return;
+}
 async function writeLesson(f){
  if(!teacher()||previewReadOnly())return toast('Somente professores autorizados registram aulas.',true);
  const v=Object.fromEntries(new FormData(f).entries()),id=v.id,studentUid=v.studentUid,old=v.originalStudent;
@@ -872,7 +877,7 @@ function materialModal(material=null){
  <div class="field"><label for="material-type">Tipo de material</label><select id="material-type" name="tipo"><option value="arquivo" ${type==='arquivo'?'selected':''}>Arquivo PDF ou Word</option><option value="explicacao" ${type==='explicacao'?'selected':''}>Explicação escrita</option><option value="link" ${type==='link'?'selected':''}>Google Drive ou link externo (grátis)</option></select></div></div>
  <div class="field"><label for="material-description">Explicação / Orientações</label><textarea id="material-description" name="descricao" maxlength="12000" rows="6" placeholder="Diga o que o aluno deve ler, estudar ou resolver...">${esc(m.descricao||'')}</textarea></div>
  <div id="material-upload-field" class="field ${type==='arquivo'?'':'hidden'}"><label for="material-file">Arquivo PDF ou Word ${m.filePath?'(deixe vazio para manter o existente)':'*'}</label><input type="file" id="material-file" name="arquivo" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" ${m.filePath?'':'required'}><div class="small" style="margin-top:7px">PDF, DOC ou DOCX · Máximo de 20 MB. É necessário ter Firebase Storage ativado e autorizado. Se o upload falhar, você também pode publicar um link para o documento.</div>${m.filePath?`<div class="small">Arquivo atual: ${esc(m.fileName||'Documento')}</div>`:''}</div>
- <div id="material-link-field" class="field ${type==='link'?'':'hidden'}"><label for="material-url">Link compartilhado do Google Drive *</label><input id="material-url" name="link" type="url" value="${escapeAttr(m.link||'')}" placeholder="https://drive.google.com/file/d/.../view" ${type==='link'?'required':''}><div class="material-drive-tip"><strong>Como publicar gratuitamente:</strong> envie o PDF ao Google Drive → Compartilhar → Acesso geral: Qualquer pessoa com o link (Leitor) → Copiar link → cole aqui. Para conteúdo restrito, compartilhe com os e-mails autorizados no Drive. A biblioteca não altera as permissões originais do arquivo.</div></div>
+ <div id="material-link-field" class="field ${type==='link'?'':'hidden'}"><label for="material-url">Link compartilhado do Google Drive *</label><input id="material-url" name="link" type="url" value="${escapeAttr(m.link||'')}" placeholder="https://drive.google.com/file/d/.../view" ${type==='link'?'required':''}><div class="material-drive-tip"><strong>Sem Firebase Storage:</strong> nesta opção, somente o link e a descrição são salvos no Realtime Database. <strong>Como publicar gratuitamente:</strong> envie o PDF ao Google Drive → Compartilhar → Acesso geral: Qualquer pessoa com o link (Leitor) → Copiar link → cole aqui. Para conteúdo restrito, compartilhe com os e-mails autorizados no Drive. A biblioteca não altera as permissões originais do arquivo.</div></div>
  <div id="material-upload-progress" class="file-status" role="status" aria-live="polite"></div><div id="material-upload-error" class="material-upload-diagnostic hidden" role="alert"></div><button class="btn primary" type="submit" style="width:100%">${material?'Salvar alterações':'Publicar material'} ↗</button></form>`);
  updateMaterialFormFields();
 }
@@ -882,6 +887,10 @@ function updateMaterialFormFields(){
  $('material-link-field')?.classList.toggle('hidden',tipo!=='link');
  const urlInput=$('material-url');if(urlInput)urlInput.required=tipo==='link';
  const file=$('material-file');if(file){const id=document.querySelector('#form-material [name=materialId]')?.value;const existing=state.materiais.find(x=>x.id===id);file.required=tipo==='arquivo'&&!existing?.filePath;}
+ // Corrige a mensagem antiga que continuava aparecendo após selecionar "Link externo".
+ const progress=$('material-upload-progress'),errorBox=$('material-upload-error');
+ if(progress)progress.textContent='';
+ if(errorBox){errorBox.classList.add('hidden');errorBox.innerHTML='';}
 }
 function readMaterial(id){const m=state.materiais.find(x=>x.id===id);if(!m)return toast('Material não encontrado.',true);modal(`<span class="eyebrow">${esc(m.materia||'MATERIAL')}</span><h2>${esc(m.titulo||'Explicação')}</h2><p class="sub">${esc(m.createdByName||'Professor(a)')}</p><div class="material-help" style="white-space:pre-wrap;overflow-wrap:anywhere;color:#30453d;background:#f9fcfa">${esc(m.descricao||'Sem texto adicional.')}</div>`)}
 async function openMaterial(id){
@@ -908,49 +917,79 @@ function materialStorageDiagnosis(err){
  };
  return {code,message:details[code]||'Erro do Firebase Storage: '+code+'. Verifique as permissões, bucket e configurações do projeto.'};
 }
+// V14: separa a publicação de links (Realtime Database) do upload de arquivo (Storage).
+// PERMISSION_DENIED sem prefixo storage/ é normalmente do Realtime Database.
+function diagnoseMaterialDatabaseError(error){
+ const code=String(error?.code||'').toUpperCase(), message=String(error?.message||'');
+ const denied=code.includes('PERMISSION_DENIED')||message.toUpperCase().includes('PERMISSION_DENIED');
+ if(denied)return {code:'PERMISSION_DENIED',message:'Sua conta não tem permissão para gravar materiais no Firebase Realtime Database, no caminho /materiais. O link do Google Drive não foi enviado ao Storage. Confira as regras do Realtime Database (não as regras do Storage).'};
+ return {code:code||'DATABASE_ERROR',message:'Não foi possível salvar o cadastro do material no Realtime Database: '+(message||'falha desconhecida')};
+}
 async function saveMaterial(f){
  if(!teacher())return toast('Somente professores podem publicar.',true);
  if(state.uploading)return;
+ // Lê o tipo do seletor visível, não de uma seleção antiga do formulário.
  const data=new FormData(f),materialId=String(data.get('materialId')||''),previous=state.materiais.find(x=>x.id===materialId);
  if(previous&&!owner()&&previous.createdBy!==uid())return toast('Este material pertence a outro professor.',true);
- const tipo=String(data.get('tipo')||'arquivo');const titulo=String(data.get('titulo')||'').trim();const materia=String(data.get('materia')||'').trim();const descricao=String(data.get('descricao')||'').trim();const link=String(data.get('link')||'').trim();
+ const tipo=$('material-type')?.value||String(data.get('tipo')||'link');
+ const titulo=String(data.get('titulo')||'').trim(),materia=String(data.get('materia')||'').trim();
+ const descricao=String(data.get('descricao')||'').trim(),link=String(data.get('link')||'').trim();
  if(!titulo)return toast('Preencha o título.',true);
+ if(!['link','arquivo','explicacao'].includes(tipo))return toast('Escolha um tipo de material válido.',true);
  if(tipo==='link'&&!validMaterialLink(link))return toast('Informe um link HTTP ou HTTPS válido.',true);
- const file=$('material-file')?.files?.[0]||null;
+ const file=tipo==='arquivo'?($('material-file')?.files?.[0]||null):null;
  if(tipo==='arquivo'){
-   if(!file&&!previous?.filePath)return toast('Escolha um arquivo para publicar.',true);
-   if(file){const ext=file.name.split('.').pop().toLowerCase();if(!MATERIAL_TYPES[ext])return toast('Arquivo inválido. Use PDF, DOC ou DOCX.',true);if(file.size>MATERIAL_MAX_BYTES)return toast('O arquivo deve ter no máximo 20 MB.',true);if(file.size<=0)return toast('O arquivo está vazio.',true);}
+  if(!file&&!previous?.filePath)return toast('Escolha um arquivo PDF/Word ou use a opção Google Drive (grátis).',true);
+  if(file){const ext=file.name.split('.').pop().toLowerCase();if(!MATERIAL_TYPES[ext])return toast('Arquivo inválido. Use PDF, DOC ou DOCX.',true);if(file.size>MATERIAL_MAX_BYTES)return toast('O arquivo deve ter no máximo 20 MB.',true);if(file.size<=0)return toast('O arquivo está vazio.',true);}
  }
- if(state.demo)return toast('No modo demonstração, faça login como professor para publicar arquivos.');
- const button=f.querySelector('button[type=submit]'),progress=$('material-upload-progress'),errorBox=$('material-upload-error');if(errorBox){errorBox.classList.add('hidden');errorBox.innerHTML=''}button.disabled=true;state.uploading=true;
- const materialRef=materialId?state.db.ref('materiais/'+materialId):state.db.ref('materiais').push();const id=materialRef.key;
- let uploadedPath=null;
+ if(state.demo)return toast('No modo demonstração, faça login como professor para publicar materiais.');
+ if(!state.db)return toast('Realtime Database indisponível. Verifique sua conexão com o Firebase.',true);
+ const button=f.querySelector('button[type=submit]'),progress=$('material-upload-progress'),errorBox=$('material-upload-error');
+ if(errorBox){errorBox.classList.add('hidden');errorBox.innerHTML='';}
+ button.disabled=true;state.uploading=true;
+ const materialRef=materialId?state.db.ref('materiais/'+materialId):state.db.ref('materiais').push(),id=materialRef.key;
+ let uploadedPath=null,phase='database';
  try{
-   if(progress)progress.textContent='Preparando publicação...';
-   let filePath=tipo==='arquivo'?(previous?.filePath||''):'';
-   let fileName=tipo==='arquivo'?(previous?.fileName||''):'';
-   let fileSize=tipo==='arquivo'?(previous?.fileSize||0):0;
-   let fileType=tipo==='arquivo'?(previous?.fileType||''):'';
-   if(tipo==='arquivo'&&file){
-     if(!state.storage)throw Object.assign(new Error('O SDK Firebase Storage não foi carregado.'),{code:'storage/no-default-bucket'});
-     const ext=file.name.split('.').pop().toLowerCase();const path=`materiais/${uid()}/${id}/${Date.now()}.${ext}`;
-     const storageRef=state.storage.ref(path);
-     if(progress)progress.innerHTML='<strong>Enviando documento: 0%</strong><progress id="material-upload-bar" class="material-upload-progressbar" max="100" value="0"></progress><button type="button" class="btn outline tiny" data-material-cancel="1" style="margin-top:8px">Cancelar envio</button>';
-     const task=storageRef.put(file,{contentType:MATERIAL_TYPES[ext],customMetadata:{materialId:id,createdBy:uid()}});state.materialUploadTask=task;
-     await new Promise((resolve,reject)=>task.on('state_changed',snap=>{
-       if(progress){const pct=Math.round(100*snap.bytesTransferred/snap.totalBytes);const strong=progress.querySelector('strong');if(strong)strong.textContent=`Enviando documento: ${pct}%`;const bar=$('material-upload-bar');if(bar)bar.value=pct;}
-     },reject,resolve));
-     uploadedPath=path;filePath=path;fileName=file.name.slice(0,150);fileSize=file.size;fileType=MATERIAL_TYPES[ext];if(progress)progress.textContent='Upload concluído. Verificando acesso ao arquivo...';await storageRef.getDownloadURL();
-   }
-   const payload={titulo,materia,descricao,tipo,link:tipo==='link'?link:'',filePath,fileName,fileSize,fileType,
-     createdBy:previous?.createdBy||uid(),createdByName:previous?.createdByName||state.profile?.name||'Professor(a)',createdAt:previous?.createdAt||Date.now(),updatedAt:Date.now()};
-   await materialRef.set(payload);
-   if(previous?.filePath&&previous.filePath!==filePath){try{await state.storage?.ref(previous.filePath).delete()}catch(e){console.warn('Arquivo anterior não removido',e)}}
-   closeModal();toast('Material publicado com sucesso! ✳');
+  // Esta etapa não acessa Firebase Storage quando a opção é link ou explicação escrita.
+  if(progress)progress.textContent=tipo==='link'?'Salvando link do Google Drive na biblioteca...':tipo==='explicacao'?'Salvando explicação...':'Preparando arquivo...';
+  let filePath=tipo==='arquivo'?(previous?.filePath||''):'';
+  let fileName=tipo==='arquivo'?(previous?.fileName||''):'';
+  let fileSize=tipo==='arquivo'?(previous?.fileSize||0):0;
+  let fileType=tipo==='arquivo'?(previous?.fileType||''):'';
+  if(tipo==='arquivo'&&file){
+   phase='storage';
+   if(!state.storage)throw Object.assign(new Error('O Firebase Storage não está ativado/configurado.'),{code:'storage/no-default-bucket'});
+   const ext=file.name.split('.').pop().toLowerCase(),path=`materiais/${uid()}/${id}/${Date.now()}.${ext}`;
+   const storageRef=state.storage.ref(path);
+   if(progress)progress.innerHTML='<strong>Enviando documento: 0%</strong><progress id="material-upload-bar" class="material-upload-progressbar" max="100" value="0"></progress><button type="button" class="btn outline tiny" data-material-cancel="1" style="margin-top:8px">Cancelar envio</button>';
+   const task=storageRef.put(file,{contentType:MATERIAL_TYPES[ext],customMetadata:{materialId:id,createdBy:uid()}});state.materialUploadTask=task;
+   await new Promise((resolve,reject)=>task.on('state_changed',snap=>{
+    if(progress){const pct=Math.round(100*snap.bytesTransferred/snap.totalBytes);const strong=progress.querySelector('strong');if(strong)strong.textContent=`Enviando documento: ${pct}%`;const bar=$('material-upload-bar');if(bar)bar.value=pct;}
+   },reject,resolve));
+   uploadedPath=path;filePath=path;fileName=file.name.slice(0,150);fileSize=file.size;fileType=MATERIAL_TYPES[ext];
+   if(progress)progress.textContent='Upload concluído. Conferindo acesso ao arquivo...';await storageRef.getDownloadURL();
+  }
+  phase='database';
+  const payload={titulo,materia,descricao,tipo,link:tipo==='link'?link:'',filePath,fileName,fileSize,fileType,
+   createdBy:previous?.createdBy||uid(),createdByName:previous?.createdByName||state.profile?.name||'Professor(a)',createdAt:previous?.createdAt||Date.now(),updatedAt:Date.now()};
+  await materialRef.set(payload);
+  // Apaga o arquivo substituído somente após novo upload bem sucedido, nunca ao trocar para link.
+  if(tipo==='arquivo'&&uploadedPath&&previous?.filePath&&previous.filePath!==filePath){
+   try{await state.storage?.ref(previous.filePath).delete()}catch(e){console.warn('Arquivo antigo não removido',e)}
+  }
+  closeModal();toast(tipo==='link'?'Link do Google Drive publicado! ✳':'Material publicado com sucesso! ✳');
  }catch(e){
-   console.error('Falha na publicação:',e);
-   if(uploadedPath){try{await state.storage.ref(uploadedPath).delete()}catch(_){}}
-   const diag=materialStorageDiagnosis(e);if(progress)progress.textContent='Publicação não concluída. Nenhum registro novo foi salvo.';if(errorBox){errorBox.classList.remove('hidden');errorBox.innerHTML='<strong>Não foi possível enviar o arquivo.</strong><p>'+esc(diag.message)+'</p><p>Código: <code>'+esc(diag.code)+'</code></p><p>Abra o Firebase Console → Storage para conferir o bucket, plano e regras. Enquanto isso, escolha o tipo <b>Link externo</b> para cadastrar o documento por URL.</p>';}toast('Upload não concluído: '+diag.code,true);
+  console.error('Falha ao publicar material no estágio '+phase,e);
+  if(uploadedPath){try{await state.storage.ref(uploadedPath).delete()}catch(_){}}
+  const isStorage=phase==='storage'||String(e?.code||'').toLowerCase().startsWith('storage/');
+  const diag=isStorage?materialStorageDiagnosis(e):diagnoseMaterialDatabaseError(e);
+  if(progress)progress.textContent='Publicação não concluída. Nenhum material novo foi cadastrado.';
+  if(errorBox){
+   errorBox.classList.remove('hidden');
+   const explanation=isStorage?'Confira plano, bucket e regras do Firebase Storage. Para não usar Storage, selecione Google Drive ou link externo.':'Confira Realtime Database → Rules. É preciso permitir que professores autorizados cadastrem em /materiais, sem abrir o banco para qualquer usuário.';
+   errorBox.innerHTML='<strong>'+(isStorage?'Erro ao enviar arquivo':'Erro ao cadastrar material')+'</strong><p>'+esc(diag.message)+'</p><p>Código: <code>'+esc(diag.code)+'</code></p><p>'+esc(explanation)+'</p>';
+  }
+  toast((isStorage?'Upload':'Cadastro')+' não concluído: '+diag.code,true);
  }finally{state.uploading=false;state.materialUploadTask=null;button.disabled=false}
 }
 async function deleteMaterial(id){
