@@ -218,6 +218,32 @@ input[readonly]{background:#f2f7f3;color:#59716b}
 @media(max-width:870px){.enem-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:470px){.enem-tabs{flex-direction:column}.enem-tabs button{width:100%}.enem-overview{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* V16 · Filtros de varios alunos e relatorios mensais */
+.uq-header-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.uq-multi-picker{position:relative;width:100%;min-width:0;z-index:4}
+.uq-multi-picker[open]{z-index:30}
+.uq-multi-picker>summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:41px;padding:10px 13px;border:1px solid #dfe7e1;border-radius:12px;background:#fff;color:#17313a;cursor:pointer;font-size:13px}
+.uq-multi-picker>summary::-webkit-details-marker{display:none}
+.uq-multi-picker>summary:focus-visible{outline:2px solid #21b7a1;outline-offset:2px}
+.uq-multi-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.uq-multi-chevron{color:#71887e;flex-shrink:0;font-size:16px}
+.uq-multi-panel{position:absolute;left:0;right:0;top:calc(100% + 5px);background:#fff;box-shadow:0 12px 36px rgba(20,42,40,.16);border:1px solid #e3ece7;border-radius:14px;padding:9px;min-width:230px;z-index:50}
+.uq-multi-all{display:block;text-align:left;background:#eaf6f1;color:#0b7568;font-weight:750;border:0;border-radius:10px;padding:9px 11px;width:100%;font-size:12px;cursor:pointer}
+.uq-multi-scroll{max-height:220px;overflow-y:auto;padding:6px 0}
+.uq-multi-choice{display:flex;align-items:center;gap:8px;padding:8px 9px;border-radius:9px;color:#273c44;font-size:12px;cursor:pointer;font-weight:550}
+.uq-multi-choice:hover{background:#f5f9f6}
+.uq-multi-choice input{width:16px;height:16px;accent-color:#16ad99;flex-shrink:0}
+.uq-multi-note{padding:8px 5px 3px;border-top:1px solid #eef1ed;color:#76887f;font-size:10px}
+.uq-empty-choices{padding:8px;font-size:12px;color:#819288}
+.uq-month-actions{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap;margin-top:15px}
+.uq-report-sub{font-size:12px;color:#678077;line-height:1.6}
+.uq-report-students{max-height:220px;overflow-y:auto;border:1px solid #e0eae5;border-radius:13px;padding:9px;margin:10px 0}
+.uq-report-student{display:flex;align-items:center;gap:9px;padding:8px 6px;font-size:13px;cursor:pointer}
+.uq-report-student input{accent-color:#16ad99;width:17px;height:17px}
+.uq-report-warning{font-size:11px;line-height:1.6;color:#6e795f;background:#f3f7ed;border-radius:12px;padding:10px 12px;margin-top:12px}
+@media(max-width:760px){.uq-header-actions{width:100%;justify-content:stretch}.uq-header-actions .btn{flex:1}.uq-multi-panel{min-width:225px;right:auto;width:max(100%,260px)}}
+
 </style>
 <script>if(new URLSearchParams(location.search).get('versao')==='antiga')document.documentElement.dataset.legacyView='1';</script>
 <style>
@@ -289,7 +315,7 @@ const icons={home:'<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14"
 icons.ifes='<path d="M12 2 4 6v6c0 5.6 3.2 8.5 8 10 4.8-1.5 8-4.4 8-10V6l-8-4z"/><path d="m8.4 12 2.5 2.5 4.7-5"/>';
 icons.financeiro='<path d="M3 3v18h18"/><path d="m6 15 4-4 3 2 5-7"/><path d="M15 6h3v3"/>';
 const navs=[['home','Início'],['aulas','Aulas'],['tarefas','Tarefas'],['simulados','Simulados'],['plano','Plano de estudos'],['materiais','Materiais'],['ifes','IFES'],['financeiro','Financeiro']];
-const state={viewMode:'student',financeRecords:{},financeLoaded:false,financeLoadError:false,financeFrom:'',financeTo:'',financeStudent:'all',financeTeacher:'all',financeStatus:'all',ifesDetail:'',auth:null,db:null,user:null,profile:null,demo:false,section:'home',target:'all',teacherTargetCache:'all',users:[],aulas:[],simulados:[],resultados:[],plano:[],listeners:[],quiz:null,quizAnswers:{},quizIndex:0,review:null,viewFilter:'all',search:'',planFilter:'todas',teacherSimPanel:'lista',loading:false,materiais:[],materialFilter:'todos',materialSearch:'',storage:null,uploading:false,lessonTeacher:'all',lessonFrom:'',lessonTo:'',taskSearch:'',taskFilter:'all',avatarUrl:'',avatarCacheKey:'',ifesAccess:{},ifesAccessLoaded:false,ifesProgress:{},ifesSubject:'portugues',ifesOpenUnits:{'portugues-01':true},ifesManage:false,ifesStudentSearch:'',ifesQuery:'',ifesPendingOnly:false,ifesProgressUid:'',ifesProgressUnsub:null};
+const state={viewMode:'student',financeRecords:{},financeLoaded:false,financeLoadError:false,financeFrom:'',financeTo:'',financeStudent:'all',financeTeacher:'all',financeStatus:'all',ifesDetail:'',auth:null,db:null,user:null,profile:null,demo:false,section:'home',target:'all',teacherTargetCache:'all',users:[],aulas:[],simulados:[],resultados:[],plano:[],listeners:[],quiz:null,quizAnswers:{},quizIndex:0,review:null,viewFilter:'all',search:'',planFilter:'todas',teacherSimPanel:'lista',loading:false,materiais:[],materialFilter:'todos',materialSearch:'',storage:null,uploading:false,lessonTeacher:'all',lessonStudents:[],financeStudents:[],uqMultiOpen:'',lessonFrom:'',lessonTo:'',taskSearch:'',taskFilter:'all',avatarUrl:'',avatarCacheKey:'',ifesAccess:{},ifesAccessLoaded:false,ifesProgress:{},ifesSubject:'portugues',ifesOpenUnits:{'portugues-01':true},ifesManage:false,ifesStudentSearch:'',ifesQuery:'',ifesPendingOnly:false,ifesProgressUid:'',ifesProgressUnsub:null};
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const escapeAttr=esc;
@@ -386,8 +412,27 @@ function lessonDateValue(a){
   const br=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(raw);
   return br?`${br[3]}-${br[2]}-${br[1]}`:'';
 }
+// V16 · Selecao de varios alunos (somente estado local da interface).
+function uqStudentPicker(kind, students, selected){
+  const names=students.filter(u=>selected.includes(String(u.id))).map(u=>u.name||u.email||'Aluno');
+  const title=!names.length?'Todos os alunos':names.length===1?names[0]:`${names.length} alunos selecionados`;
+  const list=students.map(u=>{
+    const id=String(u.id),name=String(u.name||u.email||'Aluno');
+    return `<label class="uq-multi-choice"><input type="checkbox" data-multi-student="${kind}" value="${escapeAttr(id)}" ${selected.includes(id)?'checked':''}><span>${esc(name)}</span></label>`;
+  }).join('');
+  return `<details class="uq-multi-picker" ${state.uqMultiOpen===kind?'open':''}>
+    <summary aria-label="Escolher um ou varios alunos"><span class="uq-multi-label">${esc(title)}</span><span class="uq-multi-chevron">⌄</span></summary>
+    <div class="uq-multi-panel"><button type="button" class="uq-multi-all" data-multi-reset="${kind}">✓ Mostrar todos os alunos</button><div class="uq-multi-scroll">${list||'<p class="uq-empty-choices">Nenhum aluno disponivel</p>'}</div><div class="uq-multi-note">Marque um ou varios alunos. Sem selecao = todos.</div></div>
+  </details>`;
+}
+function uqEffectiveStudents(kind){
+  if(kind==='lesson')return state.lessonStudents.length?state.lessonStudents.slice():state.target==='all'?[]:[state.target];
+  return state.financeStudents.length?state.financeStudents.slice():state.financeStudent==='all'?[]:[state.financeStudent];
+}
+
 function aulas(){
-  const base=filtered(state.aulas);
+  const lessonSelected=uqEffectiveStudents('lesson');
+  const base=teacher()?state.aulas.filter(visible).filter(a=>!lessonSelected.length||lessonSelected.includes(String(a.studentUid))):filtered(state.aulas);
   const available=teacher()?state.aulas.filter(visible):base;
   const professorOptions=new Map();
   available.forEach(a=>{
@@ -411,11 +456,11 @@ function aulas(){
   const studentChoices=state.users.filter(u=>u.role==='student'&&!u.mergedInto&&!u.hiddenMerged&&(owner()||linked(u.id))).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));
   const filters=`<div class="lesson-filters ${teacher()?'':'single'}">
     ${teacher()?`<div class="field"><label for="lesson-teacher-filter">Professor</label><select id="lesson-teacher-filter" aria-label="Filtrar por professor"><option value="all">Todos os professores</option>${professors.map(([key,name])=>`<option value="${escapeAttr(key)}" ${state.lessonTeacher===key?'selected':''}>${esc(name)}</option>`).join('')}</select></div>
-    <div class="field"><label for="lesson-student-filter">Aluno</label><select id="lesson-student-filter" aria-label="Filtrar por aluno"><option value="all">Todos os alunos</option>${studentChoices.map(s=>`<option value="${escapeAttr(s.id)}" ${state.target===s.id?'selected':''}>${esc(s.name||s.email||'Aluno')}</option>`).join('')}</select></div>`:''}
+    <div class="field"><label>Alunos</label>${uqStudentPicker('lesson',studentChoices,lessonSelected)}</div>`:''}
     <div class="field"><label for="lesson-date-from">De</label><input id="lesson-date-from" type="date" value="${escapeAttr(state.lessonFrom)}" aria-label="Data inicial"></div>
     <div class="field"><label for="lesson-date-to">Até</label><input id="lesson-date-to" type="date" value="${escapeAttr(state.lessonTo)}" aria-label="Data final"></div>
   </div><div class="lesson-filters-footer"><div class="lesson-filter-summary" aria-live="polite">${periodInvalid?'A data inicial não pode ser posterior à data final.':`${data.length} ${data.length===1?'aula encontrada':'aulas encontradas'} · ${fmtDur(totalMinutes)} no período selecionado`}</div><button type="button" class="btn soft tiny lesson-filter-reset" data-action="reset-lesson-filters">Limpar filtros</button></div>`;
-  return `<div class="section-head"><div><div class="eyebrow">DIÁRIO DA JORNADA</div><h2>Minhas aulas <span style="color:#8ab79a">✎</span></h2><p>O que aprendemos e o que vem pela frente, sem complicação.</p></div>${teacher()?'<button class="btn primary" data-action="new-lesson">+ Registrar aula</button>':''}</div>
+  return `<div class="section-head"><div><div class="eyebrow">DIÁRIO DA JORNADA</div><h2>Minhas aulas <span style="color:#8ab79a">✎</span></h2><p>O que aprendemos e o que vem pela frente, sem complicação.</p></div>${teacher()?`<div class="uq-header-actions">${financeViewer()?'<button class="btn soft" data-action="monthly-report">↓ PDF mensal</button>':''}<button class="btn primary" data-action="new-lesson">+ Registrar aula</button></div>`:''}</div>
   <div class="grid-stats" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="stat-box"><span>Aulas no filtro</span><strong>${data.length}</strong></div><div class="stat-box"><span>Tempo no filtro</span><strong>${fmtDur(totalMinutes)}</strong></div></div>
   <div class="card"><div class="card-header"><h3>Histórico de aulas</h3><input id="lesson-search" type="search" class="search-input" value="${escapeAttr(state.search)}" placeholder="Buscar aula ou conteúdo..." aria-label="Buscar aulas"></div>
   ${filters}
@@ -500,7 +545,7 @@ function financePage(){
  if(!financeViewer())return '<div class="empty">Acesso restrito à administração.</div>';
  const rows=state.aulas.filter(visible).filter(a=>{
   const dt=lessonDateValue(a),t=lessonTeacherMeta(a).key;
-  return (!state.financeFrom||dt>=state.financeFrom)&&(!state.financeTo||dt<=state.financeTo)&&(state.financeStudent==='all'||a.studentUid===state.financeStudent)&&(state.financeTeacher==='all'||t===state.financeTeacher)&&(state.financeStatus==='all'||(a.statusFinanceiro||'previsto')===state.financeStatus);
+  return (!state.financeFrom||dt>=state.financeFrom)&&(!state.financeTo||dt<=state.financeTo)&&(!uqEffectiveStudents('finance').length||uqEffectiveStudents('finance').includes(String(a.studentUid)))&&(state.financeTeacher==='all'||t===state.financeTeacher)&&(state.financeStatus==='all'||(a.statusFinanceiro||'previsto')===state.financeStatus);
  }).sort((a,b)=>lessonDateValue(b).localeCompare(lessonDateValue(a)));
  const totals=rows.reduce((m,a)=>{const f=financeValue(a);m.valor+=f.valor;m.repasse+=f.repasse;m.liquido+=f.liquido;m.comValores+=Boolean(state.financeRecords[a.id]);return m},{valor:0,repasse:0,liquido:0,comValores:0});
  const profMap=new Map();state.aulas.filter(visible).forEach(a=>{const t=lessonTeacherMeta(a);profMap.set(t.key,t.name)});
@@ -512,7 +557,7 @@ function financePage(){
  const teacherRows=[...byTeacher.values()].sort((a,b)=>b.liquido-a.liquido).map(t=>`<tr><td>${esc(t.name)}</td><td>${t.aulas}</td><td>${brl(t.valor)}</td><td>${brl(t.repasse)}</td><td><strong>${brl(t.liquido)}</strong></td></tr>`).join('');
  const cols=rows.map(a=>{const f=financeValue(a);return `<tr><td>${dateBR(lessonDateValue(a))}</td><td>${esc(a.studentName||userName(a.studentUid)||'—')}</td><td>${esc(lessonTeacherMeta(a).name)}</td><td>${esc(a.materia||'Aula')}</td><td>${a.statusFinanceiro==='recebido'?'Realizada':'Prevista'}</td><td>${brl(f.valor)}</td><td>${brl(f.repasse)}</td><td><strong>${brl(f.liquido)}</strong></td><td><button class="btn soft tiny" data-action="finance-edit-lesson" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}">Editar</button></td></tr>`}).join('');
  return `<div class="finance-hero"><span class="eyebrow" style="color:#a2e9d0">PAINEL PRIVADO · ADMINISTRAÇÃO</span><h1>Financeiro 💹</h1><p>Receita, repasses e margem a partir das aulas cadastradas. Valores financeiros são carregados da coleção privada <b>financeiroAulas</b>.</p>${state.demo?'<span class="pill" style="background:#ffffff20;color:white">DADOS FICTÍCIOS · TESTE</span>':''}</div>
- <div class="card"><div class="finance-filter"><div class="field"><label>Data inicial</label><input type="date" id="finance-from" value="${escapeAttr(state.financeFrom)}"></div><div class="field"><label>Data final</label><input type="date" id="finance-to" value="${escapeAttr(state.financeTo)}"></div><div class="field"><label>Aluno</label><select id="finance-student"><option value="all">Todos</option>${opts(students.map(x=>[x.id,x.name||x.email||'Aluno']),state.financeStudent)}</select></div><div class="field"><label>Professor</label><select id="finance-teacher"><option value="all">Todos</option>${opts([...profMap.entries()],state.financeTeacher)}</select></div><div class="field"><label>Status</label><select id="finance-status"><option value="all" ${state.financeStatus==='all'?'selected':''}>Todos</option><option value="recebido" ${state.financeStatus==='recebido'?'selected':''}>Realizadas</option><option value="previsto" ${state.financeStatus==='previsto'?'selected':''}>Previstas</option></select></div><button type="button" class="btn outline" data-action="finance-clear">Limpar filtros</button><button type="button" class="btn soft" data-action="finance-export">↓ Exportar CSV</button></div></div>
+ <div class="card"><div class="finance-filter"><div class="field"><label>Data inicial</label><input type="date" id="finance-from" value="${escapeAttr(state.financeFrom)}"></div><div class="field"><label>Data final</label><input type="date" id="finance-to" value="${escapeAttr(state.financeTo)}"></div><div class="field"><label>Alunos</label>${uqStudentPicker('finance',students,uqEffectiveStudents('finance'))}</div><div class="field"><label>Professor</label><select id="finance-teacher"><option value="all">Todos</option>${opts([...profMap.entries()],state.financeTeacher)}</select></div><div class="field"><label>Status</label><select id="finance-status"><option value="all" ${state.financeStatus==='all'?'selected':''}>Todos</option><option value="recebido" ${state.financeStatus==='recebido'?'selected':''}>Realizadas</option><option value="previsto" ${state.financeStatus==='previsto'?'selected':''}>Previstas</option></select></div><button type="button" class="btn outline" data-action="finance-clear">Limpar filtros</button><button type="button" class="btn soft" data-action="finance-export">↓ Exportar CSV</button><button type="button" class="btn primary" data-action="monthly-report">↓ Relatório + cobrança PDF</button></div></div>
  <div class="finance-metrics"><div class="finance-metric"><small>FATURAMENTO</small><strong>${brl(totals.valor)}</strong><em>${rows.length} aulas no filtro</em></div><div class="finance-metric"><small>VALOR REPASSADO</small><strong>${brl(totals.repasse)}</strong><em>Pagamentos a professores</em></div><div class="finance-metric"><small>VALOR LÍQUIDO</small><strong>${brl(totals.liquido)}</strong><em>Faturamento − repasse</em></div><div class="finance-metric"><small>MARGEM</small><strong>${totals.valor?(totals.liquido/totals.valor*100).toFixed(1).replace('.',',')+'%':'—'}</strong><em>Resultado antes de outras despesas</em></div></div>
  ${!state.demo&&!state.financeLoaded?`<div class="preview-flag">Carregando informações financeiras. Caso apareça erro de permissão, confira as regras do Firebase.</div>`:''}
  ${totals.comValores<rows.length?`<div class="preview-flag">${rows.length-totals.comValores} aulas não possuem lançamento financeiro encontrado. Os valores dessas aulas estão sendo considerados R$ 0,00. Abra “Editar” para completar.</div>`:''}
@@ -522,7 +567,7 @@ function financePage(){
 }
 function financeExport(){
  if(!financeViewer())return;
- const rows=state.aulas.filter(visible).filter(a=>{const dt=lessonDateValue(a);return (!state.financeFrom||dt>=state.financeFrom)&&(!state.financeTo||dt<=state.financeTo)&&(state.financeStudent==='all'||a.studentUid===state.financeStudent)&&(state.financeTeacher==='all'||lessonTeacherMeta(a).key===state.financeTeacher)&&(state.financeStatus==='all'||(a.statusFinanceiro||'previsto')===state.financeStatus)});
+ const rows=state.aulas.filter(visible).filter(a=>{const dt=lessonDateValue(a);return (!state.financeFrom||dt>=state.financeFrom)&&(!state.financeTo||dt<=state.financeTo)&&(!uqEffectiveStudents('finance').length||uqEffectiveStudents('finance').includes(String(a.studentUid)))&&(state.financeTeacher==='all'||lessonTeacherMeta(a).key===state.financeTeacher)&&(state.financeStatus==='all'||(a.statusFinanceiro||'previsto')===state.financeStatus)});
  const enc=x=>'"'+String(x??'').replace(/"/g,'""')+'"';
  const csv=['Data;Aluno;Professor;Materia;Status;Faturamento;Repasse;Liquido',...rows.map(a=>{const f=financeValue(a);return [lessonDateValue(a),a.studentName||userName(a.studentUid),lessonTeacherMeta(a).name,a.materia,a.statusFinanceiro||'previsto',f.valor.toFixed(2).replace('.',','),f.repasse.toFixed(2).replace('.',','),f.liquido.toFixed(2).replace('.',',')].map(enc).join(';')})].join('\r\n');
  const url=URL.createObjectURL(new Blob(['\ufeff',csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='umquarto-financeiro-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
@@ -1207,10 +1252,10 @@ document.addEventListener('dragover',e=>{if(e.target.closest('[data-task-drop]')
 document.addEventListener('drop',e=>{const col=e.target.closest('[data-task-drop]');if(!col||parent())return;e.preventDefault();try{const item=JSON.parse(e.dataTransfer.getData('text/plain'));if(item.id&&item.student)moveTaskStatus(item.id,item.student,col.dataset.taskDrop)}catch(err){console.warn('Item não reconhecido',err)}});
 
 // Delegação de eventos: nenhuma interpolação de valores do banco em JavaScript executável.
-document.addEventListener('click',async e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action,id=b.dataset.id,student=b.dataset.student;try{switch(a){case'open-login':showAuth('login');break;case'register-tab':showAuth('register');break;case'login-tab':showAuth('login');break;case'back-landing':$('auth-screen').classList.add('hidden');$('landing').style.display='flex';break;case'demo':renderDemo('student');break;case'demo-teacher':renderDemo('teacher');break;case'switch-role':switchRole(id);break;case'finance-clear':state.financeFrom='';state.financeTo='';state.financeStudent='all';state.financeTeacher='all';state.financeStatus='all';render();break;case'finance-export':financeExport();break;case'finance-edit-lesson':if(financeViewer())lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-material':materialModal();break;case'edit-material':materialModal(state.materiais.find(x=>x.id===id));break;case'read-material':readMaterial(id);break;case'open-material':await openMaterial(id);break;case'drive-preview':driveMaterialPreview(id);break;case'drive-open':driveMaterialAction(id,'view');break;case'drive-download':driveMaterialAction(id,'download');break;case'delete-material':await deleteMaterial(id);break;case'logout':if(state.demo){state.demo=false;state.viewMode='student';state.user=null;state.profile=null;$('app').style.display='none';$('landing').style.display='flex'}else{resetSubscriptions();await state.auth.signOut()}break;case'nav':section(id);break;case'close-modal':closeModal();break;case'reset-lesson-filters':state.lessonTeacher='all';state.target='all';state.lessonFrom='';state.lessonTo='';state.search='';if(teacher())renderStudentPicker();render();break;case'new-lesson':lessonModal();break;case'edit-lesson':lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-mission':missionModal();break;case'edit-mission':missionModal(state.plano.find(x=>x.id===id&&x.studentUid===student));break;case'toggle-mission':await toggleMission(id,student);break;case'new-sim':simModal();break;case'sim-edit':simManager(id);break;case'edit-sim':simModal(state.simulados.find(s=>s.id===id));break;case'new-question':questionModal(state.simulados.find(s=>s.id===id));break;case'start-quiz':startQuiz(id);break;case'quit-quiz':if(confirm('Sair deste desafio? As respostas ainda não foram enviadas.')){state.quiz=null;render()}break;case'answer':state.quizAnswers[id]=b.dataset.value;render();break;case'quiz-back':if(state.quizIndex>0){const q=simQuestions(state.simulados.find(s=>s.id===state.quiz.simId))[state.quizIndex];if(q.tipo==='discursiva')state.quizAnswers[q.id]=$('discursive-answer')?.value||'';state.quizIndex--;render()}break;case'quiz-next':await quizNext();break;case'sim-tab':state.teacherSimPanel=id;render();break;case'plan-tab':state.planFilter=id;render();break;case'review':state.review=state.resultados.find(r=>r.id===id&&r.studentUid===student);render();break;case'close-review':state.review=null;render();break;case'toggle-sim-status':{const sim=state.simulados.find(s=>s.id===id);if(sim&&teacher()&&(owner()||mine(sim))&&!state.demo){await state.db.ref(`simulados/${id}/status`).set(sim.status==='publicado'?'rascunho':'publicado');closeModal();toast('Status atualizado.')}}break;case'remove-question':if(confirm('Excluir esta questão?')&&!state.demo){await state.db.ref(`simulados/${b.dataset.sim}/questoes/${id}`).remove();closeModal();toast('Questão removida.')}break;case'delete-sim':if(confirm('Excluir este simulado? Os resultados enviados serão mantidos.')&&!state.demo){const s=state.simulados.find(x=>x.id===id);if(!s||!(owner()||mine(s)))return;await state.db.ref('simulados/'+id).remove();closeModal();toast('Simulado excluído.')}break;case'delete-lesson':if(confirm('Excluir esta aula?')&&!state.demo){const x=state.aulas.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`aulas/${student}/${id}`).remove();if(owner()){try{await state.db.ref(`financeiroAulas/${id}`).remove()}catch(e){console.warn('Financeiro privado: ',e)}}closeModal();toast('Aula excluída.')}break;case'delete-mission':if(confirm('Excluir esta missão?')&&!state.demo){const x=state.plano.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`checklist/${student}/${id}`).remove();closeModal();toast('Missão excluída.')}break;}}catch(err){console.error(err);toast(errorText(err),true)}});
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action,id=b.dataset.id,student=b.dataset.student;try{switch(a){case'open-login':showAuth('login');break;case'register-tab':showAuth('register');break;case'login-tab':showAuth('login');break;case'back-landing':$('auth-screen').classList.add('hidden');$('landing').style.display='flex';break;case'demo':renderDemo('student');break;case'demo-teacher':renderDemo('teacher');break;case'switch-role':switchRole(id);break;case'finance-clear':state.financeFrom='';state.financeTo='';state.financeStudent='all';state.financeStudents=[];state.financeTeacher='all';state.financeStatus='all';render();break;case'finance-export':financeExport();break;case'monthly-report':uqOpenMonthlyReport();break;case'finance-edit-lesson':if(financeViewer())lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-material':materialModal();break;case'edit-material':materialModal(state.materiais.find(x=>x.id===id));break;case'read-material':readMaterial(id);break;case'open-material':await openMaterial(id);break;case'drive-preview':driveMaterialPreview(id);break;case'drive-open':driveMaterialAction(id,'view');break;case'drive-download':driveMaterialAction(id,'download');break;case'delete-material':await deleteMaterial(id);break;case'logout':if(state.demo){state.demo=false;state.viewMode='student';state.user=null;state.profile=null;$('app').style.display='none';$('landing').style.display='flex'}else{resetSubscriptions();await state.auth.signOut()}break;case'nav':section(id);break;case'close-modal':closeModal();break;case'reset-lesson-filters':state.lessonTeacher='all';state.target='all';state.lessonStudents=[];state.lessonFrom='';state.lessonTo='';state.search='';if(teacher())renderStudentPicker();render();break;case'new-lesson':lessonModal();break;case'edit-lesson':lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-mission':missionModal();break;case'edit-mission':missionModal(state.plano.find(x=>x.id===id&&x.studentUid===student));break;case'toggle-mission':await toggleMission(id,student);break;case'new-sim':simModal();break;case'sim-edit':simManager(id);break;case'edit-sim':simModal(state.simulados.find(s=>s.id===id));break;case'new-question':questionModal(state.simulados.find(s=>s.id===id));break;case'start-quiz':startQuiz(id);break;case'quit-quiz':if(confirm('Sair deste desafio? As respostas ainda não foram enviadas.')){state.quiz=null;render()}break;case'answer':state.quizAnswers[id]=b.dataset.value;render();break;case'quiz-back':if(state.quizIndex>0){const q=simQuestions(state.simulados.find(s=>s.id===state.quiz.simId))[state.quizIndex];if(q.tipo==='discursiva')state.quizAnswers[q.id]=$('discursive-answer')?.value||'';state.quizIndex--;render()}break;case'quiz-next':await quizNext();break;case'sim-tab':state.teacherSimPanel=id;render();break;case'plan-tab':state.planFilter=id;render();break;case'review':state.review=state.resultados.find(r=>r.id===id&&r.studentUid===student);render();break;case'close-review':state.review=null;render();break;case'toggle-sim-status':{const sim=state.simulados.find(s=>s.id===id);if(sim&&teacher()&&(owner()||mine(sim))&&!state.demo){await state.db.ref(`simulados/${id}/status`).set(sim.status==='publicado'?'rascunho':'publicado');closeModal();toast('Status atualizado.')}}break;case'remove-question':if(confirm('Excluir esta questão?')&&!state.demo){await state.db.ref(`simulados/${b.dataset.sim}/questoes/${id}`).remove();closeModal();toast('Questão removida.')}break;case'delete-sim':if(confirm('Excluir este simulado? Os resultados enviados serão mantidos.')&&!state.demo){const s=state.simulados.find(x=>x.id===id);if(!s||!(owner()||mine(s)))return;await state.db.ref('simulados/'+id).remove();closeModal();toast('Simulado excluído.')}break;case'delete-lesson':if(confirm('Excluir esta aula?')&&!state.demo){const x=state.aulas.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`aulas/${student}/${id}`).remove();if(owner()){try{await state.db.ref(`financeiroAulas/${id}`).remove()}catch(e){console.warn('Financeiro privado: ',e)}}closeModal();toast('Aula excluída.')}break;case'delete-mission':if(confirm('Excluir esta missão?')&&!state.demo){const x=state.plano.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`checklist/${student}/${id}`).remove();closeModal();toast('Missão excluída.')}break;}}catch(err){console.error(err);toast(errorText(err),true)}});
 document.addEventListener('submit',e=>{const f=e.target;e.preventDefault();if(f.getAttribute('id')==='login-form')return login(e);if(f.getAttribute('id')==='register-form')return register(e);if(f.getAttribute('id')==='form-lesson')return writeLesson(f);if(f.getAttribute('id')==='form-mission')return writeMission(f);if(f.getAttribute('id')==='form-sim')return writeSim(f);if(f.getAttribute('id')==='form-question')return writeQuestion(f);if(f.getAttribute('id')==='form-material')return saveMaterial(f);if(f.getAttribute('id')==='form-change-password'){const v=Object.fromEntries(new FormData(f).entries());if(v.pass!==v.confirm)return toast('As senhas não coincidem.',true);(async()=>{try{await state.user.updatePassword(v.pass);await state.db.ref(`users/${uid()}`).update({mustChangePassword:false,passwordChangedAt:Date.now()});state.profile.mustChangePassword=false;closeModal();connectData();shell()}catch(e){toast(errorText(e),true)}})()}});
 document.addEventListener('input',e=>{if(['lesson-value','lesson-transfer'].includes(e.target.id))showFinancePreview();if(e.target.id==='materials-search'){state.materialSearch=e.target.value;const pos=e.target.selectionStart;render();const next=$('materials-search');if(next){next.focus();next.setSelectionRange(pos,pos)}return;}if(e.target.id==='lesson-search'||e.target.id==='sim-search'){state.search=e.target.value;let start=e.target.selectionStart;render();const item=$(e.target.id);if(item){item.focus();item.setSelectionRange(start,start)}}});
-document.addEventListener('change',e=>{const fin={ 'finance-from':'financeFrom','finance-to':'financeTo','finance-student':'financeStudent','finance-teacher':'financeTeacher','finance-status':'financeStatus'};if(fin[e.target.id]){if(!financeViewer())return;state[fin[e.target.id]]=e.target.value;render();return}if(e.target.id==='material-type')updateMaterialFormFields();if(e.target.id==='materials-filter'){state.materialFilter=e.target.value;render()}if(e.target.id==='student-picker'){state.target=e.target.value;connectIfesProgress();render()}
+document.addEventListener('change',e=>{const fin={ 'finance-from':'financeFrom','finance-to':'financeTo','finance-student':'financeStudent','finance-teacher':'financeTeacher','finance-status':'financeStatus'};if(fin[e.target.id]){if(!financeViewer())return;state[fin[e.target.id]]=e.target.value;render();return}if(e.target.id==='material-type')updateMaterialFormFields();if(e.target.id==='materials-filter'){state.materialFilter=e.target.value;render()}if(e.target.id==='student-picker'){state.target=e.target.value;state.lessonStudents=[];connectIfesProgress();render()}
  if(e.target.id==='lesson-student-filter'){state.target=e.target.value;if(teacher())renderStudentPicker();render()}
  if(e.target.id==='lesson-teacher-filter'){state.lessonTeacher=e.target.value;render()}
  if(e.target.id==='lesson-date-from'){state.lessonFrom=e.target.value;render()}
@@ -1409,5 +1454,108 @@ document.addEventListener('change',e=>{
 
 if(new URLSearchParams(location.search).get('versao')==='antiga')showClassicLoader();
 else initFirebase();
+
+
+/* Um Quarto V16 — selecao multipla, fechamento mensal e impressao como PDF. */
+function uqReportCandidates(){
+  if(!financeViewer())return [];
+  return state.users.filter(u=>u.role==='student'&&!u.mergedInto&&!u.hiddenMerged)
+    .sort((a,b)=>String(a.name||a.email||'').localeCompare(String(b.name||b.email||''),'pt-BR'));
+}
+function uqOpenMonthlyReport(){
+  if(!financeViewer())return toast('Relatorios com cobranca sao exclusivos do Paulo.',true);
+  const selected=uqEffectiveStudents(state.section==='financeiro'?'finance':'lesson');
+  const stamp=new Date();const month=`${stamp.getFullYear()}-${String(stamp.getMonth()+1).padStart(2,'0')}`;
+  // Ao filtrar um periodo, o primeiro mes nao se torna obrigatorio; usuario confirma a competencia no formulario.
+  const students=uqReportCandidates();
+  modal(`<span class="eyebrow">UM QUARTO · RELATORIO MENSAL</span><h2>Relatorio e cobranca</h2>
+  <p class="uq-report-sub">Escolha o mes e um ou varios alunos. O documento gera uma pagina individual por aluno, sem repasses ou valor liquido.</p>
+  <form id="uq-month-form">
+   <div class="field"><label for="uq-report-month">Mes de referencia</label><input id="uq-report-month" type="month" required value="${month}"></div>
+   <div class="field"><label>Alunos (selecione um ou mais)</label><div class="uq-report-students">
+   ${students.map(u=>`<label class="uq-report-student"><input type="checkbox" name="student" value="${escapeAttr(u.id)}" ${selected.includes(u.id)?'checked':''}><span>${esc(u.name||u.email||'Aluno')}</span></label>`).join('')||'<p>Nenhum aluno disponivel.</p>'}
+   </div></div>
+   <div class="field"><label for="uq-report-kind">Tipo de documento</label><select id="uq-report-kind"><option value="both">Relatorio pedagogico + demonstrativo</option><option value="pedagogical">Somente relatorio pedagogico</option><option value="billing">Somente demonstrativo de aulas</option></select></div>
+   <div class="field"><label for="uq-report-due">Vencimento (opcional)</label><input id="uq-report-due" type="date"></div>
+   <div class="field"><label for="uq-report-notes">Mensagem aos responsaveis (opcional)</label><textarea id="uq-report-notes" maxlength="300" placeholder="Ex.: Agradecemos a parceria neste mes."></textarea></div>
+   <div class="uq-report-warning"><b>Privacidade:</b> varias paginas no mesmo PDF incluem dados de diferentes alunos. Antes de enviar aos responsaveis, gere um PDF individual selecionando somente o aluno correspondente. Totais financeiros representam valores cadastrados, nao confirmacao de pagamento.</div>
+   <div class="uq-month-actions"><button type="button" class="btn soft" data-action="close-modal">Cancelar</button><button type="submit" class="btn primary">Abrir relatorio para salvar PDF</button></div>
+  </form>`);
+}
+function uqPrintMonthlyReport(form){
+  if(!financeViewer())return toast('Sem acesso a relatorios financeiros.',true);
+  const studentIds=[...form.querySelectorAll('input[name="student"]:checked')].map(x=>x.value);
+  if(!studentIds.length)return toast('Selecione pelo menos um aluno para gerar o relatorio.',true);
+  const month=form.querySelector('#uq-report-month')?.value||'';
+  if(!/^\d{4}-\d{2}$/.test(month))return toast('Informe o mes de referencia.',true);
+  const kind=form.querySelector('#uq-report-kind')?.value||'both';
+  const due=form.querySelector('#uq-report-due')?.value||'';
+  const note=form.querySelector('#uq-report-notes')?.value?.trim()||'';
+  const currentStudents=uqReportCandidates();
+  const approved=studentIds.filter(id=>currentStudents.some(u=>u.id===id));
+  if(approved.length!==studentIds.length)return toast('Um dos alunos nao esta disponivel.',true);
+  if(!state.financeLoaded&&!state.demo)return toast('Os dados financeiros ainda nao foram carregados. Aguarde ou verifique a conexao.',true);
+  const logo=document.querySelector('#landing .brand-logo')?.src||document.querySelector('.brand-logo')?.src||'';
+  const monthName=new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(new Date(month+'-02T12:00:00'));
+  const issued=new Date().toLocaleDateString('pt-BR');
+  const pages=approved.map(studentUid=>{
+    const person=currentStudents.find(x=>x.id===studentUid)||{};
+    const aulas=state.aulas.filter(a=>a.studentUid===studentUid && lessonDateValue(a).slice(0,7)===month).sort((a,b)=>lessonDateValue(a).localeCompare(lessonDateValue(b)));
+    const minutes=aulas.reduce((n,a)=>n+num(a.dur||dur(a.inicio,a.fim)),0);
+    const grades=aulas.map(a=>Number(a.desempenho)).filter(x=>x>=1&&x<=5);
+    const interests=aulas.map(a=>Number(a.interesse)).filter(x=>x>=1&&x<=5);
+    const autonomies=aulas.map(a=>Number(a.autonomia)).filter(x=>x>=1&&x<=5);
+    const avg=a=>a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1).replace('.',',')+'/5':'—';
+    const subjects=[...new Set(aulas.map(a=>a.materia).filter(Boolean))].join(', ')||'Nao informado';
+    const studentsSchool=person.escola||aulas.find(a=>a.escola)?.escola||'Nao informada';
+    const content=aulas.map(a=>a.conteudo).filter(Boolean).slice(0,6);
+    const next=aulas.map(a=>a.orientacao).filter(Boolean).slice(0,3);
+    const observations=aulas.map(a=>a.observacoesImportantes||a.observacoes||a.obs).filter(Boolean).slice(0,3);
+    const values=aulas.reduce((t,a)=>{const f=state.financeRecords?.[a.id];if(f)t.confirmed++;t.total+=Number(financeValue(a).valor)||0;return t},{total:0,confirmed:0});
+    const financialComplete=values.confirmed===aulas.length;
+    const rows=aulas.map(a=>`<tr><td>${esc(dateBR(lessonDateValue(a)))}</td><td>${esc(a.materia||'Aula')}</td><td>${esc(lessonTeacherMeta(a).name)}</td><td>${esc(a.conteudo||'')}</td><td class="num">${brl(Number(financeValue(a).valor)||0)}</td></tr>`).join('');
+    const smallList=(items,placeholder)=>items.length?'<ul>'+items.map(t=>`<li>${esc(t)}</li>`).join('')+'</ul>':`<p class="light">${esc(placeholder)}</p>`;
+    return `<section class="page"><header class="report-head"><img src="${escapeAttr(logo)}" alt="Um Quarto"><span>RELATORIO MENSAL · ${esc(monthName)}</span></header>
+      <h1>${kind==='billing'?'Demonstrativo de aulas':kind==='pedagogical'?'Acompanhamento pedagogico':'Resumo de estudos e demonstrativo'}</h1><p class="subline">Estudante: <b>${esc(person.name||person.email||'Aluno')}</b> · Escola: ${esc(studentsSchool)} · Emissao: ${issued}</p>
+      ${kind!=='billing'?`<div class="summary"><div><span>Aulas</span><b>${aulas.length}</b></div><div><span>Carga horaria</span><b>${esc(fmtDur(minutes))}</b></div><div><span>Interesse medio</span><b>${avg(interests)}</b></div><div><span>Autonomia media</span><b>${avg(autonomies)}</b></div></div>
+      <h2>Aprendizagem do mes</h2><p><b>Disciplinas:</b> ${esc(subjects)}</p><p><b>Desempenho medio:</b> ${avg(grades)}</p>
+      <div class="two"><div><h3>Conteudos trabalhados</h3>${smallList(content,'Sem registros de conteudo.')}</div><div><h3>Orientacoes para continuar</h3>${smallList(next,'Sem orientacoes especificas registradas.')}</div></div>
+      ${observations.length?`<div class="observations"><h3>Observacoes das aulas</h3>${smallList(observations,'')}</div>`:''}`:''}
+      ${kind!=='pedagogical'?`<h2>Demonstrativo do periodo</h2><table><thead><tr><th>Data</th><th>Materia</th><th>Professor</th><th>Conteudo</th><th class="num">Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="5">Nenhuma aula registrada neste mes.</td></tr>'}</tbody></table><div class="total"><span>Valor das aulas registradas no periodo</span><b>${brl(values.total)}</b></div><p class="disclaimer">${financialComplete?'Valores com lancamentos financeiros cadastrados.':'Atenção: uma ou mais aulas ainda estao sem valor financeiro registrado. Confira antes de enviar.'} Este demonstrativo nao confirma pagamento nem desconta valores ja quitados.</p>${due?`<p><b>Vencimento informado:</b> ${esc(dateBR(due))}</p>`:''}`:''}
+      ${note?`<div class="message"><b>Mensagem:</b> ${esc(note)}</div>`:''}
+      <footer>UM QUARTO · Aprender com foco, crescer com constancia · Documento gerado por Paulo (administracao)</footer>
+      </section>`;
+  }).join('');
+  const css=`@page{size:A4;margin:15mm}*{box-sizing:border-box}body{font-family:Arial,Helvetica,sans-serif;color:#243944;background:#f0f5f1;margin:0;font-size:11px}.page{background:white;width:210mm;max-width:100%;min-height:277mm;margin:0 auto 14px;padding:17mm;page-break-after:always}.page:last-of-type{page-break-after:auto}.report-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #dfe9e3;padding-bottom:15px;color:#1f9e8b;font-size:10px;font-weight:700;letter-spacing:.6px}.report-head img{max-width:155px;max-height:47px;object-fit:contain}h1{font-size:24px;line-height:1.2;margin:24px 0 8px;color:#1c3c44}h2{font-size:15px;color:#185e59;margin:23px 0 11px}h3{font-size:12px;color:#1e5651;margin:10px 0}p{line-height:1.5}.subline{color:#60786e;border-bottom:1px solid #eef2ee;padding-bottom:16px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:16px 0}.summary>div{background:#f0f8f4;border:1px solid #dff0e7;padding:12px;border-radius:11px}.summary span{display:block;font-size:9px;color:#76918a;text-transform:uppercase}.summary b{display:block;font-size:17px;margin-top:5px;color:#134f48}.two{display:grid;grid-template-columns:1fr 1fr;gap:20px}.two>div{border:1px solid #e5ece8;border-radius:10px;padding:8px 12px}ul{padding-left:18px}li{margin:5px 0;line-height:1.45}.light{color:#92a39b}.observations{border-left:3px solid #1ab59d;background:#f3f8f5;padding:8px 13px;margin-top:10px;border-radius:0 10px 10px 0}table{width:100%;border-collapse:collapse;font-size:9px}th{background:#edf7f2;color:#246258;text-align:left;padding:9px;border-bottom:1px solid #d4e5db}td{padding:9px;border-bottom:1px solid #e9eee9;vertical-align:top;overflow-wrap:anywhere}th.num,td.num{text-align:right;white-space:nowrap}.total{display:flex;justify-content:space-between;background:#eff8f4;padding:15px;border-radius:10px;margin-top:13px;color:#155a50;font-weight:700}.total b{font-size:17px}.disclaimer{font-size:9px;color:#718178}.message{border:1px solid #e6eee7;border-radius:9px;padding:12px;margin:14px 0;line-height:1.4}footer{border-top:1px solid #e2eae5;margin-top:26px;padding-top:12px;color:#8ca299;font-size:9px;text-align:center}@media print{body{background:#fff}.page{width:auto;min-height:0;margin:0;box-shadow:none;padding:0}}@media screen{.page{box-shadow:0 8px 30px #0001}}`;
+  const win=window.open('','_blank');
+  if(!win)return toast('O navegador bloqueou a nova janela. Libere pop-ups para imprimir o relatorio.',true);
+  win.document.open();win.document.write('<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Um Quarto - Relatorio '+month+'</title><style>'+css+'</style></head><body><div style="text-align:center;padding:15px;font:13px Arial" class="print-actions"><button onclick="window.print()" style="background:#11a995;border:0;color:white;border-radius:9px;padding:12px 20px;cursor:pointer">Salvar / imprimir PDF</button> <span>Escolha "Salvar como PDF" na janela de impressao.</span></div>'+pages+'<style>@media print{.print-actions{display:none!important}}</style></body></html>');win.document.close();
+  toast('Relatorio preparado. Na nova aba, escolha Salvar / imprimir PDF.');
+}
+// Eventos independentes: a selecao altera SOMENTE o filtro local, nunca o banco de dados.
+document.addEventListener('change',e=>{
+  const inp=e.target.closest('input[data-multi-student]');if(!inp)return;
+  const kind=inp.dataset.multiStudent;
+  if(kind==='finance'&&!financeViewer())return;
+  if(kind==='lesson'&&!teacher())return;
+  const chosen=uqEffectiveStudents(kind),next=new Set(chosen),id=inp.value;
+  if(inp.checked)next.add(id);else next.delete(id);
+  if(kind==='lesson'){state.lessonStudents=[...next];state.target='all';renderStudentPicker()}
+  if(kind==='finance'){state.financeStudents=[...next];state.financeStudent='all'}
+  state.uqMultiOpen=kind;render();
+});
+document.addEventListener('click',e=>{
+  const reset=e.target.closest('[data-multi-reset]');if(!reset)return;
+  e.preventDefault();const kind=reset.dataset.multiReset;
+  if(kind==='finance'&&!financeViewer())return;
+  if(kind==='lesson'){state.lessonStudents=[];state.target='all';renderStudentPicker()}
+  if(kind==='finance'){state.financeStudents=[];state.financeStudent='all'}
+  state.uqMultiOpen=kind;render();
+});
+document.addEventListener('submit',e=>{
+  if(e.target.id!=='uq-month-form')return;
+  e.preventDefault();uqPrintMonthlyReport(e.target);
+});
+
 </script>
 </body></html>
