@@ -244,6 +244,56 @@ input[readonly]{background:#f2f7f3;color:#59716b}
 .uq-report-warning{font-size:11px;line-height:1.6;color:#6e795f;background:#f3f7ed;border-radius:12px;padding:10px 12px;margin-top:12px}
 @media(max-width:760px){.uq-header-actions{width:100%;justify-content:stretch}.uq-header-actions .btn{flex:1}.uq-multi-panel{min-width:225px;right:auto;width:max(100%,260px)}}
 
+
+/* V17 — público dos materiais: seleção clara, sem poluir a biblioteca. */
+.material-audience{border:1px solid #dce9e3;border-radius:16px;background:#f8fbf9;padding:16px;margin:14px 0}
+.material-audience h3{font-size:14px;margin:0 0 5px;color:#1e3c37}.material-audience .small{line-height:1.55}
+.material-audience select,.material-audience input[type="search"]{max-width:100%}
+.material-audience-panel{margin-top:13px}.material-audience-box{max-height:205px;overflow:auto;border:1px solid #dce6e0;border-radius:12px;background:white;padding:8px}
+.material-audience-choice{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;font-size:13px;cursor:pointer;min-height:36px}
+.material-audience-choice:hover{background:#f2f9f4}.material-audience-choice input{width:16px;height:16px;accent-color:#16ae94;flex-shrink:0}
+.material-audience-choice small{margin-left:auto;color:#6b8079;font-size:11px}
+.material-audience-choice[hidden]{display:none!important}.material-audience-badge{display:inline-flex;align-items:center;gap:5px;background:#f0f8f3;color:#337764;border-radius:100px;padding:5px 9px;font-size:11px;font-weight:800}
+.material-audience-info{font-size:12px;color:#53756a;line-height:1.55;margin-top:8px}.material-audience-toolbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}.material-sync{font-size:12px;white-space:nowrap}
+@media(max-width:600px){.material-audience{padding:12px}.material-audience-choice{align-items:flex-start}.material-audience-choice small{margin-left:0}}
+
+/* UM QUARTO V18 — Editor de tópicos, aulas e fórmulas */
+.uq-topic-edit{margin-left:5px!important;background:#eaf6ef!important;color:#236c59!important;border:1px solid #d4eadd!important;white-space:nowrap;font-size:11px!important}
+.uq-study-editor-modal{max-width:1000px!important;width:min(1000px,97vw)!important;padding:27px!important}
+.uq-edit-head{margin-bottom:20px;padding-right:36px}
+.uq-edit-head h2{margin:4px 0 8px;font-size:25px;color:#24443c}
+.uq-edit-head p{font-size:12px;color:#768a81;line-height:1.6}
+.uq-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
+.uq-editor-block{border:1px solid #e1eae3;padding:17px;border-radius:17px;background:#fff;min-width:0}
+.uq-editor-block.wide{grid-column:1/-1}
+.uq-editor-block h3{font-size:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px;color:#24463b}
+.uq-editor-hint{color:#86958c;font-size:11px;margin:0 0 14px;line-height:1.5}
+.uq-editor-block input,.uq-editor-block textarea,.uq-editor-block select{width:100%;background:#fcfdfa;border:1px solid #dfe8df;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.55;color:#243e38}
+.uq-editor-block textarea{resize:vertical;min-height:90px}
+.uq-editor-block label{display:block;margin-bottom:7px;color:#5c7166;font-size:11px;font-weight:800}
+.uq-edit-entry{background:#f7faf7;border:1px solid #e0eae2;border-radius:12px;padding:12px;margin:9px 0}
+.uq-edit-entry .uq-item-title{display:flex;justify-content:space-between;gap:8px;margin-bottom:10px;align-items:center;font-size:12px;font-weight:800;color:#6b8374}
+.uq-edit-entry .uq-line-input{margin-top:9px}
+.uq-mini-action{font-size:11px!important;padding:8px 11px!important;border-radius:10px!important;background:#e8f3ea!important;color:#246d53!important;border:1px solid #d3e7da!important;font-weight:800}
+.uq-remove-action{background:#fff6f3!important;color:#a25146!important;border-color:#f3e1db!important}
+.uq-topic-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;position:sticky;bottom:-27px;background:white;padding:17px 0 8px;border-top:1px solid #edf0eb;margin-top:18px}
+.uq-study-content{display:grid;gap:18px;margin:18px 0}
+.uq-study-note{border-left:3px solid #20b696;background:#f1faf6;padding:12px 17px;border-radius:0 12px 12px 0;color:#365f50;font-size:13px}
+.uq-study-text{white-space:pre-wrap;color:#53655a;line-height:1.8;font-size:14px}
+.uq-study-row{display:flex;align-items:flex-start;gap:10px;margin:9px 0}
+.uq-study-row .uq-num{background:#e8f5ed;border-radius:9px;padding:4px 8px;font-size:12px;color:#287e66;font-weight:800}
+.uq-formula-card{background:#f2faf7;border:1px solid #d7eee4;border-radius:12px;padding:16px;text-align:center;overflow:auto;min-height:65px}
+.uq-formula-card .katex-display{margin:.8em 0}
+.uq-formula-card code{font-size:14px;color:#245446;white-space:pre-wrap;overflow-wrap:anywhere}
+.uq-topic-check{display:flex;align-items:flex-start;gap:10px;margin:10px 0;padding:10px 12px;border-radius:12px;background:#f7faf8;font-size:12px;color:#33574b}
+.uq-topic-check input{width:17px;height:17px;accent-color:#199c7d;flex:0 0 17px;margin-top:2px}
+.uq-topic-check[aria-disabled="true"]{opacity:.65}
+.uq-inline-note{font-size:11px;color:#84988b;line-height:1.5}
+.uq-edit-summary{font-size:11px;color:#678577;background:#edf8f1;border-radius:999px;padding:4px 9px;white-space:nowrap}
+.uq-rich-preview{border:1px solid #e0ece3;background:#f7fcf9;padding:15px;border-radius:13px;line-height:1.7;white-space:pre-wrap;word-break:break-word;font-size:13px}
+.uq-insert-formula-help{margin-top:7px;font-size:11px;color:#7d9388}
+@media(max-width:650px){.uq-editor-grid{grid-template-columns:1fr}.uq-editor-block.wide{grid-column:1}.uq-study-editor-modal{padding:18px!important}.uq-topic-actions{bottom:-18px}}
+
 </style>
 <script>if(new URLSearchParams(location.search).get('versao')==='antiga')document.documentElement.dataset.legacyView='1';</script>
 <style>
@@ -282,6 +332,7 @@ html[data-legacy-view="1"] body>#legacy-loader{display:flex!important}
 .drive-preview-fallback{font-size:12px;color:#6a7d73;line-height:1.5;padding-top:12px}
 @media(max-width:600px){.drive-preview-modal{padding:14px;max-height:97dvh}.drive-preview-frame{height:65dvh;min-height:280px;border-radius:10px}.drive-preview-actions .btn{flex:1;justify-content:center}.drive-preview-heading h2{font-size:19px}}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
 </head>
 <body>
 <div id="landing">
@@ -300,6 +351,7 @@ html[data-legacy-view="1"] body>#legacy-loader{display:flex!important}
 </div>
 <div id="modal-cover" class="modal-cover" role="dialog" aria-modal="true" aria-label="Formulário"><div id="modal" class="modal"></div></div>
 <div id="toast" class="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -517,7 +569,7 @@ function ifesPage(){
  ${ifesOverview()}
  ${noStudent?`<div class="ifes-readonly">Para acompanhar o checklist de um estudante, selecione o aluno no filtro superior. O professor pode consultar o conteúdo, mas apenas o aluno marca seus estudos.</div>`:''}
  <section class="ifes-panel"><div class="ifes-panel-head"><div><span class="eyebrow">${chosen.emoji} ${esc(chosen.title.toUpperCase())}</span><h2>${esc(chosen.title)}</h2><div class="ifes-sub">${chosen.units.length} unidades, ${ifesTotal(chosen)} itens do edital · Sem conteúdo acrescentado fora do texto enviado</div></div><div class="ifes-toolbar"><input type="search" id="ifes-content-search" placeholder="Buscar um conteúdo..." value="${escapeAttr(state.ifesQuery)}" aria-label="Buscar conteúdo do IFES"><label class="ifes-search-only"><input type="checkbox" id="ifes-pending-only" ${state.ifesPendingOnly?'checked':''}> Somente pendentes</label></div></div>
- ${chosen.units.map(u=>{const relevant=u.items.filter(item=>(!q||u.title.toLocaleLowerCase('pt-BR').includes(q)||item.text.toLocaleLowerCase('pt-BR').includes(q))&&(!state.ifesPendingOnly||!state.ifesProgress[item.id]?.done));if(!relevant.length)return '';const unitDone=u.items.filter(i=>state.ifesProgress[i.id]?.done).length;const isOpen=Boolean(state.ifesOpenUnits[u.id])||Boolean(q)||state.ifesPendingOnly;return `<div class="ifes-unit"><button type="button" class="ifes-unit-btn" data-ifes-action="unit" data-id="${u.id}" aria-expanded="${isOpen}"><span style="display:flex;align-items:center;gap:10px;min-width:0"><span class="ifes-roman">${u.roman}</span><span class="ifes-unit-name">${esc(u.title)}</span></span><span class="ifes-unit-minor"><span>${unitDone}/${u.items.length}</span><span>${isOpen?'⌃':'⌄'}</span></span></button>${isOpen?`<div class="ifes-unit-content">${relevant.map(item=>{const complete=state.ifesProgress[item.id]?.done===true;return `<div class="ifes-item ${complete?'done':''}"><button class="ifes-item-button ${complete?'done':''}" type="button" data-ifes-action="toggle" data-id="${item.id}" aria-label="${complete?'Desmarcar':'Marcar'} ${escapeAttr(item.text)}" aria-pressed="${complete}" ${canMark?'':'disabled'}>${complete?'✓':''}</button><div class="ifes-item-text">${esc(item.text)}</div><button type="button" class="ifes-open-lesson" data-ifes-action="open-detail" data-id="${item.id}">${item.id==='matematica-02-03'?'📖 Ver aula':'↗ Abrir tópico'}</button>${complete?'<span class="ifes-status">FEITO</span>':''}</div>`}).join('')}</div>`:''}</div>`}).join('')||`<div class="ifes-no-data">Nenhum tópico encontrado com esses filtros.</div>`}
+ ${chosen.units.map(u=>{const relevant=u.items.filter(item=>(!q||u.title.toLocaleLowerCase('pt-BR').includes(q)||item.text.toLocaleLowerCase('pt-BR').includes(q))&&(!state.ifesPendingOnly||!state.ifesProgress[item.id]?.done));if(!relevant.length)return '';const unitDone=u.items.filter(i=>state.ifesProgress[i.id]?.done).length;const isOpen=Boolean(state.ifesOpenUnits[u.id])||Boolean(q)||state.ifesPendingOnly;return `<div class="ifes-unit"><button type="button" class="ifes-unit-btn" data-ifes-action="unit" data-id="${u.id}" aria-expanded="${isOpen}"><span style="display:flex;align-items:center;gap:10px;min-width:0"><span class="ifes-roman">${u.roman}</span><span class="ifes-unit-name">${esc(u.title)}</span></span><span class="ifes-unit-minor"><span>${unitDone}/${u.items.length}</span><span>${isOpen?'⌃':'⌄'}</span></span></button>${isOpen?`<div class="ifes-unit-content">${relevant.map(item=>{const complete=state.ifesProgress[item.id]?.done===true;return `<div class="ifes-item ${complete?'done':''}"><button class="ifes-item-button ${complete?'done':''}" type="button" data-ifes-action="toggle" data-id="${item.id}" aria-label="${complete?'Desmarcar':'Marcar'} ${escapeAttr(item.text)}" aria-pressed="${complete}" ${canMark?'':'disabled'}>${complete?'✓':''}</button><div class="ifes-item-text">${esc(item.text)}</div><button type="button" class="ifes-open-lesson" data-ifes-action="open-detail" data-id="${item.id}">${item.id==='matematica-02-03'?'📖 Ver aula':'↗ Abrir tópico'}</button>${uqEditorBtn('ifes',item.id)}${complete?'<span class="ifes-status">FEITO</span>':''}</div>`}).join('')}</div>`:''}</div>`}).join('')||`<div class="ifes-no-data">Nenhum tópico encontrado com esses filtros.</div>`}
  <details class="ifes-references"><summary>Referências bibliográficas indicadas no edital</summary><p>${esc(chosen.references||'Nenhuma referência informada.')}</p></details></section><div class="ifes-sub" style="padding-bottom:24px">Conteúdo organizado a partir do edital fornecido nesta conversa. Os itens concluídos são salvos na conta individual do aluno, quando o Firebase permite o acesso.</div>`;
 }
 
@@ -536,7 +588,7 @@ function ifesDetailPage(){
  <div class="ifes-study-card"><span class="ifes-detail-tag">05 · DEPOIS DE ESTUDAR</span><h2>Checklist de domínio</h2><ul><li>Sei identificar a incógnita e os dois membros da equação.</li><li>Consigo usar a propriedade da igualdade em cada etapa.</li><li>Sei resolver equações com parênteses.</li><li>Sei conferir a solução por substituição.</li></ul><p>Quando estiver seguro, marque este conteúdo como estudado na trilha.</p></div>`:
  `<section class="ifes-study-card"><span class="ifes-detail-tag">CONTEÚDO DO EDITAL</span><h2>${esc(d.item.text)}</h2><p>Este tópico está incluído na unidade <strong>${esc(d.unit.title)}</strong> de ${esc(d.subject.title)}.</p><div class="ifes-placeholder"><strong>Explicação em preparação.</strong><p>O conteúdo programático e seu checklist já estão disponíveis. Nesta versão demonstrativa, a aula explicativa completa foi desenvolvida apenas para “Equações polinomiais do 1º grau”, em Matemática.</p></div><h2 style="margin-top:20px">Roteiro para estudar</h2><ol><li>Identifique os conceitos principais do tópico no material didático.</li><li>Faça um resumo com suas palavras e um exemplo.</li><li>Resolva exercícios e anote as dúvidas.</li><li>Volte ao checklist e registre seu avanço.</li></ol></section>`;
  return `<div class="ifes-detail-wrap"><div class="ifes-detail-toolbar"><button type="button" class="btn outline" data-ifes-action="back-detail">← Voltar aos tópicos</button><span class="ifes-detail-tag">${esc(d.subject.title)} · Unidade ${esc(d.unit.roman)}</span></div>
- <div class="ifes-detail-cover"><span class="eyebrow">✦ BIBLIOTECA DE AULAS · IFES</span><h1>${esc(d.item.text)}</h1><p>${example?'Uma explicação prática, com exemplos resolvidos e desafios para dominar o tema.':'Abra, organize sua revisão e acompanhe esta etapa da preparação.'}</p></div>${body}
+ <div class="ifes-detail-cover"><span class="eyebrow">✦ BIBLIOTECA DE AULAS · IFES</span><h1>${esc(uqLessonTitle('ifes',d.item.id,d.item.text))}</h1><p>${example?'Uma explicação prática, com exemplos resolvidos e desafios para dominar o tema.':'Abra, organize sua revisão e acompanhe esta etapa da preparação.'}</p></div>${uqLessonMaterial('ifes',d.item.id)}${body}
  <div class="ifes-study-card" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div><strong>${complete?'✓ Conteúdo concluído':'Conteúdo pendente'}</strong><p style="margin:2px 0">O progresso é individual por aluno.</p></div><button type="button" class="btn ${complete?'outline':'primary'}" data-ifes-action="toggle" data-id="${d.item.id}" ${canMark?'':'disabled'}>${complete?'Desmarcar concluído':'✓ Marcar como estudado'}</button></div></div>`
 }
 
@@ -726,7 +778,9 @@ function resetSubscriptions(){disconnectIfesProgress();state.listeners.forEach(f
 function listen(path,onValue,onError){if(!state.db)return;const ref=state.db.ref(path);const value=s=>onValue(s.val()||{});const fail=e=>{console.warn('Permissão/escuta:',path,e);if(typeof onError==='function')onError(e);toast(`Não foi possível carregar ${path}. Verifique as regras do banco.`,true)};ref.on('value',value,fail);state.listeners.push(()=>ref.off('value',value))}
 async function onAuth(user){if(state.demo)return;resetSubscriptions();state.user=user;state.quiz=null;state.review=null;disconnectIfesProgress();state.ifesAccess={};state.ifesAccessLoaded=false;state.ifesProgress={};state.ifesManage=false;if(!user){$('app').style.display='none';$('auth-screen').classList.add('hidden');$('landing').style.display='flex';return}try{const snap=await state.db.ref('users/'+user.uid).once('value');state.profile=snap.val();if(!state.profile){state.profile={name:user.email?.split('@')[0]||'Estudante',email:user.email,role:user.email?.toLowerCase()===OWNER_EMAIL?'teacher':'student',createdAt:Date.now()};await state.db.ref('users/'+user.uid).set(state.profile)}if(user.email?.toLowerCase()===OWNER_EMAIL)state.profile.role='teacher';state.viewMode=(state.profile?.role==='teacher'?'teacher':'student');state.target='all';state.section='home';state.teacherSimPanel='lista';if(state.profile.mustChangePassword){showChangePassword();return}connectData();shell()}catch(e){console.error(e);toast(errorText(e),true)}}
 function showChangePassword(){ $('landing').style.display='none';$('auth-screen').classList.add('hidden');$('app').style.display='none';modal(`${formHead('PRIMEIRO ACESSO','Proteja sua conta','Crie uma nova senha antes de continuar.')}<form id="form-change-password"><div class="field"><label>Nova senha</label><input name="pass" type="password" autocomplete="new-password" minlength="6" required></div><div class="field"><label>Confirme a senha</label><input name="confirm" type="password" autocomplete="new-password" minlength="6" required></div><button class="btn primary" style="width:100%">Salvar senha</button></form>`) }
-function connectData(){resetSubscriptions();state.financeRecords={};state.financeLoaded=false;state.financeLoadError=false;const id=uid(),all=accountTeacher();if(!state.demo&&owner())listen('financeiroAulas',v=>{state.financeRecords=v||{};state.financeLoaded=true;state.financeLoadError=false;if(state.section==='financeiro'||state.section==='aulas')render()},()=>{state.financeLoadError=true;if(state.section==='financeiro'||state.section==='aulas')render()});if(!all)state.users=[{id,...state.profile}];else listen('users',v=>{state.users=objList(v);if(!state.demo){const self=state.users.find(x=>x.id===uid());if(self){state.profile={...state.profile,...self};refreshAvatar()}}renderStudentPicker();render()});listen('materiais',v=>{state.materiais=objList(v);render()});listen(all?'aulas':`aulas/${parent()?state.profile.studentUid:id}`,v=>{state.aulas=all?Object.entries(v).flatMap(([studentUid,a])=>objList(a).map(x=>({...x,studentUid:x.studentUid||studentUid}))):objList(v).map(x=>({...x,studentUid:parent()?state.profile.studentUid:id}));render()});if(!parent())listen(all?'checklist':`checklist/${id}`,v=>{state.plano=all?Object.entries(v).flatMap(([studentUid,a])=>objList(a).map(x=>({...x,studentUid:x.studentUid||studentUid}))):objList(v).map(x=>({...x,studentUid:id}));render()});if(!parent())listen('simulados',v=>{state.simulados=objList(v);render()});if(!parent())listen(all?'respostasSimulados':`respostasSimulados/${id}`,v=>{state.resultados=all?Object.entries(v).flatMap(([studentUid,a])=>objList(a).map(x=>({...x,studentUid:x.studentUid||studentUid}))):objList(v).map(x=>({...x,studentUid:id}));render()});if(!parent()){if(all)listen('ifesAccess',v=>{state.ifesAccess=v||{};state.ifesAccessLoaded=true;renderNav();render()});else listen(`ifesAccess/${id}`,v=>{state.ifesAccess={[id]:v||{}};state.ifesAccessLoaded=true;if(!canSeeIfes()&&state.section==='ifes')state.section='home';if(!canSeeIfes())disconnectIfesProgress();renderNav();render()})}}
+function connectData(){resetSubscriptions();state.financeRecords={};state.financeLoaded=false;state.financeLoadError=false;const id=uid(),all=accountTeacher();if(!state.demo&&owner())listen('financeiroAulas',v=>{state.financeRecords=v||{};state.financeLoaded=true;state.financeLoadError=false;if(state.section==='financeiro'||state.section==='aulas')render()},()=>{state.financeLoadError=true;if(state.section==='financeiro'||state.section==='aulas')render()});if(!all)state.users=[{id,...state.profile}];else listen('users',v=>{state.users=objList(v);if(!state.demo){const self=state.users.find(x=>x.id===uid());if(self){state.profile={...state.profile,...self};refreshAvatar()}}renderStudentPicker();render()});// O catálogo completo contém links privados: só professores podem lê-lo.
+ // Alunos carregam exclusivamente sua própria distribuição, nunca o catálogo completo.
+ listen(all?'materiais':`materiaisAluno/${parent()?state.profile.studentUid:id}`,v=>{state.materiais=objList(v);render()});listen(all?'aulas':`aulas/${parent()?state.profile.studentUid:id}`,v=>{state.aulas=all?Object.entries(v).flatMap(([studentUid,a])=>objList(a).map(x=>({...x,studentUid:x.studentUid||studentUid}))):objList(v).map(x=>({...x,studentUid:parent()?state.profile.studentUid:id}));render()});if(!parent())listen(all?'checklist':`checklist/${id}`,v=>{state.plano=all?Object.entries(v).flatMap(([studentUid,a])=>objList(a).map(x=>({...x,studentUid:x.studentUid||studentUid}))):objList(v).map(x=>({...x,studentUid:id}));render()});if(!parent())listen('simulados',v=>{state.simulados=objList(v);render()});if(!parent())listen(all?'respostasSimulados':`respostasSimulados/${id}`,v=>{state.resultados=all?Object.entries(v).flatMap(([studentUid,a])=>objList(a).map(x=>({...x,studentUid:x.studentUid||studentUid}))):objList(v).map(x=>({...x,studentUid:id}));render()});if(!parent()){if(all)listen('ifesAccess',v=>{state.ifesAccess=v||{};state.ifesAccessLoaded=true;renderNav();render()});else listen(`ifesAccess/${id}`,v=>{state.ifesAccess={[id]:v||{}};state.ifesAccessLoaded=true;if(!canSeeIfes()&&state.section==='ifes')state.section='home';if(!canSeeIfes())disconnectIfesProgress();renderNav();render()})}}
 async function login(e){e.preventDefault();if(!state.auth)return showAuthError('Firebase indisponível.');const login=$('login-id').value.trim().toLowerCase(),pass=$('login-password').value;if(!login||!pass)return;let candidates=login.includes('@')?[login]:LOCAL_DOMAINS.map(d=>`${login.replace(/\s+/g,'')}@${d}`),last;for(let email of candidates){try{await state.auth.signInWithEmailAndPassword(email,pass);return}catch(e){last=e;let c=String(e.code||'').toLowerCase();if(!/invalid-credential|wrong-password|user-not-found|invalid-login/.test(c))break}}showAuthError(errorText(last))}
 async function register(e){e.preventDefault();const name=$('reg-name').value.trim(),email=$('reg-email').value.trim().toLowerCase(),pass=$('reg-password').value,code=$('reg-code').value.trim();if(!name||!email.includes('@')||pass.length<6)return showAuthError('Preencha nome, e-mail e senha de no mínimo 6 caracteres.');if(code!==STUDENT_CODE)return showAuthError('Código de aluno inválido.');try{const c=await state.auth.createUserWithEmailAndPassword(email,pass);await state.db.ref('users/'+c.user.uid).set({name,email,role:'student',financeiro:false,admin:false,createdAt:Date.now()});state.profile={name,email,role:'student'};state.user=c.user;state.target='all';connectData();shell()}catch(e){showAuthError(errorText(e))}}
 function showAuthError(msg){$('auth-error').textContent=msg;$('auth-error').classList.remove('hidden')}
@@ -825,6 +879,113 @@ async function writeSim(f){if(!teacher())return;const v=Object.fromEntries(new F
 async function writeQuestion(f){const v=Object.fromEntries(new FormData(f).entries()),sim=state.simulados.find(s=>s.id===v.simId);if(!teacher()||!sim||!(owner()||mine(sim)))return toast('Sem permissão.',true);let p={enunciado:v.enunciado,tipo:v.tipo,area:v.area||'Geral',valor:1,comentarioGabarito:v.comentarioGabarito||'',ordem:Date.now(),createdBy:uid(),createdAt:Date.now()};if(v.tipo==='discursiva')p.respostaEsperada=v.respostaEsperada||'';else{p.alternativas=Object.fromEntries(['A','B','C','D'].filter(k=>v[k]?.trim()).map(k=>[k,v[k].trim()]));p.correta=v.correta;if(Object.keys(p.alternativas).length<2||!p.alternativas[p.correta])return toast('Preencha ao menos 2 alternativas e um gabarito válido.',true)}if(state.demo)return safeWrite(()=>{});try{f.querySelector('button[type=submit]').disabled=true;await state.db.ref(`simulados/${sim.id}/questoes`).push(p);closeModal();toast('Questão adicionada.');setTimeout(()=>simManager(sim.id),450)}catch(e){toast(errorText(e),true);f.querySelector('button[type=submit]').disabled=false}}
 async function toggleMission(id,studentUid){if(parent()||previewReadOnly())return;let it=state.plano.find(p=>p.id===id&&p.studentUid===studentUid);if(!it||!canManage(it))return toast('Sem permissão.',true);if(state.demo){it.feito=!it.feito;it.concluidoEm=it.feito?Date.now():null;render();toast(it.feito?'Missão completa! +XP ✳':'Missão reaberta');return}try{await state.db.ref(`checklist/${studentUid}/${id}`).update({feito:!it.feito,kanbanStatus:!it.feito?'concluido':'afazer',concluidoEm:!it.feito?Date.now():null});toast(!it.feito?'Missão concluída! XP conquistado ✳':'Missão reaberta')}catch(e){toast(errorText(e),true)}}
 async function quizNext(){let sim=state.simulados.find(s=>s.id===state.quiz?.simId),qs=simQuestions(sim);if(!qs.length)return;const q=qs[state.quizIndex];if(q.tipo==='discursiva')state.quizAnswers[q.id]=$('discursive-answer').value.trim();if(q.tipo!=='discursiva'&&!state.quizAnswers[q.id])return toast('Escolha uma alternativa antes de continuar.',true);if(state.quizIndex<qs.length-1){state.quizIndex++;render();return}if(!confirm('Enviar suas respostas e concluir o simulado?'))return;let respostas={},areas={},acertos=0,totalObj=0,pontosObtidos=0,pontosTotais=0,discursivas=0;for(const q of qs){let area=q.area||'Geral',value=num(q.valor)||1,resp=state.quizAnswers[q.id]||'';if(!areas[area])areas[area]={acertos:0,total:0,pontos:0,pontosTotais:0};let a=areas[area];a.total++;a.pontosTotais+=value;pontosTotais+=value;if(q.tipo==='discursiva'){discursivas++;respostas[q.id]={resposta:resp,tipo:'discursiva',area,valor:value,corrigida:false,pontos:0}}else{totalObj++;let correct=resp===q.correta;if(correct){acertos++;pontosObtidos+=value;a.acertos++;a.pontos+=value}respostas[q.id]={resposta:resp,tipo:'multipla',area,valor:value,correta:correct,corretaEsperada:q.correta,pontos:correct?value:0}}}Object.values(areas).forEach(a=>a.aproveitamento=a.pontosTotais?Math.round(a.pontos/a.pontosTotais*100):0);let p={simuladoId:sim.id,simuladoTitulo:sim.titulo||'Simulado',studentUid:uid(),studentName:state.profile?.name||'',studentEmail:state.user.email,respostas,questoesSnapshot:qs.map(q=>({id:q.id,ordem:q.ordem||0,tipo:q.tipo||'multipla',area:q.area||'Geral',enunciado:q.enunciado||'',alternativas:q.tipo==='multipla'?q.alternativas||{}:{},correta:q.correta||'',respostaEsperada:q.respostaEsperada||'',comentarioGabarito:q.comentarioGabarito||''})),resultado:{totalQuestoes:qs.length,totalObjetivas:totalObj,discursivas,acertosObjetivas:acertos,pontosObtidos,pontosTotais,aproveitamento:pontosTotais?Math.round(pontosObtidos/pontosTotais*100):0},desempenhoPorArea:areas,enviadoEm:Date.now(),createdBy:sim.createdBy,createdByEmail:sim.createdByEmail};if(state.demo){p.id='demo-result-'+Date.now();state.resultados.push(p);state.quiz=null;state.review=p;render();toast('Desafio concluído! +100 XP');return}try{await state.db.ref(`respostasSimulados/${uid()}`).push(p);state.quiz=null;state.review=p;render();toast('Desafio concluído! +100 XP')}catch(e){toast(errorText(e),true)}}
+
+// V17 · Destinatários dos materiais (separados do conteúdo financeiro).
+function materialStudents(){
+ return (state.users||[]).filter(u=>u.role==='student'&&!u.mergedInto&&u.hiddenMerged!==true)
+ .sort((a,b)=>String(a.name||a.email||'').localeCompare(String(b.name||b.email||''),'pt-BR'));
+}
+function materialSchoolKey(name){return String(name||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('pt-BR').trim().replace(/\s+/g,' ')}
+function materialSchools(){
+ const found=new Map();for(const s of materialStudents()){const name=studentSchool(s.id);if(name&&!found.has(materialSchoolKey(name)))found.set(materialSchoolKey(name),name)}
+ return [...found.values()].sort((a,b)=>a.localeCompare(b,'pt-BR'));
+}
+function materialMemberIds(audience){
+ return Array.isArray(audience?.recipientUids)?audience.recipientUids.filter(v=>typeof v==='string'&&v.length):[];
+}
+function materialAudienceMode(audience){return ['todos','aluno','grupo','escola'].includes(audience?.mode)?audience.mode:'todos'}
+function materialResolveRecipients(audience){
+ const mode=materialAudienceMode(audience),students=materialStudents();
+ if(mode==='todos')return students.map(s=>s.id);
+ if(mode==='aluno'||mode==='grupo'){
+  const ids=new Set((audience?.studentIds||[]).filter(v=>typeof v==='string'));
+  return students.filter(s=>ids.has(s.id)).map(s=>s.id);
+ }
+ const schools=new Set((audience?.schools||[]).map(materialSchoolKey));
+ return students.filter(s=>schools.has(materialSchoolKey(studentSchool(s.id)))).map(s=>s.id);
+}
+function materialAudienceName(m){
+ const audience=m.audience,mode=materialAudienceMode(audience);
+ if(!audience)return 'Público antigo · distribuir';
+ if(mode==='todos')return 'Todos os alunos';
+ if(mode==='aluno')return 'Aluno específico';
+ if(mode==='grupo')return (audience.groupName?audience.groupName+' · ':'')+`${materialMemberIds(audience).length} alunos`;
+ return (audience.schools||[]).join(', ')||'Escola';
+}
+function materialAllowedForStudent(m,studentUid){
+ if(!m)return false;
+ // Alunos recebem dados somente pelo próprio caminho materiaisAluno/<uid>.
+ if(!accountTeacher())return true;
+ const mode=materialAudienceMode(m.audience);
+ if(mode==='todos')return true;
+ return materialMemberIds(m.audience).includes(studentUid);
+}
+function materialAudienceSelector(m){
+ const audience=m.audience||{},mode=materialAudienceMode(audience),students=materialStudents(),schools=materialSchools(),chosen=new Set(audience.studentIds||[]),pickedSchools=new Set((audience.schools||[]).map(materialSchoolKey));
+ const studentChoices=students.map(u=>`<label class="material-audience-choice" data-material-student="1"><input type="checkbox" name="audStudent" value="${escapeAttr(u.id)}" ${chosen.has(u.id)?'checked':''}><span>${esc(u.name||u.email||'Aluno')}</span><small>${esc(studentSchool(u.id)||'Sem escola')}</small></label>`).join('');
+ const singleOptions=students.map(u=>`<option value="${escapeAttr(u.id)}" ${(audience.studentIds||[])[0]===u.id?'selected':''}>${esc(u.name||u.email||'Aluno')} · ${esc(studentSchool(u.id)||'Sem escola')}</option>`).join('');
+ const schoolChoices=schools.map(name=>`<label class="material-audience-choice"><input type="checkbox" name="audSchool" value="${escapeAttr(name)}" ${pickedSchools.has(materialSchoolKey(name))?'checked':''}><span>${esc(name)}</span><small>${students.filter(s=>materialSchoolKey(studentSchool(s.id))===materialSchoolKey(name)).length} aluno(s)</small></label>`).join('');
+ return `<div class="material-audience"><h3>Quem poderá ver este material?</h3><div class="small">Escolha um público. O link será entregue apenas às contas selecionadas dentro do Um Quarto.</div>
+ <div class="field" style="margin-top:12px"><label for="material-audience-mode">Destinatários</label><select id="material-audience-mode" name="audienceMode">
+ <option value="todos" ${mode==='todos'?'selected':''}>Todos os alunos cadastrados</option>
+ <option value="aluno" ${mode==='aluno'?'selected':''}>Um aluno específico</option>
+ <option value="grupo" ${mode==='grupo'?'selected':''}>Grupo personalizado de alunos</option>
+ <option value="escola" ${mode==='escola'?'selected':''}>Por escola</option></select></div>
+ <div class="material-audience-panel ${mode==='aluno'?'':'hidden'}" id="audience-single"><label for="material-audience-single">Aluno</label><select id="material-audience-single" name="audienceSingle"><option value="">Selecione um aluno...</option>${singleOptions}</select></div>
+ <div class="material-audience-panel ${mode==='grupo'?'':'hidden'}" id="audience-group"><label for="material-audience-groupname">Nome do grupo (opcional)</label><input name="audienceGroupName" id="material-audience-groupname" maxlength="70" placeholder="Ex.: Turma IFES 2027" value="${escapeAttr(audience.groupName||'')}">
+ <div style="margin-top:10px"><label for="material-audience-search">Selecione os alunos</label><input type="search" id="material-audience-search" placeholder="Buscar pelo nome ou escola..." autocomplete="off"><div class="material-audience-box" id="material-audience-list">${studentChoices||'<p class="small">Nenhum aluno cadastrado.</p>'}</div></div></div>
+ <div class="material-audience-panel ${mode==='escola'?'':'hidden'}" id="audience-school"><label>Selecione uma ou mais escolas</label><div class="material-audience-box">${schoolChoices||'<p class="small">Cadastre a escola dos alunos antes de publicar por escola.</p>'}</div></div>
+ <div class="material-audience-info" id="material-audience-count" aria-live="polite"></div>
+ <div class="material-audience-info">Para alunos novos ou que mudarem de escola, use <b>Atualizar distribuição</b> na biblioteca. Compartilhamentos no Google Drive continuam sujeitos às permissões do próprio Drive.</div></div>`;
+}
+function updateMaterialAudienceForm(){
+ const mode=$('material-audience-mode')?.value||'todos';
+ $('audience-single')?.classList.toggle('hidden',mode!=='aluno');
+ $('audience-group')?.classList.toggle('hidden',mode!=='grupo');
+ $('audience-school')?.classList.toggle('hidden',mode!=='escola');
+ const audience=materialAudienceFromForm(false),count=materialResolveRecipients(audience).length,el=$('material-audience-count');
+ if(el)el.textContent= `${count} aluno(s) receberão acesso na biblioteca`;
+}
+function materialAudienceFromForm(validate=true){
+ const mode=$('material-audience-mode')?.value||'todos';
+ let studentIds=[],schools=[],groupName='';
+ if(mode==='aluno'){const val=$('material-audience-single')?.value||'';if(val)studentIds=[val];}
+ if(mode==='grupo'){
+  studentIds=[...document.querySelectorAll('input[name="audStudent"]:checked')].map(el=>el.value);
+  groupName=String($('material-audience-groupname')?.value||'').trim().slice(0,70);
+ }
+ if(mode==='escola')schools=[...document.querySelectorAll('input[name="audSchool"]:checked')].map(el=>el.value);
+ const draft={mode,studentIds,schools,groupName};
+ draft.recipientUids=[...new Set(materialResolveRecipients(draft))];
+ if(validate&&draft.recipientUids.length===0)throw new Error('Escolha pelo menos um aluno ou escola com alunos cadastrados.');
+ return draft;
+}
+function materialFanoutUpdates(id,payload,oldAudience,remove=false){
+ const before=materialMemberIds(oldAudience),after=remove?[]:materialMemberIds(payload?.audience);
+ const updates={[`materiais/${id}`]:remove?null:payload},selected=new Set(after);
+ for(const studentUid of new Set([...before,...after])){
+  updates[`materiaisAluno/${studentUid}/${id}`]=selected.has(studentUid)?{
+   ...payload,id,deliveredFor:studentUid, // somente dados acadêmicos do próprio material
+   audience:{mode:payload.audience.mode, groupName:payload.audience.groupName||'',schools:payload.audience.schools||[]}
+  }:null;
+ }
+ return updates;
+}
+async function syncMaterialAudiences(){
+ if(!teacher()||state.demo)return toast('Faça login como professor para atualizar públicos.',true);
+ if(!confirm('Atualizar a distribuição de seus materiais com base nos cadastros atuais? Materiais antigos, sem público definido, serão disponibilizados a todos os alunos cadastrados.'))return;
+ let ok=0,failed=0;
+ for(const m of (state.materiais||[]).filter(x=>owner()||x.createdBy===uid())){
+  try{
+   const audience={...(m.audience||{mode:'todos'})};
+   audience.recipientUids=materialResolveRecipients(audience);
+   const updated={...m,audience,updatedAt:Date.now()};delete updated.id;
+   await state.db.ref().update(materialFanoutUpdates(m.id,updated,m.audience));ok++;
+  }catch(err){console.error('Falha na distribuição',m.id,err);failed++}
+ }
+ toast(`Distribuição atualizada em ${ok} material(is). ${failed?failed+' falha(s); confira as permissões.':''}`,!!failed);
+}
+
 // ===== MATERIAIS · módulo independente, sem alterar os dados anteriores =====
 const MATERIAL_MAX_BYTES = 20 * 1024 * 1024;
 const MATERIAL_TYPES = {pdf:'application/pdf',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'};
@@ -893,9 +1054,9 @@ function driveMaterialAction(id,action){
 
 function materialsPage(){
  const q=state.materialSearch.trim().toLocaleLowerCase('pt-BR'),kind=state.materialFilter;
- const materials=(state.materiais||[]).filter(m=>m&&(!kind||kind==='todos'||m.tipo===kind)&&(!q||[m.titulo,m.materia,m.descricao,m.createdByName,m.fileName].some(v=>String(v||'').toLocaleLowerCase('pt-BR').includes(q))))
+ const materials=(state.materiais||[]).filter(m=>m&&(teacher()||materialAllowedForStudent(m,parent()?state.profile?.studentUid:uid()))&&(!kind||kind==='todos'||m.tipo===kind)&&(!q||[m.titulo,m.materia,m.descricao,m.createdByName,m.fileName].some(v=>String(v||'').toLocaleLowerCase('pt-BR').includes(q))))
  .sort((a,b)=>Number(b.createdAt||0)-Number(a.createdAt||0));
- return `<div class="section-head"><div><div class="eyebrow">BIBLIOTECA DA JORNADA</div><h2>Materiais <span style="color:var(--green)">✳</span></h2><p>Explicações, listas e arquivos para estudar no seu ritmo.</p></div>${teacher()?'<button class="btn primary" data-action="new-material">+ Publicar material</button>':''}</div>
+ return `<div class="section-head"><div><div class="eyebrow">BIBLIOTECA DA JORNADA</div><h2>Materiais <span style="color:var(--green)">✳</span></h2><p>Explicações, listas e arquivos para estudar no seu ritmo.</p></div>${teacher()?'<div class="material-audience-toolbar"><button class="btn outline material-sync" data-action="sync-material-audiences" title="Atualiza o acesso dos alunos e materiais antigos">↻ Atualizar distribuição</button><button class="btn primary" data-action="new-material">+ Publicar material</button></div>':''}</div>
  <div class="material-help">${teacher()?'Use o Google Drive para disponibilizar PDFs e Word gratuitamente: envie o arquivo ao Drive, permita a visualização por link e cole o endereço aqui. Também é possível publicar explicações escritas e manter os materiais antigos.':'Abra os PDFs do Google Drive aqui mesmo ou use os botões para abrir e baixar o documento original.'}</div>
  <div class="card" style="margin-top:16px"><div class="card-header"><h3>Biblioteca de conteúdos</h3><span class="pill">${materials.length} ${materials.length===1?'material':'materiais'}</span></div>
  <div class="material-controls"><input id="materials-search" type="search" autocomplete="off" value="${escapeAttr(state.materialSearch)}" placeholder="Buscar assunto, título ou professor..." aria-label="Buscar materiais"><select id="materials-filter" aria-label="Filtrar tipo"><option value="todos" ${kind==='todos'?'selected':''}>Todos os tipos</option><option value="arquivo" ${kind==='arquivo'?'selected':''}>PDF e Word</option><option value="explicacao" ${kind==='explicacao'?'selected':''}>Explicações</option><option value="link" ${kind==='link'?'selected':''}>Links</option></select></div>
@@ -909,6 +1070,7 @@ function materialCard(m){
  <div class="eyebrow" style="font-size:10px">${esc(m.materia||'Conteúdo geral')}</div><h3>${esc(m.titulo||'Material sem título')}</h3>${desc?`<p>${esc(desc)}</p>`:''}
  ${m.tipo==='arquivo'?`<div class="small">${esc(m.fileName||'Arquivo')}${m.fileSize?' · '+materialNiceSize(num(m.fileSize)):''}</div>`:''}
  <div class="small">${esc(m.createdByName||'Professor(a)')}${m.createdAt?' · '+dateBR(dateOnly(m.createdAt)):''}</div>
+ ${teacher()?`<div><span class="material-audience-badge">◉ ${esc(materialAudienceName(m))}</span></div>`:''}
  <div class="material-actions">${m.tipo==='explicacao'?`<button class="btn green tiny" data-action="read-material" data-id="${escapeAttr(m.id)}">Ler explicação ↗</button>`:m.tipo==='link'&&driveMaterialInfo(m.link)?`<button class="btn green tiny" data-action="drive-preview" data-id="${escapeAttr(m.id)}">◧ Visualizar</button><button class="btn outline tiny" data-action="drive-open" data-id="${escapeAttr(m.id)}">↗ Abrir no Drive</button><button class="btn outline tiny" data-action="drive-download" data-id="${escapeAttr(m.id)}">↓ Baixar</button>`:canOpen?`<button class="btn green tiny" data-action="open-material" data-id="${escapeAttr(m.id)}">${m.tipo==='arquivo'?'Abrir arquivo ↗':'Abrir link ↗'}</button>`:''}
  ${canEdit?`<button class="btn outline tiny" data-action="edit-material" data-id="${escapeAttr(m.id)}">Editar</button><button class="btn ghost tiny" data-action="delete-material" data-id="${escapeAttr(m.id)}" title="Excluir material">Excluir</button>`:''}</div></article>`;
 }
@@ -923,8 +1085,9 @@ function materialModal(material=null){
  <div class="field"><label for="material-description">Explicação / Orientações</label><textarea id="material-description" name="descricao" maxlength="12000" rows="6" placeholder="Diga o que o aluno deve ler, estudar ou resolver...">${esc(m.descricao||'')}</textarea></div>
  <div id="material-upload-field" class="field ${type==='arquivo'?'':'hidden'}"><label for="material-file">Arquivo PDF ou Word ${m.filePath?'(deixe vazio para manter o existente)':'*'}</label><input type="file" id="material-file" name="arquivo" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" ${m.filePath?'':'required'}><div class="small" style="margin-top:7px">PDF, DOC ou DOCX · Máximo de 20 MB. É necessário ter Firebase Storage ativado e autorizado. Se o upload falhar, você também pode publicar um link para o documento.</div>${m.filePath?`<div class="small">Arquivo atual: ${esc(m.fileName||'Documento')}</div>`:''}</div>
  <div id="material-link-field" class="field ${type==='link'?'':'hidden'}"><label for="material-url">Link compartilhado do Google Drive *</label><input id="material-url" name="link" type="url" value="${escapeAttr(m.link||'')}" placeholder="https://drive.google.com/file/d/.../view" ${type==='link'?'required':''}><div class="material-drive-tip"><strong>Sem Firebase Storage:</strong> nesta opção, somente o link e a descrição são salvos no Realtime Database. <strong>Como publicar gratuitamente:</strong> envie o PDF ao Google Drive → Compartilhar → Acesso geral: Qualquer pessoa com o link (Leitor) → Copiar link → cole aqui. Para conteúdo restrito, compartilhe com os e-mails autorizados no Drive. A biblioteca não altera as permissões originais do arquivo.</div></div>
+ ${materialAudienceSelector(m)}
  <div id="material-upload-progress" class="file-status" role="status" aria-live="polite"></div><div id="material-upload-error" class="material-upload-diagnostic hidden" role="alert"></div><button class="btn primary" type="submit" style="width:100%">${material?'Salvar alterações':'Publicar material'} ↗</button></form>`);
- updateMaterialFormFields();
+ updateMaterialFormFields();updateMaterialAudienceForm();
 }
 function updateMaterialFormFields(){
  const tipo=$('material-type')?.value;
@@ -979,6 +1142,8 @@ async function saveMaterial(f){
  const tipo=$('material-type')?.value||String(data.get('tipo')||'link');
  const titulo=String(data.get('titulo')||'').trim(),materia=String(data.get('materia')||'').trim();
  const descricao=String(data.get('descricao')||'').trim(),link=String(data.get('link')||'').trim();
+ let materialAudience;
+ try{materialAudience=materialAudienceFromForm(true)}catch(e){return toast(e.message,true)}
  if(!titulo)return toast('Preencha o título.',true);
  if(!['link','arquivo','explicacao'].includes(tipo))return toast('Escolha um tipo de material válido.',true);
  if(tipo==='link'&&!validMaterialLink(link))return toast('Informe um link HTTP ou HTTPS válido.',true);
@@ -1016,8 +1181,9 @@ async function saveMaterial(f){
   }
   phase='database';
   const payload={titulo,materia,descricao,tipo,link:tipo==='link'?link:'',filePath,fileName,fileSize,fileType,
-   createdBy:previous?.createdBy||uid(),createdByName:previous?.createdByName||state.profile?.name||'Professor(a)',createdAt:previous?.createdAt||Date.now(),updatedAt:Date.now()};
-  await materialRef.set(payload);
+   createdBy:previous?.createdBy||uid(),createdByName:previous?.createdByName||state.profile?.name||'Professor(a)',createdAt:previous?.createdAt||Date.now(),updatedAt:Date.now(),audience:materialAudience};
+  // Gravação atômica: a fonte administrativa e as cópias dos destinatários são atualizadas juntas.
+  await state.db.ref().update(materialFanoutUpdates(id,payload,previous?.audience));
   // Apaga o arquivo substituído somente após novo upload bem sucedido, nunca ao trocar para link.
   if(tipo==='arquivo'&&uploadedPath&&previous?.filePath&&previous.filePath!==filePath){
    try{await state.storage?.ref(previous.filePath).delete()}catch(e){console.warn('Arquivo antigo não removido',e)}
@@ -1042,7 +1208,7 @@ async function deleteMaterial(id){
  if(!item||!(owner()||item.createdBy===uid()))return toast('Você não pode excluir este material.',true);
  if(!confirm(`Excluir “${item.titulo}” da biblioteca?`))return;
  if(state.demo)return toast('Demonstração: nada foi excluído.');
- try{await state.db.ref('materiais/'+id).remove();
+ try{await state.db.ref().update(materialFanoutUpdates(id,null,item.audience,true));
    if(item.filePath){try{await state.storage?.ref(item.filePath).delete()}catch(e){console.warn('Documento órfão, confira Firebase Storage',e);toast('Material removido da biblioteca, mas o arquivo precisa ser excluído no Storage.',true);return}}
    toast('Material excluído.');
  }catch(e){console.error(e);toast(errorText(e),true)}
@@ -1252,10 +1418,10 @@ document.addEventListener('dragover',e=>{if(e.target.closest('[data-task-drop]')
 document.addEventListener('drop',e=>{const col=e.target.closest('[data-task-drop]');if(!col||parent())return;e.preventDefault();try{const item=JSON.parse(e.dataTransfer.getData('text/plain'));if(item.id&&item.student)moveTaskStatus(item.id,item.student,col.dataset.taskDrop)}catch(err){console.warn('Item não reconhecido',err)}});
 
 // Delegação de eventos: nenhuma interpolação de valores do banco em JavaScript executável.
-document.addEventListener('click',async e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action,id=b.dataset.id,student=b.dataset.student;try{switch(a){case'open-login':showAuth('login');break;case'register-tab':showAuth('register');break;case'login-tab':showAuth('login');break;case'back-landing':$('auth-screen').classList.add('hidden');$('landing').style.display='flex';break;case'demo':renderDemo('student');break;case'demo-teacher':renderDemo('teacher');break;case'switch-role':switchRole(id);break;case'finance-clear':state.financeFrom='';state.financeTo='';state.financeStudent='all';state.financeStudents=[];state.financeTeacher='all';state.financeStatus='all';render();break;case'finance-export':financeExport();break;case'monthly-report':uqOpenMonthlyReport();break;case'finance-edit-lesson':if(financeViewer())lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-material':materialModal();break;case'edit-material':materialModal(state.materiais.find(x=>x.id===id));break;case'read-material':readMaterial(id);break;case'open-material':await openMaterial(id);break;case'drive-preview':driveMaterialPreview(id);break;case'drive-open':driveMaterialAction(id,'view');break;case'drive-download':driveMaterialAction(id,'download');break;case'delete-material':await deleteMaterial(id);break;case'logout':if(state.demo){state.demo=false;state.viewMode='student';state.user=null;state.profile=null;$('app').style.display='none';$('landing').style.display='flex'}else{resetSubscriptions();await state.auth.signOut()}break;case'nav':section(id);break;case'close-modal':closeModal();break;case'reset-lesson-filters':state.lessonTeacher='all';state.target='all';state.lessonStudents=[];state.lessonFrom='';state.lessonTo='';state.search='';if(teacher())renderStudentPicker();render();break;case'new-lesson':lessonModal();break;case'edit-lesson':lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-mission':missionModal();break;case'edit-mission':missionModal(state.plano.find(x=>x.id===id&&x.studentUid===student));break;case'toggle-mission':await toggleMission(id,student);break;case'new-sim':simModal();break;case'sim-edit':simManager(id);break;case'edit-sim':simModal(state.simulados.find(s=>s.id===id));break;case'new-question':questionModal(state.simulados.find(s=>s.id===id));break;case'start-quiz':startQuiz(id);break;case'quit-quiz':if(confirm('Sair deste desafio? As respostas ainda não foram enviadas.')){state.quiz=null;render()}break;case'answer':state.quizAnswers[id]=b.dataset.value;render();break;case'quiz-back':if(state.quizIndex>0){const q=simQuestions(state.simulados.find(s=>s.id===state.quiz.simId))[state.quizIndex];if(q.tipo==='discursiva')state.quizAnswers[q.id]=$('discursive-answer')?.value||'';state.quizIndex--;render()}break;case'quiz-next':await quizNext();break;case'sim-tab':state.teacherSimPanel=id;render();break;case'plan-tab':state.planFilter=id;render();break;case'review':state.review=state.resultados.find(r=>r.id===id&&r.studentUid===student);render();break;case'close-review':state.review=null;render();break;case'toggle-sim-status':{const sim=state.simulados.find(s=>s.id===id);if(sim&&teacher()&&(owner()||mine(sim))&&!state.demo){await state.db.ref(`simulados/${id}/status`).set(sim.status==='publicado'?'rascunho':'publicado');closeModal();toast('Status atualizado.')}}break;case'remove-question':if(confirm('Excluir esta questão?')&&!state.demo){await state.db.ref(`simulados/${b.dataset.sim}/questoes/${id}`).remove();closeModal();toast('Questão removida.')}break;case'delete-sim':if(confirm('Excluir este simulado? Os resultados enviados serão mantidos.')&&!state.demo){const s=state.simulados.find(x=>x.id===id);if(!s||!(owner()||mine(s)))return;await state.db.ref('simulados/'+id).remove();closeModal();toast('Simulado excluído.')}break;case'delete-lesson':if(confirm('Excluir esta aula?')&&!state.demo){const x=state.aulas.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`aulas/${student}/${id}`).remove();if(owner()){try{await state.db.ref(`financeiroAulas/${id}`).remove()}catch(e){console.warn('Financeiro privado: ',e)}}closeModal();toast('Aula excluída.')}break;case'delete-mission':if(confirm('Excluir esta missão?')&&!state.demo){const x=state.plano.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`checklist/${student}/${id}`).remove();closeModal();toast('Missão excluída.')}break;}}catch(err){console.error(err);toast(errorText(err),true)}});
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action,id=b.dataset.id,student=b.dataset.student;try{switch(a){case'open-login':showAuth('login');break;case'register-tab':showAuth('register');break;case'login-tab':showAuth('login');break;case'back-landing':$('auth-screen').classList.add('hidden');$('landing').style.display='flex';break;case'demo':renderDemo('student');break;case'demo-teacher':renderDemo('teacher');break;case'switch-role':switchRole(id);break;case'finance-clear':state.financeFrom='';state.financeTo='';state.financeStudent='all';state.financeStudents=[];state.financeTeacher='all';state.financeStatus='all';render();break;case'finance-export':financeExport();break;case'monthly-report':uqOpenMonthlyReport();break;case'finance-edit-lesson':if(financeViewer())lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-material':materialModal();break;case'sync-material-audiences':await syncMaterialAudiences();break;case'edit-material':materialModal(state.materiais.find(x=>x.id===id));break;case'read-material':readMaterial(id);break;case'open-material':await openMaterial(id);break;case'drive-preview':driveMaterialPreview(id);break;case'drive-open':driveMaterialAction(id,'view');break;case'drive-download':driveMaterialAction(id,'download');break;case'delete-material':await deleteMaterial(id);break;case'logout':if(state.demo){state.demo=false;state.viewMode='student';state.user=null;state.profile=null;$('app').style.display='none';$('landing').style.display='flex'}else{resetSubscriptions();await state.auth.signOut()}break;case'nav':section(id);break;case'close-modal':closeModal();break;case'reset-lesson-filters':state.lessonTeacher='all';state.target='all';state.lessonStudents=[];state.lessonFrom='';state.lessonTo='';state.search='';if(teacher())renderStudentPicker();render();break;case'new-lesson':lessonModal();break;case'edit-lesson':lessonModal(state.aulas.find(x=>x.id===id&&x.studentUid===student));break;case'new-mission':missionModal();break;case'edit-mission':missionModal(state.plano.find(x=>x.id===id&&x.studentUid===student));break;case'toggle-mission':await toggleMission(id,student);break;case'new-sim':simModal();break;case'sim-edit':simManager(id);break;case'edit-sim':simModal(state.simulados.find(s=>s.id===id));break;case'new-question':questionModal(state.simulados.find(s=>s.id===id));break;case'start-quiz':startQuiz(id);break;case'quit-quiz':if(confirm('Sair deste desafio? As respostas ainda não foram enviadas.')){state.quiz=null;render()}break;case'answer':state.quizAnswers[id]=b.dataset.value;render();break;case'quiz-back':if(state.quizIndex>0){const q=simQuestions(state.simulados.find(s=>s.id===state.quiz.simId))[state.quizIndex];if(q.tipo==='discursiva')state.quizAnswers[q.id]=$('discursive-answer')?.value||'';state.quizIndex--;render()}break;case'quiz-next':await quizNext();break;case'sim-tab':state.teacherSimPanel=id;render();break;case'plan-tab':state.planFilter=id;render();break;case'review':state.review=state.resultados.find(r=>r.id===id&&r.studentUid===student);render();break;case'close-review':state.review=null;render();break;case'toggle-sim-status':{const sim=state.simulados.find(s=>s.id===id);if(sim&&teacher()&&(owner()||mine(sim))&&!state.demo){await state.db.ref(`simulados/${id}/status`).set(sim.status==='publicado'?'rascunho':'publicado');closeModal();toast('Status atualizado.')}}break;case'remove-question':if(confirm('Excluir esta questão?')&&!state.demo){await state.db.ref(`simulados/${b.dataset.sim}/questoes/${id}`).remove();closeModal();toast('Questão removida.')}break;case'delete-sim':if(confirm('Excluir este simulado? Os resultados enviados serão mantidos.')&&!state.demo){const s=state.simulados.find(x=>x.id===id);if(!s||!(owner()||mine(s)))return;await state.db.ref('simulados/'+id).remove();closeModal();toast('Simulado excluído.')}break;case'delete-lesson':if(confirm('Excluir esta aula?')&&!state.demo){const x=state.aulas.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`aulas/${student}/${id}`).remove();if(owner()){try{await state.db.ref(`financeiroAulas/${id}`).remove()}catch(e){console.warn('Financeiro privado: ',e)}}closeModal();toast('Aula excluída.')}break;case'delete-mission':if(confirm('Excluir esta missão?')&&!state.demo){const x=state.plano.find(x=>x.id===id&&x.studentUid===student);if(!x||!canManage(x))return;await state.db.ref(`checklist/${student}/${id}`).remove();closeModal();toast('Missão excluída.')}break;}}catch(err){console.error(err);toast(errorText(err),true)}});
 document.addEventListener('submit',e=>{const f=e.target;e.preventDefault();if(f.getAttribute('id')==='login-form')return login(e);if(f.getAttribute('id')==='register-form')return register(e);if(f.getAttribute('id')==='form-lesson')return writeLesson(f);if(f.getAttribute('id')==='form-mission')return writeMission(f);if(f.getAttribute('id')==='form-sim')return writeSim(f);if(f.getAttribute('id')==='form-question')return writeQuestion(f);if(f.getAttribute('id')==='form-material')return saveMaterial(f);if(f.getAttribute('id')==='form-change-password'){const v=Object.fromEntries(new FormData(f).entries());if(v.pass!==v.confirm)return toast('As senhas não coincidem.',true);(async()=>{try{await state.user.updatePassword(v.pass);await state.db.ref(`users/${uid()}`).update({mustChangePassword:false,passwordChangedAt:Date.now()});state.profile.mustChangePassword=false;closeModal();connectData();shell()}catch(e){toast(errorText(e),true)}})()}});
-document.addEventListener('input',e=>{if(['lesson-value','lesson-transfer'].includes(e.target.id))showFinancePreview();if(e.target.id==='materials-search'){state.materialSearch=e.target.value;const pos=e.target.selectionStart;render();const next=$('materials-search');if(next){next.focus();next.setSelectionRange(pos,pos)}return;}if(e.target.id==='lesson-search'||e.target.id==='sim-search'){state.search=e.target.value;let start=e.target.selectionStart;render();const item=$(e.target.id);if(item){item.focus();item.setSelectionRange(start,start)}}});
-document.addEventListener('change',e=>{const fin={ 'finance-from':'financeFrom','finance-to':'financeTo','finance-student':'financeStudent','finance-teacher':'financeTeacher','finance-status':'financeStatus'};if(fin[e.target.id]){if(!financeViewer())return;state[fin[e.target.id]]=e.target.value;render();return}if(e.target.id==='material-type')updateMaterialFormFields();if(e.target.id==='materials-filter'){state.materialFilter=e.target.value;render()}if(e.target.id==='student-picker'){state.target=e.target.value;state.lessonStudents=[];connectIfesProgress();render()}
+document.addEventListener('input',e=>{if(e.target.id==='material-audience-search'){const q=materialSchoolKey(e.target.value);document.querySelectorAll('#material-audience-list [data-material-student]').forEach(el=>{el.hidden=!materialSchoolKey(el.textContent).includes(q)});return;}if(['lesson-value','lesson-transfer'].includes(e.target.id))showFinancePreview();if(e.target.id==='materials-search'){state.materialSearch=e.target.value;const pos=e.target.selectionStart;render();const next=$('materials-search');if(next){next.focus();next.setSelectionRange(pos,pos)}return;}if(e.target.id==='lesson-search'||e.target.id==='sim-search'){state.search=e.target.value;let start=e.target.selectionStart;render();const item=$(e.target.id);if(item){item.focus();item.setSelectionRange(start,start)}}});
+document.addEventListener('change',e=>{const fin={ 'finance-from':'financeFrom','finance-to':'financeTo','finance-student':'financeStudent','finance-teacher':'financeTeacher','finance-status':'financeStatus'};if(fin[e.target.id]){if(!financeViewer())return;state[fin[e.target.id]]=e.target.value;render();return}if(e.target.id==='material-type')updateMaterialFormFields();if(e.target.id==='material-audience-mode'||e.target.matches('input[name=audStudent],input[name=audSchool]')||e.target.id==='material-audience-single')updateMaterialAudienceForm();if(e.target.id==='materials-filter'){state.materialFilter=e.target.value;render()}if(e.target.id==='student-picker'){state.target=e.target.value;state.lessonStudents=[];connectIfesProgress();render()}
  if(e.target.id==='lesson-student-filter'){state.target=e.target.value;if(teacher())renderStudentPicker();render()}
  if(e.target.id==='lesson-teacher-filter'){state.lessonTeacher=e.target.value;render()}
  if(e.target.id==='lesson-date-from'){state.lessonFrom=e.target.value;render()}
@@ -1385,8 +1551,9 @@ function enemLesson(){
  const isExample=area.id==='matematica'&&kind==='conteudo'&&/porcentagem|juros/i.test(item.text);
  const example=isExample?`<div class="ifes-study-card"><span class="ifes-detail-tag">EXEMPLO DIDÁTICO DO UM QUARTO</span><h2>Porcentagem no dia a dia</h2><p>Porcentagem representa uma razão em cada 100 partes. Para encontrar 20% de R$ 150, calcule 0,20 × 150 = <strong>R$ 30</strong>.</p><div class="ifes-solve"><span>Preço original: R$ 150</span><span>Desconto de 20%: R$ 30</span><span>Preço final: R$ 120</span></div><h2>Pratique</h2><p>Um produto de R$ 200 recebe um desconto de 15%. Quanto passa a custar?</p><details><summary>Ver resolução</summary><p>15% de 200 = 0,15 × 200 = R$ 30. Preço final: <strong>R$ 170</strong>.</p></details><p class="ifes-sub">Este exemplo é explicação autoral, não transcrição da matriz do INEP.</p></div>`:'';
  const reference=kind==='habilidade'?`Habilidade ${item.code} da competência ${unit.number} em ${area.title}.`:unit.title + (unit.group?' · '+unit.group:'');
- return `<div class="ifes-detail-wrap"><div class="ifes-detail-cover"><button type="button" class="btn outline" data-enem-action="back-detail" style="margin-bottom:17px;background:#ffffff19;color:white;border-color:#ffffff38">← Voltar para ENEM</button><div class="eyebrow">ENEM · ${esc(area.title)}</div><h1>${esc(kind==='habilidade'?item.code+' · Habilidade':unit.title)}</h1><p>${esc(reference)}</p></div>
+ return `<div class="ifes-detail-wrap"><div class="ifes-detail-cover"><button type="button" class="btn outline" data-enem-action="back-detail" style="margin-bottom:17px;background:#ffffff19;color:white;border-color:#ffffff38">← Voltar para ENEM</button><div class="eyebrow">ENEM · ${esc(area.title)}</div><h1>${esc(uqLessonTitle('enem',item.id,kind==='habilidade'?item.code+' · Habilidade':item.text))}</h1><p>${esc(reference)}</p></div>
  <div class="ifes-study-card"><span class="ifes-detail-tag">DESCRIÇÃO OFICIAL DA MATRIZ</span><h2>${kind==='habilidade'?'O que esta habilidade avalia?':'O que estudar neste tópico?'}</h2><p style="line-height:1.9">${esc(item.text)}</p>${kind==='conteudo'?`<details><summary>Ver trecho integral deste objeto de conhecimento</summary><p style="line-height:1.9;white-space:pre-line">${esc(unit.text)}</p></details>`:''}</div>
+ ${uqLessonMaterial('enem',item.id)}
  ${example||`<div class="ifes-study-card"><span class="ifes-detail-tag">ORIENTAÇÃO DE ESTUDO</span><h2>Como estudar</h2><ol><li>Leia o objeto ou habilidade descritos acima.</li><li>Estude teoria e exemplos em um material confiável.</li><li>Resolva questões de provas anteriores relacionadas ao tema.</li><li>Retome os erros antes de marcar o checklist.</li></ol><p class="ifes-sub">Explicação didática detalhada deste tópico ainda não publicada.</p></div>`}
  <div class="ifes-study-card" style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap"><div><strong>Seu progresso</strong><p class="ifes-sub">Marque quando tiver estudado e revisado o conteúdo.</p></div><button class="btn ${done?'outline':'green'}" type="button" data-enem-action="toggle" data-id="${escapeAttr(item.id)}" ${canMark?'':'disabled'}>${done?'✓ Estudado · Desmarcar':'✓ Marcar como estudado'}</button></div></div>`;
 }
@@ -1411,7 +1578,7 @@ function enemPage(){
    if(!filteredItems.length)return '';
    const unitDone=items.filter(i=>state.enemProgress[i.id]?.done===true).length;
    const open=Boolean(state.enemOpenUnits[unit.id])||Boolean(keyword)||state.enemPendingOnly;
-   return `<div class="ifes-unit"><button class="ifes-unit-btn" type="button" data-enem-action="unit" data-id="${escapeAttr(unit.id)}" aria-expanded="${open}"><span style="display:flex;gap:10px;align-items:center;min-width:0"><span class="ifes-roman">${isAbility?String(unit.number).padStart(2,'0'):'★'}</span><span class="ifes-unit-name">${esc(isAbility?'Competência '+unit.number+' · '+unit.title:(unit.group?unit.group+' · ':'')+unit.title)}</span></span><span class="ifes-unit-minor">${unitDone}/${items.length} ${open?'⌃':'⌄'}</span></button>${open?`<div class="ifes-unit-content">${filteredItems.map(item=>{const complete=state.enemProgress[item.id]?.done===true;return `<div class="ifes-item ${complete?'done':''}"><button class="ifes-item-button ${complete?'done':''}" type="button" data-enem-action="toggle" data-id="${escapeAttr(item.id)}" aria-label="${complete?'Desmarcar':'Marcar'} ${escapeAttr(item.code)}" ${canMark?'':'disabled'}>${complete?'✓':''}</button><div class="ifes-item-text">${isAbility?`<strong>${esc(item.code)}</strong> · `:''}${esc(item.text)}</div><button type="button" class="ifes-open-lesson" data-enem-action="detail" data-id="${escapeAttr(item.id)}">↗ Abrir tópico</button>${complete?'<span class="ifes-status">FEITO</span>':''}</div>`}).join('')}</div>`:''}</div>`}).join('')||'<div class="ifes-no-data">Nenhum item encontrado.</div>'}
+   return `<div class="ifes-unit"><button class="ifes-unit-btn" type="button" data-enem-action="unit" data-id="${escapeAttr(unit.id)}" aria-expanded="${open}"><span style="display:flex;gap:10px;align-items:center;min-width:0"><span class="ifes-roman">${isAbility?String(unit.number).padStart(2,'0'):'★'}</span><span class="ifes-unit-name">${esc(isAbility?'Competência '+unit.number+' · '+unit.title:(unit.group?unit.group+' · ':'')+unit.title)}</span></span><span class="ifes-unit-minor">${unitDone}/${items.length} ${open?'⌃':'⌄'}</span></button>${open?`<div class="ifes-unit-content">${filteredItems.map(item=>{const complete=state.enemProgress[item.id]?.done===true;return `<div class="ifes-item ${complete?'done':''}"><button class="ifes-item-button ${complete?'done':''}" type="button" data-enem-action="toggle" data-id="${escapeAttr(item.id)}" aria-label="${complete?'Desmarcar':'Marcar'} ${escapeAttr(item.code)}" ${canMark?'':'disabled'}>${complete?'✓':''}</button><div class="ifes-item-text">${isAbility?`<strong>${esc(item.code)}</strong> · `:''}${esc(item.text)}</div><button type="button" class="ifes-open-lesson" data-enem-action="detail" data-id="${escapeAttr(item.id)}">↗ Abrir tópico</button>${uqEditorBtn('enem',item.id)}${complete?'<span class="ifes-status">FEITO</span>':''}</div>`}).join('')}</div>`:''}</div>`}).join('')||'<div class="ifes-no-data">Nenhum item encontrado.</div>'}
  <details class="enem-eixos"><summary>5 eixos cognitivos comuns a todas as áreas</summary><ol>${ENEM_EIXOS.map(x=>`<li>${esc(x)}</li>`).join('')}</ol></details>
  <p class="ifes-sub" style="margin-top:16px">Fonte: Matriz de Referência ENEM (INEP), páginas 1 a 24 do PDF fornecido. O anexo define objetos de conhecimento; os checklists detalhados foram segmentados para facilitar seu estudo.</p></section>`;
 }
@@ -1555,6 +1722,177 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{
   if(e.target.id!=='uq-month-form')return;
   e.preventDefault();uqPrintMonthlyReport(e.target);
+});
+
+</script>
+<script>
+/* UM QUARTO V18: Caderno de aulas por tópico (IFES / ENEM).
+ * Os textos oficiais e IDs das matrizes são mantidos sem alterações.
+ * Conteúdo didático em studyContent/{program}/{itemId}.
+ * Checklist detalhado por aluno em studyChecklist/{program}/{uid}/{itemId}/{goalId}.
+ */
+'use strict';
+const uqStudy={content:{ifes:{},enem:{}},loaded:{ifes:false,enem:false},observed:{},checks:{ifes:{},enem:{}},checksUid:{},checkOff:{},editing:null,lessonSeq:0};
+function uqTopicFromId(program,id){
+ if(program==='ifes'){const d=ifesFindItem(id);return d?{id,title:d.item.text,group:d.subject.title,unit:d.unit.title}:null}
+ const d=ENEM_ALL_ITEMS.get(id);return d?{id,title:d.item.text,group:d.area.title,unit:d.unit.title}:null;
+}
+function uqStudyAllowed(program){return program==='ifes'?canSeeIfes():canSeeEnem()}
+function uqCanEdit(){return teacher()&&!parent()}
+function uqLessonEntry(program,id){return uqStudy.content[program]?.[id]||null}
+function uqEditorBtn(program,id,label='✎ Editar conteúdo'){
+ if(!uqCanEdit()||!uqTopicFromId(program,id))return '';
+ return `<button type="button" class="btn tiny uq-topic-edit" data-uq-edit="${program}" data-id="${escapeAttr(id)}">${label}</button>`;
+}
+function uqLessonTitle(program,id,original){return uqLessonEntry(program,id)?.title||original}
+function uqShortText(x){return String(x||'').slice(0,170)}
+function uqStudyFormula(latex,block=true){
+ const raw=String(latex||'').slice(0,700);
+ if(!raw)return '';
+ try{if(window.katex){return window.katex.renderToString(raw,{throwOnError:false,displayMode:block,trust:false,strict:'ignore',maxExpand:50})}}
+ catch(e){console.warn('Fórmula:',e)}
+ return `<code>${esc(raw)}</code>`;
+}
+function uqStudyText(text){
+ // Texto puro com novas linhas preservadas, e matemática delimitada por $...$ ou $$...$$.
+ const source=String(text||'').slice(0,20000),regex=/\$\$([\s\S]+?)\$\$|\$([^\n$]+)\$/g;
+ let out='',start=0,m;
+ while((m=regex.exec(source))){out+=esc(source.slice(start,m.index));out+=`<span class="uq-math">${uqStudyFormula(m[1]||m[2],!!m[1])}</span>`;start=regex.lastIndex}
+ return out+esc(source.slice(start));
+}
+function uqLessonMaterial(program,id){
+ const item=uqLessonEntry(program,id);if(!item)return uqCanEdit()?`<section class="ifes-study-card"><span class="ifes-detail-tag">✦ CADERNO DO PROFESSOR</span><h2>Esta aula ainda não tem conteúdo complementar</h2><p>Adicione um resumo, explicações, fórmulas, aulas e exercícios para os estudantes.</p>${uqEditorBtn(program,id,'＋ Preparar este tópico')}</section>`:'';
+ const blocks=[];
+ if(item.summary)blocks.push(`<section class="ifes-study-card"><span class="ifes-detail-tag">RESUMO RÁPIDO</span><h2>${esc(item.title||'Visão geral')}</h2><div class="uq-study-text">${uqStudyText(item.summary)}</div></section>`);
+ if(item.theory)blocks.push(`<section class="ifes-study-card"><span class="ifes-detail-tag">EXPLICAÇÃO</span><h2>Entenda o conteúdo</h2><div class="uq-study-text">${uqStudyText(item.theory)}</div></section>`);
+ if((item.lessons||[]).length)blocks.push(`<section class="ifes-study-card"><span class="ifes-detail-tag">AULAS DO TÓPICO</span><h2>Aulas e materiais de apoio</h2>${item.lessons.map((a,i)=>`<div class="uq-study-row"><span class="uq-num">${i+1}</span><div><strong>${esc(a.title||`Aula ${i+1}`)}</strong>${a.body?`<div class="uq-study-text">${uqStudyText(a.body)}</div>`:''}${/^https:\/\//i.test(a.url||'')?`<a href="${escapeAttr(a.url)}" target="_blank" rel="noopener noreferrer" class="btn tiny outline" style="margin-top:8px">↗ Abrir aula / arquivo</a>`:''}</div></div>`).join('')}</section>`);
+ if((item.formulas||[]).length)blocks.push(`<section class="ifes-study-card"><span class="ifes-detail-tag">FÓRMULAS ESSENCIAIS</span><h2>Para consultar e praticar</h2><div class="uq-study-content">${item.formulas.map(f=>`<div><div class="uq-formula-card">${uqStudyFormula(f.latex)}</div>${f.label?`<p class="uq-inline-note" style="margin:7px 0 0">${esc(f.label)}</p>`:''}</div>`).join('')}</div></section>`);
+ if((item.examples||[]).length)blocks.push(`<section class="ifes-study-card"><span class="ifes-detail-tag">EXEMPLOS RESOLVIDOS</span><h2>Passo a passo</h2>${item.examples.map((x,i)=>`<div style="padding:12px 0;border-bottom:1px solid #edf2ee"><strong>${i+1}. ${esc(x.title||'Exemplo')}</strong><div class="uq-study-text">${uqStudyText(x.body)}</div></div>`).join('')}</section>`);
+ if((item.practice||[]).length)blocks.push(`<section class="ifes-study-card"><span class="ifes-detail-tag">PRATIQUE</span><h2>Exercícios de fixação</h2>${item.practice.map((x,i)=>`<details style="margin:9px 0;border-bottom:1px solid #e8eee9;padding:12px 0"><summary>${i+1}. ${esc(x.question||'Exercício')}</summary><div class="uq-study-text" style="margin-top:12px">${uqStudyText(x.answer||'Sem gabarito cadastrado.')}</div></details>`).join('')}</section>`);
+ if((item.goals||[]).length){
+  const student=program==='ifes'?ifesStudentUid():enemStudentUid();const canCheck=!teacher()&&!parent()&&uqStudyAllowed(program);
+  const doneMap=uqStudy.checks[program]?.[id]||{};
+  blocks.push(`<section class="ifes-study-card"><span class="ifes-detail-tag">CHECKLIST DE DOMÍNIO</span><h2>O que você já domina?</h2>${item.goals.map(g=>`<label class="uq-topic-check" aria-disabled="${!canCheck}"><input type="checkbox" data-uq-goal="${program}" data-id="${escapeAttr(id)}" data-goal="${escapeAttr(g.id)}" ${doneMap[g.id]?'checked':''} ${canCheck?'':'disabled'}> <span>${esc(g.text)}</span></label>`).join('')}<p class="uq-inline-note">${student?`Progresso individual de ${esc(userName(student)||'sua conta')}.`:'Escolha um aluno para acompanhar o checklist.'}</p></section>`);
+ }
+ if(!blocks.length)blocks.push(`<section class="ifes-study-card"><h2>${esc(item.title||'Tópico')}</h2><p>Ainda não há explicações publicadas neste tópico.</p></section>`);
+ if(uqCanEdit())blocks.unshift(`<div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span class="uq-edit-summary">Conteúdo personalizado · professor</span>${uqEditorBtn(program,id)}</div>`);
+ return `<div class="uq-study-content">${blocks.join('')}</div>`;
+}
+function uqStudySubscription(program){
+ if(state.demo)return;
+ if(!state.db||!state.user||!uqStudyAllowed(program)){if(uqStudy.observed[program]){uqStudy.observed[program]();delete uqStudy.observed[program]};uqStudy.content[program]={};uqStudy.loaded[program]=false;return}
+ if(uqStudy.observed[program])return;
+ const ref=state.db.ref('studyContent/'+program);
+ const cb=snap=>{uqStudy.content[program]=snap.val()||{};uqStudy.loaded[program]=true;if(state.section===program)render()};
+ const fail=e=>{console.warn('Conteúdos '+program,e);uqStudy.loaded[program]=false;if(state.section===program)toast('Não foi possível ler os conteúdos complementares. Confira as regras V18.',true)};
+ ref.on('value',cb,fail);uqStudy.observed[program]=()=>ref.off('value',cb);
+}
+function uqWatchChecks(program){
+ if(state.demo)return;
+ const student=program==='ifes'?ifesStudentUid():enemStudentUid();
+ const can=state.db&&!state.demo&&uqStudyAllowed(program)&&student;
+ if(uqStudy.checksUid[program]===(can?student:'')&&!!uqStudy.checkOff[program]===!!can)return;
+ if(uqStudy.checkOff[program]){uqStudy.checkOff[program]();delete uqStudy.checkOff[program]}
+ uqStudy.checksUid[program]=can?student:'';uqStudy.checks[program]={};
+ if(!can)return;
+ const ref=state.db.ref('studyChecklist/'+program+'/'+student);
+ const cb=snap=>{if(uqStudy.checksUid[program]!==student)return;uqStudy.checks[program]=snap.val()||{};if(state.section===program)render()};
+ const fail=e=>console.warn('Checklist complementar '+program,e);
+ ref.on('value',cb,fail);uqStudy.checkOff[program]=()=>ref.off('value',cb);
+}
+function uqCloseStudySubscriptions(){
+ for(const p of ['ifes','enem']){if(uqStudy.observed[p]){uqStudy.observed[p]();delete uqStudy.observed[p]}if(uqStudy.checkOff[p]){uqStudy.checkOff[p]();delete uqStudy.checkOff[p]};uqStudy.checksUid[p]='';uqStudy.content[p]={};uqStudy.checks[p]={};uqStudy.loaded[p]=false;}
+}
+const uqOldResetSubscriptions=resetSubscriptions;
+resetSubscriptions=function(){uqCloseStudySubscriptions();return uqOldResetSubscriptions()};
+const uqOldRender=render;
+render=function(){for(const p of ['ifes','enem'])uqStudySubscription(p);if(state.section==='ifes'||state.section==='enem')uqWatchChecks(state.section);return uqOldRender()};
+function uqBlankTopic(topic){return {title:uqShortText(topic.title),summary:'',theory:'',lessons:[],formulas:[],examples:[],practice:[],goals:[]}}
+function uqMakeId(){uqStudy.lessonSeq++;return 'goal-'+Date.now().toString(36)+'-'+uqStudy.lessonSeq.toString(36)}
+function uqDefaultTemplate(title,group=''){
+ const isQuadratic=/2[º°o]?\s*grau|quadr[aá]tic|bhaskara/i.test(title);
+ if(isQuadratic)return {title:title||'Equações do 2º grau',summary:'A equação do 2º grau tem a forma $ax^2+bx+c=0$, com $a\\neq 0$.',theory:'Para resolver, identifique os coeficientes $a$, $b$ e $c$. Calcule o discriminante $\\Delta=b^2-4ac$. Depois, aplique a fórmula de Bhaskara.\n\nConfira suas raízes substituindo os valores na equação original.',lessons:[{title:'Aula 1 · Conceito e coeficientes',body:'Entenda a forma geral e identifique os coeficientes em diferentes equações.',url:''},{title:'Aula 2 · Bhaskara e discriminante',body:'Use o discriminante para analisar as raízes e resolver exemplos.',url:''}],formulas:[{latex:'\\Delta=b^2-4ac',label:'Discriminante'},{latex:'x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}',label:'Fórmula de Bhaskara'}],examples:[{title:'Resolva x² − 5x + 6 = 0',body:'a = 1, b = −5, c = 6.\nΔ = 25 − 24 = 1.\nx = (5 ± 1)/2 → x = 3 ou x = 2.'}],practice:[{question:'Resolva x² − 7x + 12 = 0.',answer:'As raízes são 3 e 4, pois (x−3)(x−4)=0.'}],goals:[{id:uqMakeId(),text:'Identificar a, b e c.'},{id:uqMakeId(),text:'Calcular o discriminante.'},{id:uqMakeId(),text:'Aplicar a fórmula de Bhaskara.'}]};
+ return {title:title||'Tópico de estudo',summary:'O que é mais importante neste conteúdo? Resuma os conceitos centrais em 3–5 linhas.',theory:'1. Conceito: explique o assunto com linguagem acessível.\n\n2. Contexto: mostre onde ele aparece em situações reais.\n\n3. Aplicação: desenvolva um exemplo e indique como resolver ou interpretar.\n\n4. Revisão: retome as dúvidas mais frequentes.',lessons:[{title:'Aula 1 · Introdução',body:'Explique os conceitos fundamentais do tópico e apresente um exemplo.',url:''},{title:'Aula 2 · Aplicação e revisão',body:'Retome o conteúdo, faça exercícios e revise as dificuldades.',url:''}],formulas:[],examples:[{title:'Exemplo guiado',body:'Situação apresentada:\nEtapa 1: ...\nEtapa 2: ...\nConclusão: ...'}],practice:[{question:'Escreva aqui uma questão para o aluno.',answer:'Descreva a resposta e o caminho para chegar nela.'}],goals:[{id:uqMakeId(),text:'Compreender os conceitos fundamentais.'},{id:uqMakeId(),text:'Resolver ou interpretar uma situação de aplicação.'},{id:uqMakeId(),text:'Revisar o conteúdo sem consultar as anotações.'}]};
+}
+function uqEditorRow(kind,item,index){
+ const label={lessons:'Aula',formulas:'Fórmula',examples:'Exemplo',practice:'Exercício',goals:'Objetivo'}[kind]||'Item';
+ const input=(key,val,placeholder)=>`<input data-uq-field="${key}" type="text" value="${escapeAttr(val||'')}" placeholder="${escapeAttr(placeholder)}">`;
+ const ta=(key,val,placeholder)=>`<textarea rows="3" data-uq-field="${key}" placeholder="${escapeAttr(placeholder)}">${esc(val||'')}</textarea>`;
+ let fields='';
+ if(kind==='lessons')fields=`${input('title',item.title,'Título da aula')}${ta('body',item.body,'Explicação ou roteiro da aula. Use $...$ para fórmulas.')}${input('url',item.url,'Link HTTPS do Drive, vídeo ou material (opcional)')}`;
+ if(kind==='formulas')fields=`${input('label',item.label,'Nome da fórmula (ex.: Bhaskara)')}${ta('latex',item.latex,'LaTeX: x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}')}<div data-uq-math-preview="${index}" class="uq-formula-card" style="margin-top:9px">${uqStudyFormula(item.latex)}</div>`;
+ if(kind==='examples')fields=`${input('title',item.title,'Título do exemplo')}${ta('body',item.body,'Resolução passo a passo')}`;
+ if(kind==='practice')fields=`${ta('question',item.question,'Enunciado da questão')}${ta('answer',item.answer,'Gabarito / resolução (o aluno pode expandir)')}`;
+ if(kind==='goals')fields=`${input('text',item.text,'O que o aluno deve dominar?')}<input type="hidden" data-uq-field="id" value="${escapeAttr(item.id||uqMakeId())}">`;
+ return `<div class="uq-edit-entry" data-uq-entry="${kind}"><div class="uq-item-title"><span>${label} ${index+1}</span><button type="button" class="uq-mini-action uq-remove-action" data-uq-remove="${kind}">Remover</button></div>${fields}</div>`;
+}
+function uqRenderEditorRows(kind){
+ const div=document.querySelector(`[data-uq-editor-list="${kind}"]`);if(!div||!uqStudy.editing)return;
+ div.innerHTML=(uqStudy.editing.data[kind]||[]).map((it,i)=>uqEditorRow(kind,it,i)).join('')
+}
+function uqCollectEditor(){
+ const d=uqStudy.editing?.data;if(!d)return;
+ const f=$('uq-editor-form');if(!f)return;
+ for(const name of ['title','summary','theory'])d[name]=f.elements.namedItem(name)?.value||'';
+ for(const kind of ['lessons','formulas','examples','practice','goals']){
+  d[kind]=Array.from(f.querySelectorAll(`[data-uq-entry="${kind}"]`)).map(entry=>Object.fromEntries(Array.from(entry.querySelectorAll('[data-uq-field]')).map(el=>[el.dataset.uqField,el.value])));
+ }
+}
+function uqOpenEditor(program,id){
+ if(!uqCanEdit()||!uqStudyAllowed(program))return toast('Somente o modo professor pode editar conteúdos.',true);
+ const topic=uqTopicFromId(program,id);if(!topic)return toast('Tópico não encontrado.',true);
+ const data=JSON.parse(JSON.stringify(uqLessonEntry(program,id)||uqBlankTopic(topic)));
+ for(const name of ['lessons','formulas','examples','practice','goals'])if(!Array.isArray(data[name]))data[name]=Object.values(data[name]||{});
+ uqStudy.editing={program,id,topic,data};
+ const parts=[['lessons','▶ Aulas vinculadas','Uma aula pode ter roteiro, explicação e link para vídeo ou PDF.'],['formulas','∑ Fórmulas','Use LaTeX, como x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}.'],['examples','✦ Exemplos resolvidos','Mostre o processo de resolução em etapas.'],['practice','✎ Exercícios e gabaritos','O aluno tenta responder antes de abrir a solução.'],['goals','✓ Checklist do aluno','Cada item é marcado individualmente pelo aluno.']];
+ const block=(id,label,help)=>`<section class="uq-editor-block"><h3>${label}<button type="button" class="uq-mini-action" data-uq-add="${id}">＋ Adicionar</button></h3><p class="uq-editor-hint">${esc(help)}</p><div data-uq-editor-list="${id}"></div></section>`;
+ modal(`<div class="uq-edit-head"><span class="eyebrow">CADERNO DE CONTEÚDOS · ${program.toUpperCase()}</span><h2>Editar tópico</h2><p>${esc(topic.group)} · ${esc(topic.unit)}<br>O texto oficial do edital continua preservado. Suas explicações e aulas ficam em um registro complementar.</p></div>
+  <form id="uq-editor-form"><div class="uq-editor-grid">
+  <section class="uq-editor-block wide"><label for="uq-title">Título de apresentação</label><input id="uq-title" name="title" maxlength="180" value="${escapeAttr(data.title||'')}"><p class="uq-editor-hint" style="margin:8px 0 0">Título original da matriz: ${esc(topic.title)}</p></section>
+  <section class="uq-editor-block wide"><h3>▤ Resumo rápido</h3><p class="uq-editor-hint">O essencial para uma revisão de poucos minutos.</p><textarea name="summary" rows="4" maxlength="12000" placeholder="Conceitos principais, definições, dicas...">${esc(data.summary||'')}</textarea></section>
+  <section class="uq-editor-block wide"><h3>✦ Explicação detalhada</h3><p class="uq-editor-hint">Escreva como se estivesse dando a aula. Fórmulas entre $...$ aparecem formatadas ao visualizar.</p><textarea name="theory" rows="6" maxlength="25000" placeholder="Definição, interpretação, passo a passo, aplicações...">${esc(data.theory||'')}</textarea><div class="uq-insert-formula-help">Exemplo: <code>$\\frac{a}{b}$</code> gera uma fração. Para fórmula destacada, use <code>$$x^2+1=0$$</code>.</div></section>
+  ${parts.map(x=>block(...x)).join('')}
+  </div><div class="uq-topic-actions"><button type="button" class="btn outline" data-uq-template="1">✦ Preencher exemplo</button><button type="button" class="btn outline" data-uq-cancel="1">Cancelar</button><button type="submit" class="btn primary">✓ Salvar conteúdo</button></div></form>`);
+ $('modal').classList.add('uq-study-editor-modal');
+ for(const p of parts)uqRenderEditorRows(p[0]);
+}
+function uqBlankEntry(kind){
+ return {lessons:{title:'',body:'',url:''},formulas:{label:'',latex:''},examples:{title:'',body:''},practice:{question:'',answer:''},goals:{id:uqMakeId(),text:''}}[kind];
+}
+async function uqSaveEditor(form){
+ if(!uqCanEdit()||!uqStudy.editing)return toast('Acesso negado.',true);
+ uqCollectEditor();const edit=uqStudy.editing,d=edit.data;
+ if(!d.title.trim())return toast('Informe o título.',true);
+ if(d.title.length>180)return toast('Título muito longo.',true);
+ for(const kind of ['lessons','formulas','examples','practice','goals']){
+  d[kind]=d[kind].filter(item=>Object.entries(item).some(([key,val])=>key!=='id'&&String(val||'').trim()));
+  if(d[kind].length>35)return toast('Máximo de 35 itens em cada seção.',true);
+ }
+ if(d.lessons.some(x=>x.url && !/^https:\/\//i.test(x.url.trim())))return toast('Os links das aulas precisam começar com https://',true);
+ const payload={title:d.title.trim(),summary:d.summary||'',theory:d.theory||'',lessons:d.lessons,formulas:d.formulas,examples:d.examples,practice:d.practice,goals:d.goals,updatedBy:uid(),updatedAt:Date.now()};
+ // Não mexer no edital nem nos checklists existentes; apenas studyContent/{program}/{id}.
+ const saveBtn=form.querySelector('[type="submit"]');if(saveBtn)saveBtn.disabled=true;
+ if(state.demo){uqStudy.content[edit.program][edit.id]=payload;uqStudy.editing=null;closeModal();render();toast('Conteúdo atualizado na demonstração (não enviado ao Firebase).');return}
+ try{await state.db.ref(`studyContent/${edit.program}/${edit.id}`).set(payload);uqStudy.content[edit.program][edit.id]=payload;uqStudy.editing=null;closeModal();render();toast('Conteúdo publicado para os alunos autorizados.');}
+ catch(err){console.error('Erro ao publicar tópico:',err);toast('Não foi possível publicar: '+errorText(err),true);if(saveBtn)saveBtn.disabled=false}
+}
+document.addEventListener('click',e=>{
+ const edit=e.target.closest('[data-uq-edit]');if(edit){e.preventDefault();e.stopPropagation();uqOpenEditor(edit.dataset.uqEdit,edit.dataset.id);return}
+ const add=e.target.closest('[data-uq-add]');if(add&&uqStudy.editing){e.preventDefault();uqCollectEditor();const k=add.dataset.uqAdd;uqStudy.editing.data[k].push(uqBlankEntry(k));uqRenderEditorRows(k);return}
+ const rem=e.target.closest('[data-uq-remove]');if(rem&&uqStudy.editing){e.preventDefault();uqCollectEditor();const k=rem.dataset.uqRemove;const list=Array.from(document.querySelectorAll(`[data-uq-entry="${k}"]`));const index=list.indexOf(rem.closest(`[data-uq-entry="${k}"]`));if(index<0)return;uqStudy.editing.data[k].splice(index,1);uqRenderEditorRows(k);return}
+ const template=e.target.closest('[data-uq-template]');if(template&&uqStudy.editing){e.preventDefault();uqCollectEditor();if(uqStudy.editing.data.summary&&!confirm('Substituir os campos atuais pelo modelo de exemplo?'))return;const d=uqDefaultTemplate(uqStudy.editing.data.title,uqStudy.editing.topic.group);uqStudy.editing.data=d;uqOpenEditor(uqStudy.editing.program,uqStudy.editing.id); // reabrir e preencher as seções sem gravar
+  const f=$('uq-editor-form');if(f){f.elements.namedItem('summary').value=d.summary;f.elements.namedItem('theory').value=d.theory;for(const k of ['lessons','formulas','examples','practice','goals']){uqStudy.editing.data[k]=d[k];uqRenderEditorRows(k)}}return}
+ if(e.target.closest('[data-uq-cancel]')){e.preventDefault();uqStudy.editing=null;closeModal()}
+});
+document.addEventListener('input',e=>{const el=e.target.closest('[data-uq-field="latex"]');if(!el)return;const box=el.closest('[data-uq-entry]')?.querySelector('[data-uq-math-preview]');if(box)box.innerHTML=uqStudyFormula(el.value)});
+document.addEventListener('submit',e=>{if(e.target.id!=='uq-editor-form')return;e.preventDefault();uqSaveEditor(e.target)});
+document.addEventListener('change',async e=>{
+ const input=e.target.closest('[data-uq-goal]');if(!input)return;
+ const program=input.dataset.uqGoal,id=input.dataset.id,goalId=input.dataset.goal;
+ if(!uqStudyAllowed(program)||teacher()||parent()||!uqLessonEntry(program,id)?.goals?.some(g=>g.id===goalId)){input.checked=!input.checked;return}
+ if(state.demo){(uqStudy.checks[program][id] ||= {})[goalId]=input.checked;return}
+ input.disabled=true;try{await state.db.ref(`studyChecklist/${program}/${uid()}/${id}/${goalId}`).set(input.checked?true:null)}
+ catch(err){input.checked=!input.checked;toast('Não foi possível salvar o checklist: '+errorText(err),true)}finally{input.disabled=false}
 });
 
 </script>
