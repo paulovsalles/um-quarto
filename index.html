@@ -389,6 +389,7 @@ html[data-legacy-view="1"] body>#legacy-loader{display:flex!important}
 .uq-cal-week-body{display:grid;grid-template-columns:58px repeat(7,minmax(0,1fr));position:relative}
 .uq-cal-time-axis{position:relative;background:#fafbf9;border-right:1px solid var(--cal-line)}
 .uq-cal-hour{position:absolute;right:7px;transform:translateY(-8px);font:650 10px/1 'DM Sans',sans-serif;color:#94a098}
+.uq-cal-hour:first-child{transform:translateY(3px)}
 .uq-cal-day-column{position:relative;border-right:1px solid var(--cal-line);background:repeating-linear-gradient(to bottom,#fff 0px,#fff 51px,#eaf0eb 51px,#eaf0eb 52px)}
 .uq-cal-day-column.current{background:repeating-linear-gradient(to bottom,#fbfefb 0px,#fbfefb 51px,#eaf0eb 51px,#eaf0eb 52px)}
 .uq-cal-day-column:last-child{border-right:0}
@@ -1861,7 +1862,7 @@ document.addEventListener('submit',e=>{
   e.preventDefault();uqPrintMonthlyReport(e.target);
 });
 
-/* UM QUARTO V20 — Calendário do professor: usa a coleção aulas/{studentUid}/{id} existente */
+/* UM QUARTO V21 — Calendário do professor: grade semanal inteligente ajustada às aulas */
 function uqCalDate(s){const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||''));if(!match)return new Date();return new Date(+match[1],+match[2]-1,+match[3],12)}
 function uqCalISO(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
 function uqCalAdd(d,days){const c=new Date(d);c.setDate(c.getDate()+days);return c}
@@ -1939,9 +1940,14 @@ function uqCalWeekPositions(dayLessons,firstHour,lastHour){
 function uqCalWeek(data){
  const p=uqCalPeriod(),start=uqCalDate(p.from),days=Array.from({length:7},(_,i)=>uqCalAdd(start,i)),names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
  const fromData=data.filter(a=>lessonDateValue(a)>=p.from&&lessonDateValue(a)<=p.to);
- const minStart=fromData.length?Math.min(...fromData.map(a=>Math.floor(uqCalTimeMinutes(a.inicio)/60))):7;
- const maxEnd=fromData.length?Math.max(...fromData.map(a=>Math.ceil((uqCalTimeMinutes(a.inicio)+(Number(a.dur)||dur(a.inicio,a.fim)))/60))):22;
- const firstHour=Math.max(0,Math.min(7,minStart)),lastHour=Math.min(24,Math.max(22,maxEnd)),rowCount=lastHour-firstHour,height=rowCount*52;
+ // Exibe apenas o intervalo ocupado pelas aulas da semana (após aplicar os filtros).
+ // Caso um novo agendamento comece antes ou termine depois, a grade se ajusta sozinha.
+ if(!fromData.length){
+   return `<div class="uq-cal-calendar-box"><div class="uq-cal-no-events"><div class="symbol">▤</div>Nenhuma aula encontrada nesta semana.<div style="margin-top:14px"><button class="btn soft" data-action="cal-new" data-day="${escapeAttr(state.calendarDate||today())}">+ Agendar uma aula</button></div></div></div>`;
+ }
+ const minStart=Math.min(...fromData.map(a=>Math.floor(uqCalTimeMinutes(a.inicio)/60)));
+ const maxEnd=Math.max(...fromData.map(a=>Math.ceil((uqCalTimeMinutes(a.inicio)+Math.max(20,Number(a.dur)||dur(a.inicio,a.fim)))/60)));
+ const firstHour=Math.max(0,minStart),lastHour=Math.min(24,Math.max(firstHour+1,maxEnd)),rowCount=lastHour-firstHour,height=rowCount*52;
  const head=days.map((d,i)=>`<div class="uq-cal-week-heading ${uqCalISO(d)===today()?'current':''}"><span>${names[i]}</span><b>${String(d.getDate()).padStart(2,'0')}</b></div>`).join('');
  const axis=Array.from({length:rowCount+1},(_,i)=>`<span class="uq-cal-hour" style="top:${i*52}px">${String(firstHour+i).padStart(2,'0')}:00</span>`).join('');
  const columns=days.map(d=>{
