@@ -348,6 +348,123 @@ html[data-legacy-view="1"] body>#legacy-loader{display:flex!important}
 .drive-preview-frame{width:100%;height:min(70vh,780px);min-height:320px;border:1px solid #e4eee7;background:#f5f7f6;border-radius:15px;display:block}
 .drive-preview-fallback{font-size:12px;color:#6a7d73;line-height:1.5;padding-top:12px}
 @media(max-width:600px){.drive-preview-modal{padding:14px;max-height:97dvh}.drive-preview-frame{height:65dvh;min-height:280px;border-radius:10px}.drive-preview-actions .btn{flex:1;justify-content:center}.drive-preview-heading h2{font-size:19px}}
+/* UM QUARTO V20 · CALENDÁRIO ACADÊMICO · VISÃO DO PROFESSOR */
+.uq-cal-page{--cal-line:#e7eee9;--cal-ink:#243a39;--cal-planned:#8a71c5;--cal-planned-soft:#f0eafd;--cal-done:#148e78;--cal-done-soft:#e0f4ed}
+.uq-cal-page .section-head{margin-bottom:17px}
+.uq-cal-head-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.uq-cal-topline{background:#fff;border:1px solid var(--cal-line);border-radius:21px;padding:17px 19px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;box-shadow:var(--shadow)}
+.uq-cal-nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.uq-cal-nav-arrow{width:36px;height:36px;border-radius:11px;border:1px solid var(--cal-line);background:white;color:#4d6760;font-size:19px;display:grid;place-items:center}
+.uq-cal-nav-arrow:hover,.uq-cal-period-today:hover{background:#edf6f1}
+.uq-cal-period-today{border:1px solid var(--cal-line);border-radius:11px;background:#fff;padding:10px 14px;font-size:12px;font-weight:800;color:#39584d}
+.uq-cal-period-name{font:700 18px/1.2 'Space Grotesk',sans-serif;color:var(--cal-ink);min-width:225px;margin-left:7px;letter-spacing:-.035em}
+.uq-cal-view-switch{display:flex;gap:3px;background:#eef3ee;border:1px solid #e6eee7;border-radius:13px;padding:4px}
+.uq-cal-view-switch button{background:transparent;color:#6e7d77;border-radius:9px;padding:10px 13px;font-size:12px;font-weight:800;white-space:nowrap}
+.uq-cal-view-switch button.active{color:#196f5d;background:#fff;box-shadow:0 1px 5px #314a3815}
+.uq-cal-filterbar{display:flex;align-items:end;gap:11px;flex-wrap:wrap;margin:13px 0}
+.uq-cal-filter{flex:1;min-width:125px;max-width:230px}
+.uq-cal-filter label{font-size:10px;letter-spacing:.02em;margin-bottom:5px;color:#66786e}
+.uq-cal-filter select,.uq-cal-filter input{background:white;padding:10px 12px;border-radius:11px;border:1px solid #e0e8e2;font-size:12px;font-weight:650}
+.uq-cal-clear{white-space:nowrap;margin-bottom:1px}
+.uq-cal-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.uq-cal-stat{background:#fff;border:1px solid var(--cal-line);border-radius:16px;padding:15px 18px;display:flex;gap:13px;align-items:center;min-width:0}
+.uq-cal-stat-icon{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:#edf5ed;color:#5c8066;font-size:17px;flex:0 0 auto}
+.uq-cal-stat.planned .uq-cal-stat-icon{background:var(--cal-planned-soft);color:var(--cal-planned)}
+.uq-cal-stat.done .uq-cal-stat-icon{background:var(--cal-done-soft);color:var(--cal-done)}
+.uq-cal-stat strong{font:700 24px/1 'Space Grotesk',sans-serif;display:block;letter-spacing:-.04em}
+.uq-cal-stat small{font-size:11px;color:#85948b;display:block;margin-top:5px;font-weight:650}
+.uq-cal-footnote{font-size:11px;color:#83938a;line-height:1.5;margin:12px 2px 0}
+.uq-cal-legend{display:flex;align-items:center;gap:17px;flex-wrap:wrap;margin:14px 1px;font-size:11px;color:#64786e;font-weight:750}
+.uq-cal-legend-item{display:inline-flex;align-items:center;gap:7px}
+.uq-cal-legend-dot{width:10px;height:10px;border-radius:4px;background:var(--cal-planned)}
+.uq-cal-legend-dot.done{background:var(--cal-done)}
+.uq-cal-calendar-box{background:#fff;border:1px solid var(--cal-line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow)}
+.uq-cal-scroll{overflow-x:auto;width:100%;overscroll-behavior-x:contain}
+.uq-cal-week{min-width:780px}
+.uq-cal-week-head{display:grid;grid-template-columns:58px repeat(7,minmax(0,1fr));background:#fbfcfa;border-bottom:1px solid var(--cal-line)}
+.uq-cal-week-heading{border-left:1px solid var(--cal-line);text-align:center;padding:13px 4px 11px;color:#6e8076;display:flex;align-items:center;flex-direction:column;gap:5px;font-size:11px;font-weight:700}
+.uq-cal-week-heading b{font:700 22px/1.1 'Space Grotesk',sans-serif;letter-spacing:-.035em;color:#304d43;border-radius:11px;padding:4px 9px}
+.uq-cal-week-heading.current b{background:#278d79;color:#fff}
+.uq-cal-week-heading.current{color:#168b74;background:#f3faf7}
+.uq-cal-week-body{display:grid;grid-template-columns:58px repeat(7,minmax(0,1fr));position:relative}
+.uq-cal-time-axis{position:relative;background:#fafbf9;border-right:1px solid var(--cal-line)}
+.uq-cal-hour{position:absolute;right:7px;transform:translateY(-8px);font:650 10px/1 'DM Sans',sans-serif;color:#94a098}
+.uq-cal-day-column{position:relative;border-right:1px solid var(--cal-line);background:repeating-linear-gradient(to bottom,#fff 0px,#fff 51px,#eaf0eb 51px,#eaf0eb 52px)}
+.uq-cal-day-column.current{background:repeating-linear-gradient(to bottom,#fbfefb 0px,#fbfefb 51px,#eaf0eb 51px,#eaf0eb 52px)}
+.uq-cal-day-column:last-child{border-right:0}
+.uq-cal-hour-hit{position:absolute;left:0;right:0;height:52px;background:transparent;border:0;border-radius:0;z-index:0;cursor:crosshair}
+.uq-cal-hour-hit:hover{background:#e5f3e75e}
+.uq-cal-event{border:0;border-left:4px solid #6e56a9;display:block;text-align:left;border-radius:7px;background:#bda9df;color:#2f2142;padding:6px 7px 5px;min-height:23px;overflow:hidden;box-shadow:0 2px 4px #00000010;font-family:inherit;line-height:1.25}
+.uq-cal-event.planned{background:#e9e2f8;border-color:#8768b9;color:#514070}
+.uq-cal-event.done{background:#c7ede7;border-color:#167f72;color:#22574d}
+.uq-cal-event:hover{filter:brightness(.97);box-shadow:0 3px 8px #00000018}
+.uq-cal-event.week-event{position:absolute;z-index:2;font-size:10px}
+.uq-cal-event-title{font-weight:850;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.uq-cal-event-time{font-size:9px;opacity:.85;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.uq-cal-event-sub{font-size:9px;opacity:.84;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;margin-top:2px}
+.uq-cal-month{min-width:675px}
+.uq-cal-month-head,.uq-cal-month-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.uq-cal-month-head{border-bottom:1px solid var(--cal-line);background:#fafcf9}
+.uq-cal-month-head div{padding:14px 5px;text-align:center;font-size:11px;font-weight:800;color:#74887d}
+.uq-cal-month-cell{min-height:122px;padding:9px 7px 7px;border-right:1px solid var(--cal-line);border-bottom:1px solid var(--cal-line);min-width:0;background:#fff}
+.uq-cal-month-cell:nth-child(7n){border-right:0}
+.uq-cal-month-cell.outside{background:#fafbf9}
+.uq-cal-month-cell.current{background:#f5fcf8}
+.uq-cal-month-day{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:7px}
+.uq-cal-day-no{border:0;border-radius:9px;padding:4px 8px;background:transparent;color:#54695f;font-weight:850;font-size:12px}
+.uq-cal-month-cell.current .uq-cal-day-no{background:#278d79;color:#fff}
+.uq-cal-month-cell.outside .uq-cal-day-no{color:#a7b2aa}
+.uq-cal-addday{height:24px;width:24px;background:transparent;color:#a1afa5;font-size:18px;border-radius:7px;display:grid;place-items:center}
+.uq-cal-addday:hover{color:#16876e;background:#e4f3eb}
+.uq-cal-month-cell .uq-cal-event{width:100%;margin-bottom:4px;font-size:10px;min-height:23px;padding:5px 6px}
+.uq-cal-month-cell .uq-cal-event-time{display:inline;font-size:9px;margin:0 4px 0 0}
+.uq-cal-month-cell .uq-cal-event-title{display:inline;font-size:10px;vertical-align:baseline}
+.uq-cal-more{font-size:10px;font-weight:800;background:transparent;color:#347f6b;padding:3px 4px;text-align:left;width:100%}
+.uq-cal-agenda{padding:4px 20px 18px}
+.uq-cal-agenda-day{border-bottom:1px solid #edf1ed;padding:17px 0}
+.uq-cal-agenda-day:last-child{border-bottom:0}
+.uq-cal-agenda-heading{display:flex;justify-content:space-between;align-items:center;gap:9px;margin-bottom:11px}
+.uq-cal-agenda-heading strong{font-size:14px;font-family:'Space Grotesk',sans-serif}
+.uq-cal-agenda-heading small{font-size:11px;color:#88988d}
+.uq-cal-agenda-item{display:flex;align-items:center;gap:13px;border:1px solid #e8eee9;border-left:4px solid #a38ace;border-radius:12px;padding:12px 13px;margin:8px 0;background:#fbf9fe;text-align:left;width:100%;color:#344d43;font-family:inherit}
+.uq-cal-agenda-item.done{border-left-color:#2b9f89;background:#f5fcf9}
+.uq-cal-agenda-item:hover{box-shadow:0 4px 14px #243b2c0d;background:#eef9f3}
+.uq-cal-agenda-time{font-size:12px;font-weight:850;min-width:85px;color:#51685b}
+.uq-cal-agenda-main{flex:1;min-width:0}
+.uq-cal-agenda-main b{display:block;font-size:13px;overflow-wrap:anywhere}
+.uq-cal-agenda-main small{font-size:11px;color:#718477;display:block;margin-top:4px;overflow-wrap:anywhere}
+.uq-cal-status{display:inline-flex;font-size:10px;font-weight:850;padding:6px 9px;background:#ede5fa;color:#6f559f;border-radius:999px;white-space:nowrap}
+.uq-cal-status.done{background:#e0f5ed;color:#19836f}
+.uq-cal-detail-name{font-size:22px;letter-spacing:-.035em;margin:9px 0 9px;color:#233b31}
+.uq-cal-detail-desc{color:#60796b;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.uq-cal-detail-info{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:17px 0}
+.uq-cal-detail-info>div{background:#f6faf6;border-radius:11px;padding:12px;font-size:12px;color:#4b695a;overflow-wrap:anywhere}
+.uq-cal-detail-info small{display:block;color:#91a097;margin-bottom:4px;font-size:10px;font-weight:750}
+.uq-cal-detail-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;padding-top:14px;border-top:1px solid var(--cal-line)}
+.uq-cal-no-events{padding:55px 23px;text-align:center;color:#819188;font-size:13px}
+.uq-cal-no-events .symbol{font-size:31px;margin-bottom:12px}
+.uq-cal-datejump{width:145px;font-size:12px;padding:9px 10px}
+.uq-cal-focusbar{padding:13px 20px;background:#f2f9f4;border-bottom:1px solid #e1eee5;display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:12px;color:#3c785d}
+.uq-cal-print{border:1px solid var(--cal-line);background:#fff;color:#557163;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800}
+@media(max-width:950px){.uq-cal-period-name{min-width:170px;font-size:16px}.uq-cal-summary{gap:7px}.uq-cal-stat{padding:11px 13px}.uq-cal-filter{max-width:none}}
+@media(max-width:620px){.uq-cal-head-actions{width:100%}.uq-cal-head-actions .btn{width:100%}.uq-cal-topline{padding:13px}.uq-cal-nav{width:100%;justify-content:space-between}.uq-cal-period-name{flex:1;min-width:0;font-size:15px;margin-left:3px}.uq-cal-view-switch{width:100%}.uq-cal-view-switch button{flex:1}.uq-cal-filterbar{display:grid;grid-template-columns:1fr 1fr;gap:9px}.uq-cal-filter{min-width:0}.uq-cal-filter:last-of-type{grid-column:1/-1}.uq-cal-summary{grid-template-columns:repeat(3,minmax(0,1fr))}.uq-cal-stat{display:block;padding:10px}.uq-cal-stat-icon{height:29px;width:29px;margin-bottom:6px}.uq-cal-stat strong{font-size:20px}.uq-cal-stat small{font-size:10px}.uq-cal-legend{gap:11px}.uq-cal-agenda{padding:3px 12px}.uq-cal-agenda-item{gap:8px;padding:10px}.uq-cal-agenda-time{min-width:53px;font-size:10px}.uq-cal-status{font-size:9px;padding:5px}.uq-cal-detail-info{grid-template-columns:1fr}.uq-cal-datejump{width:120px}}
+@media print{.sidebar,.app-top,.mobile-bar,.uq-cal-topline,.uq-cal-filterbar,.uq-cal-head-actions,.uq-cal-addday,.uq-cal-footnote{display:none!important}.app-main{margin:0}.app-content{max-width:none;padding:0}.uq-cal-calendar-box{box-shadow:none;border:0}.uq-cal-scroll{overflow:visible}.uq-cal-week,.uq-cal-month{min-width:0}.uq-cal-week-body{page-break-inside:avoid}}
+/* Ajustes para navegação e filtros do cabeçalho no celular. */
+@media(max-width:680px){
+ .app-top{flex-wrap:wrap;align-items:stretch;gap:9px;padding:11px 16px}
+ .app-top .top-left{width:100%;justify-content:space-between;min-width:0}
+ .app-top .top-right{width:100%;justify-content:space-between;min-width:0;gap:8px}
+ .app-top .role-switch{flex:0 0 auto}
+ .app-top .role-switch button{padding:8px;font-size:10px}
+ .app-top .student-selector{width:auto;min-width:0;flex:1;padding:8px}
+ .app-top .profile-trigger{flex:0 0 36px}
+}
+@media(max-width:620px){
+ .uq-cal-nav{display:grid;grid-template-columns:auto auto auto minmax(0,1fr);align-items:center;column-gap:7px;row-gap:11px}
+ .uq-cal-period-name{font-size:15px;margin-left:0;line-height:1.25}
+ .uq-cal-datejump{grid-column:1/-1;width:100%}
+}
+
 </style>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css">
 </head>
@@ -384,8 +501,9 @@ const icons={home:'<rect x="3" y="3" width="7" height="7" rx="1.2"/><rect x="14"
 icons.ifes='<path d="M12 2 4 6v6c0 5.6 3.2 8.5 8 10 4.8-1.5 8-4.4 8-10V6l-8-4z"/><path d="m8.4 12 2.5 2.5 4.7-5"/>';
 icons.financeiro='<path d="M3 3v18h18"/><path d="m6 15 4-4 3 2 5-7"/><path d="M15 6h3v3"/>';
 icons.pessoas='<circle cx="9" cy="8" r="3"/><path d="M3 20v-2c0-3 3-5 6-5s6 2 6 5v2"/><path d="M17 7h6M20 4v6"/>';
-const navs=[['home','Início'],['pessoas','Pessoas e acessos'],['aulas','Aulas'],['tarefas','Tarefas'],['simulados','Simulados'],['plano','Plano de estudos'],['materiais','Materiais'],['ifes','IFES'],['financeiro','Financeiro']];
-const state={viewMode:'student',financeRecords:{},financeLoaded:false,financeLoadError:false,financeFrom:'',financeTo:'',financeStudent:'all',financeTeacher:'all',financeStatus:'all',ifesDetail:'',auth:null,db:null,user:null,profile:null,demo:false,section:'home',target:'all',teacherTargetCache:'all',users:[],aulas:[],simulados:[],resultados:[],plano:[],listeners:[],quiz:null,quizAnswers:{},quizIndex:0,review:null,viewFilter:'all',search:'',planFilter:'todas',teacherSimPanel:'lista',loading:false,materiais:[],materialFilter:'todos',materialSearch:'',storage:null,uploading:false,lessonTeacher:'all',lessonStudents:[],financeStudents:[],uqMultiOpen:'',lessonFrom:'',lessonTo:'',taskSearch:'',taskFilter:'all',avatarUrl:'',avatarCacheKey:'',ifesAccess:{},ifesAccessLoaded:false,ifesProgress:{},ifesSubject:'portugues',ifesOpenUnits:{'portugues-01':true},ifesManage:false,ifesStudentSearch:'',ifesQuery:'',ifesPendingOnly:false,ifesProgressUid:'',ifesProgressUnsub:null};
+icons.calendario='<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18"/><path d="m9 16 2 2 4-4"/>';
+const navs=[['home','Início'],['pessoas','Pessoas e acessos'],['aulas','Aulas'],['calendario','Calendário'],['tarefas','Tarefas'],['simulados','Simulados'],['plano','Plano de estudos'],['materiais','Materiais'],['ifes','IFES'],['financeiro','Financeiro']];
+const state={viewMode:'student',financeRecords:{},financeLoaded:false,financeLoadError:false,financeFrom:'',financeTo:'',financeStudent:'all',financeTeacher:'all',financeStatus:'all',ifesDetail:'',auth:null,db:null,user:null,profile:null,demo:false,section:'home',target:'all',teacherTargetCache:'all',users:[],aulas:[],simulados:[],resultados:[],plano:[],listeners:[],quiz:null,quizAnswers:{},quizIndex:0,review:null,viewFilter:'all',search:'',planFilter:'todas',teacherSimPanel:'lista',calendarView:'week',calendarDate:'',calendarTeacher:'all',calendarStatus:'all',calendarSearch:'',calendarFocusDay:'',loading:false,materiais:[],materialFilter:'todos',materialSearch:'',storage:null,uploading:false,lessonTeacher:'all',lessonStudents:[],financeStudents:[],uqMultiOpen:'',lessonFrom:'',lessonTo:'',taskSearch:'',taskFilter:'all',avatarUrl:'',avatarCacheKey:'',ifesAccess:{},ifesAccessLoaded:false,ifesProgress:{},ifesSubject:'portugues',ifesOpenUnits:{'portugues-01':true},ifesManage:false,ifesStudentSearch:'',ifesQuery:'',ifesPendingOnly:false,ifesProgressUid:'',ifesProgressUnsub:null};
 const $=id=>document.getElementById(id);
 const esc=x=>String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const escapeAttr=esc;
@@ -418,8 +536,8 @@ const canViewResult=r=>teacher()||state.simulados.find(s=>s.id===r.simuladoId)?.
 const simQuestions=s=>objList(s?.questoes).sort((a,b)=>num(a.ordem)-num(b.ordem));
 function errorText(e){let c=String(e?.code||e?.message||e||'').toLowerCase();return c.includes('permission')?'Sem permissão no Firebase. Verifique as regras da conta.':c.includes('invalid')||c.includes('wrong-password')||c.includes('user-not-found')?'Login ou senha incorretos.':c.includes('network')?'Erro de conexão. Tente novamente.':c.includes('email-already')?'Este e-mail já está cadastrado.':c.includes('weak-password')?'Senha fraca. Use pelo menos 6 caracteres.':String(e?.message||'Não foi possível concluir.');}
 let toastTimeout=null;function toast(message,bad=false){const e=$('toast');e.textContent=message;e.classList.toggle('bad',bad);e.style.display='block';clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>e.style.display='none',4200)}
-function section(id){if(id==='pessoas'&&!teacher())return toast('Acesso restrito ao modo Professor.',true);if(id==='enem'&&!canSeeEnem())return toast('ENEM não liberado para esta conta.',true);if(state.section==='enem'&&id!=='enem'){state.enemDetail='';disconnectEnemProgress()}if(id==='financeiro'&&!financeViewer())return toast('Financeiro exclusivo da conta administradora.',true);if(state.section==='ifes'&&id!=='ifes')state.ifesDetail='';if(id==='ifes'&&!canSeeIfes())return toast('Acesso ao IFES não liberado para esta conta.',true);state.section=id;state.quiz=null;state.review=null;state.search='';state.viewFilter='all';if(id==='ifes')connectIfesProgress();if(id==='enem')connectEnemProgress();renderNav();render();window.scrollTo({top:0,behavior:'smooth'})}
-function renderNav(){const allowed=navs.filter(([id])=>(id!=='ifes'||canSeeIfes())&&(id!=='enem'||canSeeEnem())&&(id!=='financeiro'||financeViewer())&&(id!=='pessoas'||teacher()));const html=allowed.map(([id,label])=>`<button class="nav-link ${state.section===id?'active':''}" data-action="nav" data-id="${id}" aria-current="${state.section===id?'page':'false'}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${icons[id]}</svg><span>${label}</span></button>`).join('');$('desktop-nav').innerHTML=html;$('mobile-nav').innerHTML=html;$('crumb').textContent=allowed.find(x=>x[0]===state.section)?.[1]||'Visão geral';}
+function section(id){if(id==='calendario'&&!teacher())return toast('Calendário disponível somente no modo Professor.',true);if(id==='pessoas'&&!teacher())return toast('Acesso restrito ao modo Professor.',true);if(id==='enem'&&!canSeeEnem())return toast('ENEM não liberado para esta conta.',true);if(state.section==='enem'&&id!=='enem'){state.enemDetail='';disconnectEnemProgress()}if(id==='financeiro'&&!financeViewer())return toast('Financeiro exclusivo da conta administradora.',true);if(state.section==='ifes'&&id!=='ifes')state.ifesDetail='';if(id==='ifes'&&!canSeeIfes())return toast('Acesso ao IFES não liberado para esta conta.',true);state.section=id;state.quiz=null;state.review=null;state.search='';state.viewFilter='all';if(id==='ifes')connectIfesProgress();if(id==='enem')connectEnemProgress();renderNav();render();window.scrollTo({top:0,behavior:'smooth'})}
+function renderNav(){const allowed=navs.filter(([id])=>(id!=='ifes'||canSeeIfes())&&(id!=='enem'||canSeeEnem())&&(id!=='financeiro'||financeViewer())&&(id!=='pessoas'||teacher())&&(id!=='calendario'||teacher()));const html=allowed.map(([id,label])=>`<button class="nav-link ${state.section===id?'active':''}" data-action="nav" data-id="${id}" aria-current="${state.section===id?'page':'false'}"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">${icons[id]}</svg><span>${label}</span></button>`).join('');$('desktop-nav').innerHTML=html;$('mobile-nav').innerHTML=html;$('crumb').textContent=allowed.find(x=>x[0]===state.section)?.[1]||'Visão geral';}
 function renderRoleControl(){
  const el=$('role-mode-control'),notice=$('preview-notice');if(!el)return;
  if(accountTeacher()){
@@ -644,7 +762,7 @@ function financeExport(){
  const url=URL.createObjectURL(new Blob(['\ufeff',csv],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download='umquarto-financeiro-'+today()+'.csv';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
 }
 
-function render(){if($('app').style.display==='none')return;const el=$('view');if(!el)return;el.innerHTML=state.quiz?quizPage():state.review?reviewPage():({home,pessoas:uqPeoplePage,aulas,tarefas:tasksPage,simulados:simuladosPage,plano:planPage,materiais:materialsPage,ifes:ifesPage,enem:enemPage,financeiro:financePage}[state.section]||home)()}
+function render(){if($('app').style.display==='none')return;const el=$('view');if(!el)return;el.innerHTML=state.quiz?quizPage():state.review?reviewPage():({home,pessoas:uqPeoplePage,aulas,calendario:uqCalendarPage,tarefas:tasksPage,simulados:simuladosPage,plano:planPage,materiais:materialsPage,ifes:ifesPage,enem:enemPage,financeiro:financePage}[state.section]||home)()}
 // Forms. Mantém os campos principais e a estrutura original do Realtime Database.
 function studentOptions(value=''){let students=state.users.filter(u=>u.role==='student'&&!u.mergedInto&&!u.hiddenMerged).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));return students.map(u=>`<option value="${escapeAttr(u.id)}" ${value===u.id?'selected':''}>${esc(u.name||u.email||'Aluno')}</option>`).join('')}
 function formHead(tag,title,subtitle){return `<span class="eyebrow">${tag}</span><h2>${title}</h2><p class="sub">${subtitle}</p>`}
@@ -724,14 +842,14 @@ async function saveInlineFinance(form){
 }
 function showFinancePreview(){const a=$('lesson-value'),b=$('lesson-transfer'),out=$('lesson-net');if(!a||!b||!out)return;const valor=parseMoney(a.value),repasse=parseMoney(b.value);out.textContent=Number.isFinite(valor)&&Number.isFinite(repasse)?brl(valor-repasse):'Preencha valores válidos'}
 
-function lessonModal(a=null){
+function lessonModal(a=null, opts={}){
   if(!teacher())return;
-  const initial=a||{}, day=lessonDateValue(initial)||today();
+  const initial=a||opts||{}, day=lessonDateValue(initial)||today();
   const firstStudent=initial.studentUid||(state.target!=='all'?state.target:'');
   const fixedSchool=firstStudent?studentSchool(firstStudent):'';
   const schoolValue=fixedSchool||initial.escola||'';
   const schoolNames=registeredSchools();
-  modal(`${formHead('DIÁRIO DE BORDO',a?'Editar aula':'Registrar aula','Registre o conteúdo e a evolução real do aluno.')}
+  modal(`${formHead('DIÁRIO DE BORDO',a?'Editar aula':initial.statusFinanceiro==='previsto'?'Agendar aula':'Registrar aula',initial.statusFinanceiro==='previsto'?'Organize o horário agora; registre o andamento depois.':'Registre o conteúdo e a evolução real do aluno.')}
   <form id="form-lesson"><input type="hidden" name="id" value="${escapeAttr(a?.id||'')}"><input type="hidden" name="originalStudent" value="${escapeAttr(a?.studentUid||'')}">
   <div class="form-grid"><div class="field"><label for="lesson-student">Aluno ${a&&owner()?'— corrigir vínculo':''}</label><select id="lesson-student" name="studentUid" required ${a&&!owner()?'disabled':''}><option value="">Selecione...</option>${studentOptions(firstStudent)}</select>${a&&!owner()?`<input type="hidden" name="studentUid" value="${escapeAttr(a.studentUid)}">`:''}${a&&owner()?`<div class="field-note" style="color:#166f58">✓ Administrador: você pode transferir esta aula para o aluno correto. O professor responsável e os valores financeiros serão mantidos.</div>`:''}</div>
   <div class="field"><label>Matéria</label><input name="materia" required value="${escapeAttr(initial.materia||'')}" placeholder="Ex.: Matemática"></div></div>
@@ -739,16 +857,16 @@ function lessonModal(a=null){
   <div class="field"><label for="lesson-school">Escola do aluno</label><input id="lesson-school" name="escola" list="school-options" value="${escapeAttr(schoolValue)}" placeholder="Selecione uma escola ou digite uma nova" ${fixedSchool?'readonly':''} autocomplete="off" maxlength="150">
   <datalist id="school-options">${schoolNames.map(s=>`<option value="${escapeAttr(s)}"></option>`).join('')}</datalist><div id="lesson-school-note" class="field-note">${fixedSchool?'✓ Escola vinculada ao cadastro do aluno.':'Se não houver escola cadastrada, selecione uma da lista ou digite uma nova.'}</div></div></div>
   <div class="form-grid"><div class="field"><label>Início</label><input type="time" name="inicio" value="${escapeAttr(initial.inicio||'14:00')}" required></div><div class="field"><label>Fim</label><input type="time" name="fim" value="${escapeAttr(initial.fim||'15:00')}" required></div></div>
-  <div class="field"><label>Conteúdo estudado</label><textarea name="conteudo" required maxlength="5000" placeholder="Ex.: Equações do 2º grau">${esc(initial.conteudo||'')}</textarea></div>
+  <div class="field"><label id="lesson-content-label">Conteúdo estudado</label><textarea id="lesson-content" name="conteudo" required maxlength="5000" placeholder="Ex.: Equações do 2º grau">${esc(initial.conteudo||'')}</textarea></div>
   <div class="field"><label>Orientação / tarefa para casa</label><textarea name="orientacao" maxlength="5000" placeholder="Próximo passo para o aluno">${esc(initial.orientacao||'')}</textarea></div>
   <div class="field"><label>Observações importantes da aula</label><textarea name="observacoesImportantes" maxlength="5000" rows="4" placeholder="Dificuldades percebidas, avanços, erros recorrentes, participação, pontos para retomar...">${esc(initial.observacoesImportantes||initial.observacoes||initial.obs||'')}</textarea><div class="field-note">Registro pedagógico: evite informações pessoais sensíveis desnecessárias.</div></div>
   <div class="form-grid rating-grid-new"><div class="field"><label>Desempenho</label><select name="desempenho">${ratingOptions(initial.desempenho)}</select></div>
   <div class="field"><label>Interesse do aluno (1 a 5)</label><select name="interesse" required>${ratingOptions(initial.interesse??initial.avaliacaoInteresse, !a)}</select></div>
   <div class="field"><label>Autonomia do aluno (1 a 5)</label><select name="autonomia" required>${ratingOptions(initial.autonomia??initial.avaliacaoAutonomia, !a)}</select></div>
-  <div class="field"><label>Status da aula</label><select name="statusFinanceiro"><option value="recebido" ${initial.statusFinanceiro==='recebido'||!a?'selected':''}>Aula realizada</option><option value="previsto" ${initial.statusFinanceiro==='previsto'?'selected':''}>Aula prevista</option></select></div></div>
+  <div class="field"><label>Status da aula</label><select id="lesson-status" name="statusFinanceiro"><option value="recebido" ${initial.statusFinanceiro==='recebido'||!a?'selected':''}>Aula realizada</option><option value="previsto" ${initial.statusFinanceiro==='previsto'?'selected':''}>Aula prevista</option></select><div id="lesson-status-hint" class="field-note"></div></div></div>
    ${financeViewer()?`<div class="money-fields"><h3>💰 Financeiro desta aula</h3><div class="money-tip">Privado da administração. Esses valores NÃO são gravados no histórico acadêmico do aluno.</div><div class="form-grid"><div class="field"><label for="lesson-value">Faturamento (R$)</label><input id="lesson-value" name="valor" type="text" inputmode="decimal" value="${escapeAttr(financeValue(initial).valor.toFixed(2).replace('.',','))}" placeholder="0,00"></div><div class="field"><label for="lesson-transfer">Valor repassado (R$)</label><input id="lesson-transfer" name="repasseProfessor" type="text" inputmode="decimal" value="${escapeAttr(financeValue(initial).repasse.toFixed(2).replace('.',','))}" placeholder="0,00"></div></div><div class="money-preview">Valor líquido: <span id="lesson-net">${brl(financeValue(initial).liquido)}</span></div></div>`:''}
-   <div class="form-actions">${a?`<button type="button" class="btn ghost" data-action="delete-lesson" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}">Excluir aula</button>`:''}<button type="button" class="btn soft" data-action="close-modal">Cancelar</button><button class="btn primary" type="submit">${a?'Salvar alterações':'Registrar aula'} ↗</button></div></form>`);
-  syncLessonSchool();
+   <div class="form-actions">${a?`<button type="button" class="btn ghost" data-action="delete-lesson" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}">Excluir aula</button>`:''}<button type="button" class="btn soft" data-action="close-modal">Cancelar</button><button class="btn primary" type="submit">${a?'Salvar alterações':initial.statusFinanceiro==='previsto'?'Salvar agendamento':'Registrar aula'} ↗</button></div></form>`);
+  syncLessonSchool();uqCalUpdateLessonForm();
 }
 function ratingOptions(value, required=false){
   const v=Number(value)||0;
@@ -831,14 +949,14 @@ async function writeLesson(f){
  if(escola.length>150)return toast('Nome da escola muito longo.',true);
  const interest=Number(v.interesse),autonomy=Number(v.autonomia);
  const validRating=n=>Number.isInteger(n)&&n>=1&&n<=5;
- if((!id||interest!==0)&&!validRating(interest) || (!id||autonomy!==0)&&!validRating(autonomy))return toast('Avalie interesse e autonomia de 1 a 5.',true);
+ if(v.statusFinanceiro!=='previsto'&&((!id||interest!==0)&&!validRating(interest) || (!id||autonomy!==0)&&!validRating(autonomy)))return toast('Avalie interesse e autonomia de 1 a 5.',true);
  const obs=String(v.observacoesImportantes||'').trim();
  let money=null;
- if(financeViewer()&&!state.demo&&!state.financeLoaded)return toast('Aguarde o carregamento do financeiro privado antes de registrar ou editar valores. Se não carregar, confira as permissões do Firebase.',true);
- if(financeViewer()){
+ if(financeViewer()&&!state.demo&&!state.financeLoaded&&v.statusFinanceiro!=='previsto')return toast('Aguarde o carregamento do financeiro privado antes de registrar ou editar valores. Se não carregar, confira as permissões do Firebase.',true);
+ if(financeViewer()&&state.financeLoaded){
   const valor=parseMoney(v.valor),repasse=parseMoney(v.repasseProfessor);
   if(!Number.isFinite(valor)||!Number.isFinite(repasse)||valor<0||repasse<0)return toast('Confira faturamento e repasse (valores em R$).',true);
-  money={valor,repasseProfessor:repasse,valorLiquido:Math.round((valor-repasse)*100)/100};
+  if(v.statusFinanceiro!=='previsto'||valor!==0||repasse!==0)money={valor,repasseProfessor:repasse,valorLiquido:Math.round((valor-repasse)*100)/100};
  }
  const p={studentUid,studentName:userName(studentUid)||'',studentEmail:perfil?.email||'',userId:studentUid,userName:userName(studentUid),userEmail:perfil?.email||'',materia:v.materia,data:v.data,inicio:v.inicio,fim:v.fim,dur:dur(v.inicio,v.fim),conteudo:v.conteudo,escola,orientacao:v.orientacao||'',observacoesImportantes:obs,...(validRating(interest)?{interesse:interest}:{}),...(validRating(autonomy)?{autonomia:autonomy}:{}),desempenho:Number(v.desempenho||0),statusFinanceiro:v.statusFinanceiro,
  // Em edições, não substituir nem inventar autoria, professor ou data de criação.
@@ -1741,6 +1859,228 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{
   if(e.target.id!=='uq-month-form')return;
   e.preventDefault();uqPrintMonthlyReport(e.target);
+});
+
+/* UM QUARTO V20 — Calendário do professor: usa a coleção aulas/{studentUid}/{id} existente */
+function uqCalDate(s){const match=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s||''));if(!match)return new Date();return new Date(+match[1],+match[2]-1,+match[3],12)}
+function uqCalISO(d){return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-')}
+function uqCalAdd(d,days){const c=new Date(d);c.setDate(c.getDate()+days);return c}
+function uqCalSunday(d){return uqCalAdd(d,-d.getDay())}
+function uqCalMonthFirst(d){return new Date(d.getFullYear(),d.getMonth(),1,12)}
+function uqCalMonthLast(d){return new Date(d.getFullYear(),d.getMonth()+1,0,12)}
+function uqCalTimeMinutes(s){const m=/^(\d{1,2}):(\d{2})/.exec(String(s||''));return m?Number(m[1])*60+Number(m[2]):0}
+function uqCalStatus(a){return a.statusFinanceiro==='previsto'?'planned':'done'}
+function uqCalStatusText(a){return uqCalStatus(a)==='planned'?'Prevista':'Realizada'}
+function uqCalLessonTitle(a){return a.studentName||userName(a.studentUid)||'Aluno'}
+function uqCalPeriod(){
+ const d=uqCalDate(state.calendarDate||today());
+ if(state.calendarView==='week'){
+   const from=uqCalSunday(d),to=uqCalAdd(from,6);
+   const first=from.toLocaleDateString('pt-BR',{month:'long'}),last=to.toLocaleDateString('pt-BR',{month:'long'});
+   const label=first===last?`${from.getDate()}–${to.getDate()} de ${first} de ${to.getFullYear()}`:`${from.getDate()} de ${first} – ${to.getDate()} de ${last} de ${to.getFullYear()}`;
+   return {from:uqCalISO(from),to:uqCalISO(to),label};
+ }
+ const from=uqCalMonthFirst(d),to=uqCalMonthLast(d);
+ const month=from.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+ return {from:uqCalISO(from),to:uqCalISO(to),label:month[0].toUpperCase()+month.slice(1)};
+}
+function uqCalAllLessons(){return state.aulas.filter(a=>visible(a)&&lessonDateValue(a))}
+function uqCalFilteredLessons(){
+ const query=(state.calendarSearch||'').trim().toLocaleLowerCase('pt-BR');
+ return uqCalAllLessons().filter(a=>{
+   if(state.target!=='all'&&a.studentUid!==state.target)return false;
+   if(state.calendarTeacher!=='all'&&lessonTeacherMeta(a).key!==state.calendarTeacher)return false;
+   if(state.calendarStatus!=='all'&&uqCalStatus(a)!==state.calendarStatus)return false;
+   if(query&&!`${uqCalLessonTitle(a)} ${a.materia||''} ${a.conteudo||''} ${lessonTeacherMeta(a).name}`.toLocaleLowerCase('pt-BR').includes(query))return false;
+   return true;
+ }).sort((a,b)=>`${lessonDateValue(a)}T${a.inicio||'00:00'}`.localeCompare(`${lessonDateValue(b)}T${b.inicio||'00:00'}`));
+}
+function uqCalStats(data){
+ const planned=data.filter(a=>uqCalStatus(a)==='planned');
+ const completed=data.filter(a=>uqCalStatus(a)==='done');
+ const mins=data.reduce((s,a)=>s+(Number(a.dur)||dur(a.inicio,a.fim)),0);
+ return `<div class="uq-cal-summary">
+    <div class="uq-cal-stat planned"><span class="uq-cal-stat-icon">◷</span><div><strong>${planned.length}</strong><small>Aulas previstas</small></div></div>
+    <div class="uq-cal-stat done"><span class="uq-cal-stat-icon">✓</span><div><strong>${completed.length}</strong><small>Aulas realizadas</small></div></div>
+    <div class="uq-cal-stat"><span class="uq-cal-stat-icon">▤</span><div><strong>${fmtDur(mins)}</strong><small>Tempo no período</small></div></div>
+ </div>`;
+}
+function uqCalEventButton(a,mode,style=''){
+ const status=uqCalStatus(a),name=uqCalLessonTitle(a),subject=a.materia||'Aula',start=a.inicio||'--:--',end=a.fim||'--:--';
+ const subtitle=a.conteudo||subject;
+ const label=`${start} às ${end} · ${name} · ${subject} · ${uqCalStatusText(a)}`;
+ return `<button type="button" class="uq-cal-event ${status} ${mode==='week'?'week-event':''}" data-action="cal-detail" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}" aria-label="${escapeAttr(label)}" title="${escapeAttr(label)}" ${style?`style="${style}"`:''}>
+ ${mode==='month'?`<span class="uq-cal-event-time">${esc(start)}</span> <span class="uq-cal-event-title">${esc(name)}</span>`:`<span class="uq-cal-event-time">${esc(start)}–${esc(end)}</span><span class="uq-cal-event-title">${esc(name)}</span><span class="uq-cal-event-sub">${esc(subtitle)}</span>`}
+ </button>`;
+}
+function uqCalWeekPositions(dayLessons,firstHour,lastHour){
+ const items=dayLessons.map(a=>({a,start:Math.max(firstHour*60,uqCalTimeMinutes(a.inicio)),end:Math.min(lastHour*60,uqCalTimeMinutes(a.inicio)+Math.max(20,Number(a.dur)||dur(a.inicio,a.fim)))})).sort((a,b)=>a.start-b.start||b.end-a.end);
+ let clusters=[],cluster=[],maxEnd=-Infinity;
+ for(const item of items){
+   if(cluster.length&&item.start>=maxEnd){clusters.push(cluster);cluster=[];maxEnd=-Infinity}
+   cluster.push(item);maxEnd=Math.max(maxEnd,item.end);
+ }
+ if(cluster.length)clusters.push(cluster);
+ let html='';
+ for(const group of clusters){
+   const endings=[];
+   group.forEach(item=>{let col=endings.findIndex(x=>x<=item.start);if(col===-1){col=endings.length;endings.push(-Infinity)}endings[col]=item.end;item.column=col});
+   const n=endings.length;
+   for(const item of group){
+     const top=Math.round((item.start-firstHour*60)*52/60)+2;
+     const height=Math.max(22,Math.round((item.end-item.start)*52/60)-4);
+     const width=(100/n),left=item.column*width;
+     const style=`top:${top}px;height:${height}px;left:calc(${left}% + 2px);width:calc(${width}% - 4px)`;
+     html+=uqCalEventButton(item.a,'week',style);
+   }
+ }
+ return html;
+}
+function uqCalWeek(data){
+ const p=uqCalPeriod(),start=uqCalDate(p.from),days=Array.from({length:7},(_,i)=>uqCalAdd(start,i)),names=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+ const fromData=data.filter(a=>lessonDateValue(a)>=p.from&&lessonDateValue(a)<=p.to);
+ const minStart=fromData.length?Math.min(...fromData.map(a=>Math.floor(uqCalTimeMinutes(a.inicio)/60))):7;
+ const maxEnd=fromData.length?Math.max(...fromData.map(a=>Math.ceil((uqCalTimeMinutes(a.inicio)+(Number(a.dur)||dur(a.inicio,a.fim)))/60))):22;
+ const firstHour=Math.max(0,Math.min(7,minStart)),lastHour=Math.min(24,Math.max(22,maxEnd)),rowCount=lastHour-firstHour,height=rowCount*52;
+ const head=days.map((d,i)=>`<div class="uq-cal-week-heading ${uqCalISO(d)===today()?'current':''}"><span>${names[i]}</span><b>${String(d.getDate()).padStart(2,'0')}</b></div>`).join('');
+ const axis=Array.from({length:rowCount+1},(_,i)=>`<span class="uq-cal-hour" style="top:${i*52}px">${String(firstHour+i).padStart(2,'0')}:00</span>`).join('');
+ const columns=days.map(d=>{
+   const day=uqCalISO(d),items=fromData.filter(a=>lessonDateValue(a)===day);
+   const slots=Array.from({length:rowCount},(_,i)=>{
+     const h=String(i+firstHour).padStart(2,'0')+':00';
+     return `<button class="uq-cal-hour-hit" style="top:${i*52}px" data-action="cal-new" data-day="${day}" data-hour="${h}" aria-label="Agendar aula em ${dateBR(day)} às ${h}" title="Agendar aula · ${h}"></button>`;
+   }).join('');
+   return `<div class="uq-cal-day-column ${day===today()?'current':''}" style="height:${height}px">${slots}${uqCalWeekPositions(items,firstHour,lastHour)}</div>`;
+ }).join('');
+ return `<div class="uq-cal-calendar-box"><div class="uq-cal-scroll"><div class="uq-cal-week"><div class="uq-cal-week-head"><div></div>${head}</div><div class="uq-cal-week-body"><div class="uq-cal-time-axis" style="height:${height}px">${axis}</div>${columns}</div></div></div></div>`;
+}
+function uqCalMonth(data){
+ const d=uqCalDate(state.calendarDate||today()),first=uqCalSunday(uqCalMonthFirst(d)),end=uqCalMonthLast(d);
+ const extra=(6-end.getDay())%7,days=uqCalAdd(end,extra),length=Math.round((days-first)/86400000)+1;
+ const head=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(x=>`<div>${x}</div>`).join('');
+ const monthCells=Array.from({length},(_,i)=>{
+   const date=uqCalAdd(first,i),day=uqCalISO(date),events=data.filter(a=>lessonDateValue(a)===day);
+   const outside=date.getMonth()!==d.getMonth(),current=day===today();
+   return `<div class="uq-cal-month-cell ${outside?'outside':''} ${current?'current':''}">
+     <div class="uq-cal-month-day"><button class="uq-cal-day-no" data-action="cal-day" data-day="${day}" aria-label="Ver aulas de ${dateBR(day)}">${date.getDate()}</button><button class="uq-cal-addday" data-action="cal-new" data-day="${day}" aria-label="Agendar aula em ${dateBR(day)}">+</button></div>
+     ${events.slice(0,3).map(a=>uqCalEventButton(a,'month')).join('')}
+     ${events.length>3?`<button class="uq-cal-more" data-action="cal-day" data-day="${day}">+ ${events.length-3} ${events.length-3===1?'aula':'aulas'}</button>`:''}
+   </div>`;
+ }).join('');
+ return `<div class="uq-cal-calendar-box"><div class="uq-cal-scroll"><div class="uq-cal-month"><div class="uq-cal-month-head">${head}</div><div class="uq-cal-month-grid">${monthCells}</div></div></div></div>`;
+}
+function uqCalAgendaItem(a){
+ const status=uqCalStatus(a);
+ return `<button type="button" class="uq-cal-agenda-item ${status}" data-action="cal-detail" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}">
+   <span class="uq-cal-agenda-time">${esc(a.inicio||'--:--')}<div style="font-weight:500;color:#90a096;margin-top:3px">${esc(a.fim||'--:--')}</div></span>
+   <span class="uq-cal-agenda-main"><b>${esc(uqCalLessonTitle(a))}</b><small>${esc(a.materia||'Aula')}${a.conteudo?' · '+esc(a.conteudo):''} · ${esc(lessonTeacherMeta(a).name)}</small></span>
+   <span class="uq-cal-status ${status}">${status==='planned'?'Prevista':'Realizada'}</span>
+ </button>`;
+}
+function uqCalAgenda(data){
+ const p=uqCalPeriod();
+ let items=data.filter(a=>lessonDateValue(a)>=p.from&&lessonDateValue(a)<=p.to);
+ if(state.calendarFocusDay)items=items.filter(a=>lessonDateValue(a)===state.calendarFocusDay);
+ const groups=new Map();items.forEach(a=>{const k=lessonDateValue(a);if(!groups.has(k))groups.set(k,[]);groups.get(k).push(a)});
+ const focus=state.calendarFocusDay?`<div class="uq-cal-focusbar"><strong>Exibindo ${dateBR(state.calendarFocusDay)}</strong><button class="btn soft tiny" data-action="cal-show-month">Mostrar mês todo</button></div>`:'';
+ const rows=[...groups.entries()].map(([day,events])=>{
+   const date=uqCalDate(day),name=date.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
+   return `<section class="uq-cal-agenda-day"><div class="uq-cal-agenda-heading"><strong>${esc(name[0].toUpperCase()+name.slice(1))}${day===today()?' · Hoje':''}</strong><button class="btn ghost tiny" data-action="cal-new" data-day="${day}">+ Agendar</button></div>${events.map(uqCalAgendaItem).join('')}</section>`;
+ }).join('');
+ return `<div class="uq-cal-calendar-box">${focus}<div class="uq-cal-agenda">${rows||`<div class="uq-cal-no-events"><div class="symbol">▤</div>Nenhuma aula encontrada neste período.<div style="margin-top:14px"><button class="btn soft" data-action="cal-new" data-day="${escapeAttr(state.calendarFocusDay||state.calendarDate||today())}">+ Agendar uma aula</button></div></div>`}</div></div>`;
+}
+function uqCalendarPage(){
+ if(!teacher())return empty('🔒','Calendário reservado aos professores');
+ if(!['week','month','agenda'].includes(state.calendarView))state.calendarView='week';
+ if(!/^\d{4}-\d\d-\d\d$/.test(state.calendarDate||''))state.calendarDate=today();
+ const p=uqCalPeriod(),all=uqCalFilteredLessons(),data=all.filter(a=>lessonDateValue(a)>=p.from&&lessonDateValue(a)<=p.to);
+ const teachers=[...new Map(uqCalAllLessons().map(a=>{const p=lessonTeacherMeta(a);return [p.key,p.name]})).entries()].sort((a,b)=>a[1].localeCompare(b[1],'pt-BR'));
+ const studentChoices=state.users.filter(u=>u.role==='student'&&!u.mergedInto&&!u.hiddenMerged&&(owner()||linked(u.id))).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));
+ const viewButton=(id,label)=>`<button type="button" data-action="cal-view" data-id="${id}" class="${state.calendarView===id?'active':''}" aria-pressed="${state.calendarView===id}">${label}</button>`;
+ return `<div class="uq-cal-page">
+ <div class="section-head"><div><span class="eyebrow">ORGANIZAÇÃO · UM QUARTO</span><h2>Calendário de aulas <span style="color:#35a98e">✳</span></h2><p>Planeje horários, acompanhe aulas previstas e consulte o histórico realizado.</p></div><div class="uq-cal-head-actions"><button type="button" class="btn soft" data-action="cal-print">↧ Imprimir</button><button class="btn primary" data-action="cal-new" data-day="${escapeAttr(state.calendarDate)}">+ Agendar aula</button></div></div>
+ <div class="uq-cal-topline"><div class="uq-cal-nav"><button type="button" class="uq-cal-period-today" data-action="cal-today">Hoje</button><button type="button" class="uq-cal-nav-arrow" data-action="cal-prev" aria-label="Período anterior">‹</button><button type="button" class="uq-cal-nav-arrow" data-action="cal-next" aria-label="Próximo período">›</button><span class="uq-cal-period-name">${esc(p.label)}</span><input class="uq-cal-datejump" id="cal-date" type="date" value="${escapeAttr(state.calendarDate)}" aria-label="Ir para data" title="Ir para data"></div><div class="uq-cal-view-switch" role="group" aria-label="Modo de visualização">${viewButton('week','Semana')}${viewButton('month','Mês')}${viewButton('agenda','Em linha')}</div></div>
+ <div class="uq-cal-filterbar"><div class="uq-cal-filter"><label for="cal-student">Aluno</label><select id="cal-student"><option value="all">Todos os alunos</option>${studentChoices.map(u=>`<option value="${escapeAttr(u.id)}" ${state.target===u.id?'selected':''}>${esc(u.name||u.email||'Aluno')}</option>`).join('')}</select></div><div class="uq-cal-filter"><label for="cal-teacher">Professor</label><select id="cal-teacher"><option value="all">Todos os professores</option>${teachers.map(([id,name])=>`<option value="${escapeAttr(id)}" ${state.calendarTeacher===id?'selected':''}>${esc(name)}</option>`).join('')}</select></div><div class="uq-cal-filter"><label for="cal-status">Status</label><select id="cal-status"><option value="all" ${state.calendarStatus==='all'?'selected':''}>Todas as aulas</option><option value="planned" ${state.calendarStatus==='planned'?'selected':''}>Somente previstas</option><option value="done" ${state.calendarStatus==='done'?'selected':''}>Somente realizadas</option></select></div><div class="uq-cal-filter"><label for="cal-search">Buscar</label><input id="cal-search" type="search" value="${escapeAttr(state.calendarSearch||'')}" placeholder="Aluno, conteúdo, matéria..."></div><button class="btn ghost tiny uq-cal-clear" data-action="cal-reset">Limpar filtros</button></div>
+ ${uqCalStats(data)}<div class="uq-cal-legend"><span class="uq-cal-legend-item"><span class="uq-cal-legend-dot"></span>Roxo · Aula prevista</span><span class="uq-cal-legend-item"><span class="uq-cal-legend-dot done"></span>Verde · Aula realizada</span><span>Toque em uma aula para ver ou editar</span></div>
+ ${state.calendarView==='week'?uqCalWeek(data):state.calendarView==='month'?uqCalMonth(all):uqCalAgenda(all)}
+ <p class="uq-cal-footnote">As aulas do calendário vêm dos mesmos registros da guia Aulas. Alterações são sincronizadas com o Firebase; aulas previstas só se tornam realizadas após confirmação do professor. Para inserir uma aula na grade semanal, clique em um horário livre.</p>
+ </div>`;
+}
+function uqCalFindLesson(id,student){return uqCalAllLessons().find(a=>String(a.id)===String(id)&&String(a.studentUid)===String(student))}
+function uqCalDetail(id,student){
+ if(!teacher())return;
+ const a=uqCalFindLesson(id,student);if(!a)return toast('Aula não encontrada ou sem permissão.',true);
+ const status=uqCalStatus(a),school=a.escola||studentSchool(a.studentUid)||'Não informada';
+ modal(`<span class="eyebrow">DETALHES DA AULA</span><div style="display:flex;align-items:center;gap:10px;margin-top:12px"><span class="uq-cal-status ${status}">${uqCalStatusText(a)}</span><span class="small">${dateBR(lessonDateValue(a))}</span></div>
+ <h2 class="uq-cal-detail-name">${esc(uqCalLessonTitle(a))}</h2><p class="uq-cal-detail-desc">${esc(a.conteudo||a.materia||'Sem conteúdo informado ainda.')}</p>
+ <div class="uq-cal-detail-info"><div><small>HORÁRIO</small>${esc(a.inicio||'--:--')} – ${esc(a.fim||'--:--')} · ${fmtDur(Number(a.dur)||dur(a.inicio,a.fim))}</div><div><small>MATÉRIA</small>${esc(a.materia||'Não informada')}</div><div><small>PROFESSOR</small>${esc(lessonTeacherMeta(a).name)}</div><div><small>ESCOLA</small>${esc(school)}</div></div>
+ ${a.orientacao?`<div class="uq-cal-detail-desc"><strong>Próximo passo:</strong> ${esc(a.orientacao)}</div>`:''}
+ ${a.observacoesImportantes||a.obs?`<div class="uq-cal-detail-desc" style="margin-top:12px"><strong>Observações:</strong> ${esc(a.observacoesImportantes||a.obs)}</div>`:''}
+ <div class="uq-cal-detail-actions"><button class="btn soft" data-action="close-modal">Fechar</button>${canManage(a)?`<button class="btn outline" data-action="cal-edit" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}">Editar aula</button>${status==='planned'?`<button class="btn primary" data-action="cal-complete" data-id="${escapeAttr(a.id)}" data-student="${escapeAttr(a.studentUid)}">✓ Registrar como realizada</button>`:''}`:''}</div>`);
+}
+function uqCalDay(day){
+ if(!teacher())return;
+ const items=uqCalFilteredLessons().filter(a=>lessonDateValue(a)===day);
+ modal(`<span class="eyebrow">AGENDA DO DIA</span><h2>${esc(dateBR(day))}</h2><p class="sub">${items.length} ${items.length===1?'aula':'aulas'} neste dia</p><div style="max-height:55vh;overflow:auto">${items.length?items.map(uqCalAgendaItem).join(''):empty('▤','Nenhuma aula neste dia')}</div><div class="uq-cal-detail-actions"><button class="btn soft" data-action="close-modal">Fechar</button><button class="btn primary" data-action="cal-new" data-day="${escapeAttr(day)}">+ Agendar aula</button></div>`);
+}
+function uqCalStartLesson(day,hour){
+ const date=/^\d{4}-\d{2}-\d{2}$/.test(day||'')?day:today();
+ const ini=/^\d\d:\d\d$/.test(hour||'')?hour:'14:00';
+ const start=uqCalTimeMinutes(ini),end=Math.min(start+60,23*60+59);
+ const fim=String(Math.floor(end/60)).padStart(2,'0')+':'+String(end%60).padStart(2,'0');
+ lessonModal(null,{data:date,inicio:ini,fim,materia:'',statusFinanceiro:'previsto'});
+}
+function uqCalShift(dir){
+ const d=uqCalDate(state.calendarDate||today());
+ if(state.calendarView==='week')d.setDate(d.getDate()+dir*7);else d.setMonth(d.getMonth()+dir,1);
+ state.calendarDate=uqCalISO(d);state.calendarFocusDay='';render();
+}
+function uqCalChangeView(view){
+ if(!['week','month','agenda'].includes(view))return;
+ state.calendarView=view;state.calendarFocusDay='';render();
+}
+function uqCalUpdateLessonForm(){
+ const f=$('form-lesson');if(!f)return;
+ const planned=f.elements.namedItem('statusFinanceiro')?.value==='previsto';
+ const content=f.elements.namedItem('conteudo'),interest=f.elements.namedItem('interesse'),autonomy=f.elements.namedItem('autonomia');
+ if(content){content.required=!planned;content.placeholder=planned?'Ex.: Revisar equações e fazer exercícios (opcional)':'O que foi trabalhado nesta aula?';}
+ if(interest)interest.required=!planned;
+ if(autonomy)autonomy.required=!planned;
+ const text=$('lesson-content-label');if(text)text.textContent=planned?'Conteúdo previsto / objetivo':'Conteúdo estudado';
+ const statusHint=$('lesson-status-hint');if(statusHint)statusHint.textContent=planned?'Planejamento: avaliações e relatório de desempenho são opcionais.':'Aula realizada: descreva o conteúdo e avalie interesse e autonomia.';
+}
+// Delegação específica do calendário; mantém intactas as demais guias e os seus eventos.
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-action]');if(!b)return;
+ const action=b.dataset.action;
+ if(!action.startsWith('cal-')||!teacher())return;
+ if(action==='cal-prev')uqCalShift(-1);
+ else if(action==='cal-next')uqCalShift(1);
+ else if(action==='cal-today'){state.calendarDate=today();state.calendarFocusDay='';render()}
+ else if(action==='cal-view')uqCalChangeView(b.dataset.id);
+ else if(action==='cal-new'){closeModal();uqCalStartLesson(b.dataset.day,b.dataset.hour)}
+ else if(action==='cal-day')uqCalDay(b.dataset.day);
+ else if(action==='cal-detail')uqCalDetail(b.dataset.id,b.dataset.student);
+ else if(action==='cal-edit'){const a=uqCalFindLesson(b.dataset.id,b.dataset.student);if(a){closeModal();lessonModal(a)}}
+ else if(action==='cal-complete'){const a=uqCalFindLesson(b.dataset.id,b.dataset.student);if(a&&canManage(a)){closeModal();lessonModal(a);const sel=$('form-lesson')?.elements.namedItem('statusFinanceiro');if(sel){sel.value='recebido';uqCalUpdateLessonForm();toast('Complete o conteúdo e as avaliações para confirmar a aula realizada.')}}}
+ else if(action==='cal-reset'){state.calendarTeacher='all';state.calendarStatus='all';state.calendarSearch='';state.target='all';renderStudentPicker();render()}
+ else if(action==='cal-show-month'){state.calendarFocusDay='';render()}
+ else if(action==='cal-print'){window.print()}
+});
+document.addEventListener('change',e=>{
+ const id=e.target.id;
+ if(id==='lesson-status')uqCalUpdateLessonForm();
+ if(!teacher())return;
+ if(id==='cal-student'){state.target=e.target.value;renderStudentPicker();render()}
+ else if(id==='cal-teacher'){state.calendarTeacher=e.target.value;render()}
+ else if(id==='cal-status'){state.calendarStatus=e.target.value;render()}
+ else if(id==='cal-date'&&e.target.value){state.calendarDate=e.target.value;state.calendarFocusDay='';render()}
+});
+document.addEventListener('input',e=>{
+ if(e.target.id!=='cal-search'||!teacher())return;
+ const position=e.target.selectionStart;
+ state.calendarSearch=e.target.value;render();
+ const input=$('cal-search');if(input){input.focus();try{input.setSelectionRange(position,position)}catch(_){}}
 });
 
 </script>
