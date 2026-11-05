@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Um Quarto · Versão antiga</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#284754;background:#f5f8f6}body{margin:0;min-height:100svh;display:grid;place-items:center}.wrap{padding:36px 28px;border-radius:18px;background:white;max-width:490px;box-shadow:0 8px 50px #203d3620;margin:20px}h1{margin:0 0 9px;font-size:26px}p{line-height:1.55;color:#617a79}a{color:#159281;font-weight:700}.tiny{font-size:12px;color:#6e8582}
+</style>
+</head>
+<body><main class="wrap"><h1>Um Quarto · versão clássica</h1><p id="status">Carregando a plataforma antiga completa...</p><p id="fail" hidden>Não foi possível carregar o código clássico. <a href="https://github.com/paulovsalles/um-quarto/blob/78f89b786ba11a6aed5152268e7e2bdd1ae37445/index.html" target="_blank" rel="noopener noreferrer">Consultar o original no GitHub</a>.</p><p class="tiny"><a href="./index.html">← Voltar à versão atual</a></p></main>
+<script>
+(async function(){
+ const urls=[
+ 'https://raw.githubusercontent.com/paulovsalles/um-quarto/78f89b786ba11a6aed5152268e7e2bdd1ae37445/index.html',
+ 'https://cdn.jsdelivr.net/gh/paulovsalles/um-quarto@78f89b786ba11a6aed5152268e7e2bdd1ae37445/index.html'
+ ];
+ for(const url of urls){
+  try{
+   const r=await fetch(url,{cache:'default'});if(!r.ok)continue;
+   let html=await r.text();
+   if(html.length<450000||!html.includes('screen-landing')||!html.includes('studentMergeBackups'))continue;
+   // Add a return link to the classic page WITHOUT replacing classic functionality.
+   const switcher='<a href="./index.html" style="position:fixed;right:13px;bottom:13px;z-index:2147483645;display:inline-block;background:#284754;color:#fff;padding:11px 15px;border-radius:28px;font:700 12px system-ui;text-decoration:none;box-shadow:0 4px 18px #0002">↗ Versão atual</a>';
+   const pos=html.toLowerCase().lastIndexOf('</body>');
+   html=pos>=0?html.slice(0,pos)+switcher+html.slice(pos):html+switcher;
+   document.open();document.write(html);document.close();return;
+  }catch(e){console.warn('Origem da versão clássica não acessível:',url,e)}
+ }
+ document.getElementById('status').textContent='O carregamento automático não funcionou nesta rede.';
+ document.getElementById('fail').hidden=false;
+})();
+</script>
+</body>
+</html>
