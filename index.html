@@ -341,6 +341,38 @@ input[readonly]{background:#f2f7f3;color:#59716b}
 .uq-plan-btn-danger:hover{background:#8e4139!important}
 @media(max-width:820px){.uq-plan-toolbar{padding:14px}.uq-plan-student-group{max-width:none}.uq-plan-toolbar-actions{width:100%;justify-content:flex-start}.uq-plan-toolbar-actions .btn{flex:1;min-width:115px}.uq-plan-toolbar ~ .grid-two{grid-template-columns:minmax(0,1fr)!important}}
 @media(max-width:540px){.uq-plan-toolbar-actions{flex-direction:column;align-items:stretch}.uq-plan-toolbar-actions .btn{width:100%}.uq-plan-toolbar ~ .grid-two .card-header{flex-wrap:wrap}}
+
+/* UM QUARTO MOBILE TASKS V11 */
+.task-mobile-switch,.task-mobile-tabs,.task-mobile-hint{display:none}
+.task-delete-quick{color:#b44d48!important;border-color:#f0d8d5!important}
+@media(max-width:720px){
+ .task-mobile-switch{display:flex;gap:5px;background:#edf2ed;border-radius:13px;padding:4px;margin:0 0 12px}
+ .task-mobile-switch button{flex:1;border-radius:10px;background:transparent;padding:11px;color:#6d8175;font-weight:800;font-size:12px}
+ .task-mobile-switch button.active{background:white;color:#207a60;box-shadow:0 2px 8px #1235}
+ .task-mobile-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0 0 12px}
+ .task-mobile-tabs button{background:#edf2ed;color:#60776c;border-radius:11px;padding:10px 4px;font-size:11px;font-weight:800;min-width:0}
+ .task-mobile-tabs button.active{background:#dcefe4;color:#217657}
+ .task-mobile-hint{display:block;font-size:11px;color:#819188;margin:0 0 12px}
+ .task-toolbar{grid-template-columns:1fr auto;gap:8px;margin:10px 0 12px}
+ .task-toolbar input{min-width:0}.task-toolbar select{grid-column:1/-1}
+ .task-toolbar .btn{grid-column:auto;padding:10px;font-size:11px}
+ .task-overview{margin:9px 0}.task-info{padding:9px}.task-info b{font-size:19px;margin:2px 0}.task-info small:last-child{display:none}
+ .reminder-bar{padding:12px;margin-bottom:10px}.reminder-bar p:last-of-type{display:none}
+ .kanban-board-new{display:block;min-width:0}
+ .kanban-column-new{display:none;min-height:120px;padding:9px;border-radius:17px}
+ .kanban-column-new.mobile-active{display:block}
+ .study-task-card{padding:12px;border-radius:14px;cursor:default;touch-action:pan-y;position:relative}
+ .study-task-card h3{font-size:13px;margin:6px 0}
+ .study-task-card p{font-size:11px;margin:4px 0 6px;max-height:40px;overflow:hidden}
+ .task-bottom{gap:5px}.task-chip{font-size:10px;padding:4px 7px}
+ .task-actions{margin-top:9px;gap:6px}.task-actions button{min-height:36px;padding:8px 10px}
+ .task-actions button[data-action="task-calendar"]{display:none}
+ .task-help{display:none}
+ .task-mobile-list .kanban-column-head{display:none}
+ .task-mobile-list .kanban-column-new{background:transparent;border:0;padding:0}
+ .task-mobile-list .study-task-card{margin-bottom:8px}
+ .task-mobile-list .study-task-card p{display:none}
+}
 </style>
 <script>if(new URLSearchParams(location.search).get('versao')==='antiga')location.replace('./versao-antiga.html');</script>
 <style>
@@ -1540,6 +1572,7 @@ async function deleteMaterial(id){
 
 
 // ===== UM QUARTO V4 · quadro de tarefas compatível com checklist e foto de perfil =====
+let mobileTaskView='lista',mobileTaskTab='afazer';
 const TASK_COLUMNS=[['afazer','📌 A fazer'],['fazendo','⚡ Em andamento'],['concluido','✅ Concluído']];
 const TASK_PRIORITY={alta:'Alta',media:'Média',baixa:'Baixa'};
 const PRESET_AVATARS=['📚','🧠','🦊','🐻','🦉','🚀','🌟','🎮','🎯','🐼','🧑‍🎓','✏️'];
@@ -1560,16 +1593,19 @@ function tasksPage(){
  <div class="task-overview"><div class="task-info"><small>A fazer</small><b>${unfinished.filter(t=>taskStage(t)==='afazer').length}</b><small>Organize seu dia</small></div><div class="task-info"><small>Em andamento</small><b>${unfinished.filter(t=>taskStage(t)==='fazendo').length}</b><small>Um passo por vez</small></div><div class="task-info"><small>Concluídas</small><b>${all.filter(t=>taskStage(t)==='concluido').length}</b><small>Missões vencidas</small></div></div>
  <div class="reminder-bar"><div><strong>🔔 Seus lembretes de estudo</strong><p>${late.length?`${late.length} atrasada(s) · `:''}${due.length} para hoje · ${soon.length} nos próximos 7 dias.${next?' Próxima prioridade: '+esc(next.texto||'Estudar')+'.':''}</p><p>Os avisos no navegador funcionam com a página aberta. Para receber lembretes mesmo fora do site, use “Calendário” em cada tarefa.</p></div><button class="btn soft tiny" data-action="enable-reminders">🔔 Ativar avisos</button></div>
  <div class="task-toolbar"><input id="task-search" type="search" value="${escapeAttr(state.taskSearch)}" placeholder="Buscar tarefa, matéria, aluno..." aria-label="Buscar tarefas"><select id="task-subject-filter" aria-label="Filtrar matéria"><option value="all">Todas as matérias</option>${subjects.map(s=>`<option value="${escapeAttr(s.toLocaleLowerCase('pt-BR'))}" ${state.taskFilter===s.toLocaleLowerCase('pt-BR')?'selected':''}>${esc(s)}</option>`).join('')}</select><button type="button" class="btn soft tiny" data-action="clear-task-filters">Limpar filtros</button></div>
- <div class="kanban-board-new">${TASK_COLUMNS.map(([status,label])=>{
+ <div class="task-mobile-switch"><button type="button" data-action="task-view" data-view="lista" class="${mobileTaskView==='lista'?'active':''}">☷ Lista</button><button type="button" data-action="task-view" data-view="kanban" class="${mobileTaskView==='kanban'?'active':''}">▥ Kanban</button></div>
+ <div class="task-mobile-tabs">${TASK_COLUMNS.map(([key,label])=>`<button type="button" data-action="task-tab" data-status="${key}" class="${mobileTaskTab===key?'active':''}">${key==='afazer'?'A fazer':key==='fazendo'?'Em curso':'Concluídas'} · ${visibleTasks.filter(t=>taskStage(t)===key).length}</button>`).join('')}</div>
+ <p class="task-mobile-hint">Deslize o cartão para a esquerda para excluir ou para a direita para avançar.</p>
+ <div class="kanban-board-new ${mobileTaskView==='lista'?'task-mobile-list':''}">${TASK_COLUMNS.map(([status,label])=>{
   const items=visibleTasks.filter(t=>taskStage(t)===status).sort((a,b)=>(taskDate(a)||'9999-99-99').localeCompare(taskDate(b)||'9999-99-99')||taskPriorityOrder(a)-taskPriorityOrder(b));
-  return `<section class="kanban-column-new" data-task-drop="${status}" aria-label="${label}"><div class="kanban-column-head"><b>${label}</b><span class="pill">${items.length}</span></div>${items.length?items.map(taskCard).join(''):'<div class="task-empty">Nenhuma tarefa aqui ✳</div>'}</section>`;
+  return `<section class="kanban-column-new ${mobileTaskTab===status?'mobile-active':''}" data-task-drop="${status}" aria-label="${label}"><div class="kanban-column-head"><b>${label}</b><span class="pill">${items.length}</span></div>${items.length?items.map(taskCard).join(''):'<div class="task-empty">Nenhuma tarefa aqui ✳</div>'}</section>`;
  }).join('')}</div><p class="task-help">Arraste tarefas entre as colunas no computador ou use os botões “Mover” no celular. A conclusão continua contando XP no plano de estudos.</p>`;
 }
 function taskCard(t){
  const status=taskStage(t),due=taskDue(t),p=String(t.prioridade||'media');
  const dueLabel=taskDate(t)?dateBR(t.prazo)+(t.lembreteHora?' às '+esc(t.lembreteHora):''):'Sem prazo';
  const showPerson=teacher()?`<span class="task-chip">👤 ${esc(t.studentName||userName(t.studentUid)||'Aluno')}</span>`:'';
- return `<article class="study-task-card" draggable="${!parent()}" data-task-id="${escapeAttr(t.id)}" data-task-student="${escapeAttr(t.studentUid)}" aria-label="Tarefa ${escapeAttr(t.texto||'')}"><div class="task-topline"><span class="task-matter">${esc(t.materia||'Estudos')}</span><span class="task-priority ${escapeAttr(p)}">● ${esc(TASK_PRIORITY[p]||'Normal')}</span></div><h3>${esc(t.texto||'Tarefa sem título')}</h3>${t.notas?`<p>${esc(t.notas)}</p>`:''}<div class="task-bottom"><span class="task-chip ${due==='atrasada'&&status!=='concluido'?'overdue':due==='hoje'&&status!=='concluido'?'soon':''}">◷ ${esc(dueLabel)}</span>${showPerson}<span class="task-chip">+${num(t.xp)||50} XP</span></div><div class="task-actions">${!parent()&&canManage(t)?`${status!=='afazer'?`<button data-action="task-move" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}" data-status="${status==='fazendo'?'afazer':'fazendo'}">← Mover</button>`:''}${status!=='concluido'?`<button data-action="task-move" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}" data-status="${status==='afazer'?'fazendo':'concluido'}">${status==='afazer'?'Começar →':'✓ Concluir'}</button>`:''}<button data-action="edit-task" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}">Editar</button>`:''}${taskDate(t)?`<button data-action="task-calendar" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}" title="Exportar para calendário">📅 Calendário</button>`:''}</div></article>`;
+ return `<article class="study-task-card" draggable="${!parent()}" data-task-id="${escapeAttr(t.id)}" data-task-student="${escapeAttr(t.studentUid)}" aria-label="Tarefa ${escapeAttr(t.texto||'')}"><div class="task-topline"><span class="task-matter">${esc(t.materia||'Estudos')}</span><span class="task-priority ${escapeAttr(p)}">● ${esc(TASK_PRIORITY[p]||'Normal')}</span></div><h3>${esc(t.texto||'Tarefa sem título')}</h3>${t.notas?`<p>${esc(t.notas)}</p>`:''}<div class="task-bottom"><span class="task-chip ${due==='atrasada'&&status!=='concluido'?'overdue':due==='hoje'&&status!=='concluido'?'soon':''}">◷ ${esc(dueLabel)}</span>${showPerson}<span class="task-chip">+${num(t.xp)||50} XP</span></div><div class="task-actions">${!parent()&&canManage(t)?`${status!=='afazer'?`<button data-action="task-move" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}" data-status="${status==='fazendo'?'afazer':'fazendo'}">← Mover</button>`:''}${status!=='concluido'?`<button data-action="task-move" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}" data-status="${status==='afazer'?'fazendo':'concluido'}">${status==='afazer'?'Começar →':'✓ Concluir'}</button>`:''}<button data-action="edit-task" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}">Editar</button><button class="task-delete-quick" data-action="delete-task" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}" aria-label="Excluir tarefa">🗑 Excluir</button>`:''}${taskDate(t)?`<button data-action="task-calendar" data-id="${escapeAttr(t.id)}" data-student="${escapeAttr(t.studentUid)}" title="Exportar para calendário">📅 Calendário</button>`:''}</div></article>`;
 }
 function taskModal(t=null){
  if(parent())return;
@@ -1724,6 +1760,8 @@ document.addEventListener('input',e=>{
 document.addEventListener('change',e=>{if(e.target.id==='ifes-pending-only'){state.ifesPendingOnly=e.target.checked;render()}});
 document.addEventListener('click',e=>{
  const b=e.target.closest('[data-action]');if(!b)return;const {action,id,student,status,emoji}=b.dataset;
+ if(action==='task-view'){mobileTaskView=b.dataset.view==='kanban'?'kanban':'lista';render();return}
+ if(action==='task-tab'){mobileTaskTab=status;render();return}
  if(action==='new-task')taskModal();
  if(action==='edit-task')taskModal(state.plano.find(x=>x.id===id&&x.studentUid===student));
  if(action==='task-move')moveTaskStatus(id,student,status);
@@ -1737,6 +1775,26 @@ document.addEventListener('click',e=>{
 document.addEventListener('submit',e=>{if(e.target.getAttribute('id')==='form-task'){e.preventDefault();saveTask(e.target)}else if(e.target.getAttribute('id')==='form-avatar-upload'){e.preventDefault();uploadAvatar(e.target)}});
 document.addEventListener('input',e=>{if(e.target.id==='task-search'){state.taskSearch=e.target.value;const pos=e.target.selectionStart;render();const input=$('task-search');if(input){input.focus();input.setSelectionRange(pos,pos)}}});
 document.addEventListener('change',e=>{if(e.target.id==='task-subject-filter'){state.taskFilter=e.target.value;render()}if(e.target.id==='lesson-student')syncLessonSchool()});
+
+// Gestos exclusivos dos cartões no celular; o desktop mantém drag-and-drop.
+let taskTouch=null;
+document.addEventListener('touchstart',e=>{
+ if(window.innerWidth>720||e.target.closest('button,a,input,select,textarea'))return;
+ const card=e.target.closest('.study-task-card');if(!card)return;
+ const touch=e.touches[0];taskTouch={x:touch.clientX,y:touch.clientY,id:card.dataset.taskId,student:card.dataset.taskStudent};
+},{passive:true});
+document.addEventListener('touchend',e=>{
+ if(!taskTouch)return;const start=taskTouch;taskTouch=null;
+ const touch=e.changedTouches[0];if(!touch)return;
+ const dx=touch.clientX-start.x,dy=touch.clientY-start.y;
+ if(Math.abs(dx)<95||Math.abs(dx)<Math.abs(dy)*1.6)return;
+ const t=state.plano.find(x=>x.id===start.id&&x.studentUid===start.student);
+ if(!t||parent()||!canManage(t))return;
+ if(dx<0){deleteTask(start.id,start.student);return}
+ const stage=taskStage(t);if(stage==='concluido')return toast('Esta tarefa já está concluída.');
+ moveTaskStatus(start.id,start.student,stage==='afazer'?'fazendo':'concluido');
+},{passive:true});
+
 document.addEventListener('dragstart',e=>{const card=e.target.closest('.study-task-card');if(!card||parent())return;try{e.dataTransfer.setData('text/plain',JSON.stringify({id:card.dataset.taskId,student:card.dataset.taskStudent}));e.dataTransfer.effectAllowed='move'}catch(err){console.warn(err)}});
 document.addEventListener('dragover',e=>{if(e.target.closest('[data-task-drop]')&&!parent())e.preventDefault()});
 document.addEventListener('drop',e=>{const col=e.target.closest('[data-task-drop]');if(!col||parent())return;e.preventDefault();try{const item=JSON.parse(e.dataTransfer.getData('text/plain'));if(item.id&&item.student)moveTaskStatus(item.id,item.student,col.dataset.taskDrop)}catch(err){console.warn('Item não reconhecido',err)}});
