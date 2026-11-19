@@ -394,6 +394,27 @@ input[readonly]{background:#f2f7f3;color:#59716b}
 .uq-import-manager-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
 @media(max-width:620px){.uq-import-drop{padding:14px}.uq-import-review{padding:12px}.uq-import-nav>.btn{flex:1}}
 
+
+/* Importação multimídia V2: prévia fiel sem deformar as questões */
+.uq-import-visual{background:#f0f8f5;border:1px solid #d7e9dc;padding:14px;border-radius:14px;display:grid;gap:9px;margin-bottom:12px}
+.uq-import-visual>img{display:block;max-width:100%;max-height:520px;object-fit:contain;margin:0 auto;border-radius:10px;background:white;border:1px solid #e3e9e5}
+.uq-import-visual small{font-size:11px;color:#5e8172;line-height:1.5}
+.uq-import-visual-label{display:flex;align-items:center;gap:9px;color:#315f4e;font-size:12px;font-weight:750;margin:0}
+.uq-import-visual-label input{width:16px;height:16px;accent-color:#19b69d;flex:none}
+.uq-import-image-grid{display:flex;flex-wrap:wrap;gap:10px}
+.uq-import-image-grid figure{background:white;padding:7px;border-radius:11px;max-width:210px;margin:0;display:grid;gap:6px}
+.uq-import-image-grid img{display:block;max-width:100%;max-height:180px;object-fit:contain}
+.uq-import-image-grid figcaption{font-size:10px;color:#7d9288}
+.uq-quiz-stem{font-family:'Space Grotesk',sans-serif;font-size:clamp(18px,2vw,23px);font-weight:700;line-height:1.48;margin:17px 0 22px;white-space:pre-wrap;overflow-wrap:anywhere}
+.uq-quiz-image{display:block;max-width:100%;max-height:700px;object-fit:contain;border:1px solid #e6efe8;background:#fff;border-radius:13px;margin:17px auto 23px}
+.uq-quiz-figure{margin:10px 0;display:grid;gap:5px;justify-items:start}
+.uq-quiz-figure img{max-width:100%;max-height:350px;object-fit:contain;border-radius:10px;border:1px solid #e5eae6;background:#fff}
+.uq-quiz-figure figcaption{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;color:#81948a}
+.uq-quiz-option-text{display:block;min-width:0;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.5}
+.uq-quiz-option-text img{max-height:220px}
+.uq-review-content{margin:10px 0;white-space:pre-wrap;font-size:13px;line-height:1.55;font-weight:500;color:#53645d}.uq-review-content .uq-quiz-image{max-height:360px}
+@media(max-width:620px){.uq-import-visual{padding:10px}.uq-quiz-image{max-height:none}}
+
 </style>
 <script>if(new URLSearchParams(location.search).get('versao')==='antiga')location.replace('./versao-antiga.html');</script>
 <style>
@@ -1089,9 +1110,15 @@ function questionModal(sim){if(!sim||!teacher())return;modal(`${formHead('MONTAR
 function simManager(id){const sim=state.simulados.find(s=>s.id===id);if(!sim||!teacher()||!(owner()||mine(sim)))return toast('Sem permissão para editar esse simulado.',true);const qs=simQuestions(sim),t=state.resultados.filter(r=>r.simuladoId===id);modal(`${formHead('OFICINA DE SIMULADOS',esc(sim.titulo||'Simulado'),`${qs.length} questões · ${t.length} tentativas`)}<div class="filter-row" style="margin-bottom:18px"><span class="pill ${sim.status==='publicado'?'success':'warn'}">${esc(sim.status||'rascunho')}</span><button class="btn soft tiny" data-action="edit-sim" data-id="${escapeAttr(id)}">Editar detalhes</button><button class="btn soft tiny" data-action="toggle-sim-status" data-id="${escapeAttr(id)}">${sim.status==='publicado'?'Voltar a rascunho':'Publicar'}</button><button class="btn green tiny" data-action="new-question" data-id="${escapeAttr(id)}">+ Adicionar questão</button><button class="btn soft tiny" data-action="import-sim" data-id="${escapeAttr(id)}">↥ Importar arquivo</button></div><div class="quest-builder">${qs.length?qs.map((q,i)=>`<div class="quest-row"><div class="quest-check">${i+1}</div><div class="quest-text"><strong>${esc(q.enunciado||'Questão')}</strong><small>${esc(q.area||'Geral')} · ${q.tipo==='discursiva'?'Discursiva':'Resposta '+esc(q.correta||'')}</small></div><button class="btn ghost tiny" data-action="remove-question" data-id="${escapeAttr(q.id)}" data-sim="${escapeAttr(id)}">Excluir</button></div>`).join(''):empty('✎','Adicione a primeira questão')}</div><div class="form-actions"><button class="btn soft" data-action="close-modal">Fechar</button><button class="btn ghost" data-action="delete-sim" data-id="${escapeAttr(id)}">Excluir simulado</button></div>`)}
 // Quiz: uma questão por vez. Resultados persistidos no formato da versão antiga.
 function startQuiz(id){if(teacher()||parent()||previewReadOnly())return toast('Prévia em somente leitura: use uma conta de aluno para responder.',true);let sim=state.simulados.find(s=>s.id===id);if(!sim||sim.status!=='publicado'||!audience(sim,uid()))return toast('Simulado indisponível.',true);if(!simQuestions(sim).length)return toast('Este simulado ainda não possui questões.',true);state.quiz={simId:id,startedAt:Date.now()};state.quizAnswers={};state.quizIndex=0;render();window.scrollTo(0,0)}
-function questionImage(q){let src=String(q?.imagemData||q?.imagemUrl||'');if(!/^(https?:\/\/|data:image\/(png|jpeg|jpg|webp|gif);base64,)/i.test(src))return '';return `<img src="${escapeAttr(src)}" alt="Imagem da questão" style="max-width:100%;max-height:320px;object-fit:contain;border-radius:12px;margin:5px 0 15px">`}
-function quizPage(){let sim=state.simulados.find(s=>s.id===state.quiz.simId);if(!sim)return empty('🧩','Simulado indisponível');let qs=simQuestions(sim),q=qs[state.quizIndex],answer=state.quizAnswers[q.id]||'',percentage=Math.round((state.quizIndex+1)/qs.length*100),options=q.alternativas||{};return `<div class="quiz-shell"><div class="quiz-head"><div><div class="eyebrow">MODO DESAFIO</div><h3>${esc(sim.titulo||'Simulado')}</h3></div><button class="btn soft tiny" data-action="quit-quiz">Sair</button></div><div class="xp-meta" style="margin-bottom:7px"><span>Questão ${state.quizIndex+1} de ${qs.length}</span><span>${percentage}%</span></div><div class="progress-line" style="margin-bottom:19px"><span style="width:${percentage}%"></span></div><div class="question-card"><span class="pill lavender">${esc(q.area||'Geral')}</span><h2>${esc(q.enunciado||'Questão')}</h2>${questionImage(q)}${q.tipo==='discursiva'?`<textarea id="discursive-answer" placeholder="Escreva sua resposta aqui...">${esc(answer)}</textarea>`:Object.entries(options).map(([letter,label])=>`<button class="option ${answer===letter?'selected':''}" data-action="answer" data-id="${escapeAttr(q.id)}" data-value="${escapeAttr(letter)}"><span class="letter">${esc(letter)}</span><span>${esc(label)}</span></button>`).join('')}<div class="quiz-footer"><button class="btn soft" data-action="quiz-back" ${state.quizIndex===0?'disabled':''}>← Anterior</button><button class="btn primary" data-action="quiz-next">${state.quizIndex+1===qs.length?'Finalizar desafio ✦':'Próxima →'}</button></div></div></div>`}
-function reviewPage(){let r=state.review,sim=state.simulados.find(s=>s.id===r.simuladoId),qs=Array.isArray(r.questoesSnapshot)&&r.questoesSnapshot.length?r.questoesSnapshot:simQuestions(sim);let score=num(r.resultado?.aproveitamento);let canShow=canViewResult(r);if(!canShow)return `<div class="section-head"><div><span class="eyebrow">DESAFIO ENVIADO</span><h2>Respostas recebidas ✳</h2><p>${esc(r.simuladoTitulo||'Simulado')}</p></div><button class="btn soft" data-action="close-review">← Voltar</button></div><div class="card">${empty('🌱','Simulado entregue!','O professor optou por não liberar a pontuação e o gabarito neste momento.')}</div>`;return `<div class="section-head"><div><div class="eyebrow">DESAFIO CONCLUÍDO</div><h2>Resultado da missão ✦</h2><p>${esc(r.simuladoTitulo||'Simulado')} · ${dateBR(dateOnly(r.enviadoEm||Date.now()))}</p></div><button class="btn soft" data-action="close-review">← Voltar</button></div><div class="grid-two"><div class="card"><div class="score-grid"><div class="score-display"><span class="eyebrow">APROVEITAMENTO</span><b>${score}%</b><span class="small">${completionBadge(score)}</span></div><div class="score-display" style="background:#f4f2fa"><span class="eyebrow">RESPOSTAS CERTAS</span><b style="color:#8474aa">${num(r.resultado?.acertosObjetivas)}/${num(r.resultado?.totalObjetivas)}</b><span class="small">nas objetivas</span></div></div><div style="margin-top:25px"><h3>${canShow?'Conferência de questões':'Sua tentativa foi enviada!'}</h3>${canShow?qs.map((q,i)=>{let a=r.respostas?.[q.id]||{},ok=a.correta===true;return `<div class="review-item"><strong>${i+1}. ${esc(q.enunciado||'Questão')}</strong><p>${esc(q.area||'Geral')}</p>${q.tipo==='discursiva'?`<div class="review-answer">Sua resposta: ${esc(a.resposta||'Sem resposta')} · Aguardando correção</div>`:`<div class="review-answer ${ok?'good':'bad'}">Sua resposta: ${esc(a.resposta||'—')} · ${ok?'✓ Correta':'Resposta correta: '+esc(q.correta||a.corretaEsperada||'—')}</div>`}${q.comentarioGabarito?`<div class="review-answer">💡 ${esc(q.comentarioGabarito)}</div>`:''}</div>`}).join(''):'<p class="muted">O professor optou por não mostrar o gabarito agora.</p>'}</div></div><div class="side-hint"><span class="eyebrow">VOCÊ EVOLUIU</span><h3 style="margin-top:10px">+100 XP na jornada</h3><p>O resultado fica registrado para acompanhar a evolução com novas tentativas.</p><button class="btn green" data-action="nav" data-id="plano">Ver minhas missões ↗</button></div></div>`}
+function questionImage(q){let src=String(q?.imagemData||q?.imagemUrl||'');if(!/^(https?:\/\/|data:image\/(png|jpeg|jpg|webp|gif);base64,)/i.test(src))return '';return `<img class="uq-quiz-image" src="${escapeAttr(src)}" alt="Enunciado original, incluindo ilustrações e fórmulas">`}
+function uqRichQuestion(text,q){
+ const media=q?.imagens||{};
+ return esc(String(text||'')).replace(/\[\[UQIMG(\d+)\]\]/g,(all,id)=>{
+  const src=media[id];return uqImportSafeImage(src)?`<figure class="uq-quiz-figure"><img src="${escapeAttr(src)}" alt="Figura ${esc(id)}"><figcaption>Figura ${esc(id)}</figcaption></figure>`:'[Imagem não disponível]';
+ });
+}
+function quizPage(){let sim=state.simulados.find(s=>s.id===state.quiz.simId);if(!sim)return empty('🧩','Simulado indisponível');let qs=simQuestions(sim),q=qs[state.quizIndex],answer=state.quizAnswers[q.id]||'',percentage=Math.round((state.quizIndex+1)/qs.length*100),options=q.alternativas||{};return `<div class="quiz-shell"><div class="quiz-head"><div><div class="eyebrow">MODO DESAFIO</div><h3>${esc(sim.titulo||'Simulado')}</h3></div><button class="btn soft tiny" data-action="quit-quiz">Sair</button></div><div class="xp-meta" style="margin-bottom:7px"><span>Questão ${state.quizIndex+1} de ${qs.length}</span><span>${percentage}%</span></div><div class="progress-line" style="margin-bottom:19px"><span style="width:${percentage}%"></span></div><div class="question-card"><span class="pill lavender">${esc(q.area||'Geral')}</span>${q.visualMode==='imagem'&&questionImage(q)?questionImage(q):`<div class="uq-quiz-stem">${uqRichQuestion(q.enunciado||'Questão',q)}</div>${questionImage(q)}`}${q.tipo==='discursiva'?`<textarea id="discursive-answer" placeholder="Escreva sua resposta aqui...">${esc(answer)}</textarea>`:Object.entries(options).map(([letter,label])=>`<button class="option ${answer===letter?'selected':''}" data-action="answer" data-id="${escapeAttr(q.id)}" data-value="${escapeAttr(letter)}"><span class="letter">${esc(letter)}</span><span class="uq-quiz-option-text">${uqRichQuestion(label,q)}</span></button>`).join('')}<div class="quiz-footer"><button class="btn soft" data-action="quiz-back" ${state.quizIndex===0?'disabled':''}>← Anterior</button><button class="btn primary" data-action="quiz-next">${state.quizIndex+1===qs.length?'Finalizar desafio ✦':'Próxima →'}</button></div></div></div>`}
+function reviewPage(){let r=state.review,sim=state.simulados.find(s=>s.id===r.simuladoId),qs=Array.isArray(r.questoesSnapshot)&&r.questoesSnapshot.length?r.questoesSnapshot.map(q=>{const live=simQuestions(sim).find(t=>t.id===q.id);return {...q,imagemData:live?.imagemData||'',imagens:live?.imagens||{},visualMode:live?.visualMode||'texto'}}):simQuestions(sim);let score=num(r.resultado?.aproveitamento);let canShow=canViewResult(r);if(!canShow)return `<div class="section-head"><div><span class="eyebrow">DESAFIO ENVIADO</span><h2>Respostas recebidas ✳</h2><p>${esc(r.simuladoTitulo||'Simulado')}</p></div><button class="btn soft" data-action="close-review">← Voltar</button></div><div class="card">${empty('🌱','Simulado entregue!','O professor optou por não liberar a pontuação e o gabarito neste momento.')}</div>`;return `<div class="section-head"><div><div class="eyebrow">DESAFIO CONCLUÍDO</div><h2>Resultado da missão ✦</h2><p>${esc(r.simuladoTitulo||'Simulado')} · ${dateBR(dateOnly(r.enviadoEm||Date.now()))}</p></div><button class="btn soft" data-action="close-review">← Voltar</button></div><div class="grid-two"><div class="card"><div class="score-grid"><div class="score-display"><span class="eyebrow">APROVEITAMENTO</span><b>${score}%</b><span class="small">${completionBadge(score)}</span></div><div class="score-display" style="background:#f4f2fa"><span class="eyebrow">RESPOSTAS CERTAS</span><b style="color:#8474aa">${num(r.resultado?.acertosObjetivas)}/${num(r.resultado?.totalObjetivas)}</b><span class="small">nas objetivas</span></div></div><div style="margin-top:25px"><h3>${canShow?'Conferência de questões':'Sua tentativa foi enviada!'}</h3>${canShow?qs.map((q,i)=>{let a=r.respostas?.[q.id]||{},ok=a.correta===true;return `<div class="review-item"><strong>${i+1}. ${esc(q.area||'Geral')}</strong><div class="uq-review-content">${q.visualMode==='imagem'&&questionImage(q)?questionImage(q):uqRichQuestion(q.enunciado||'Questão',q)}</div>${q.tipo==='discursiva'?`<div class="review-answer">Sua resposta: ${esc(a.resposta||'Sem resposta')} · Aguardando correção</div>`:`<div class="review-answer ${ok?'good':'bad'}">Sua resposta: ${esc(a.resposta||'—')} · ${ok?'✓ Correta':'Resposta correta: '+esc(q.correta||a.corretaEsperada||'—')}</div>`}${q.comentarioGabarito?`<div class="review-answer">💡 ${esc(q.comentarioGabarito)}</div>`:''}</div>`}).join(''):'<p class="muted">O professor optou por não mostrar o gabarito agora.</p>'}</div></div><div class="side-hint"><span class="eyebrow">VOCÊ EVOLUIU</span><h3 style="margin-top:10px">+100 XP na jornada</h3><p>O resultado fica registrado para acompanhar a evolução com novas tentativas.</p><button class="btn green" data-action="nav" data-id="plano">Ver minhas missões ↗</button></div></div>`}
 function renderDemo(role='student'){state.demo=true;state.viewMode=role==='teacher'?'teacher':'student';state.user={uid:'demo-aluno',email:'demo@umquarto.local'};state.profile={name:role==='teacher'?'Professor (teste)':'Alex',role:'student'};state.ifesAccess={'demo-aluno':{enabled:true}};state.ifesAccessLoaded=true;state.ifesProgress={};state.ifesDetail='';state.users=[{id:'demo-aluno',name:'Alex',role:'student',escola:'Escola Exemplo'},{id:'demo-aluno-2',name:'Beatriz',role:'student',escola:'Escola Exemplo'}];state.financeRecords={};state.financeLoaded=false; /* Demonstração não carrega nem exibe dados financeiros. */state.ifesAccess['demo-aluno-2']={enabled:false};state.materiais=[{id:'demo-material-1',titulo:'Guia de equações do 2º grau',materia:'Matemática',descricao:'Resumo: ax² + bx + c = 0. Para resolver, calcule Δ = b² − 4ac e depois use x = (−b ± √Δ)/(2a).',tipo:'explicacao',createdBy:'demo-prof',createdByName:'Professora Ana',createdAt:Date.now()}];const d=today(),t=Date.now();state.aulas=[{id:'demo-a1',studentUid:'demo-aluno',materia:'Matemática',conteudo:'Equações do 2º grau e fórmula de Bhaskara',orientacao:'Resolver 5 exercícios de fixação',data:d,inicio:'15:00',fim:'16:00',dur:60,statusFinanceiro:'recebido',professorNome:'Paulo (teste)',professorUid:'demo-prof',desempenho:4},{id:'demo-a2',studentUid:'demo-aluno',materia:'Geometria',conteudo:'Área dos polígonos e resolução de problemas',data:dateOnly(t-86400000*3),inicio:'14:00',fim:'15:00',dur:60,statusFinanceiro:'recebido',professorNome:'Paulo (teste)',professorUid:'demo-prof'}];state.plano=[{id:'d1',studentUid:'demo-aluno',materia:'Matemática',texto:'Resolver 10 questões de equações',prazo:d,xp:50,feito:false,plano:'Semana 1'},{id:'d2',studentUid:'demo-aluno',materia:'Geometria',texto:'Revisar áreas e perímetros',xp:50,feito:false,plano:'Semana 1'},{id:'d3',studentUid:'demo-aluno',materia:'Matemática',texto:'Rever produtos notáveis',feito:true,concluidoEm:t-86400000,xp:80,plano:'Semana 1'},{id:'d4',studentUid:'demo-aluno',materia:'Português',texto:'Interpretar um texto curto',feito:true,concluidoEm:t-86400000*2,xp:50,plano:'Semana 1'}];state.simulados=[{id:'ds1',titulo:'Desafio da álgebra',desc:'Teste seus conhecimentos em equações.',studentUid:'all',status:'publicado',showResult:true,tempoMinutos:20,questoes:{q1:{ordem:1,tipo:'multipla',area:'Matemática',enunciado:'Quanto vale x na equação 2x + 6 = 18?',alternativas:{A:'4',B:'6',C:'8',D:'12'},correta:'B',valor:1,comentarioGabarito:'2x = 12, logo x = 6.'},q2:{ordem:2,tipo:'multipla',area:'Matemática',enunciado:'Qual é o valor de 3² + 4²?',alternativas:{A:'7',B:'12',C:'25',D:'49'},correta:'C',valor:1,comentarioGabarito:'9 + 16 = 25.'}}}];state.plano[0].prioridade='alta';state.plano[0].lembreteHora='18:00';state.plano[1].kanbanStatus='fazendo';state.resultados=[];state.target='demo-aluno';state.section='home';state.teacherSimPanel='lista';shell()}
 async function initFirebase(){if(!window.firebase){$('auth-error').textContent='Falha ao carregar o Firebase. Verifique sua conexão.';return;}try{firebase.initializeApp(firebaseConfig);state.auth=firebase.auth();state.db=firebase.database();state.storage=firebase.storage();state.auth.onAuthStateChanged(onAuth);}catch(e){console.error(e);toast(errorText(e),true)}}
 function resetSubscriptions(){disconnectIfesProgress();state.listeners.forEach(fn=>{try{fn()}catch(e){}});state.listeners=[]}
@@ -1840,8 +1867,8 @@ function uqImportPickScreen(){
  const d=uqImportDraft;if(!d)return;
  const existing=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
  modal(`${formHead('IMPORTAÇÃO INTELIGENTE',existing?'Adicionar questões ao simulado':'Transforme sua prova em simulado','PDF ou Word (.docx) → questões online, com conferência do professor.')}${uqImportSteps(1)}
- <div class="uq-import-drop"><strong>📄 Selecione o arquivo da prova</strong><span class="small">PDF com texto selecionável ou Word .docx · até 10 MB</span><input type="file" id="uq-import-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
- <div class="uq-import-note">🔎 O processamento acontece no próprio navegador; o arquivo original não é enviado ao Firebase. O importador identifica questões numeradas, alternativas A–E e gabaritos escritos. Confira tudo antes de publicar. PDFs escaneados, figuras, tabelas e fórmulas complexas podem exigir ajustes.</div>
+ <div class="uq-import-drop"><strong>📄 Selecione o arquivo da prova</strong><span class="small">PDF ou Word .docx · até 10 MB · imagens incluídas</span><input type="file" id="uq-import-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
+ <div class="uq-import-note">🔎 O processamento acontece no próprio navegador; o arquivo original não é enviado ao Firebase. O importador separa automaticamente A–E, inclusive no formato “A 9.”, identifica gabaritos escritos e preserva imagens do Word e recortes visuais dos PDFs com figuras. Confira o resultado antes de publicar. PDFs escaneados precisam de OCR; imagens e fórmulas muito complexas podem exigir ajustes.</div>
  <details ${d.text?'open':''}><summary style="cursor:pointer;font-weight:800;font-size:12px">Ou cole / ajuste o texto da prova</summary><textarea id="uq-import-source" style="min-height:150px;margin-top:10px" placeholder="QUESTÃO 1\nQual é o valor de 2 + 2?\nA) 2\nB) 3\nC) 4\nD) 5\n\nGABARITO\n1 - C">${esc(d.text)}</textarea></details>
  <div id="uq-import-status" class="file-status" role="status"></div>
  <div class="form-actions"><button type="button" class="btn soft" data-action="close-modal">Cancelar</button><button type="button" class="btn primary" data-action="uq-import-analyze">Identificar questões ✳</button></div>`);
@@ -1856,21 +1883,84 @@ function uqLoadScript(src,globalName){
   document.head.appendChild(el);
  });
 }
+// Leitura multimídia: as figuras são reduzidas localmente para caber no Realtime Database.
+const UQ_IMG_LIMIT=110000;
+function uqImportSafeImage(src){return /^data:image\/(?:png|jpeg|webp);base64,[a-z\d+/=]+$/i.test(String(src||''))}
+async function uqImportCompress(src,limit=UQ_IMG_LIMIT){
+ if(!uqImportSafeImage(src))return '';
+ const image=new Image();await new Promise((resolve,reject)=>{image.onload=resolve;image.onerror=reject;image.src=src});
+ let w=image.naturalWidth,h=image.naturalHeight;
+ if(!w||!h)return '';
+ let scale=Math.min(1,1150/w,1250/h),quality=.84;
+ for(let pass=0;pass<9;pass++){
+  const c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*scale));c.height=Math.max(1,Math.round(h*scale));
+  const ctx=c.getContext('2d',{alpha:false});ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);ctx.drawImage(image,0,0,c.width,c.height);
+  const value=c.toDataURL('image/webp',quality);
+  if(value.length<limit*1.36)return value;
+  if(quality>.5)quality-=.1;else scale*=.78;
+ }
+ return '';
+}
+function uqDocxTextWithImages(html){
+ const doc=new DOMParser().parseFromString(String(html||''),'text/html');
+ const images={};let seq=0,lines=[];
+ function inline(el){
+  let output='';
+  for(const n of el.childNodes){
+   if(n.nodeType===3){output+=n.nodeValue||'';continue}
+   if(n.nodeType!==1)continue;
+   if(n.tagName==='IMG'){
+    const src=String(n.getAttribute('src')||'');
+    if(uqImportSafeImage(src)&&seq<35){const id=String(++seq);images[id]=src;output+=' [[UQIMG'+id+']] ';}
+    continue;
+   }
+   if(n.tagName==='BR')output+='\n';else output+=inline(n);
+  }
+  return output;
+ }
+ // Uma linha por parágrafo, inclusive nas tabelas; mantém a posição original das imagens.
+ const blocks=Array.from(doc.body.querySelectorAll('p,h1,h2,h3,h4,h5,h6,li,td,th'));
+ for(const el of blocks){
+  if(el.tagName==='P'&&el.closest('li'))continue;
+  if((el.tagName==='TD'||el.tagName==='TH')&&el.querySelector('p'))continue;
+  const value=inline(el).replace(/[\t ]+/g,' ').trim();if(!value)continue;
+  let prefix='';
+  if(el.tagName==='LI'&&el.parentElement?.tagName==='OL'&&!/^\(?\d{1,3}[.)\-]/.test(value)){
+   const li=Array.from(el.parentElement.children).filter(x=>x.tagName==='LI');
+   const pos=li.indexOf(el)+(Number(el.parentElement.getAttribute('start'))||1);
+   const type=el.parentElement.getAttribute('type');
+   prefix=type==='a'||type==='A'?String.fromCharCode((type==='A'?65:97)+pos-1)+') ':pos+'. ';
+  }
+  lines.push(prefix+value);
+ }
+ return {text:lines.join('\n'),images};
+}
 async function uqReadImportFile(file){
  const ext=(file.name.split('.').pop()||'').toLowerCase();
  if(!['pdf','docx'].includes(ext))throw new Error('Formato não suportado. Use PDF ou Word .docx (converta .doc para .docx).');
  if(!file.size||file.size>10*1024*1024)throw new Error('O arquivo deve ter entre 1 byte e 10 MB.');
  if(ext==='docx'){
   const mammoth=await uqLoadScript('https://cdn.jsdelivr.net/npm/mammoth@1.10.0/mammoth.browser.min.js','mammoth');
-  const result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});
-  return {text:result.value||'',warnings:(result.messages||[]).filter(x=>x.type==='warning').map(x=>String(x.message||''))};
+  const ab=await file.arrayBuffer();
+  const result=await mammoth.convertToHtml({arrayBuffer:ab},{convertImage:mammoth.images.imgElement(async image=>{
+   if(!/^image\/(?:jpeg|png|webp)$/i.test(image.contentType||''))return {alt:'Imagem em formato não suportado'};
+   return {src:'data:'+image.contentType+';base64,'+await image.read('base64')};
+  })});
+  const parsed=uqDocxTextWithImages(result.value);
+  const images={};let bad=0;
+  for(const [id,src] of Object.entries(parsed.images)){
+   uqImportStatus(`Organizando imagem ${id} de ${Object.keys(parsed.images).length}...`);
+   const small=await uqImportCompress(src);if(small)images[id]=small;else bad++;
+  }
+  return {text:parsed.text,images,warnings:[...(result.messages||[]).filter(x=>x.type==='warning').slice(0,3).map(x=>String(x.message||'')),...(bad?[`${bad} imagem(ns) não puderam ser reduzidas e exigem conferência.`]:[])]};
  }
  const pdfjs=await uqLoadScript('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js','pdfjsLib');
  pdfjs.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
- const task=pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())});
- const pdf=await task.promise;
+ const pdf=await pdfjs.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
  if(pdf.numPages>100)throw new Error('O PDF tem mais de 100 páginas. Divida o arquivo em partes menores.');
  const pages=[];
+ const paintCodes=new Set(['paintImageXObject','paintInlineImageXObject','paintJpegXObject','paintImageXObjectRepeat','paintInlineImageXObjectGroup'].map(k=>pdfjs.OPS[k]).filter(x=>Number.isFinite(x)));
+ const vectorCodes=new Set(['stroke','fill','eoFill','fillStroke','eoFillStroke'].map(k=>pdfjs.OPS[k]).filter(x=>Number.isFinite(x)));
  for(let pageNum=1;pageNum<=pdf.numPages;pageNum++){
   uqImportStatus(`Lendo página ${pageNum} de ${pdf.numPages}...`);
   const page=await pdf.getPage(pageNum),content=await page.getTextContent();
@@ -1883,82 +1973,177 @@ async function uqReadImportFile(file){
    row.parts.push({x,str});
   }
   rows.sort((a,b)=>b.y-a.y);
-  const lines=rows.map(row=>{
+  const ordered=rows.map(row=>{
    row.parts.sort((a,b)=>a.x-b.x);
-   return row.parts.map(p=>p.str).join(' ').replace(/\s+/g,' ').trim();
-  }).filter(Boolean);
-  pages.push(lines.join('\n'));
+   return {y:row.y,text:row.parts.map(p=>p.str).join(' ').replace(/\s+/g,' ').trim()};
+  }).filter(x=>x.text);
+  let hasArtwork=false;
+  try{const list=await page.getOperatorList();hasArtwork=list.fnArray.some(c=>paintCodes.has(c))||list.fnArray.filter(c=>vectorCodes.has(c)).length>25}catch(e){console.warn('Detecção visual do PDF:',e)}
+  pages.push({num:pageNum,rows:ordered,hasArtwork});
  }
- return {text:pages.join('\n\n'),warnings:pages.some(p=>p.trim().length<12)?['Uma ou mais páginas têm pouco texto extraível. Pode ser PDF escaneado ou imagem.']:[]};
+ const plain=pages.map(p=>p.rows.map(r=>r.text).join('\n'));
+ return {text:plain.join('\n\n'),pdf,pdfPages:pages,images:{},warnings:plain.some(p=>p.trim().length<12)?['Algumas páginas parecem escaneadas: sem OCR, o texto dessas páginas pode não ser identificado.']:[]};
+}
+// Cobre A) 2, A. 2, (A) 2, A - 2 e também A 9. / B 17. sem pontuação após a letra.
+function uqImportAltMatch(line){
+ const s=String(line||'').trim();
+ let m=s.match(/^\(?([A-E])\)?\s*[.)\-–—:]\s*(.*)$/i);
+ if(m&&m[2].trim())return {letter:m[1].toUpperCase(),value:m[2].trim(),strong:true};
+ m=s.match(/^([A-E])\s+(.\S.*|\S)$/); // alternativas de PDF com o marcador separado do texto
+ if(m)return {letter:m[1],value:m[2].trim(),strong:false};
+ return null;
+}
+function uqImportQuestionStart(line){
+ return String(line||'').match(/^(?:(?:quest[aã]o|questao|q(?:uestion)?)\s*[º°n\.]?\s*0*(\d{1,3})\s*[-–—.:)]?\s*|\(?0*(\d{1,3})\)?\s*[.)\-–]\s+)(.*)$/i);
+}
+function uqImportSplitInline(lines){
+ const out=[];
+ for(const line of lines){
+  const markers=[...line.matchAll(/(?:^|\s)([A-E])\s*(?:[).:]\s*|\s+(?=\d))(?=\S)/g)];
+  if(markers.length>=3&&new Set(markers.map(m=>m[1])).size>=3){
+   const starts=markers.map(m=>m.index+(m[0].startsWith(' ')?1:0));
+   if(starts[0]>0)out.push(line.slice(0,starts[0]).trim());
+   starts.forEach((pos,i)=>out.push(line.slice(pos,starts[i+1]||line.length).trim()));
+  }else out.push(line);
+ }
+ return out.filter(Boolean);
+}
+function uqImportParseOptions(rawLines){
+ const options={};let stem=[];
+ // Só consideramos alternativas quando pelo menos duas letras consecutivas aparecem.
+ const candidates=rawLines.map((line,i)=>({...uqImportAltMatch(line),i})).filter(c=>c.letter);
+ const runs=[];
+ for(let j=0;j<candidates.length;j++){
+  let run=[candidates[j]];
+  for(let k=j+1;k<candidates.length;k++){
+   const c=candidates[k],last=run[run.length-1];
+   if(c.i-last.i>5||c.letter.charCodeAt(0)!==last.letter.charCodeAt(0)+1)break;
+   run.push(c);
+  }
+  if(run.length>=2)runs.push(run);
+ }
+ runs.sort((a,b)=>b.length-a.length||b[0].i-a[0].i);
+ const first=runs[0]?.[0]?.i;
+ if(first===undefined)return {enunciado:rawLines.join('\n'),alternativas:options};
+ stem=rawLines.slice(0,first);
+ let current='';
+ for(let i=first;i<rawLines.length;i++){
+  const alt=uqImportAltMatch(rawLines[i]);
+  const isNext=alt&&(!current||alt.letter.charCodeAt(0)===current.charCodeAt(0)+1);
+  if(isNext){current=alt.letter;options[current]=alt.value;continue;}
+  if(current)options[current]+=' '+rawLines[i];else stem.push(rawLines[i]);
+ }
+ for(const k of Object.keys(options))options[k]=options[k].trim();
+ return {enunciado:stem.join('\n').trim(),alternativas:options};
 }
 function uqParseImportText(input){
  const raw=String(input||'').replace(/\r\n?/g,'\n').replace(/\u00ad/g,'').replace(/\u00a0/g,' ');
- const lines=raw.split('\n').map(s=>s.replace(/[\t ]+/g,' ').trim()).filter(Boolean);
- const start=/^(?:(?:quest[aã]o|questao|q(?:uestion)?)\s*[º°n\.]?\s*0*(\d{1,3})\s*[-–—.:)]?\s*|\(?0*(\d{1,3})\)?\s*[.)\-–]\s+)(.*)$/i;
- const alternative=/^(?:\(([A-E])\)|([A-E])[.)\-:]|([A-E])\s*[-–]\s*)(?:\s*)(.+)$/i;
+ const lines=uqImportSplitInline(raw.split('\n').map(x=>x.replace(/[\t ]+/g,' ').trim()).filter(Boolean));
  const keyOnly=/^(?:gabarito|resposta\s*correta|alternativa\s*correta|resposta)\s*[:\-–]?\s*([A-E])\s*$/i;
- const keyHeader=/^(?:gabarito|respostas(?:\s+corretas)?|answer\s*key)\s*[:\-–]?\s*(.*)$/i;
- const keyMap={};let answerSection=false,current=null,lastOption=null,ignored=0;
- const found=[];
- function complete(){
-  if(!current)return;
-  current.enunciado=current.parts.join('\n').trim();delete current.parts;
-  for(const k of Object.keys(current.alternativas))current.alternativas[k]=current.alternativas[k].trim();
-  if(current.enunciado||Object.keys(current.alternativas).length)found.push(current);else ignored++;
-  current=null;lastOption=null;
- }
- function parseKeys(text){
-  for(const m of text.matchAll(/(?:^|[;,:\s])0*(\d{1,3})\s*[-.():=]?\s*([A-E])(?=\s|[;,.]|$)/gi))keyMap[Number(m[1])]=m[2].toUpperCase();
- }
+ const keyHeader=/^(?:gabarito(?:\s+oficial)?|respostas(?:\s+corretas)?|answer\s*key)\s*[:\-–]?\s*(.*)$/i;
+ const keyMap={},found=[];let current=null,answerSection=false,ignored=0;
+ function complete(){if(!current)return;const parsed=uqImportParseOptions(current.lines);if(parsed.enunciado||Object.keys(parsed.alternativas).length)found.push({...current,...parsed});else ignored++;current=null;}
+ function parseKeys(t){for(const m of t.matchAll(/(?:^|[;,\s])0*(\d{1,3})\s*[-.():=]?\s*([A-E])(?=\s|[;,.]|$)/gi))keyMap[Number(m[1])]=m[2].toUpperCase()}
  for(const line of lines){
   const kh=line.match(keyHeader);
   if(kh){
-   if(/^gabarito/i.test(line)&&/^[\s:–-]*[A-E][\s.]*$/i.test(kh[1]||'')&&current){current.correta=(kh[1].match(/[A-E]/i)||[])[0]?.toUpperCase()||'';continue}
-   if(!current||found.length||!String(kh[1]||'').trim()||/\b\d+\s*[-.:]?\s*[A-E]\b/i.test(kh[1]||'')){
-    complete();answerSection=true;parseKeys(kh[1]||'');continue;
-   }
+   const simple=(kh[1]||'').trim();
+   if(current&&/^[A-E]$/i.test(simple)){current.correta=simple.toUpperCase();continue}
+   complete();answerSection=true;parseKeys(simple);continue;
   }
-  if(answerSection){parseKeys(line);continue;}
-  const matchStart=line.match(start);
-  if(matchStart&&Number(matchStart[1]||matchStart[2])>0){
-   complete();current={number:Number(matchStart[1]||matchStart[2]),parts:[],alternativas:{},correta:'',area:'Geral',comentarioGabarito:''};
-   const tail=(matchStart[3]||'').trim();if(tail)current.parts.push(tail);
-   continue;
-  }
-  const matchAlt=line.match(alternative);
-  if(matchAlt&&current){
-   const letter=(matchAlt[1]||matchAlt[2]||matchAlt[3]).toUpperCase();
-   current.alternativas[letter]=matchAlt[4].trim();lastOption=letter;continue;
+  if(answerSection){parseKeys(line);continue}
+  const start=uqImportQuestionStart(line);
+  if(start&&Number(start[1]||start[2])>0){
+   complete();current={number:Number(start[1]||start[2]),lines:[],correta:'',area:'Geral',comentarioGabarito:''};
+   const tail=(start[3]||'').trim();if(tail)current.lines.push(tail);continue;
   }
   if(!current)continue;
   const key=line.match(keyOnly);
-  if(key){current.correta=key[1].toUpperCase();lastOption=null;continue;}
-  if(lastOption)current.alternativas[lastOption]+=' '+line;
-  else current.parts.push(line);
+  if(key){current.correta=key[1].toUpperCase();continue}
+  current.lines.push(line);
  }
  complete();
  const warnings=[];
- if(!found.length)warnings.push('Não foram encontradas questões numeradas. Confira o texto ou cole as questões manualmente.');
- if(found.length>UQ_IMPORT_LIMIT)warnings.push(`Foram detectadas ${found.length} questões. O limite é ${UQ_IMPORT_LIMIT}; divida a prova em partes.`);
- const questions=found.slice(0,UQ_IMPORT_LIMIT).map(q=>{
-  const correct=q.correta||keyMap[q.number]||'';
-  return {number:q.number,enunciado:q.enunciado,alternativas:q.alternativas,correta:correct,area:'Geral',comentarioGabarito:''};
- });
- const need=questions.filter(q=>Object.keys(q.alternativas).length<2||!q.correta||!q.alternativas[q.correta]);
- if(need.length)warnings.push(`${need.length} questão(ões) ainda precisam de conferência do enunciado, das alternativas ou do gabarito.`);
+ if(!found.length)warnings.push('Nenhuma questão numerada foi identificada. Confira o texto extraído.');
+ if(found.length>UQ_IMPORT_LIMIT)warnings.push(`Foram identificadas ${found.length} questões. O limite é ${UQ_IMPORT_LIMIT}.`);
+ const questions=found.slice(0,UQ_IMPORT_LIMIT).map(q=>({number:q.number,enunciado:q.enunciado,alternativas:q.alternativas,correta:q.correta||keyMap[q.number]||'',area:'Geral',comentarioGabarito:'',imagens:{},imagemData:'',visualMode:'texto'}));
+ const optionsFailed=questions.filter(q=>Object.keys(q.alternativas).length<2).length;
+ if(optionsFailed)warnings.push(`${optionsFailed} questão(ões) sem pelo menos duas alternativas detectadas. Confira a diagramação.`);
+ const keysNeeded=questions.filter(q=>!q.correta).length;
+ if(keysNeeded)warnings.push(`O arquivo não informou o gabarito de ${keysNeeded} questão(ões). As letras foram separadas, mas você precisa indicar quais respostas estão corretas.`);
  return {questions,ignored,warnings};
+}
+function uqImportAssignImages(questions,images){
+ const token=/\[\[UQIMG(\d+)\]\]/g;
+ for(const q of questions){
+  const txt=[q.enunciado,...Object.values(q.alternativas||{})].join(' ');
+  for(const m of txt.matchAll(token)){if(images[m[1]])q.imagens[m[1]]=images[m[1]]}
+ }
+}
+function uqImportPdfFindPositions(pages){
+ const headings=[];
+ for(const p of pages)for(let i=0;i<p.rows.length;i++){
+  const match=uqImportQuestionStart(p.rows[i].text);
+  if(match)headings.push({page:p.num,row:i,y:p.rows[i].y,num:Number(match[1]||match[2])});
+ }
+ return headings;
+}
+async function uqImportPdfVisuals(pdf,pages,questions){
+ const headings=uqImportPdfFindPositions(pages);let cursor=0,added=0;
+ const cache=new Map();
+ for(const q of questions){
+  let at=headings.findIndex((h,i)=>i>=cursor&&h.num===q.number);if(at<0)continue;cursor=at+1;
+  const h=headings[at],p=pages[h.page-1];
+  const visualWords=/figura|imagem|gr[aá]fico|diagram|tabela|ilustra|desenho|observe|esquema|tri[aâ]ngulo|quadrado|circunfer[eê]ncia/i.test(q.enunciado);
+  if(!p.hasArtwork&&!visualWords)continue;
+  // A imagem é do enunciado ATÉ a primeira alternativa. Assim os botões A–E não aparecem duplicados.
+  const following=headings[at+1];let bottomIndex=following&&following.page===h.page?following.row:p.rows.length;
+  let firstAlt=-1;
+  for(let i=h.row+1;i<bottomIndex;i++){
+   const x=uqImportAltMatch(p.rows[i].text);
+   if(x?.letter==='A'){firstAlt=i;break}
+  }
+  if(firstAlt>h.row+1)bottomIndex=firstAlt;
+  if(bottomIndex<=h.row+1)continue;
+  if(added>=24)break;
+  try{
+   uqImportStatus(`Preservando figuras da questão ${q.number}...`);
+   let entry=cache.get(h.page);
+   if(!entry){
+    const page=await pdf.getPage(h.page),base=page.getViewport({scale:1}),scale=Math.min(1.75,1080/base.width),vp=page.getViewport({scale});
+    const canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);
+    await page.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport:vp,background:'#fff'}).promise;
+    entry={canvas,vp,page};cache.set(h.page,entry);
+    if(cache.size>2){const old=cache.keys().next().value;if(old!==h.page)cache.delete(old)}
+   }
+   const toY=y=>entry.vp.convertToViewportPoint(0,y)[1];
+   const yTop=Math.max(0,Math.floor(toY(p.rows[h.row].y)-22));
+   const bottomRow=p.rows[bottomIndex];
+   const yBottom=bottomRow?toY(bottomRow.y)-7:entry.canvas.height-14;
+   const yEnd=Math.min(entry.canvas.height,Math.max(yTop+40,Math.ceil(yBottom)));
+   const fragment=document.createElement('canvas');fragment.width=entry.canvas.width;fragment.height=yEnd-yTop;
+   fragment.getContext('2d',{alpha:false}).drawImage(entry.canvas,0,yTop,entry.canvas.width,fragment.height,0,0,fragment.width,fragment.height);
+   const src=await uqImportCompress(fragment.toDataURL('image/webp',.86));
+   if(src){q.imagemData=src;q.visualMode='imagem';added++}
+  }catch(e){console.warn('Figura no PDF não capturada:',e)}
+ }
+ return added;
 }
 async function uqImportAnalyze(){
  const d=uqImportDraft;if(!d||d.busy)return;
- const file=$('uq-import-file')?.files?.[0];const typed=$('uq-import-source')?.value.trim()||'';
+ const file=$('uq-import-file')?.files?.[0],typed=$('uq-import-source')?.value.trim()||'';
  if(!file&&!typed)return toast('Escolha PDF/Word ou cole o texto da prova.',true);
  d.busy=true;const btn=document.querySelector('[data-action="uq-import-analyze"]');if(btn)btn.disabled=true;
  try{
   let extracted;
   if(file){uqImportStatus('Abrindo documento...');extracted=await uqReadImportFile(file);d.filename=file.name;d.text=extracted.text;d.warnings=extracted.warnings||[]}
-  else {d.filename='Texto colado';d.text=typed;d.warnings=[]}
+  else {d.filename='Texto colado';d.text=typed;d.warnings=[];extracted={images:{}}}
   const parsed=uqParseImportText(d.text);
-  if(!parsed.questions.length){d.busy=false;uqImportPickScreen();$('uq-import-source').value=d.text;return toast('Não encontrei questões numeradas. Revise o texto extraído no campo e tente novamente.',true)}
+  if(!parsed.questions.length){d.busy=false;uqImportPickScreen();$('uq-import-source').value=d.text;return toast('Não encontrei questões numeradas. Ajuste o texto e tente novamente.',true)}
+  uqImportAssignImages(parsed.questions,extracted.images||{});
+  if(extracted.pdf)await uqImportPdfVisuals(extracted.pdf,extracted.pdfPages,parsed.questions);
+  const attached=parsed.questions.filter(q=>q.imagemData||Object.keys(q.imagens||{}).length).length;
+  if(attached)d.warnings.push(`Figuras/recortes preservados automaticamente em ${attached} questão(ões). Confira a prévia.`);
   d.questions=parsed.questions;d.ignored=parsed.ignored;d.warnings.push(...parsed.warnings);d.index=0;d.busy=false;
   uqImportReviewScreen();
  }catch(e){d.busy=false;uqImportStatus(e.message||'Não foi possível ler o arquivo.');toast(e.message||'Falha ao importar.',true);if(btn)btn.disabled=false}
@@ -1968,11 +2153,13 @@ function uqImportReviewScreen(){
  const d=uqImportDraft;if(!d)return;const q=d.questions[d.index],total=d.questions.length,missing=d.questions.filter(uqImportMissing).length;
  const existing=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
  modal(`${formHead('REVISÃO DO PROFESSOR','Confira antes de publicar',`Origem: ${esc(d.filename||'texto')} · ${total} questões identificadas`)}${uqImportSteps(2)}
- <div class="uq-import-stats"><span class="pill success">✓ ${total-missing} completas</span><span class="pill ${missing?'warn':'success'}">${missing} para revisar</span><span class="pill">Questão ${d.index+1}/${total}</span></div>
+ <div class="uq-import-stats"><span class="pill success">✓ ${total-missing} completas</span><span class="pill ${missing?'warn':'success'}">${missing} para revisar</span><span class="pill">Questão ${d.index+1}/${total}</span><span class="pill">${Object.keys(q.alternativas||{}).length} alternativas reconhecidas</span></div>
  ${d.warnings.length?`<div class="uq-import-note uq-import-warning">${d.warnings.map(w=>'⚠ '+esc(w)).join('<br>')}</div>`:''}
  <div class="uq-import-nav"><button class="btn soft tiny" data-action="uq-import-prev" ${d.index===0?'disabled':''}>← Anterior</button><strong>Questão ${esc(q.number||d.index+1)} ${uqImportMissing(q)?'<span class="uq-import-issue">· revisar</span>':'✓'}</strong><button class="btn soft tiny" data-action="uq-import-next" ${d.index===total-1?'disabled':''}>Próxima →</button></div>
  <div class="uq-import-review ${uqImportMissing(q)?'uq-import-bad':''}">
   <div class="uq-import-edit"><div class="field"><label>Enunciado</label><textarea id="uq-import-enunciado" rows="5">${esc(q.enunciado)}</textarea></div>
+  ${q.imagemData?`<div class="uq-import-visual"><label class="uq-import-visual-label"><input type="checkbox" id="uq-import-image-mode" ${q.visualMode==='imagem'?'checked':''}> Mostrar recorte fiel do enunciado (com figuras/fórmulas) ao aluno</label><img src="${escapeAttr(q.imagemData)}" alt="Recorte do enunciado original"><small>Se editar o enunciado, desmarque a opção acima para mostrar o texto editado.</small></div>`:''}
+  ${Object.keys(q.imagens||{}).length?`<div class="uq-import-visual"><strong>Imagens extraídas do Word</strong><div class="uq-import-image-grid">${Object.entries(q.imagens).map(([k,src])=>`<figure><img src="${escapeAttr(src)}" alt="Figura ${k} da questão"><figcaption>Figura ${k}</figcaption></figure>`).join('')}</div></div>`:''}
   <div class="form-grid"><div class="field"><label>Área / matéria</label><input id="uq-import-area" value="${escapeAttr(q.area||'Geral')}"></div><div class="field"><label>Resposta correta</label><select id="uq-import-correct"><option value="">Selecione o gabarito</option>${['A','B','C','D','E'].map(k=>`<option value="${k}" ${q.correta===k?'selected':''}>${k}</option>`).join('')}</select></div></div>
   ${['A','B','C','D','E'].map(letter=>`<div class="field"><label>Alternativa ${letter}</label><textarea id="uq-import-alt-${letter}" rows="2" placeholder="Opcional">${esc(q.alternativas[letter]||'')}</textarea></div>`).join('')}
   <div class="field"><label>Explicação / resolução (opcional)</label><textarea id="uq-import-comment" rows="3" placeholder="O aluno poderá consultar após entregar">${esc(q.comentarioGabarito||'')}</textarea></div></div>
@@ -1983,7 +2170,7 @@ function uqImportCapture(){
  const d=uqImportDraft;if(!d||!d.questions.length)return;
  const q=d.questions[d.index];if(!$('uq-import-enunciado'))return;
  q.enunciado=$('uq-import-enunciado').value.trim();q.area=$('uq-import-area').value.trim()||'Geral';q.correta=$('uq-import-correct').value;
- q.comentarioGabarito=$('uq-import-comment').value.trim();
+ q.comentarioGabarito=$('uq-import-comment').value.trim();q.visualMode=$('uq-import-image-mode')?.checked?'imagem':'texto';
  for(const letter of ['A','B','C','D','E']){
   const val=$(`uq-import-alt-${letter}`).value.trim();if(val)q.alternativas[letter]=val;else delete q.alternativas[letter];
  }
@@ -2019,7 +2206,7 @@ async function uqImportSave(form){
   const startOrder=old?Math.max(0,...simQuestions(old).map(q=>Number(q.ordem)||0))+1:1;
   d.questions.forEach((q,i)=>{
    const qId=state.demo?'import-q-'+Date.now()+'-'+i:state.db.ref(`simulados/${id}/questoes`).push().key;
-   questionMap[qId]={ordem:startOrder+i,tipo:'multipla',area:q.area||'Geral',enunciado:q.enunciado,alternativas:q.alternativas,correta:q.correta,valor:1,comentarioGabarito:q.comentarioGabarito||'',createdBy:uid(),createdAt:Date.now(),importadoDe:d.filename};
+   questionMap[qId]={ordem:startOrder+i,tipo:'multipla',area:q.area||'Geral',enunciado:q.enunciado,alternativas:q.alternativas,correta:q.correta,valor:1,comentarioGabarito:q.comentarioGabarito||'',imagemData:q.imagemData||'',visualMode:q.visualMode||'texto',imagens:q.imagens||{},createdBy:uid(),createdAt:Date.now(),importadoDe:d.filename};
   });
   if(state.demo){
    if(old){old.questoes={...(old.questoes||{}),...questionMap}}
