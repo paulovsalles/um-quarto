@@ -415,6 +415,29 @@ input[readonly]{background:#f2f7f3;color:#59716b}
 .uq-review-content{margin:10px 0;white-space:pre-wrap;font-size:13px;line-height:1.55;font-weight:500;color:#53645d}.uq-review-content .uq-quiz-image{max-height:360px}
 @media(max-width:620px){.uq-import-visual{padding:10px}.uq-quiz-image{max-height:none}}
 
+/* Importador V4: compacto, focado em prévia e resposta com um clique */
+#modal.uq-v4-wide{max-width:780px;padding:27px}
+.uq-v4-drop{border:1.5px dashed #b8ddce;background:#f5faf7;border-radius:20px;padding:24px;text-align:center;display:grid;gap:8px;justify-items:center}
+.uq-v4-drop-ico{font-size:31px}.uq-v4-drop strong{font-size:16px}.uq-v4-drop p{font-size:12px;margin:0;color:#708b7c}.uq-v4-drop input{width:min(100%,440px);font-size:12px;background:white}.uq-v4-drop small{color:#87a092;font-size:11px}
+.uq-v4-simplehint{font-size:11px;color:#708479;background:#f4f7f3;border-radius:11px;padding:10px 13px;margin-top:10px}
+.uq-v4-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:14px 0 19px}
+.uq-v4-metrics>div{background:#f5f8f5;border:1px solid #e8eee8;border-radius:13px;padding:12px 15px;display:flex;align-items:center;gap:10px;min-width:0}
+.uq-v4-metrics b{font:700 23px 'Space Grotesk',sans-serif;color:#37755e}.uq-v4-metrics small{font-size:11px;color:#78877e;line-height:1.3}.uq-v4-metrics .uq-v4-alert b{color:#b97b38}
+.uq-v4-notice{background:#fff8eb;border:1px solid #efd9af;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.6;color:#8a6735;margin:12px 0}
+.uq-v4-bar{display:flex;align-items:flex-start;gap:14px;padding:15px 0;border-top:1px solid #edf0ed;border-bottom:1px solid #edf0ed}.uq-v4-bar>strong{padding-top:8px;min-width:62px;font-size:12px}
+.uq-v4-rail{display:flex;flex-wrap:wrap;gap:6px}.uq-v4-chip{min-width:34px;height:35px;border-radius:10px;border:1px solid #dfebe3;background:#f5faf5;color:#2e7d63;font-size:11px;font-weight:800;padding:0 7px}
+.uq-v4-chip.key{background:#fff7e9;color:#a4783e;border-color:#f0e1c3}.uq-v4-chip.problem{background:#fff1ec;color:#b46349;border-color:#f4d2c2}.uq-v4-chip.active{background:#2b6658;border-color:#2b6658;color:white;box-shadow:0 3px 9px #123e2a25}
+.uq-v4-toolbar{display:flex;align-items:center;justify-content:space-between;margin:17px 0 10px;gap:12px}.uq-v4-toolbar .eyebrow{font-size:10px}.uq-v4-sub{font-size:12px;color:#879990;margin-top:4px}
+.uq-v4-preview{background:#fff;border:1px solid #e2eae4;border-radius:17px;padding:21px}.uq-v4-stem{font:600 16px/1.6 'DM Sans',sans-serif;color:#243b37;white-space:pre-wrap;overflow-wrap:anywhere;margin-bottom:17px}
+.uq-v4-alt{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 11px;border-radius:11px;border:1px solid #e1e9e2;background:#fff;color:#34534b;margin:7px 0;font-size:12px;min-height:45px}
+.uq-v4-alt:hover{background:#f6fbf8;border-color:#91cab0}.uq-v4-alt b{display:grid;place-items:center;flex:0 0 29px;height:29px;background:#edf5ef;border-radius:9px;color:#386d58}.uq-v4-alt span{flex:1;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere}.uq-v4-alt small{font-size:10px;color:#32805b;font-weight:800;white-space:nowrap}
+.uq-v4-alt.correct{border:1.5px solid #77b999;background:#ecf9f0}.uq-v4-alt.correct b{background:#a7dec0;color:#206b4b}.uq-v4-alt.missing{border-style:dashed;color:#9ca6a1}.uq-v4-keyhint{font-size:11px;color:#74887a;margin:12px 1px 0}.uq-v4-editor{background:#fcfefd;border:1px solid #e2eae4;border-radius:15px;padding:18px}.uq-v4-editor .field{margin:0 0 11px}.uq-v4-editor textarea{min-height:62px}.uq-v4-editor textarea#uq-import-enunciado{min-height:130px}
+.uq-v4-pager{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:16px 0}.uq-v4-pager span{font-size:12px;color:#84978b;font-weight:800}
+.uq-v4-more{background:#f9fbf9;border:1px solid #e5eee6;border-radius:12px;padding:13px 15px;margin:12px 0}.uq-v4-more summary{cursor:pointer;color:#4d7866;font-size:12px;font-weight:800}.uq-v4-more textarea{margin:12px 0 8px}.uq-v4-more .btn{margin-bottom:3px}.uq-v4-more p{margin:12px 0 4px}.uq-v4-original{display:block;width:100%;max-height:430px;object-fit:contain;background:#fff;border-radius:9px;margin:12px 0;border:1px solid #e1ebe1}
+.uq-v4-more .uq-import-visual-label{display:flex;align-items:center;gap:8px}.uq-v4-more .uq-import-visual-label input{width:17px;height:17px;flex:none}
+.uq-v4-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin:17px 0 0}.uq-v4-bottomright{display:flex;gap:8px;flex-wrap:wrap}.uq-v4-footer-note{text-align:right;font-size:11px;color:#8f8976;margin:9px 0 0}.uq-v4-success{border:1px solid #d9eddb;background:#f1fbf2;color:#32795d;border-radius:14px;padding:14px;font-size:12px;line-height:1.5;margin-bottom:18px}
+@media(max-width:620px){#modal.uq-v4-wide{padding:17px}.uq-v4-metrics{gap:5px}.uq-v4-metrics>div{padding:10px 7px;display:block;text-align:center}.uq-v4-metrics b{display:block;font-size:21px}.uq-v4-metrics small{font-size:10px}.uq-v4-bar{display:block}.uq-v4-bar>strong{display:block;margin:0 0 9px}.uq-v4-preview{padding:13px}.uq-v4-stem{font-size:14px}.uq-v4-bottomright{flex:1;justify-content:flex-end}.uq-v4-alt{font-size:12px}.uq-v4-toolbar .btn{flex:none}}
+
 </style>
 <script>if(new URLSearchParams(location.search).get('versao')==='antiga')location.replace('./versao-antiga.html');</script>
 <style>
@@ -697,8 +720,8 @@ function switchRole(role){
 }
 function shell(){const name=state.profile?.name||state.user?.email?.split('@')[0]||'Visitante';$('mini-name').textContent=name;$('mini-role').textContent=teacher()?'Professor':parent()?'Família':'Estudante';renderRoleControl();$('mini-avatar').textContent=name.slice(0,1).toUpperCase();$('demo-label').classList.toggle('hidden',!state.demo);$('student-picker').classList.toggle('hidden',!teacher());renderStudentPicker();renderNav();refreshAvatar();$('landing').style.display='none';$('auth-screen').classList.add('hidden');$('app').style.display='block';render()}
 function renderStudentPicker(){let el=$('student-picker');if(!teacher())return;let options=state.users.filter(x=>x.role==='student'&&!x.mergedInto&&!x.hiddenMerged).sort((a,b)=>(a.name||'').localeCompare(b.name||'','pt-BR'));if(state.target!=='all'&&!options.some(x=>x.id===state.target))state.target='all';el.innerHTML=`<option value="all">Todos os alunos</option>`+options.map(x=>`<option value="${escapeAttr(x.id)}">${esc(x.name||x.email||'Aluno')}</option>`).join('');el.value=state.target}
-function closeModal(){$('modal-cover').classList.remove('open');$('modal').classList.remove('drive-preview-modal');$('modal').innerHTML=''}
-function modal(html){$('modal').classList.remove('drive-preview-modal');$('modal').innerHTML=`<button class="modal-close" data-action="close-modal" aria-label="Fechar">×</button>${html}`;$('modal-cover').classList.add('open');const first=$('modal').querySelector('input:not([type=hidden]),select,textarea');if(first)setTimeout(()=>first.focus(),20)}
+function closeModal(){$('modal-cover').classList.remove('open');$('modal').classList.remove('drive-preview-modal','uq-v4-wide');$('modal').innerHTML=''}
+function modal(html){$('modal').classList.remove('drive-preview-modal','uq-v4-wide');$('modal').innerHTML=`<button class="modal-close" data-action="close-modal" aria-label="Fechar">×</button>${html}`;$('modal-cover').classList.add('open');const first=$('modal').querySelector('input:not([type=hidden]),select,textarea');if(first)setTimeout(()=>first.focus(),20)}
 function safeWrite(callback){if(previewReadOnly()){toast('Prévia de aluno: alterações desativadas.',true);return Promise.resolve(false)}if(state.demo){toast('Demonstração: explore à vontade. Para salvar de verdade, entre na sua conta.');return Promise.resolve(false)}return callback()}
 const empty=(emoji,title,detail='')=>`<div class="empty"><div class="emoji">${emoji}</div><strong>${esc(title)}</strong>${detail?`<div style="margin-top:6px">${esc(detail)}</div>`:''}</div>`;
 const xpOf=({aulas,plano,resultados})=>Math.round(aulas.filter(a=>(a.statusFinanceiro||'')!=='previsto').length*20 + plano.filter(i=>i.feito).reduce((n,i)=>n+Math.min(500,Math.max(10,num(i.xp)||50)),0)+resultados.length*100);
@@ -1868,7 +1891,7 @@ function uqImportPickScreen(){
  const existing=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
  modal(`${formHead('IMPORTAÇÃO INTELIGENTE',existing?'Adicionar questões ao simulado':'Transforme sua prova em simulado','PDF ou Word (.docx) → questões online, com conferência do professor.')}${uqImportSteps(1)}
  <div class="uq-import-drop"><strong>📄 Selecione o arquivo da prova</strong><span class="small">PDF ou Word .docx · até 10 MB · imagens incluídas</span><input type="file" id="uq-import-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"></div>
- <div class="uq-import-note">🔎 O processamento acontece no próprio navegador; o arquivo original não é enviado ao Firebase. O importador separa automaticamente A–E, inclusive no formato “A 9.”, identifica gabaritos escritos e preserva imagens do Word e recortes visuais dos PDFs com figuras. Confira o resultado antes de publicar. PDFs escaneados precisam de OCR; imagens e fórmulas muito complexas podem exigir ajustes.</div>
+ <div class="uq-import-note">🔎 O processamento acontece no próprio navegador. Além das alternativas A–E, esta versão reconhece mudanças de questão mesmo quando títulos, números e enunciados vêm colados à última opção (como "MATEMÁTICA 2 • TRAPÉZIO RETÂNGULO 10 A cobertura..."). Também preserva imagens do Word e recortes de PDF. Não inventa gabaritos: confira respostas não identificadas antes de publicar. PDFs escaneados exigem OCR; imagens e fórmulas complexas podem exigir ajustes.</div>
  <details ${d.text?'open':''}><summary style="cursor:pointer;font-weight:800;font-size:12px">Ou cole / ajuste o texto da prova</summary><textarea id="uq-import-source" style="min-height:150px;margin-top:10px" placeholder="QUESTÃO 1\nQual é o valor de 2 + 2?\nA) 2\nB) 3\nC) 4\nD) 5\n\nGABARITO\n1 - C">${esc(d.text)}</textarea></details>
  <div id="uq-import-status" class="file-status" role="status"></div>
  <div class="form-actions"><button type="button" class="btn soft" data-action="close-modal">Cancelar</button><button type="button" class="btn primary" data-action="uq-import-analyze">Identificar questões ✳</button></div>`);
@@ -1993,8 +2016,67 @@ function uqImportAltMatch(line){
  if(m)return {letter:m[1],value:m[2].trim(),strong:false};
  return null;
 }
+// Reconhece títulos de seção mesmo colados à última alternativa no PDF.
+// Ex.: "E 1.000 bactérias; 10 horas. MATEMÁTICA 2 • TRAPÉZIO RETÂNGULO 10 A cobertura..."
+// O título em maiúsculas e o separador gráfico são evidências fortes de nova seção.
+const UQ_IMPORT_SUBJECTS='MATEM[ÁA]TICA|PORTUGU[ÊE]S|L[ÍI]NGUA PORTUGUESA|F[ÍI]SICA|QU[ÍI]MICA|BIOLOGIA|GEOGRAFIA|HIST[ÓO]RIA|CI[ÊE]NCIAS|FILOSOFIA|SOCIOLOGIA|INGL[ÊE]S|ESPANHOL|GEOMETRIA';
+function uqImportSectionBoundary(line){
+ const s=String(line||'');
+ const subj=new RegExp('(?:^|\\s)('+UQ_IMPORT_SUBJECTS+')(?:\\s+(?:[1-9]|[IVX]{1,4}))?\\s*(?:[•·|–—-]\\s*|\\s+)','g');
+ let m;
+ while((m=subj.exec(s))){
+  const start=m.index+(s[m.index]===' '?1:0),titleStart=m.index+m[0].length;
+  const remainder=s.slice(titleStart);
+  // Títulos devem estar em caixa alta. Não confundir "10 horas" com questão 10.
+  const numbered=remainder.match(/^([A-ZÀ-Ý][A-ZÀ-Ý\s\-/]{2,90}?)\s+(\d{1,3})\s+((?:(?:A|O|As|Os|Um|Uma|No|Na|Em|Para|Durante|Sobre)\s+[a-zà-ÿ]{2,}|[A-ZÀ-Ý][a-zà-ÿ]{3,})[\s\S]{5,})$/u);
+  if(numbered){
+   const heading=s.slice(start,titleStart)+numbered[1];
+   const rest=numbered[2]+' '+numbered[3];
+   return {start,heading:heading.trim(),rest:rest.trim()};
+  }
+  // Cabeçalho isolado, na linha seguinte vem "10 A cobertura...".
+  if(/^[A-ZÀ-Ý][A-ZÀ-Ý\s\-/]{2,80}$/u.test(remainder.trim())){
+   return {start,heading:s.slice(start).trim(),rest:''};
+  }
+ }
+ return null;
+}
+function uqImportSplitSectionLines(line){
+ const h=uqImportSectionBoundary(line);if(!h)return [line];
+ const pieces=[];const before=line.slice(0,h.start).trim();
+ if(before)pieces.push(before);
+ pieces.push(h.heading);
+ if(h.rest)pieces.push(h.rest);
+ return pieces;
+}
+function uqImportIsSectionHeading(line){
+ const h=uqImportSectionBoundary(line);
+ return !!h&&h.start===0&&!h.rest&&h.heading.trim()===String(line||'').trim();
+}
 function uqImportQuestionStart(line){
- return String(line||'').match(/^(?:(?:quest[aã]o|questao|q(?:uestion)?)\s*[º°n\.]?\s*0*(\d{1,3})\s*[-–—.:)]?\s*|\(?0*(\d{1,3})\)?\s*[.)\-–]\s+)(.*)$/i);
+ const s=String(line||'').trim();
+ // Marcador explícito: QUESTÃO 10, Q. 10, 10), 10. ou 10 -.
+ let m=s.match(/^(?:(?:quest[aã]o|questao|q(?:uestion)?)\s*[º°n\.]?\s*0*(\d{1,3})\s*[-–—.:)]?\s*|\(?0*(\d{1,3})\)?\s*[.)\-–]\s+)(.*)$/i);
+ if(m)return m;
+ // Provas como a do usuário usam "10 A cobertura..." sem ponto após o número.
+ // Só aceitar a construção quando existe um início real de frase, não "10 horas".
+ m=s.match(/^(0*\d{1,3})\s+((?:(?:A|O|As|Os|Um|Uma|No|Na|Em|Para|Durante|Sobre)\s+[a-zà-ÿ]{2,}|[A-ZÀ-Ý][a-zà-ÿ]{3,})[\s\S]{5,})$/u);
+ return m?[m[0],m[1],undefined,m[2]]:null;
+}
+// Também separa duas questões coladas SEM título intermediário, mas somente
+// quando o número esperado aparece depois de pontuação e de alternativas A–E.
+function uqImportSplitEmbeddedNext(line,previous){
+ if(!previous||!previous.number)return [line];
+ const letters=new Set(previous.lines.map(x=>uqImportAltMatch(x)?.letter).filter(Boolean));
+ if(!(letters.has('E')||(letters.has('A')&&letters.has('B')&&letters.has('C'))))return [line];
+ const next=previous.number+1;
+ if(next>999)return [line];
+ const exp=new RegExp('[.!?]\\s+(?=(?:(?:quest[aã]o|questao|q\\.)\\s*[º°n\\.]?\\s*)?0*'+next+'(?:\\s*[.)\\-–—:]\\s*|\\s+(?=(?:A|O|As|Os|Um|Uma|No|Na|Em|Para|Durante|Sobre)\\s+[a-zà-ÿ])))','iu');
+ const m=exp.exec(line);
+ if(!m)return [line];
+ const cut=m.index+m[0].length;
+ const before=line.slice(0,cut).trim(),after=line.slice(cut).trim();
+ return before&&after?[before,after]:[line];
 }
 function uqImportSplitInline(lines){
  const out=[];
@@ -2036,15 +2118,45 @@ function uqImportParseOptions(rawLines){
  for(const k of Object.keys(options))options[k]=options[k].trim();
  return {enunciado:stem.join('\n').trim(),alternativas:options};
 }
+function uqImportSuspiciousBoundary(q){
+ const entries=Object.entries(q.alternativas||{});
+ for(const [letter,value] of entries){
+  const s=String(value||'');
+  if(new RegExp('(?:MATEM[ÁA]TICA|PORTUGU[ÊE]S|F[ÍI]SICA|QU[ÍI]MICA|GEOMETRIA)\\s*(?:[1-9]|[IVX]{1,4})?\\s*[•·|–—]\\s*[A-ZÀ-Ý]{3,}','u').test(s))
+   return `A alternativa ${letter} parece conter o título de outra questão.`;
+  if(/(?:[.!?]\s+|^)quest[aã]o\s*\d{1,3}/i.test(s))
+   return `A alternativa ${letter} parece conter outra questão numerada.`;
+  if(q.number&&new RegExp('[.!?]\\s+0*'+(q.number+1)+'\\s+(?:(?:A|O|As|Os|Um|Uma|No|Na|Em|Para|Durante|Sobre)\\s+[a-zà-ÿ]|[A-ZÀ-Ý][a-zà-ÿ]{3,})','u').test(s))
+   return `A alternativa ${letter} pode conter a questão ${q.number+1}.`;
+ }
+ return '';
+}
 function uqParseImportText(input){
  const raw=String(input||'').replace(/\r\n?/g,'\n').replace(/\u00ad/g,'').replace(/\u00a0/g,' ');
- const lines=uqImportSplitInline(raw.split('\n').map(x=>x.replace(/[\t ]+/g,' ').trim()).filter(Boolean));
+ const source=raw.split('\n').map(x=>x.replace(/[\t ]+/g,' ').trim()).filter(Boolean);
+ const lines=uqImportSplitInline(source.flatMap(uqImportSplitSectionLines));
  const keyOnly=/^(?:gabarito|resposta\s*correta|alternativa\s*correta|resposta)\s*[:\-–]?\s*([A-E])\s*$/i;
  const keyHeader=/^(?:gabarito(?:\s+oficial)?|respostas(?:\s+corretas)?|answer\s*key)\s*[:\-–]?\s*(.*)$/i;
- const keyMap={},found=[];let current=null,answerSection=false,ignored=0;
- function complete(){if(!current)return;const parsed=uqImportParseOptions(current.lines);if(parsed.enunciado||Object.keys(parsed.alternativas).length)found.push({...current,...parsed});else ignored++;current=null;}
+ const keyMap={},found=[];let current=null,answerSection=false,ignored=0,pendingArea='Geral',splits=0;
+ function complete(){
+  if(!current)return;
+  const parsed=uqImportParseOptions(current.lines);
+  if(parsed.enunciado||Object.keys(parsed.alternativas).length)found.push({...current,...parsed});else ignored++;
+  current=null;
+ }
  function parseKeys(t){for(const m of t.matchAll(/(?:^|[;,\s])0*(\d{1,3})\s*[-.():=]?\s*([A-E])(?=\s|[;,.]|$)/gi))keyMap[Number(m[1])]=m[2].toUpperCase()}
- for(const line of lines){
+ for(let i=0;i<lines.length;i++){
+  let line=lines[i];
+  // Se um número de questão ficou colado à alternativa, separa em dois registros.
+  const parts=uqImportSplitEmbeddedNext(line,current);
+  if(parts.length>1){lines.splice(i,1,...parts);line=lines[i];splits++}
+  if(uqImportIsSectionHeading(line)){
+   // Um título repetido em quebra de página não deve encerrar uma questão
+   // cujo enunciado ou cujas alternativas ainda estão sendo lidos.
+   const letters=new Set((current?.lines||[]).map(x=>uqImportAltMatch(x)?.letter).filter(Boolean));
+   if(letters.has('E'))complete();
+   pendingArea=line.trim();continue;
+  }
   const kh=line.match(keyHeader);
   if(kh){
    const simple=(kh[1]||'').trim();
@@ -2054,8 +2166,9 @@ function uqParseImportText(input){
   if(answerSection){parseKeys(line);continue}
   const start=uqImportQuestionStart(line);
   if(start&&Number(start[1]||start[2])>0){
-   complete();current={number:Number(start[1]||start[2]),lines:[],correta:'',area:'Geral',comentarioGabarito:''};
-   const tail=(start[3]||'').trim();if(tail)current.lines.push(tail);continue;
+   complete();current={number:Number(start[1]||start[2]),lines:[],correta:'',area:pendingArea,comentarioGabarito:''};
+   const tail=(start[3]||'').trim();if(tail)current.lines.push(tail);
+   continue;
   }
   if(!current)continue;
   const key=line.match(keyOnly);
@@ -2066,11 +2179,20 @@ function uqParseImportText(input){
  const warnings=[];
  if(!found.length)warnings.push('Nenhuma questão numerada foi identificada. Confira o texto extraído.');
  if(found.length>UQ_IMPORT_LIMIT)warnings.push(`Foram identificadas ${found.length} questões. O limite é ${UQ_IMPORT_LIMIT}.`);
- const questions=found.slice(0,UQ_IMPORT_LIMIT).map(q=>({number:q.number,enunciado:q.enunciado,alternativas:q.alternativas,correta:q.correta||keyMap[q.number]||'',area:'Geral',comentarioGabarito:'',imagens:{},imagemData:'',visualMode:'texto'}));
+ const questions=found.slice(0,UQ_IMPORT_LIMIT).map(q=>({number:q.number,enunciado:q.enunciado,alternativas:q.alternativas,correta:q.correta||keyMap[q.number]||'',area:q.area||'Geral',comentarioGabarito:'',imagens:{},imagemData:'',visualMode:'texto'}));
  const optionsFailed=questions.filter(q=>Object.keys(q.alternativas).length<2).length;
  if(optionsFailed)warnings.push(`${optionsFailed} questão(ões) sem pelo menos duas alternativas detectadas. Confira a diagramação.`);
  const keysNeeded=questions.filter(q=>!q.correta).length;
  if(keysNeeded)warnings.push(`O arquivo não informou o gabarito de ${keysNeeded} questão(ões). As letras foram separadas, mas você precisa indicar quais respostas estão corretas.`);
+ if(splits)warnings.push(`${splits} quebra(s) de questão colada(s) foram identificadas pelo número e separadas automaticamente.`);
+ const jumps=[];
+ for(let i=1;i<questions.length;i++){
+  const prev=questions[i-1].number,next=questions[i].number;
+  if(next>prev+1)jumps.push(`${prev} → ${next}`);
+ }
+ if(jumps.length)warnings.push(`A numeração apresenta saltos (${jumps.slice(0,6).join(', ')}). Confira se houve questões não detectadas.`);
+ const ambiguous=questions.filter(uqImportSuspiciousBoundary).length;
+ if(ambiguous)warnings.push(`${ambiguous} questão(ões) ainda apresentam sinais de outro enunciado dentro das alternativas. Confira as marcações individuais.`);
  return {questions,ignored,warnings};
 }
 function uqImportAssignImages(questions,images){
@@ -2083,8 +2205,11 @@ function uqImportAssignImages(questions,images){
 function uqImportPdfFindPositions(pages){
  const headings=[];
  for(const p of pages)for(let i=0;i<p.rows.length;i++){
-  const match=uqImportQuestionStart(p.rows[i].text);
-  if(match)headings.push({page:p.num,row:i,y:p.rows[i].y,num:Number(match[1]||match[2])});
+  const parts=uqImportSplitInline(uqImportSplitSectionLines(p.rows[i].text));
+  for(const part of parts){
+   const match=uqImportQuestionStart(part);
+   if(match)headings.push({page:p.num,row:i,y:p.rows[i].y,num:Number(match[1]||match[2])});
+  }
  }
  return headings;
 }
@@ -2148,7 +2273,7 @@ async function uqImportAnalyze(){
   uqImportReviewScreen();
  }catch(e){d.busy=false;uqImportStatus(e.message||'Não foi possível ler o arquivo.');toast(e.message||'Falha ao importar.',true);if(btn)btn.disabled=false}
 }
-function uqImportMissing(q){return !q.enunciado?.trim()||Object.values(q.alternativas||{}).filter(x=>String(x||'').trim()).length<2||!q.correta||!q.alternativas[q.correta]}
+function uqImportMissing(q){return !q.enunciado?.trim()||Object.values(q.alternativas||{}).filter(x=>String(x||'').trim()).length<2||!q.correta||!q.alternativas[q.correta]||!!uqImportSuspiciousBoundary(q)}
 function uqImportReviewScreen(){
  const d=uqImportDraft;if(!d)return;const q=d.questions[d.index],total=d.questions.length,missing=d.questions.filter(uqImportMissing).length;
  const existing=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
@@ -2157,6 +2282,7 @@ function uqImportReviewScreen(){
  ${d.warnings.length?`<div class="uq-import-note uq-import-warning">${d.warnings.map(w=>'⚠ '+esc(w)).join('<br>')}</div>`:''}
  <div class="uq-import-nav"><button class="btn soft tiny" data-action="uq-import-prev" ${d.index===0?'disabled':''}>← Anterior</button><strong>Questão ${esc(q.number||d.index+1)} ${uqImportMissing(q)?'<span class="uq-import-issue">· revisar</span>':'✓'}</strong><button class="btn soft tiny" data-action="uq-import-next" ${d.index===total-1?'disabled':''}>Próxima →</button></div>
  <div class="uq-import-review ${uqImportMissing(q)?'uq-import-bad':''}">
+  ${uqImportSuspiciousBoundary(q)?`<div class="uq-import-note uq-import-warning">⚠ ${esc(uqImportSuspiciousBoundary(q))} Verifique se é necessário separar mais uma questão.</div>`:''}
   <div class="uq-import-edit"><div class="field"><label>Enunciado</label><textarea id="uq-import-enunciado" rows="5">${esc(q.enunciado)}</textarea></div>
   ${q.imagemData?`<div class="uq-import-visual"><label class="uq-import-visual-label"><input type="checkbox" id="uq-import-image-mode" ${q.visualMode==='imagem'?'checked':''}> Mostrar recorte fiel do enunciado (com figuras/fórmulas) ao aluno</label><img src="${escapeAttr(q.imagemData)}" alt="Recorte do enunciado original"><small>Se editar o enunciado, desmarque a opção acima para mostrar o texto editado.</small></div>`:''}
   ${Object.keys(q.imagens||{}).length?`<div class="uq-import-visual"><strong>Imagens extraídas do Word</strong><div class="uq-import-image-grid">${Object.entries(q.imagens).map(([k,src])=>`<figure><img src="${escapeAttr(src)}" alt="Figura ${k} da questão"><figcaption>Figura ${k}</figcaption></figure>`).join('')}</div></div>`:''}
@@ -2180,7 +2306,7 @@ function uqImportRemove(){const d=uqImportDraft;if(!d)return;uqImportCapture();i
 function uqImportSetup(){
  const d=uqImportDraft;if(!d)return;uqImportCapture();
  const missing=d.questions.map((q,i)=>uqImportMissing(q)?i+1:null).filter(Boolean);
- if(missing.length)return toast(`Revise o gabarito e as alternativas das questões: ${missing.slice(0,12).join(', ')}${missing.length>12?'...':''}`,true);
+ if(missing.length)return toast(`Revise alternativas, gabaritos e possíveis questões misturadas: ${missing.slice(0,12).join(', ')}${missing.length>12?'...':''}`,true);
  const existing=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
  const title=(d.filename||'Simulado importado').replace(/\.(pdf|docx)$/i,'').replace(/[_-]+/g,' ').trim();
  modal(`${formHead('IMPORTAÇÃO PRONTA',existing?'Adicionar questões':'Publicar seu simulado',`${d.questions.length} questões revisadas e prontas.`)}${uqImportSteps(3)}
@@ -2223,6 +2349,413 @@ async function uqImportSave(form){
   const total=d.questions.length;uqImportDraft=null;closeModal();render();toast(`${total} questões importadas com sucesso! ✳`);
  }catch(e){if(btn)btn.disabled=false;toast(errorText(e),true)}
 }
+// ===========================================================
+// UM QUARTO V4 — Leitura tolerante e revisão rápida de questões
+// Mantém a estrutura, o acesso e a correção dos simulados atuais.
+// ===========================================================
+function uqImportQuestionStart(line){
+ const s=String(line||'').trim();let m;
+ m=s.match(/^(?:quest(?:ã|a)o|q(?:uestion)?)[\s.:º°n-]*0*(\d{1,3})(?:[\s.):-]+|$)(.*)$/i);
+ if(m)return [s,m[1],undefined,(m[2]||'').trim()];
+ m=s.match(/^\(?0*(\d{1,3})\)?\s*[.)\-–—:]\s*(.*)$/u);
+ if(m)return [s,undefined,m[1],(m[2]||'').trim()];
+ // 10 A cobertura... (sem pontuação). Exige início típico de frase.
+ m=s.match(/^0*(\d{1,3})\s+((?:(?:A|O|As|Os|Um|Uma|No|Na|Em|Para|Durante|Sobre|Considere|Observe|Determine|Calcule)\s+[a-zà-ÿ]{2,}|[A-ZÀ-Ý][a-zà-ÿ]{3,})[\s\S]{5,})$/u);
+ return m?[s,m[1],undefined,m[2]]:null;
+}
+function uqImportAltMatch(line){
+ const s=String(line||'').trim();
+ let m=s.match(/^\(?([a-eA-E])\)?\s*[.)\-–—:]\s*(\S[\s\S]*)$/u);
+ if(m)return {letter:m[1].toUpperCase(),value:m[2].trim(),strong:true};
+ m=s.match(/^([A-E])\s+((?:\d|\p{Lu})[\s\S]*)$/u);
+ if(m)return {letter:m[1],value:m[2].trim(),strong:false};
+ return null;
+}
+// PDFs podem juntar tudo em uma linha: 5. Qual x? A 9. B 17. C 16. D 32. E 33.
+// Somente partimos na presença de uma sequência real de alternativas.
+function uqV4BreakDenseLine(line){
+ const s=String(line||'');
+ const marker=/(^|\s)(\(?[a-eA-E]\)\s*[.):\-–—]\s*|[a-eA-E][.):\-–—]\s*|[A-E]\s+(?=\d[\d.,;]*\b))/gu;
+ const found=[];let m;
+ while((m=marker.exec(s))){
+  const start=m.index+m[1].length,letter=m[2].match(/[A-Ea-e]/)?.[0].toUpperCase();
+  if(letter)found.push({start,letter});
+ }
+ let run=[];for(let i=0;i<found.length;i++){
+  let r=[found[i]];
+  for(let j=i+1;j<found.length;j++){
+   if(found[j].letter.charCodeAt(0)!==r.at(-1).letter.charCodeAt(0)+1)break;
+   r.push(found[j]);
+  }
+  if(r.length>run.length)run=r;
+ }
+ if(run.length<3)return [s.trim()];
+ const out=[];if(run[0].start>0)out.push(s.slice(0,run[0].start).trim());
+ for(let i=0;i<run.length;i++)out.push(s.slice(run[i].start,run[i+1]?.start||s.length).trim());
+ return out.filter(Boolean);
+}
+function uqImportSplitInline(lines){return lines.flatMap(uqV4BreakDenseLine).filter(Boolean)}
+function uqImportParseOptions(rawLines){
+ let input=uqImportSplitInline(rawLines),alts={},stem=[];
+ const hits=input.map((text,i)=>({i,...uqImportAltMatch(text)})).filter(c=>c.letter);
+ let best=[];for(let start=0;start<hits.length;start++){
+  let run=[hits[start]];
+  for(let j=start+1;j<hits.length;j++){
+   const h=hits[j],last=run.at(-1);
+   if(h.i-last.i>8||h.letter.charCodeAt(0)!==last.letter.charCodeAt(0)+1)break;
+   run.push(h);
+  }
+  if(run.length>best.length||(run.length===best.length&&run[0]?.i<best[0]?.i))best=run;
+ }
+ if(best.length<2)return {enunciado:input.join('\n').trim(),alternativas:alts};
+ const first=best[0].i,last=best.at(-1).i;
+ stem=input.slice(0,first);
+ // Identifica A–E uma vez e não coloca uma segunda camada do PDF no enunciado.
+ let active='';for(let i=first;i<input.length;i++){
+  const hit=uqImportAltMatch(input[i]);
+  if(hit && (!active || (hit.letter.charCodeAt(0)===active.charCodeAt(0)+1))){active=hit.letter;alts[active]=hit.value;continue}
+  // Duplicação de camada de texto no PDF: A–E repetidas após fechar E.
+  if(hit && active==='E' && hit.letter==='A' && i>last)break;
+  if(active)alts[active]+=' '+input[i];else stem.push(input[i]);
+ }
+ let enunciado=stem.join('\n').trim();
+ const repeated=uqV4BreakDenseLine(enunciado);
+ if(repeated.length>=4&&uqImportAltMatch(repeated[1]))enunciado=repeated[0];
+ for(const k of Object.keys(alts))alts[k]=alts[k].replace(/\s+/g,' ').trim();
+ return {enunciado,alternativas:alts};
+}
+function uqParseImportText(input){
+ const raw=String(input||'').replace(/\r\n?/g,'\n').replace(/[\u00ad\u200b]/g,'').replace(/\u00a0/g,' ');
+ const base=raw.split('\n').map(x=>x.replace(/[\t ]+/g,' ').trim()).filter(Boolean);
+ const lines=uqImportSplitInline(base.flatMap(uqImportSplitSectionLines));
+ let current=null,found=[],area='Geral',answerSection=false,splits=0,ignored=0;
+ const keyMap={};
+ const parseKeyLine=t=>{for(const m of String(t).matchAll(/(?:^|[;,\s])0*(\d{1,3})\s*[-.():=]?\s*([A-E])(?=\s|[;,.]|$)/gi))keyMap[Number(m[1])]=m[2].toUpperCase()};
+ function finish(){
+  if(!current)return;
+  const {enunciado,alternativas}=uqImportParseOptions(current.lines);
+  if(enunciado||Object.keys(alternativas).length)found.push({...current,enunciado,alternativas});else ignored++;
+  current=null;
+ }
+ for(let i=0;i<lines.length;i++){
+  let line=lines[i];
+  const more=uqImportSplitEmbeddedNext(line,current);
+  if(more.length>1){lines.splice(i,1,...more);line=lines[i];splits++}
+  if(/^(?:\d{1,2}\s*\/\s*\d{1,2}|(?:UM\s*QUARTO|UMQUARTO)\s*[•·|]\s*.+)$/i.test(line))continue;
+  if(uqImportIsSectionHeading(line)){if(current?.lines.some(x=>uqImportAltMatch(x)?.letter==='E'))finish();area=line;continue}
+  const header=line.match(/^(?:gabarito(?:\s+oficial)?|respostas(?:\s+corretas)?|answer\s*key)\b\s*[:\-–]?\s*(.*)$/i);
+  if(header){
+   const rhs=header[1].trim();
+   if(current&&/^[A-E]$/i.test(rhs)){current.correta=rhs.toUpperCase();continue}
+   finish();answerSection=true;parseKeyLine(rhs);continue;
+  }
+  if(answerSection){parseKeyLine(line);continue}
+  const start=uqImportQuestionStart(line),n=Number(start?.[1]||start?.[2]);
+  if(start&&n>0&&n<=999){
+   finish();current={number:n,lines:[],correta:'',area,comentarioGabarito:''};
+   if(start[3])current.lines.push(start[3]);continue;
+  }
+  if(!current)continue;
+  const key=line.match(/^(?:resposta\s*correta|alternativa\s*correta|resposta|gabarito)\s*[:\-–]?\s*([A-E])\s*$/i);
+  if(key){current.correta=key[1].toUpperCase();continue}
+  current.lines.push(line);
+ }
+ finish();
+ // Caso haja duas camadas de texto ou numeração repetida, mantém a versão mais completa.
+ const unique=new Map();
+ for(const q of found){const prev=unique.get(q.number);
+  const score=x=>Object.keys(x.alternativas).length*100+Math.min(250,x.enunciado.length);
+  if(!prev||score(q)>score(prev))unique.set(q.number,q);
+ }
+ let questions=[...unique.values()].slice(0,UQ_IMPORT_LIMIT).map(q=>({number:q.number,enunciado:q.enunciado,alternativas:q.alternativas,correta:q.correta||keyMap[q.number]||'',area:q.area||'Geral',comentarioGabarito:'',imagens:{},imagemData:'',visualMode:'texto'}));
+ const warnings=[];
+ if(!questions.length)warnings.push('Não foi possível reconhecer a numeração das questões.');
+ if(found.length>UQ_IMPORT_LIMIT)warnings.push(`O limite é de ${UQ_IMPORT_LIMIT} questões por importação.`);
+ const nums=questions.map(q=>q.number),miss=[];
+ if(nums.length&&nums[0]>1)warnings.push(`A primeira questão identificada é a ${nums[0]}. Verifique se o começo do PDF foi reconhecido.`);
+ for(let i=1;i<nums.length;i++)if(nums[i]>nums[i-1]+1)miss.push(`${nums[i-1]} → ${nums[i]}`);
+ if(miss.length)warnings.push(`Possíveis questões não identificadas entre: ${miss.slice(0,6).join(', ')}.`);
+ const few=questions.filter(q=>Object.keys(q.alternativas).length<3).length;
+ if(few)warnings.push(`${few} questão(ões) com menos de três alternativas identificadas.`);
+ if(splits)warnings.push(`${splits} início(s) de nova questão separados de uma alternativa.`);
+ const bad=questions.filter(uqImportSuspiciousBoundary).length;
+ if(bad)warnings.push(`${bad} questão(ões) ainda parecem conter conteúdo misturado.`);
+ return {questions,ignored,warnings};
+}
+function uqV4PdfRowJoin(parts){
+ parts.sort((a,b)=>a.x-b.x);let out='',end=NaN;
+ for(const p of parts){
+  const txt=String(p.str||'');if(!txt)continue;
+  const gap=p.x-end;
+  // Evita transformar `5` + `.` em `5 .` quando o PDF separa glifos.
+  if(out && !/\s$/.test(out) && !/^\s/.test(txt) && Number.isFinite(gap) && gap>Math.max(1.4,Math.min(3.6,(p.height||10)*.2)))out+=' ';
+  out+=txt;
+  end=p.x+(Number.isFinite(p.width)?p.width:Math.max(1,txt.length*4));
+ }
+ return out.replace(/[\t ]+/g,' ').trim();
+}
+async function uqReadImportFile(file){
+ const ext=(file.name.split('.').pop()||'').toLowerCase();
+ if(!['pdf','docx'].includes(ext))throw new Error('Use um PDF ou Word .docx.');
+ if(!file.size||file.size>10*1024*1024)throw new Error('O arquivo precisa ter até 10 MB.');
+ if(ext==='docx'){
+  const mammoth=await uqLoadScript('https://cdn.jsdelivr.net/npm/mammoth@1.10.0/mammoth.browser.min.js','mammoth');
+  const result=await mammoth.convertToHtml({arrayBuffer:await file.arrayBuffer()},{convertImage:mammoth.images.imgElement(async image=>{
+   if(!/^image\/(jpeg|png|webp)$/i.test(image.contentType||''))return {alt:'Imagem não suportada'};
+   return {src:'data:'+image.contentType+';base64,'+await image.read('base64')};
+  })});
+  const parsed=uqDocxTextWithImages(result.value),images={};let lost=0;
+  for(const [id,src] of Object.entries(parsed.images)){
+   uqImportStatus(`Organizando figura ${id}...`);
+   const img=await uqImportCompress(src);if(img)images[id]=img;else lost++;
+  }
+  return {text:parsed.text,images,warnings:lost?[`${lost} figura(s) não puderam ser convertidas.`]:[]};
+ }
+ const lib=await uqLoadScript('https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js','pdfjsLib');
+ lib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+ const pdf=await lib.getDocument({data:new Uint8Array(await file.arrayBuffer())}).promise;
+ if(pdf.numPages>100)throw new Error('O PDF tem mais de 100 páginas. Divida em arquivos menores.');
+ const pages=[];
+ for(let n=1;n<=pdf.numPages;n++){
+  uqImportStatus(`Lendo página ${n} de ${pdf.numPages}...`);
+  const page=await pdf.getPage(n),content=await page.getTextContent(),rows=[];
+  for(const it of content.items){const str=String(it.str||'');if(!str.trim())continue;
+   const x=Number(it.transform?.[4]||0),y=Number(it.transform?.[5]||0);
+   let row=rows.find(r=>Math.abs(r.y-y)<=2.5);
+   if(!row){row={y,parts:[]};rows.push(row)}
+   row.parts.push({str,x,width:Number(it.width)||0,height:Number(it.height)||10});
+  }
+  rows.sort((a,b)=>b.y-a.y);
+  const ordered=rows.map(r=>({y:r.y,text:uqV4PdfRowJoin(r.parts)})).filter(r=>r.text);
+  let hasArtwork=false;
+  try{
+   const ops=await page.getOperatorList();
+   const pic=new Set([lib.OPS.paintImageXObject,lib.OPS.paintJpegXObject,lib.OPS.paintInlineImageXObject].filter(Number.isFinite));
+   const shape=new Set([lib.OPS.stroke,lib.OPS.fill,lib.OPS.eoFill].filter(Number.isFinite));
+   hasArtwork=ops.fnArray.some(code=>pic.has(code))||ops.fnArray.filter(code=>shape.has(code)).length>22;
+  }catch(error){console.warn('Verificação de figuras:',error)}
+  pages.push({num:n,rows:ordered,hasArtwork});
+ }
+ return {text:pages.map(p=>p.rows.map(r=>r.text).join('\n')).join('\n\n'),images:{},pdf,pdfPages:pages,warnings:[]};
+}
+// Recorte apenas da região gráfica do enunciado; nunca repetir todas as alternativas.
+async function uqV4PdfVisuals(pdf,pages,questions){
+ const headings=uqImportPdfFindPositions(pages),cache=new Map();let saved=0,cursor=0;
+ for(const q of questions){
+  const at=headings.findIndex((h,i)=>i>=cursor&&h.num===q.number);
+  if(at<0)continue;cursor=at+1;
+  const head=headings[at],p=pages[head.page-1],end=headings[at+1];
+  const endRow=end?.page===head.page?end.row:p.rows.length;
+  let altRow=-1;
+  for(let i=head.row+1;i<endRow;i++){
+   if(uqImportSplitInline([p.rows[i].text]).some(t=>uqImportAltMatch(t)?.letter==='A')){altRow=i;break}
+  }
+  if(altRow<0)continue;
+  const gap=p.rows[head.row].y-p.rows[altRow].y;
+  const described=/figura|imagem|gr[aá]fico|diagrama|tabela|ilustra|desenho|observe|esquema|trap[eé]zio|tri[aâ]ngulo|quadrado|circunfer[eê]ncia|geometria|pictograma/i.test(q.enunciado);
+  if(!described && !(p.hasArtwork&&gap>95))continue;
+  if(gap<22||saved>=24)continue;
+  try{
+   uqImportStatus(`Organizando figura da questão ${q.number}...`);
+   let entry=cache.get(head.page);
+   if(!entry){
+    const page=await pdf.getPage(head.page),base=page.getViewport({scale:1});
+    const viewport=page.getViewport({scale:Math.min(1.75,1100/base.width)});
+    const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+    await page.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport,background:'#ffffff'}).promise;
+    entry={canvas,viewport};cache.set(head.page,entry);
+    if(cache.size>2)cache.delete(cache.keys().next().value);
+   }
+   const y=point=>entry.viewport.convertToViewportPoint(0,point)[1];
+   const y0=Math.max(0,Math.floor(y(p.rows[head.row].y)-23));
+   const y1=Math.min(entry.canvas.height,Math.ceil(y(p.rows[altRow].y)-6));
+   if(y1-y0<32)continue;
+   const crop=document.createElement('canvas');crop.width=entry.canvas.width;crop.height=y1-y0;
+   crop.getContext('2d',{alpha:false}).drawImage(entry.canvas,0,y0,crop.width,crop.height,0,0,crop.width,crop.height);
+   const src=await uqImportCompress(crop.toDataURL('image/webp',.84));
+   if(src){q.imagemData=src;q.visualMode='texto';saved++}
+   crop.width=1;crop.height=1;
+  }catch(error){console.warn('Não foi possível preservar figura:',error)}
+ }
+ return saved;
+}
+function uqV4Problem(q){
+ if(!q.enunciado?.trim())return 'Enunciado não identificado';
+ const inStem=uqImportSplitInline(String(q.enunciado||'').split('\n')).filter(t=>uqImportAltMatch(t)).length;
+ if(inStem>=2)return 'Alternativas ainda aparecem misturadas ao enunciado';
+ const qty=['A','B','C','D','E'].filter(k=>String(q.alternativas?.[k]||'').trim()).length;
+ if(qty<4)return `Só ${qty} alternativa(s) reconhecida(s)`;
+ return uqImportSuspiciousBoundary(q)||'';
+}
+function uqV4NeedKey(q){return !q.correta||!q.alternativas?.[q.correta]}
+function uqImportMissing(q){return !!uqV4Problem(q)||uqV4NeedKey(q)}
+function uqV4ReviewStatus(q){return uqV4Problem(q)?'problem':uqV4NeedKey(q)?'key':'ready'}
+function uqV4OpenWide(){const el=$('modal');if(el){el.classList.add('uq-v4-wide');setTimeout(()=>{if(el.classList.contains('uq-v4-wide')){if(document.activeElement?.closest('details:not([open])'))document.activeElement.blur();el.scrollTop=0}},65)}}
+function uqImportPickScreen(){
+ const d=uqImportDraft;if(!d)return;
+ const old=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
+ modal(`${formHead('SIMULADOS · IMPORTAÇÃO',old?'Adicionar questões ao simulado':'Importar prova', 'Transforme seu documento em um simulado online, sem digitar questão por questão.')}${uqImportSteps(1)}
+ <div class="uq-v4-drop"><div class="uq-v4-drop-ico">📄</div><strong>Escolha a prova em PDF ou Word</strong><p>Questões, alternativas e figuras organizadas automaticamente</p><input type="file" id="uq-import-file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"><small>Até 10 MB · PDF e .docx</small></div>
+ <details class="uq-v4-more"><summary>Ou colar o texto da prova</summary><textarea id="uq-import-source" rows="5" placeholder="1. Quanto é 2+2?\nA) 1\nB) 2\nC) 4\nD) 5\nE) 6">${esc(d.text||'')}</textarea></details>
+ <div id="uq-import-status" class="file-status" role="status"></div>
+ <div class="uq-v4-simplehint">Você confere o resultado antes de salvar. O gabarito não é adivinhado.</div>
+ <div class="form-actions"><button type="button" class="btn soft" data-action="close-modal">Cancelar</button><button type="button" class="btn primary" data-action="uq-import-analyze">Importar e organizar questões →</button></div>`);
+ uqV4OpenWide();
+}
+function uqV4NeedsOcr(parsed,extracted){
+ const pages=extracted.pdf?.numPages||0;
+ if(!pages||pages>18)return false;
+ const n=parsed.questions.length;
+ const first=parsed.questions[0]?.number||0;
+ const short=extracted.pdfPages.filter(p=>p.rows.map(r=>r.text).join(' ').length<75).length;
+ return (pages>=2&&n<=1)||(first>=4&&n<=2)||(short>=Math.ceil(pages/2));
+}
+async function uqV4OcrPdf(extracted){
+ if(!extracted?.pdf)throw new Error('Nenhum PDF aberto para reconhecimento.');
+ if(extracted.pdf.numPages>18)throw new Error('OCR limitado a 18 páginas por importação. Divida PDFs maiores.');
+ const tess=await uqLoadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js','Tesseract');
+ const worker=await tess.createWorker('por+eng',1);
+ const texts=[];
+ try{
+  for(let i=1;i<=extracted.pdf.numPages;i++){
+   uqImportStatus(`Reconhecimento visual: página ${i} de ${extracted.pdf.numPages}...`);
+   const page=await extracted.pdf.getPage(i),base=page.getViewport({scale:1});
+   const vp=page.getViewport({scale:Math.min(2,1650/base.width)});
+   const canvas=document.createElement('canvas');canvas.width=Math.ceil(vp.width);canvas.height=Math.ceil(vp.height);
+   await page.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
+   const r=await worker.recognize(canvas);
+   texts.push(String(r.data?.text||''));
+   canvas.width=1;canvas.height=1;
+  }
+ }finally{await worker.terminate()}
+ return texts.join('\n\n');
+}
+async function uqImportAnalyze(){
+ const d=uqImportDraft;if(!d||d.busy)return;
+ const file=$('uq-import-file')?.files?.[0],typed=$('uq-import-source')?.value.trim()||'';
+ if(!file&&!typed)return toast('Selecione um PDF, Word ou cole o texto.',true);
+ d.busy=true;const btn=document.querySelector('[data-action="uq-import-analyze"]');if(btn)btn.disabled=true;
+ try{
+  uqImportStatus('Abrindo a prova...');
+  const source=file?await uqReadImportFile(file):{text:typed,images:{},warnings:[]};
+  d.filename=file?.name||'Texto colado';d.text=source.text;d.source=source;
+  let parsed=uqParseImportText(source.text),usedOcr=false;
+  if(uqV4NeedsOcr(parsed,source)){
+   try{
+    uqImportStatus('A diagramação parece incompleta. Tentando recuperar outras questões por OCR...');
+    const textOcr=await uqV4OcrPdf(source),ocr=uqParseImportText(textOcr);
+    const quality=x=>x.questions.reduce((acc,q)=>acc+1+Object.keys(q.alternativas).length/6,0);
+    if(quality(ocr)>quality(parsed)){parsed=ocr;d.text=textOcr;usedOcr=true}
+   }catch(err){console.warn('OCR opcional:',err);d.ocrError=err?.message||'OCR indisponível'}
+  }
+  if(!parsed.questions.length){d.busy=false;uqImportPickScreen();const t=$('uq-import-source');if(t)t.value=d.text;return toast('Não foi possível reconhecer as questões. Confira o texto extraído.',true)}
+  uqImportAssignImages(parsed.questions,source.images||{});
+  if(source.pdf){
+   try{await uqV4PdfVisuals(source.pdf,source.pdfPages,parsed.questions)}catch(err){console.warn('Recortes do PDF:',err)}
+   // Não exibir um print grande no lugar do enunciado por padrão.
+   parsed.questions.forEach(q=>q.visualMode='texto');
+  }
+  d.questions=parsed.questions;d.index=0;d.editing=false;d.keysOpen=false;d.ignored=parsed.ignored;
+  d.warnings=[...(source.warnings||[]),...parsed.warnings];
+  if(usedOcr)d.warnings.unshift('Texto recuperado por leitura visual (OCR): confira números, fórmulas e acentos.');
+  if(source.pdf&&parsed.questions.length===1&&source.pdf.numPages>=2)d.warnings.unshift(`Este PDF tem ${source.pdf.numPages} páginas, mas apenas uma questão foi reconhecida. A importação pode estar incompleta.`);
+  d.busy=false;uqImportReviewScreen();
+ }catch(e){d.busy=false;uqImportStatus(e.message||'Falha ao importar.');toast(e.message||'Falha ao importar.',true);if(btn)btn.disabled=false}
+}
+function uqV4Quote(text){return esc(String(text||'')).replace(/\n/g,'<br>')}
+function uqImportReviewScreen(){
+ const d=uqImportDraft;if(!d?.questions?.length)return;
+ const q=d.questions[d.index],total=d.questions.length;
+ const problems=d.questions.filter(uqV4Problem).length,missingKeys=d.questions.filter(uqV4NeedKey).length;
+ const old=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
+ const isEditing=!!d.editing;
+ modal(`${formHead('REVISÃO RÁPIDA','Sua prova organizada',`${esc(d.filename)} · ${total} questão(ões) identificada(s)`)}${uqImportSteps(2)}
+ <div class="uq-v4-metrics"><div><b>${total}</b><small>questões</small></div><div class="${problems?'uq-v4-alert':''}"><b>${problems}</b><small>texto para conferir</small></div><div class="${missingKeys?'uq-v4-alert':''}"><b>${missingKeys}</b><small>sem gabarito</small></div></div>
+ ${problems?`<div class="uq-v4-notice"><b>Atenção à extração:</b> ${problems} questão(ões) podem estar incompletas ou misturadas. Navegue pelos números destacados antes de publicar.</div>`:''}
+ ${d.warnings.some(w=>/apenas uma|primeira questão|Possíveis questões não/.test(w))?`<div class="uq-v4-notice"><b>Verifique a quantidade:</b> ${esc(d.warnings.find(w=>/apenas uma|primeira questão|Possíveis questões não/.test(w)))}</div>`:''}
+ <div class="uq-v4-bar"><strong>Questões</strong><div class="uq-v4-rail">${d.questions.map((item,i)=>`<button type="button" class="uq-v4-chip ${i===d.index?'active':''} ${uqV4ReviewStatus(item)}" title="Questão ${item.number} · ${uqV4ReviewStatus(item)==='ready'?'Pronta':uqV4ReviewStatus(item)==='key'?'Falta gabarito':'Conferir texto'}" data-action="uq-v4-jump" data-index="${i}">${esc(item.number||i+1)}${uqV4ReviewStatus(item)==='ready'?' ✓':''}</button>`).join('')}</div></div>
+ <div class="uq-v4-toolbar"><div><span class="eyebrow">QUESTÃO ${esc(q.number||d.index+1)}</span><div class="uq-v4-sub">${esc(q.area||'Geral')}</div></div><button class="btn soft tiny" data-action="uq-v4-edit">${isEditing?'Ver prévia':'✎ Editar texto'}</button></div>
+ ${isEditing?`<div class="uq-v4-editor"><div class="field"><label>Enunciado</label><textarea id="uq-import-enunciado" rows="5">${esc(q.enunciado||'')}</textarea></div><div class="field"><label>Matéria</label><input id="uq-import-area" value="${escapeAttr(q.area||'Geral')}"></div>
+ ${['A','B','C','D','E'].map(k=>`<div class="field"><label>Alternativa ${k}</label><textarea id="uq-import-alt-${k}" rows="2">${esc(q.alternativas?.[k]||'')}</textarea></div>`).join('')}
+ <div class="field"><label>Explicação opcional</label><textarea id="uq-import-comment" rows="2">${esc(q.comentarioGabarito||'')}</textarea></div><button class="btn green" data-action="uq-v4-edit">✓ Salvar e ver prévia</button></div>`:
+ `<div class="uq-v4-preview"><div class="uq-v4-stem">${uqRichQuestion(q.enunciado||'Enunciado não identificado',q)}</div>
+ ${['A','B','C','D','E'].map(k=>`<button type="button" class="uq-v4-alt ${q.correta===k?'correct':''} ${!q.alternativas?.[k]?'missing':''}" data-action="uq-v4-key" data-letter="${k}"><b>${k}</b><span>${uqRichQuestion(q.alternativas?.[k]||'Alternativa não encontrada',q)}</span><small>${q.correta===k?'✓ Correta':''}</small></button>`).join('')}
+ <p class="uq-v4-keyhint">${q.correta?`Resposta selecionada: <b>${esc(q.correta)}</b>. Clique em outra para alterar.`:'<b>Escolha a alternativa correta</b> clicando nela.'}</p></div>`}
+ ${uqV4Problem(q)?`<div class="uq-v4-notice">⚠ ${esc(uqV4Problem(q))}. Use <b>Editar texto</b> para corrigir.</div>`:''}
+ ${q.imagemData?`<details class="uq-v4-more"><summary>🖼 Ver recorte original do PDF (opcional)</summary><img class="uq-v4-original" src="${escapeAttr(q.imagemData)}" alt="Trecho da questão no PDF"><label class="uq-import-visual-label"><input type="checkbox" id="uq-import-image-mode" ${q.visualMode==='imagem'?'checked':''}> Usar recorte como enunciado do aluno (somente quando necessário)</label></details>`:''}
+ ${Object.keys(q.imagens||{}).length?`<details class="uq-v4-more"><summary>🖼 Figuras do Word</summary><div class="uq-import-image-grid">${Object.entries(q.imagens).map(([k,img])=>`<figure><img src="${escapeAttr(img)}" alt="Figura ${esc(k)}"></figure>`).join('')}</div></details>`:''}
+ <div class="uq-v4-pager"><button class="btn soft tiny" data-action="uq-import-prev" ${d.index===0?'disabled':''}>← Anterior</button><span>${d.index+1} de ${total}</span><button class="btn soft tiny" data-action="uq-import-next" ${d.index===total-1?'disabled':''}>Próxima →</button></div>
+ <details class="uq-v4-more" ${d.keysOpen?'open':''}><summary>⚡ Colar gabarito de todas as questões de uma vez</summary><p class="small">Ex.: 1-A, 2-C, 3-B, 4-D. Não preenche respostas sem você informar.</p><textarea id="uq-v4-keys" rows="3" placeholder="1 A\n2 C\n3 B"></textarea><button class="btn green tiny" type="button" data-action="uq-v4-bulkkeys">Aplicar gabarito</button></details>
+ <div class="uq-v4-bottom"><button class="btn ghost tiny" data-action="uq-import-remove">Excluir questão</button><div class="uq-v4-bottomright">${d.source?.pdf?`<button class="btn soft tiny" data-action="uq-v4-ocr">Reconhecer com OCR</button>`:''}<button class="btn primary" data-action="uq-import-setup" ${problems||missingKeys?'disabled':''}>${old?'Adicionar questões':'Continuar para publicar'} →</button></div></div>
+ ${problems||missingKeys?`<p class="uq-v4-footer-note">Para avançar: ${problems?`corrija ${problems} questão(ões)`:'texto conferido'}${problems&&missingKeys?' e ':''}${missingKeys?`marque ${missingKeys} resposta(s) correta(s)` :''}.</p>`:''}`);
+ uqV4OpenWide();
+}
+function uqImportCapture(){
+ const d=uqImportDraft;if(!d?.questions?.length)return;
+ const q=d.questions[d.index];
+ if($('uq-import-enunciado')){
+  q.enunciado=$('uq-import-enunciado').value.trim();q.area=$('uq-import-area').value.trim()||'Geral';
+  q.comentarioGabarito=$('uq-import-comment').value.trim();
+  for(const k of ['A','B','C','D','E']){const v=$(`uq-import-alt-${k}`).value.trim();if(v)q.alternativas[k]=v;else delete q.alternativas[k]}
+ }
+ if($('uq-import-image-mode'))q.visualMode=$('uq-import-image-mode').checked?'imagem':'texto';
+}
+function uqImportMove(dir){const d=uqImportDraft;if(!d)return;uqImportCapture();d.index=Math.max(0,Math.min(d.questions.length-1,d.index+dir));d.editing=false;uqImportReviewScreen()}
+function uqV4Jump(i){const d=uqImportDraft;if(!d)return;uqImportCapture();d.index=Math.max(0,Math.min(d.questions.length-1,Number(i)||0));d.editing=false;uqImportReviewScreen()}
+function uqV4Edit(){const d=uqImportDraft;if(!d)return;uqImportCapture();d.editing=!d.editing;uqImportReviewScreen()}
+function uqV4SetKey(k){const d=uqImportDraft;if(!d||!['A','B','C','D','E'].includes(k))return;uqImportCapture();d.questions[d.index].correta=k;uqImportReviewScreen()}
+function uqV4BulkKeys(){
+ const d=uqImportDraft;if(!d)return;uqImportCapture();const input=$('uq-v4-keys')?.value||'';
+ const pair=/(?:^|[;,\s])(?:quest[aã]o\s*)?0*(\d{1,3})\s*[-.)/:=]?\s*([A-E])(?=\s|[;,.]|$)/giu;
+ let used=0;for(const m of input.matchAll(pair)){
+  const q=d.questions.find(x=>x.number===Number(m[1]));
+  if(q&&q.alternativas?.[m[2].toUpperCase()]){q.correta=m[2].toUpperCase();used++}
+ }
+ if(!used)return toast('Cole o gabarito como: 1-A, 2-C, 3-B.',true);
+ d.keysOpen=false;uqImportReviewScreen();toast(`${used} resposta(s) preenchida(s) no gabarito.`);
+}
+async function uqV4RetryOcr(){
+ const d=uqImportDraft;if(!d?.source?.pdf||d.busy)return;
+ if(!confirm('Refazer a leitura por OCR? As edições desta importação serão substituídas se mais questões forem reconhecidas.'))return;
+ d.busy=true;try{
+  const txt=await uqV4OcrPdf(d.source),read=uqParseImportText(txt);
+  const oldScore=d.questions.reduce((v,q)=>v+Object.keys(q.alternativas).length+2,0);
+  const newScore=read.questions.reduce((v,q)=>v+Object.keys(q.alternativas).length+2,0);
+  if(newScore<=oldScore){toast('O OCR não identificou mais questões que a leitura atual. Mantive suas edições.');return}
+  uqImportAssignImages(read.questions,d.source.images||{});
+  await uqV4PdfVisuals(d.source.pdf,d.source.pdfPages,read.questions);
+  read.questions.forEach(q=>q.visualMode='texto');
+  d.questions=read.questions;d.index=0;d.editing=false;
+  d.warnings=['Texto recuperado por OCR: confira números e fórmulas.',...read.warnings];
+  toast(`${read.questions.length} questões reconhecidas com OCR.`);
+ }catch(e){toast('Não foi possível concluir o OCR: '+(e.message||'erro'),true)}
+ finally{d.busy=false;uqImportReviewScreen()}
+}
+function uqImportSetup(){
+ const d=uqImportDraft;if(!d)return;uqImportCapture();
+ if(d.questions.some(uqImportMissing))return toast('Confira o texto destacado e marque todas as respostas corretas.',true);
+ const old=d.existingId?state.simulados.find(s=>s.id===d.existingId):null;
+ const title=(d.filename||'Simulado importado').replace(/\.(pdf|docx)$/i,'').replace(/[_-]+/g,' ').trim();
+ modal(`${formHead('ÚLTIMA ETAPA','Tudo pronto para salvar',`${d.questions.length} questão(ões) com alternativas e gabarito.`)}${uqImportSteps(3)}
+ <form id="uq-import-save-form"><div class="uq-v4-success">✓ Questões organizadas e respostas definidas. ${old?'Elas serão acrescentadas ao simulado existente.':'Escolha como disponibilizá-las.'}</div>
+ ${old?`<div class="uq-import-note"><b>Simulado:</b> ${esc(old.titulo)}</div>`:`<div class="field"><label>Nome do simulado</label><input name="titulo" maxlength="150" required value="${escapeAttr(title||'Simulado importado')}"></div><div class="form-grid"><div class="field"><label>Alunos</label><select name="studentUid"><option value="all">Todos os alunos</option>${studentOptions(state.target!=='all'?state.target:'')}</select></div><div class="field"><label>Tempo sugerido (min)</label><input type="number" name="tempoMinutos" min="0" max="300" value="60"></div></div>
+ <div class="form-grid"><div class="field"><label>Salvar como</label><select name="status"><option value="rascunho">Rascunho</option><option value="publicado">Publicado — alunos já podem responder</option></select></div><div class="field"><label>Mostrar nota ao aluno</label><select name="showResult"><option value="true">Sim, após finalizar</option><option value="false">Não</option></select></div></div>
+ <input type="hidden" name="desc" value="Questões importadas e revisadas pelo professor.">`}
+ <div class="form-actions"><button class="btn soft" type="button" data-action="uq-import-back-review">← Revisar</button><button class="btn primary" type="submit">${old?'Adicionar questões':'Salvar simulado'} ✓</button></div></form>`);
+ uqV4OpenWide();
+}
+// Interações adicionais que não alteram as ações existentes da plataforma.
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-action]');if(!b||!uqImportDraft)return;
+ switch(b.dataset.action){
+  case 'uq-v4-jump':uqV4Jump(b.dataset.index);break;
+  case 'uq-v4-edit':uqV4Edit();break;
+  case 'uq-v4-key':uqV4SetKey(b.dataset.letter);break;
+  case 'uq-v4-bulkkeys':uqV4BulkKeys();break;
+  case 'uq-v4-ocr':uqV4RetryOcr();break;
+ }
+});
+
 // As ações do importador são delegadas para não interferir nos eventos existentes.
 document.addEventListener('click',e=>{
  const btn=e.target.closest('[data-action]');if(!btn)return;
